@@ -16,4 +16,6 @@ target 'Thriving Stones' do
 
   pod 'Firebase/Auth'
 
+  pod 'CBZSplashView', '~> 1.0.0'
+
 end
