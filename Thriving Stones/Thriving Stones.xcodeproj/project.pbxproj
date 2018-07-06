@@ -25,7 +25,6 @@
 		BDA23DCC20EF121F00A73858 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		BDA23DCE20EF121F00A73858 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BDA23DD420EF15B600A73858 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		BDA23DD720EF182600A73858 /* Controllers */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Controllers; path = "/Users/huixintang/Desktop/Thriving-Stones-Project/Thriving Stones/Thriving Stones/Controllers"; sourceTree = "<absolute>"; };
 		D268D61F6F2F371B581D55C8 /* Pods_Thriving_Stones.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Thriving_Stones.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -71,7 +70,6 @@
 		BDA23DC120EF121F00A73858 /* Thriving Stones */ = {
 			isa = PBXGroup;
 			children = (
-				BDA23DD720EF182600A73858 /* Controllers */,
 				BDA23DD420EF15B600A73858 /* GoogleService-Info.plist */,
 				BDA23DC220EF121F00A73858 /* AppDelegate.swift */,
 				BDA23DC620EF121F00A73858 /* Main.storyboard */,
