@@ -8,21 +8,21 @@
 
 /* Begin PBXBuildFile section */
 		155EBFE9D6E55F67593D4DF5 /* Pods_Thriving_Stones.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D268D61F6F2F371B581D55C8 /* Pods_Thriving_Stones.framework */; };
+		BD3E60CB20F30BBD004ABA6F /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BD3E60CA20F30BBD004ABA6F /* Launch Screen.storyboard */; };
+		BD3E60D120F310B4004ABA6F /* SplashViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD3E60D020F310B4004ABA6F /* SplashViewController.swift */; };
 		BDA23DC320EF121F00A73858 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDA23DC220EF121F00A73858 /* AppDelegate.swift */; };
-		BDA23DC820EF121F00A73858 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BDA23DC620EF121F00A73858 /* Main.storyboard */; };
 		BDA23DCA20EF121F00A73858 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BDA23DC920EF121F00A73858 /* Assets.xcassets */; };
-		BDA23DCD20EF121F00A73858 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BDA23DCB20EF121F00A73858 /* LaunchScreen.storyboard */; };
 		BDA23DD520EF15B600A73858 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BDA23DD420EF15B600A73858 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		47503FE385E3756D8EABB047 /* Pods-Thriving Stones.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Thriving Stones.release.xcconfig"; path = "Pods/Target Support Files/Pods-Thriving Stones/Pods-Thriving Stones.release.xcconfig"; sourceTree = "<group>"; };
 		512B167CA9E9C6F5514A83A9 /* Pods-Thriving Stones.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Thriving Stones.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Thriving Stones/Pods-Thriving Stones.debug.xcconfig"; sourceTree = "<group>"; };
+		BD3E60CA20F30BBD004ABA6F /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
+		BD3E60D020F310B4004ABA6F /* SplashViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SplashViewController.swift; sourceTree = "<group>"; };
 		BDA23DBF20EF121F00A73858 /* Thriving Stones.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Thriving Stones.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BDA23DC220EF121F00A73858 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		BDA23DC720EF121F00A73858 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		BDA23DC920EF121F00A73858 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		BDA23DCC20EF121F00A73858 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		BDA23DCE20EF121F00A73858 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BDA23DD420EF15B600A73858 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D268D61F6F2F371B581D55C8 /* Pods_Thriving_Stones.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Thriving_Stones.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -70,11 +70,11 @@
 		BDA23DC120EF121F00A73858 /* Thriving Stones */ = {
 			isa = PBXGroup;
 			children = (
+				BD3E60D020F310B4004ABA6F /* SplashViewController.swift */,
 				BDA23DD420EF15B600A73858 /* GoogleService-Info.plist */,
 				BDA23DC220EF121F00A73858 /* AppDelegate.swift */,
-				BDA23DC620EF121F00A73858 /* Main.storyboard */,
+				BD3E60CA20F30BBD004ABA6F /* Launch Screen.storyboard */,
 				BDA23DC920EF121F00A73858 /* Assets.xcassets */,
-				BDA23DCB20EF121F00A73858 /* LaunchScreen.storyboard */,
 				BDA23DCE20EF121F00A73858 /* Info.plist */,
 			);
 			path = "Thriving Stones";
@@ -149,10 +149,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BDA23DCD20EF121F00A73858 /* LaunchScreen.storyboard in Resources */,
+				BD3E60CB20F30BBD004ABA6F /* Launch Screen.storyboard in Resources */,
 				BDA23DD520EF15B600A73858 /* GoogleService-Info.plist in Resources */,
 				BDA23DCA20EF121F00A73858 /* Assets.xcassets in Resources */,
-				BDA23DC820EF121F00A73858 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -211,29 +210,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				BDA23DC320EF121F00A73858 /* AppDelegate.swift in Sources */,
+				BD3E60D120F310B4004ABA6F /* SplashViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXVariantGroup section */
-		BDA23DC620EF121F00A73858 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				BDA23DC720EF121F00A73858 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		BDA23DCB20EF121F00A73858 /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				BDA23DCC20EF121F00A73858 /* Base */,
-			);
-			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		BDA23DCF20EF121F00A73858 /* Debug */ = {
@@ -348,6 +329,7 @@
 			baseConfigurationReference = 512B167CA9E9C6F5514A83A9 /* Pods-Thriving Stones.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = "Thriving Stones/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -363,6 +345,7 @@
 			baseConfigurationReference = 47503FE385E3756D8EABB047 /* Pods-Thriving Stones.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = "Thriving Stones/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
