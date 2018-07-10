@@ -80,5 +80,8 @@ public class Student {
             return 0;
         }
     }
-
+    
+    public String getGrades(String subject, String level, String location, String test){
+        return "";
+    }
 }
