@@ -20,7 +20,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         window = UIWindow(frame: UIScreen.main.bounds)
         
-        let startViewController = SplashViewController()
+        let startViewController = UINavigationController(rootViewController: SplashViewController())
         
         window?.rootViewController = startViewController
         
