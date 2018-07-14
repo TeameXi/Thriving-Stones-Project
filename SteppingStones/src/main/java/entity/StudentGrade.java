@@ -16,6 +16,14 @@ public class StudentGrade {
     private String SA2 = "";
     
     public StudentGrade(){
+        
+    }
+    
+    public StudentGrade(String CA1, String CA2, String SA1, String SA2){
+        this.CA1 = CA1;
+        this.CA2 = CA2;
+        this.SA1 = SA1;
+        this.SA2 = SA2;
     }
     
     public String getCA1(){
@@ -25,11 +33,11 @@ public class StudentGrade {
     public String getCA2(){
         return CA2;
     }
-
+    
     public String getSA1(){
         return SA1;
     }
-
+    
     public String getSA2(){
         return SA2;
     }
@@ -39,15 +47,14 @@ public class StudentGrade {
     }
     
     public void setCA2(String newCA2){
-        this.CA1 = newCA2;
+        this.CA2 = newCA2;
     }
     
     public void setSA1(String newSA1){
         this.SA1 = newSA1;
     }
     
-    public void setSA2Grade(String newSA2){
+    public void setSA2(String newSA2){
         this.SA2 = newSA2;
     }
-    
 }

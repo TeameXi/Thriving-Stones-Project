@@ -6,9 +6,8 @@
 package controller;
 
 import entity.Student;
-import entity.StudentGrade;
 import java.io.IOException;
-import java.util.Map;
+import java.util.ArrayList;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,14 +16,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.FirebaseConnection;
 import model.StudentDAO;
-import model.StudentGradeDAO;
 
 /**
  *
  * @author DEYU
  */
-@WebServlet(name = "CreateNewStudentServlet", urlPatterns = {"/CreateNewStudentServlet"})
-public class CreateNewStudentServlet extends HttpServlet {
+@WebServlet(name = "Retrieve_Update_StudentServlet", urlPatterns = {"/Retrieve_Update_StudentServlet"})
+public class Retrieve_Update_StudentServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -40,41 +38,21 @@ public class CreateNewStudentServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         
         String studentID = request.getParameter("studentID");
-        String studentName = request.getParameter("studentName");
-        int age = Integer.parseInt(request.getParameter("age"));
-        String gender = request.getParameter("gender");
-        String lvl = request.getParameter("lvl");
-        String address = request.getParameter("address");
-        String phone = request.getParameter("phone");
         
-        StudentGrade fGrade = new StudentGrade(request.getParameter("FCA1"), request.getParameter("FCA2"), request.getParameter("FSA1"), request.getParameter("FSA2"));
-        StudentGrade sGrade = new StudentGrade(request.getParameter("SCA1"), request.getParameter("SCA2"), request.getParameter("SSA1"), request.getParameter("SSA2"));
-        StudentGrade tGrade = new StudentGrade(request.getParameter("TCA1"), request.getParameter("TCA2"), request.getParameter("TSA1"), request.getParameter("TSA2"));
+        FirebaseConnection.initFirebase();
+        StudentDAO studentDAO = new StudentDAO();
+        ArrayList<Student> stu = studentDAO.retrieveStudentbyID(studentID);
         
-        FirebaseConnection.initFirebase(); 
-           
-        if(request.getParameter("insert") != null){
-            StudentDAO studentDAO = new StudentDAO();
-            studentDAO.insertStudent(studentID, studentName, age, gender, lvl, address, phone); 
-            StudentGradeDAO stuGradeDAO = new StudentGradeDAO();
-            stuGradeDAO.saveSchoolGrade(studentID, request.getParameter("Sub1"), fGrade, request.getParameter("Sub2"), sGrade, request.getParameter("Sub3"), tGrade);
-            
-            request.setAttribute("status", "New Student Added successfully!");
-            RequestDispatcher view = request.getRequestDispatcher("CreateNewStudent.jsp");
-            view.forward(request, response);
-        }
-        if(request.getParameter("update") != null){
-            StudentDAO studentDAO = new StudentDAO();
-            Student stu = studentDAO.retrieveStudentbyID(studentID).get(0);
-            StudentGradeDAO stuGradeDAO = new StudentGradeDAO();
-            studentDAO.insertStudent(studentID, studentName, age, gender, lvl, address, phone);
-            Map<String, Map<String, StudentGrade>> grades = stu.getGrades();
-            stuGradeDAO.saveGrades(studentID, grades);
-            
-            request.setAttribute("status", "Student Updated successfully!");
+        request.setAttribute("StudentData", stu);
+        request.setAttribute("StudentID", studentID);
+        if(request.getParameter("retrieve") != null){
             RequestDispatcher view = request.getRequestDispatcher("Retrieve_Update_StudentByID.jsp");
             view.forward(request, response);
         }
+        if(request.getParameter("update") != null){
+            RequestDispatcher view = request.getRequestDispatcher("UpdateStudentDetails.jsp");
+            view.forward(request, response);
+        }      
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
