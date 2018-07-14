@@ -48,7 +48,7 @@ public class TutorCreation extends HttpServlet {
         } else {
             request.setAttribute("status", "Failed to add tutor");
         }
-        RequestDispatcher view = request.getRequestDispatcher("TutorCreation.jsp");
+        RequestDispatcher view = request.getRequestDispatcher("CreateTutor  .jsp");
         view.forward(request, response);
     }
 

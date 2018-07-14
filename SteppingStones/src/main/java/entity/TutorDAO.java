@@ -11,9 +11,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.FirebaseConnection;
 
 public class TutorDAO {
+
+    private DataSnapshot dataRequired;
+    private volatile Boolean status = false;
 
     public void addTutor(String tutorID, String name, int age, String phoneNo, String gender, String emailAdd, String password) {
         FirebaseConnection.initFirebase();
@@ -40,15 +45,8 @@ public class TutorDAO {
                 while (iter.hasNext()) {
                     DataSnapshot data = (DataSnapshot) iter.next();
                     if (data.getKey().equals(id)) {
-                        String name = (String) data.child("name").getValue();
-                        int age = (Integer) data.child("age").getValue();
-                        String phoneNo = (String) data.child("phoneNo").getValue();
-                        String gender = (String) data.child("gender").getValue();
-                        String emailAdd = (String) data.child("emailAdd").getValue();
-                        String password = (String) data.child("password").getValue();
-                        Tutor tutor = new Tutor(id, name, age, phoneNo, gender, emailAdd, password);
-                        CallbackData call = new CallbackData();
-                        call.callback(tutor);
+                        dataRequired = data;
+                        status = true;
                     }
                 }
             }
@@ -58,10 +56,21 @@ public class TutorDAO {
                 System.out.println("The read failed: " + databaseError.getCode());
             }
         });
-        if (CallbackData.obj != null) {
-            Tutor tutor = (Tutor) CallbackData.obj;
-            return tutor;
+
+        while (!status) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(TutorDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
-        return null;
+        String name = (String) dataRequired.child("name").getValue();
+        int age = (Integer) dataRequired.child("age").getValue();
+        String phoneNo = (String) dataRequired.child("phoneNo").getValue();
+        String gender = (String) dataRequired.child("gender").getValue();
+        String emailAdd = (String) dataRequired.child("emailAdd").getValue();
+        String password = (String) dataRequired.child("password").getValue();
+        Tutor tutor = new Tutor(id, name, age, phoneNo, gender, emailAdd, password);
+        return tutor;
     }
 }
