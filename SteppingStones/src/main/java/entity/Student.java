@@ -5,6 +5,9 @@
  */
 package entity;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  *
  * @author DEYU
@@ -18,16 +21,36 @@ public class Student {
     private String phone;
     private double reqAmt;
     private double outstandingAmt;
+    private Map<String, Map<String, StudentGrade>> grades = new HashMap<>();
+    
+    public Student(){  
+    }
     
     public Student(String studentName, int age, String gender, String lvl, String address, String phone){
+        this(studentName, age, gender, lvl, address, phone, 0, 0);
+    }
+                   
+    public Student(String studentName, int age, String gender, String lvl, String address, String phone, double reqAmt, double outstandingAmt){
         this.studentName = studentName;
         this.age = age;
         this.gender = gender;
         this.lvl = lvl;
         this.address = address;
         this.phone = phone;
-        this.reqAmt = 0;
-        this.outstandingAmt = 0;
+        this.reqAmt = reqAmt;
+        this.outstandingAmt = outstandingAmt;
+    }
+    
+    public Student(String studentName, int age, String gender, String lvl, String address, String phone, double reqAmt, double outstandingAmt, Map<String, Map<String, StudentGrade>> grades){
+        this.studentName = studentName;
+        this.age = age;
+        this.gender = gender;
+        this.lvl = lvl;
+        this.address = address;
+        this.phone = phone;
+        this.reqAmt = reqAmt;
+        this.outstandingAmt = outstandingAmt;
+        this.grades = grades;
     }
     
     public String getName(){
@@ -62,6 +85,10 @@ public class Student {
         return outstandingAmt;
     }
     
+    public Map<String, Map<String, StudentGrade>> getGrades(){
+        return grades;
+    }
+    
     public void setName(String newStudentName){
         this.studentName = newStudentName;
     }
@@ -86,7 +113,11 @@ public class Student {
         this.reqAmt = newReqAmt;
     }
     
-    public void getOutstandingAmt(double newOutstandingAmt){
+    public void setOutstandingAmt(double newOutstandingAmt){
         this.outstandingAmt = newOutstandingAmt;
+    }
+    
+    public void setGrades(Map<String, Map<String, StudentGrade>> grades){
+        this.grades = grades;
     }
 }
