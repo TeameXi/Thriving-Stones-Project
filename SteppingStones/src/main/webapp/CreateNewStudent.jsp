@@ -45,8 +45,8 @@
                 <option value="Engish">Engish</option>
                 <option value="Maths">Maths</option>
                 <option value="Science">Science</option>
-                <option value="E.Maths">E.Maths</option>
-                <option value="Add.Maths">Add.Maths</option>
+                <option value="E-Maths">E.Maths</option>
+                <option value="Add-Maths">Add.Maths</option>
             </select>
             CA1<input type ="text" name ="FCA1">SA1<input type ="text" name ="FSA1">
             CA2<input type ="text" name ="FCA2">SA2<input type ="text" name ="FSA2"><br>            
@@ -54,8 +54,8 @@
                 <option value="Engish">Engish</option>
                 <option value="Maths">Maths</option>
                 <option value="Science">Science</option>
-                <option value="E.Maths">E.Maths</option>
-                <option value="Add.Maths">Add.Maths</option>
+                <option value="E-Maths">E.Maths</option>
+                <option value="Add-Maths">Add.Maths</option>
             </select>
             CA1<input type ="text" name ="SCA1">SA1<input type ="text" name ="SSA1">
             CA2<input type ="text" name ="SCA2">SA2<input type ="text" name ="SSA2"><br>
@@ -63,8 +63,8 @@
                 <option value="Engish">Engish</option>
                 <option value="Maths">Maths</option>
                 <option value="Science">Science</option>
-                <option value="E.Maths">E.Maths</option>
-                <option value="Add.Maths">Add.Maths</option>
+                <option value="E-Maths">E.Maths</option>
+                <option value="Add-Maths">Add.Maths</option>
             </select>
             CA1<input type ="text" name ="TCA1">SA1<input type ="text" name ="TSA1">
             CA2<input type ="text" name ="TCA2">SA2<input type ="text" name ="TSA2"><br>
