@@ -9,10 +9,10 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Create New Student</title>
+        <title>Student Application Form</title>
     </head>
     <body>
-        <h1>Create New Student</h1>
+        <h1>Student Application Form</h1>
         <form action="CreateNewStudentServlet" method="post">
             StudentID:
             <input type ="text" name ="studentID" required><br>

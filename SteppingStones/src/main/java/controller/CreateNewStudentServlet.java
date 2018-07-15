@@ -6,6 +6,7 @@
 package controller;
 
 import entity.Student;
+import entity.Class;
 import entity.StudentGrade;
 import java.io.IOException;
 import java.util.Map;
@@ -15,6 +16,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.ClassDAO;
 import model.FirebaseConnection;
 import model.StudentDAO;
 import model.StudentGradeDAO;
@@ -58,10 +60,11 @@ public class CreateNewStudentServlet extends HttpServlet {
             studentDAO.insertStudent(studentID, studentName, age, gender, lvl, address, phone); 
             StudentGradeDAO stuGradeDAO = new StudentGradeDAO();
             stuGradeDAO.saveSchoolGrade(studentID, request.getParameter("Sub1"), fGrade, request.getParameter("Sub2"), sGrade, request.getParameter("Sub3"), tGrade);
-            
-            request.setAttribute("status", "New Student Added successfully!");
+            Map<String, Class> classes = ClassDAO.getClassByLevel(lvl);
             request.setAttribute("level", lvl);
             request.setAttribute("studentID", studentID);
+            request.setAttribute("studentName", studentName);
+            request.setAttribute("class", classes);
             RequestDispatcher view = request.getRequestDispatcher("SignUpForClass.jsp");
             view.forward(request, response);
         }
