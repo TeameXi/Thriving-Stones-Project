@@ -60,7 +60,9 @@ public class CreateNewStudentServlet extends HttpServlet {
             stuGradeDAO.saveSchoolGrade(studentID, request.getParameter("Sub1"), fGrade, request.getParameter("Sub2"), sGrade, request.getParameter("Sub3"), tGrade);
             
             request.setAttribute("status", "New Student Added successfully!");
-            RequestDispatcher view = request.getRequestDispatcher("CreateNewStudent.jsp");
+            request.setAttribute("level", lvl);
+            request.setAttribute("studentID", studentID);
+            RequestDispatcher view = request.getRequestDispatcher("SignUpForClass.jsp");
             view.forward(request, response);
         }
         if(request.getParameter("update") != null){
