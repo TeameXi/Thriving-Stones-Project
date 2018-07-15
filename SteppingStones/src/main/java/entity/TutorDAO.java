@@ -10,7 +10,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.FirebaseConnection;
@@ -72,5 +75,44 @@ public class TutorDAO {
         String password = (String) dataRequired.child("password").getValue();
         Tutor tutor = new Tutor(id, name, age, phoneNo, gender, emailAdd, password);
         return tutor;
+    }
+    
+    public static Tutor retrieveTutorByEmail(final String email) {
+        final List<Tutor> tutorList = new ArrayList<>();
+        final CountDownLatch done = new CountDownLatch(1);
+        FirebaseConnection.initFirebase();
+        // Get a reference to our posts
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference().child("tutors");
+System.out.println("-----------retrieve tutor ----------");
+        // Attach a listener to read the data at our posts reference
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                tutorList.clear();
+                System.out.println(dataSnapshot.toString());
+                Iterator iter = dataSnapshot.getChildren().iterator();
+                while (iter.hasNext()) {
+                    DataSnapshot data = (DataSnapshot) iter.next();
+                    Tutor tutor = data.getValue(Tutor.class);
+                    if(tutor != null && tutor.getEmailAdd().equals(email)){
+                        tutorList.add(tutor);
+                        System.out.println(tutorList.toString());
+                    }
+                }
+                done.countDown();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });        
+        try { 
+            done.await();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(TutorDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }     
+        return tutorList.get(0);
     }
 }

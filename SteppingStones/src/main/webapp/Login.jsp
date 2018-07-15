@@ -18,5 +18,9 @@
             <input type="password" name="password">
             <input type="submit" name="btnSubmit" value="Submit">
         </form>
+        <br>
+        <button> 
+            <a href="ResetPassword.jsp" style="text-decoration:none;">Forgot Password</a>
+        </button>
     </body>
 </html>
