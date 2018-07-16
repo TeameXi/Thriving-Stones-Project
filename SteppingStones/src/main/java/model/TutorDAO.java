@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import model.FirebaseConnection;
 
 public class TutorDAO {
 
@@ -95,7 +94,7 @@ public class TutorDAO {
         // Get a reference to our posts
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ref = database.getReference().child("tutors");
-System.out.println("-----------retrieve tutor ----------");
+        System.out.println("-----------retrieve tutor ----------");
         // Attach a listener to read the data at our posts reference
         ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -169,5 +168,29 @@ System.out.println("-----------retrieve tutor ----------");
             tutors.add(tutor);
         }
         return tutors;
+    }
+    
+    public void removeTutor(String tutorID){
+        status = false;
+        FirebaseConnection.initFirebase();
+        // Get a reference to our posts
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference().child("tutors");
+        
+        ref.child(tutorID).removeValue(new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError de, DatabaseReference dr) {
+                System.out.println("SUCCESSS");
+                status = true;
+            }
+        });
+        
+        while(!status){
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(TutorDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 }
