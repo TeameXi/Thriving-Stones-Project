@@ -32,9 +32,9 @@ public class TutorCreation extends HttpServlet {
 
         String tutorID = request.getParameter("tutorID");
         String tutorName = request.getParameter("tutorName");
-        int age = Integer.parseInt(request.getParameter("age"));
+        Long age = Long.parseLong(request.getParameter("age"));
         String gender = request.getParameter("gender");
-        String phoneNo = request.getParameter("phone");
+        Long phoneNo = Long.parseLong(request.getParameter("phone"));
         String emailAdd = request.getParameter("emailAdd");
         String password = request.getParameter("password");
         String password_rep = request.getParameter("password-rep");
