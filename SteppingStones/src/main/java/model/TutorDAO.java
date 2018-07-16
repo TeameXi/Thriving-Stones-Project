@@ -18,6 +18,7 @@ import entity.Tutor;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -191,6 +192,27 @@ public class TutorDAO {
             } catch (InterruptedException ex) {
                 Logger.getLogger(TutorDAO.class.getName()).log(Level.SEVERE, null, ex);
             }
+        }
+    }
+    
+    public void updateTutor(String tutorID, Map<String, Object> updates){
+        FirebaseConnection.initFirebase();
+        // Get a reference to our posts
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference().child("tutors").child(tutorID);
+        
+        Iterator iter = updates.keySet().iterator();
+        
+        while(iter.hasNext()){
+            String toUpdate = (String) iter.next();
+            System.out.println(toUpdate);
+            String valueToUpdate = (String) updates.get(toUpdate);
+            ref.child(toUpdate).setValue(valueToUpdate, new DatabaseReference.CompletionListener() {
+                @Override
+                public void onComplete(DatabaseError de, DatabaseReference dr) {
+                    System.out.println("success");
+                }
+            });
         }
     }
 }
