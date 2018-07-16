@@ -20,7 +20,7 @@ import java.util.List;
 public class FirebaseConnection {
     public static void initFirebase() {
         try {
-            FileInputStream serviceAccount = new FileInputStream("C:\\Users\\Zang Yu\\Desktop\\New folder\\Thriving-Stones-Project\\SteppingStones\\src\\team-exi-thriving-stones-firebase-adminsdk-luopb-284f7a1c5a.json");
+            FileInputStream serviceAccount = new FileInputStream("/Users/huixintang/Desktop/team-exi-thriving-stones-firebase-adminsdk-luopb-284f7a1c5a.json");
             FirebaseOptions options = new FirebaseOptions.Builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                     .setDatabaseUrl("https://team-exi-thriving-stones.firebaseio.com")

@@ -3,13 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package entity;
+package model;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.UserRecord;
+import com.google.firebase.auth.UserRecord.CreateRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import entity.Tutor;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -31,6 +36,13 @@ public class TutorDAO {
         Tutor tutor = new Tutor(tutorID, name, age, phoneNo, gender, emailAdd, password);
         DatabaseReference objRef = ref.push();
         objRef.setValueAsync(tutor);
+        
+        CreateRequest request = new CreateRequest().setEmail(emailAdd).setPassword(password);
+        try {
+            UserRecord userRecord = FirebaseAuth.getInstance().createUser(request);
+        } catch (FirebaseAuthException ex) {
+            Logger.getLogger(TutorDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public Tutor retrieveSpecificTutor(final String id) {
