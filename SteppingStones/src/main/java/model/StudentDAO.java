@@ -21,9 +21,9 @@ import java.util.concurrent.CountDownLatch;
 public class StudentDAO {
     //private volatile Boolean status = false;
     
-    public void insertStudent(String studentID, String studentName, int age, String gender, String lvl, String address, String phone){
+    public static void insertStudent(String studentID, String studentName, int age, String gender, String lvl, String address, String phone, double reqAmt, double outstandingAmt){
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("students").child(studentID); 
-        Student stu = new Student(studentName, age, gender, lvl, address, phone); 
+        Student stu = new Student(studentName, age, gender, lvl, address, phone, reqAmt, outstandingAmt); 
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         
         ref.setValue(stu, new DatabaseReference.CompletionListener() {
@@ -41,7 +41,7 @@ public class StudentDAO {
         }      
     }
     
-    public ArrayList<Student> retrieveStudentbyID(String studentID){
+    public static ArrayList<Student> retrieveStudentbyID(String studentID){
         final ArrayList<Student> student = new ArrayList<>();
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("students").child(studentID);
         final CountDownLatch countDownLatch = new CountDownLatch(1);
@@ -68,7 +68,7 @@ public class StudentDAO {
         return student;
     }
     
-    public ArrayList<String> deleteStudentbyID(String studentID){
+    public static ArrayList<String> deleteStudentbyID(String studentID){
         final String ID = studentID;
         final ArrayList<String> statuss = new ArrayList<>();
         final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("students");

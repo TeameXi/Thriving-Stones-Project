@@ -6,8 +6,10 @@
 package controller;
 
 import entity.Student;
+import entity.StudentGrade;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -18,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import model.FirebaseConnection;
 import model.StudentClassDAO;
 import model.StudentDAO;
+import model.StudentGradeDAO;
 
 /**
  *
@@ -42,12 +45,13 @@ public class SignUpForClassServlet extends HttpServlet {
         String studentID = request.getParameter("studentID");
         String studentName = request.getParameter("studentName");
         String[] classValues =request.getParameterValues("classValue");
-        System.out.println(studentID);
         FirebaseConnection.initFirebase();
-        /*
-        StudentDAO studentDAO = new StudentDAO();
-        ArrayList<Student> stu = studentDAO.retrieveStudentbyID(studentID);
+        
+        ArrayList<Student> stu = StudentDAO.retrieveStudentbyID(studentID);
         Student s = null;
+        double reqAmt = 0;
+        double outstandingAmt = 0;
+        Map<String, Map<String, StudentGrade>> grades = new HashMap<>();
         if(stu != null){
             for(int i = 0; i< stu.size(); i++){
                 s = stu.get(i);
@@ -55,25 +59,31 @@ public class SignUpForClassServlet extends HttpServlet {
         }
         
         if(s != null){
-            double reqAmt = s.getReqAmt();
-            double outstandingAmt = s.getOutstandingAmt();
-            System.out.println(reqAmt);
-            s.setReqAmt(100);
-            s.setOutstandingAmt(200);
-            System.out.println(s.getName());
-            s.setName("GG");
+            reqAmt = s.getReqAmt();
+            outstandingAmt = s.getOutstandingAmt();
+            grades = s.getGrades();
         }
-        System.out.println(s);*/
+
         if(classValues != null){
             for(String classValue:classValues){
                 String[] parts = classValue.split("&");
                 String classKey = parts[0];
                 double mthlyFees = Double.parseDouble(parts[5]);
-                
+                reqAmt = reqAmt + (mthlyFees*3);
+                outstandingAmt = outstandingAmt + (mthlyFees*3);
+                if(s != null){
+                    s.setReqAmt(reqAmt);
+                    s.setOutstandingAmt(outstandingAmt);
+                }
                 Map<String, String> studentList = StudentClassDAO.getStudentsInSpecificClass(classKey);
                 studentList.put(studentID, studentName);
                 StudentClassDAO.saveClassWithStudents(classKey, studentList);
             }
+        }
+        
+        if(s != null){
+            StudentDAO.insertStudent(studentID, s.getName(), s.getAge(), s.getGender(), s.getLevel(), s.getAddress(), s.getPhone(), reqAmt, outstandingAmt);
+            StudentGradeDAO.saveGrades(studentID, grades);
         }
         
         request.setAttribute("status", "Sign Up successfully!");
