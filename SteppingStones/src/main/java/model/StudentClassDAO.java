@@ -68,6 +68,37 @@ public class StudentClassDAO {
         }
     }
     
+    public static ArrayList<String> retrieveStudentClassesID(String studentID){
+        final String ID = studentID;
+        final ArrayList<String> classesID = new ArrayList<>();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("StudentClass");
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        
+        ref.addValueEventListener(new ValueEventListener(){
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Iterable<DataSnapshot> classesDS = dataSnapshot.getChildren();
+                for(DataSnapshot classDS: classesDS){
+                    if(classDS.hasChild(ID)){
+                        classesID.add(classDS.getKey());
+                    }
+                }
+                countDownLatch.countDown();
+            }
+            @Override
+            public void onCancelled(DatabaseError de) {
+                System.out.println("The read failed: " + de.getCode());
+            }            
+        });
+        try {
+            //wait for firebase to retrieve record.
+            countDownLatch.await();
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+        return classesID;
+    }
+    
     public static void deleteStudentClassbyID(String studentID){
         final String ID = studentID;
         final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("StudentClass");

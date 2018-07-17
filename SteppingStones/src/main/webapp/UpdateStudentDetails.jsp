@@ -30,11 +30,6 @@
                 request.setAttribute("Phone", s.getPhone());
                 request.setAttribute("reqAmt", s.getReqAmt());
                 request.setAttribute("outstandingAmt", s.getOutstandingAmt());
-            }else{
-                out.println("Student ID not exists in Database!");
-            }
-        }
-        
     %>
     <body>
         <h1>Update Student Details</h1>       
@@ -74,4 +69,11 @@
             <button type="submit" value = "update" name = "update">Update</button> 
         </form>        
     </body>
+    <%
+            }else{
+                out.println("Student ID not exists in Database!");
+            }
+        }
+        
+    %>  
 </html>

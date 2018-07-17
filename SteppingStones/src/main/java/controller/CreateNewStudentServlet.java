@@ -67,8 +67,10 @@ public class CreateNewStudentServlet extends HttpServlet {
             view.forward(request, response);
         }
         if(request.getParameter("update") != null){
+            double reqAmt = Double.parseDouble(request.getParameter("reqAmt"));
+            double outstandingAmt = Double.parseDouble(request.getParameter("outstandingAmt"));
             Student stu = StudentDAO.retrieveStudentbyID(studentID).get(0);
-            StudentDAO.insertStudent(studentID, studentName, age, gender, lvl, address, phone, 0, 0);
+            StudentDAO.insertStudent(studentID, studentName, age, gender, lvl, address, phone, reqAmt, outstandingAmt);
             Map<String, Map<String, StudentGrade>> grades = stu.getGrades();
             StudentGradeDAO.saveGrades(studentID, grades);
             
