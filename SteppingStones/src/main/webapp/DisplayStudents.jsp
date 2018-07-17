@@ -287,7 +287,7 @@
                     </span>
 
                     <span class="survey-completes">
-                        <a href="#"><i class="zmdi zmdi-delete"></i></a>
+                        <a href="#small" onclick="deleteStudent('<%=stu.getStudentID()%>')" data-toggle="modal"><i class="zmdi zmdi-delete"></i></a>
                     </span>
                 </span>
             </span>
@@ -306,9 +306,25 @@
 </div>
 </div>
 </div>
-
+<div class="modal fade bs-modal-sm" id="small" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                        <span class="pc_title centered">Alert</span>
+                    </div>
+                    <div class="modal-body smaller-fonts centered">Are you sure you want to delete this item?</div>
+                    <div class="modal-footer centered">
+                        <a id="confirm_btn"><button type="button" class="small_button pw_button del_button autowidth">Yes, Remove</button></a>
+                        <button type="button" class="small_button del_button pw_button autowidth" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
 <%@include file="footer.jsp"%>
-<script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+    
 <script>
     (function () {
         $(function () {
@@ -316,9 +332,32 @@
                 var toggle;
                 toggle = $(this).addClass('active').attr('data-toggle');
                 $(this).siblings('[data-toggle]').removeClass('active');
-                return $('.surveys').removeClass('grid list').addClass(toggle);
+                if(toggle !== "modal"){
+                    return $('.surveys').removeClass('grid list').addClass(toggle);
+                }
             });
         });
 
     }).call(this);
+    
+    function deleteStudent(student_id){
+        $("#confirm_btn").prop('onclick',null).off('click');
+        $("#confirm_btn").click(function(){ deleteStudentQueryAjax(student_id); }); 
+    }
+    
+    
+    function deleteStudentQueryAjax(student_id){
+        $('#small').modal('hide');
+        console.log(student_id);
+        $.ajax({
+            type: 'POST',
+            url: 'DeleteStudentServlet',
+            studentID: student_id,
+            success: function (data) {
+            var result=data;
+            $('#result').attr("value",result);
+
+            }
+        });
+    }
 </script>
