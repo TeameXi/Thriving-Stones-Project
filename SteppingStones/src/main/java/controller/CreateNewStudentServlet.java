@@ -56,10 +56,8 @@ public class CreateNewStudentServlet extends HttpServlet {
         FirebaseConnection.initFirebase(); 
            
         if(request.getParameter("insert") != null){
-            StudentDAO studentDAO = new StudentDAO();
-            studentDAO.insertStudent(studentID, studentName, age, gender, lvl, address, phone); 
-            StudentGradeDAO stuGradeDAO = new StudentGradeDAO();
-            stuGradeDAO.saveSchoolGrade(studentID, request.getParameter("Sub1"), fGrade, request.getParameter("Sub2"), sGrade, request.getParameter("Sub3"), tGrade);
+            StudentDAO.insertStudent(studentID, studentName, age, gender, lvl, address, phone, 0, 0); 
+            StudentGradeDAO.saveSchoolGrade(studentID, request.getParameter("Sub1"), fGrade, request.getParameter("Sub2"), sGrade, request.getParameter("Sub3"), tGrade);
             Map<String, Class> classes = ClassDAO.getClassByLevel(lvl);
             request.setAttribute("level", lvl);
             request.setAttribute("studentID", studentID);
@@ -69,12 +67,10 @@ public class CreateNewStudentServlet extends HttpServlet {
             view.forward(request, response);
         }
         if(request.getParameter("update") != null){
-            StudentDAO studentDAO = new StudentDAO();
-            Student stu = studentDAO.retrieveStudentbyID(studentID).get(0);
-            StudentGradeDAO stuGradeDAO = new StudentGradeDAO();
-            studentDAO.insertStudent(studentID, studentName, age, gender, lvl, address, phone);
+            Student stu = StudentDAO.retrieveStudentbyID(studentID).get(0);
+            StudentDAO.insertStudent(studentID, studentName, age, gender, lvl, address, phone, 0, 0);
             Map<String, Map<String, StudentGrade>> grades = stu.getGrades();
-            stuGradeDAO.saveGrades(studentID, grades);
+            StudentGradeDAO.saveGrades(studentID, grades);
             
             request.setAttribute("status", "Student Updated successfully!");
             RequestDispatcher view = request.getRequestDispatcher("Retrieve_Update_StudentByID.jsp");
