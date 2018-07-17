@@ -3,27 +3,32 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package entity;
+package model;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.UserRecord;
+import com.google.firebase.auth.UserRecord.CreateRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import entity.Tutor;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import model.FirebaseConnection;
 
 public class TutorDAO {
 
     private DataSnapshot dataRequired;
     private volatile Boolean status = false;
 
-    public void addTutor(String tutorID, String name, int age, String phoneNo, String gender, String emailAdd, String password) {
+    public void addTutor(String tutorID, String name, Long age, Long phoneNo, String gender, String emailAdd, String password) {
         FirebaseConnection.initFirebase();
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ref = database.getReference().child("tutors");
@@ -31,6 +36,13 @@ public class TutorDAO {
         Tutor tutor = new Tutor(tutorID, name, age, phoneNo, gender, emailAdd, password);
         DatabaseReference objRef = ref.push();
         objRef.setValueAsync(tutor);
+        
+        CreateRequest request = new CreateRequest().setEmail(emailAdd).setPassword(password);
+        try {
+            UserRecord userRecord = FirebaseAuth.getInstance().createUser(request);
+        } catch (FirebaseAuthException ex) {
+            Logger.getLogger(TutorDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public Tutor retrieveSpecificTutor(final String id) {
@@ -43,7 +55,6 @@ public class TutorDAO {
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                System.out.println(dataSnapshot.toString());
                 Iterator iter = dataSnapshot.getChildren().iterator();
                 while (iter.hasNext()) {
                     DataSnapshot data = (DataSnapshot) iter.next();
@@ -68,8 +79,8 @@ public class TutorDAO {
             }
         }
         String name = (String) dataRequired.child("name").getValue();
-        int age = (Integer) dataRequired.child("age").getValue();
-        String phoneNo = (String) dataRequired.child("phoneNo").getValue();
+        Long age = (Long) dataRequired.child("age").getValue();
+        Long phoneNo = (Long) dataRequired.child("phoneNo").getValue();
         String gender = (String) dataRequired.child("gender").getValue();
         String emailAdd = (String) dataRequired.child("emailAdd").getValue();
         String password = (String) dataRequired.child("password").getValue();
@@ -84,7 +95,7 @@ public class TutorDAO {
         // Get a reference to our posts
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ref = database.getReference().child("tutors");
-System.out.println("-----------retrieve tutor ----------");
+        System.out.println("-----------retrieve tutor ----------");
         // Attach a listener to read the data at our posts reference
         ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -114,5 +125,94 @@ System.out.println("-----------retrieve tutor ----------");
             Logger.getLogger(TutorDAO.class.getName()).log(Level.SEVERE, null, ex);
         }     
         return tutorList.get(0);
+    }
+    
+    public ArrayList<Tutor> retrieveAllTutors() {
+        FirebaseConnection.initFirebase();
+        // Get a reference to our posts
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference().child("tutors");
+
+        // Attach a listener to read the data at our posts reference
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                dataRequired = dataSnapshot;
+                status = true;
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+
+        while (!status) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(TutorDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        ArrayList<Tutor> tutors = new ArrayList<>();
+        
+        Iterator iter = dataRequired.getChildren().iterator();
+        while(iter.hasNext()){
+            DataSnapshot data = (DataSnapshot) iter.next();
+            String name = (String) data.child("name").getValue();
+            Long age = (Long) data.child("age").getValue();
+            Long phone = (Long) data.child("phone").getValue();
+            String gender = (String) data.child("gender").getValue();
+            String email = (String) data.child("email").getValue();
+            String password = (String) data.child("password").getValue();
+            Tutor tutor = new Tutor((String)data.getKey(), name, age, phone, gender, email, password);
+            tutors.add(tutor);
+        }
+        return tutors;
+    }
+    
+    public void removeTutor(String tutorID){
+        status = false;
+        FirebaseConnection.initFirebase();
+        // Get a reference to our posts
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference().child("tutors");
+        
+        ref.child(tutorID).removeValue(new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError de, DatabaseReference dr) {
+                System.out.println("SUCCESSS");
+                status = true;
+            }
+        });
+        
+        while(!status){
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(TutorDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+    
+    public void updateTutor(String tutorID, Map<String, Object> updates){
+        FirebaseConnection.initFirebase();
+        // Get a reference to our posts
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference().child("tutors").child(tutorID);
+        
+        Iterator iter = updates.keySet().iterator();
+        
+        while(iter.hasNext()){
+            String toUpdate = (String) iter.next();
+            System.out.println(toUpdate);
+            String valueToUpdate = (String) updates.get(toUpdate);
+            ref.child(toUpdate).setValue(valueToUpdate, new DatabaseReference.CompletionListener() {
+                @Override
+                public void onComplete(DatabaseError de, DatabaseReference dr) {
+                    System.out.println("success");
+                }
+            });
+        }
     }
 }

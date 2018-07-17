@@ -5,27 +5,24 @@
  */
 package controller;
 
-import model.UsersDAO;
-import entity.Users;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.TutorDAO;
 
 /**
  *
- * @author Riana
+ * @author Hui Xin
  */
-@WebServlet(name = "LoginServlet", urlPatterns = {"/LoginServlet"})
-public class LoginServlet extends HttpServlet {
+@WebServlet(name = "UpdateTutorServlet", urlPatterns = {"/UpdateTutorServlet"})
+public class UpdateTutorServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -39,54 +36,57 @@ public class LoginServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        System.out.print("Im here");
-        Map<String, Object> authObj = new LinkedHashMap<>();
-            ArrayList<String> errorList = new ArrayList<>();
-            String status = "";
-
-            String username = request.getParameter("username");
-            String password = request.getParameter("password");
-            if (username == null) {
-                status = "error";
-                errorList.add("missing username");
-            }
-            if (password == null) {
-                status = "error";
-                errorList.add("missing password");
-            }
-
-            if (username != null && username.isEmpty()) {
-                status = "error";
-                errorList.add("blank username");
-            }
-
-            if (password != null && password.isEmpty()) {
-                status = "error";
-                errorList.add("blank password");
-            }
-
-            if (!(status.equals("error"))) {
-                
-                List<Users> user =  UsersDAO.getUser(username);
-                
-                if (!user.isEmpty() && user.get(0).authenticateUser(user.get(0), password)) {
-                    request.getSession(true).setAttribute("user", user);
-                    request.getRequestDispatcher("HomePage.jsp").forward(request,response);
-                } else {
-
-                    authObj.put("status", "error");
-                    String[] msgArray = {"invalid username/password"};
-                    authObj.put("messages", msgArray);
-                    request.getSession(true).setAttribute("response", authObj);
-                    request.getRequestDispatcher("Login.jsp").forward(request,response);
+        try (PrintWriter out = response.getWriter()) {
+            Map<String, Object> updates = new HashMap<>();
+                    
+            String tutorID = request.getParameter("tutorID");
+            String name = request.getParameter("name");
+            String age = (String) request.getParameter("age");
+            String phone = (String) request.getParameter("phone");
+            String gender = request.getParameter("gender");
+            String email = request.getParameter("email");
+            
+            if(tutorID != null && !tutorID.equals("")){
+                if(name != null && !name.equals("")){
+                    updates.put("name", name);
                 }
-            } else {
-                authObj.put("status", "error");
-                Collections.sort(errorList);
-                authObj.put("messages", errorList);
-                request.getSession(true).setAttribute("response", authObj);
-                request.getRequestDispatcher("Login.jsp").forward(request,response);
+                
+                if(age != null && !age.equals("")){
+                    updates.put("age", age);
+                }
+                
+                if(phone != null && !phone.equals("")){
+                    if(phone.length() == 8){
+                        updates.put("phone", phone);
+                    }
+                }
+                
+                if(gender != null && !gender.equals("")){
+                    String genderUpdate = gender.toUpperCase();
+                    if(genderUpdate.equals("F") || genderUpdate.equals("M")){
+                        updates.put("gender", gender);
+                    }
+                }
+                
+                if(email != null && !email.equals("")){
+                    if(email.contains("@")){
+                        updates.put("email", email);
+                    }
+                }
+                
+                if(!updates.isEmpty()){
+                    TutorDAO tutors = new TutorDAO();
+                    tutors.updateTutor(tutorID, updates);
+                    request.setAttribute("status", "Update");
+                    RequestDispatcher view = request.getRequestDispatcher("UpdateTutor.jsp");
+                    view.forward(request, response);
+                }
             }
+            
+            request.setAttribute("status", "Fail");
+            RequestDispatcher view = request.getRequestDispatcher("UpdateTutor.jsp");
+            view.forward(request, response);
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

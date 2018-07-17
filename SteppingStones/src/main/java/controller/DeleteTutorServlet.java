@@ -9,13 +9,18 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.FirebaseConnection;
 import model.TutorDAO;
 
-public class TutorCreation extends HttpServlet {
+/**
+ *
+ * @author Hui Xin
+ */
+@WebServlet(name = "DeleteTutorServlet", urlPatterns = {"/DeleteTutorServlet"})
+public class DeleteTutorServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -29,27 +34,22 @@ public class TutorCreation extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-
-        String tutorID = request.getParameter("tutorID");
-        String tutorName = request.getParameter("tutorName");
-        Long age = Long.parseLong(request.getParameter("age"));
-        String gender = request.getParameter("gender");
-        Long phoneNo = Long.parseLong(request.getParameter("phone"));
-        String emailAdd = request.getParameter("emailAdd");
-        String password = request.getParameter("password");
-        String password_rep = request.getParameter("password-rep");
-
-        FirebaseConnection.initFirebase();
-
-        if (password.equals(password_rep)) {
-            TutorDAO tDAO = new TutorDAO();
-            tDAO.addTutor(tutorID, tutorName, age, phoneNo, gender, emailAdd, password);
-            request.setAttribute("status", "Add tutor successfully");
-        } else {
-            request.setAttribute("status", "Failed to add tutor");
+        try (PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+            String tutorID = request.getParameter("tutorID");
+            
+            if (!tutorID.isEmpty()){
+                TutorDAO tutors = new TutorDAO();
+                tutors.removeTutor(tutorID);
+                request.setAttribute("status", "Deleted");
+                RequestDispatcher view = request.getRequestDispatcher("DeleteTutor.jsp");
+                view.forward(request, response);
+            }
+            
+            request.setAttribute("status", "Fail");
+            RequestDispatcher view = request.getRequestDispatcher("DeleteTutor.jsp");
+            view.forward(request, response);
         }
-        RequestDispatcher view = request.getRequestDispatcher("CreateTutor  .jsp");
-        view.forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
