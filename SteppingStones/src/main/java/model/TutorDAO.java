@@ -28,16 +28,20 @@ public class TutorDAO {
     private DataSnapshot dataRequired;
     private volatile Boolean status = false;
 
-    public void addTutor(String tutorID, String name, Long age, Long phoneNo, String gender, String emailAdd, String password) {
+    public void addTutor(String tutorID, String name, int age, String phone, String gender, String email, String password) {
         FirebaseConnection.initFirebase();
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ref = database.getReference().child("tutors");
+        DatabaseReference ref = database.getReference().child("tutors").child(tutorID);
 
-        Tutor tutor = new Tutor(tutorID, name, age, phoneNo, gender, emailAdd, password);
-        DatabaseReference objRef = ref.push();
-        objRef.setValueAsync(tutor);
+        Tutor tutor = new Tutor(tutorID, name, age, phone, gender, email, password);
+        ref.setValue(tutor, new DatabaseReference.CompletionListener(){
+            @Override
+                public void onComplete(DatabaseError de, DatabaseReference dr) {
+                    System.out.println("success");
+                }
+        });
         
-        CreateRequest request = new CreateRequest().setEmail(emailAdd).setPassword(password);
+        CreateRequest request = new CreateRequest().setEmail(email).setPassword(password);
         try {
             UserRecord userRecord = FirebaseAuth.getInstance().createUser(request);
         } catch (FirebaseAuthException ex) {
@@ -79,8 +83,8 @@ public class TutorDAO {
             }
         }
         String name = (String) dataRequired.child("name").getValue();
-        Long age = (Long) dataRequired.child("age").getValue();
-        Long phoneNo = (Long) dataRequired.child("phoneNo").getValue();
+        int age = (Integer) dataRequired.child("age").getValue();
+        String phoneNo = (String) dataRequired.child("phoneNo").getValue();
         String gender = (String) dataRequired.child("gender").getValue();
         String emailAdd = (String) dataRequired.child("emailAdd").getValue();
         String password = (String) dataRequired.child("password").getValue();
@@ -160,8 +164,8 @@ public class TutorDAO {
         while(iter.hasNext()){
             DataSnapshot data = (DataSnapshot) iter.next();
             String name = (String) data.child("name").getValue();
-            Long age = (Long) data.child("age").getValue();
-            Long phone = (Long) data.child("phone").getValue();
+            int age = (Integer) data.child("age").getValue();
+            String phone = (String) data.child("phone").getValue();
             String gender = (String) data.child("gender").getValue();
             String email = (String) data.child("email").getValue();
             String password = (String) data.child("password").getValue();

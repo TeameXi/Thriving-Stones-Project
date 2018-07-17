@@ -9,19 +9,19 @@ public class Tutor {
 
     private String tutorID;
     private String name;
-    private Long age;
-    private Long phoneNo;
+    private int age;
+    private String phone;
     private String gender;
-    private String emailAdd;
+    private String email;
     private String password;
 
-    public Tutor(String tutorID, String name, Long age, Long phoneNo, String gender, String emailAdd, String password) {
+    public Tutor(String tutorID, String name, int age, String phoneNo, String gender, String emailAdd, String password) {
         this.tutorID = tutorID;
         this.name = name;
         this.age = age;
-        this.phoneNo = phoneNo;
+        this.phone = phone;
         this.gender = gender;
-        this.emailAdd = emailAdd;
+        this.email = emailAdd;
         this.password = password;
     }
 
@@ -33,16 +33,16 @@ public class Tutor {
         return this.name;
     }
     
-    public Long getAge(){
+    public int getAge(){
         return this.age;
     }
 
-    public Long getPhoneNo() {
-        return this.phoneNo;
+    public String getPhoneNo() {
+        return this.phone;
     }
 
-    public void setPhoneNo(Long newNumber) {
-        this.phoneNo = newNumber;
+    public void setPhoneNo(String newNumber) {
+        this.phone = newNumber;
     }
 
     public String getGender() {
@@ -50,11 +50,11 @@ public class Tutor {
     }
 
     public String getEmailAdd() {
-        return this.emailAdd;
+        return this.email;
     }
 
     public void setEmailAdd(String newEmail) {
-        this.emailAdd = newEmail;
+        this.email = newEmail;
     }
 
     public String getPassword() {

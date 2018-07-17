@@ -77,7 +77,7 @@ public class UpdateTutorServlet extends HttpServlet {
                 if(!updates.isEmpty()){
                     TutorDAO tutors = new TutorDAO();
                     tutors.updateTutor(tutorID, updates);
-                    request.setAttribute("status", "Update");
+                    request.setAttribute("status", "Updated");
                     RequestDispatcher view = request.getRequestDispatcher("UpdateTutor.jsp");
                     view.forward(request, response);
                 }

@@ -17,10 +17,12 @@
             Enter email: <input type="text" name="email">
             <input type="submit" value="Update">
         </form>
-        
+
         <%
             String status = (String) request.getAttribute("status");
-            out.println(status);
+            if (status != null) {
+                out.println(status);
+            }
         %>
     </body>
 </html>

@@ -9,13 +9,15 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.FirebaseConnection;
 import model.TutorDAO;
 
-public class TutorCreation extends HttpServlet {
+@WebServlet(name = "CreateTutorServlet", urlPatterns = {"/CreateTutorServlet"})
+public class CreateTutorServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -31,11 +33,11 @@ public class TutorCreation extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
 
         String tutorID = request.getParameter("tutorID");
-        String tutorName = request.getParameter("tutorName");
-        Long age = Long.parseLong(request.getParameter("age"));
+        String name = request.getParameter("name");
+        int age = Integer.parseInt(request.getParameter("age"));
         String gender = request.getParameter("gender");
-        Long phoneNo = Long.parseLong(request.getParameter("phone"));
-        String emailAdd = request.getParameter("emailAdd");
+        String phone = request.getParameter("phone");
+        String email = request.getParameter("email");
         String password = request.getParameter("password");
         String password_rep = request.getParameter("password-rep");
 
@@ -43,12 +45,12 @@ public class TutorCreation extends HttpServlet {
 
         if (password.equals(password_rep)) {
             TutorDAO tDAO = new TutorDAO();
-            tDAO.addTutor(tutorID, tutorName, age, phoneNo, gender, emailAdd, password);
-            request.setAttribute("status", "Add tutor successfully");
+            tDAO.addTutor(tutorID, name, age, phone, gender, email, password);
+            request.setAttribute("status", "Added tutor successfully");
         } else {
             request.setAttribute("status", "Failed to add tutor");
         }
-        RequestDispatcher view = request.getRequestDispatcher("CreateTutor  .jsp");
+        RequestDispatcher view = request.getRequestDispatcher("CreateTutor.jsp");
         view.forward(request, response);
     }
 
