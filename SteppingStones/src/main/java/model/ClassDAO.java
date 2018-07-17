@@ -11,6 +11,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -65,6 +66,34 @@ public class ClassDAO {
                 System.out.println("The read failed: " + de.getCode());
             }            
         });        
+        try {
+            //wait for firebase to save record.
+            countDownLatch.await();
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+        return classes;
+    }
+    
+    public static ArrayList<Class> getClassesByClassesID(ArrayList<String> classesID){
+        final CountDownLatch countDownLatch = new CountDownLatch(classesID.size());
+        final ArrayList<Class> classes = new ArrayList<>();
+        
+        for(String classID: classesID){
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("classes").child(classID);
+            ref.addValueEventListener(new ValueEventListener(){
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Class cls = dataSnapshot.getValue(Class.class);
+                    classes.add(cls);
+                    countDownLatch.countDown(); 
+                }
+                @Override
+                public void onCancelled(DatabaseError de) {
+                    System.out.println("The read failed: " + de.getCode());
+                }              
+            });
+        }      
         try {
             //wait for firebase to save record.
             countDownLatch.await();

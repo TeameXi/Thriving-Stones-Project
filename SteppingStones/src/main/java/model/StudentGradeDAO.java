@@ -19,7 +19,7 @@ import java.util.concurrent.CountDownLatch;
  */
 public class StudentGradeDAO {
     
-    public void saveSchoolGrade(String studentID, String sub1, StudentGrade stuGrade1, String sub2, StudentGrade stuGrade2, String sub3, StudentGrade stuGrade3){
+    public static void saveSchoolGrade(String studentID, String sub1, StudentGrade stuGrade1, String sub2, StudentGrade stuGrade2, String sub3, StudentGrade stuGrade3){
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("students").child(studentID).child("grades").child("School");
         Map<String, StudentGrade> grade = new HashMap<>();
         grade.put(sub1, stuGrade1);
@@ -42,7 +42,7 @@ public class StudentGradeDAO {
         }
     }
     
-    public void saveGrades(String studentID, Map<String, Map<String, StudentGrade>> grades){
+    public static void saveGrades(String studentID, Map<String, Map<String, StudentGrade>> grades){
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("students").child(studentID).child("grades");
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         

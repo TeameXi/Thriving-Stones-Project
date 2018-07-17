@@ -8,6 +8,7 @@
 <%@page import="java.util.Set"%>
 <%@page import="java.util.Map"%>
 <%@page import="entity.StudentGrade"%>
+<%@page import="entity.Class"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="entity.Student"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -28,6 +29,8 @@
         <%
             ArrayList<Student> stu = (ArrayList<Student>)request.getAttribute("StudentData");
             String studentID = (String)request.getAttribute("StudentID");
+            ArrayList<Class> classes = (ArrayList<Class>)request.getAttribute("StudentClasses");
+       
             if(stu != null){
                 Student s = null;
                 for(int i = 0; i< stu.size(); i++){
@@ -35,11 +38,18 @@
                 }
                 if(s != null){                   
                     out.println("<table>");
-                    out.println("<tr><td>StudentID</td><td>" + studentID  + "</td><tr><td>StudentName</td><td>" + s.getName() + "</td>");
-                    out.println("<tr><td>Gender</td><td>" + s.getGender() + "</td><tr><td>Age</td><td>" + s.getAge() + "</td>");
-                    out.println("<tr><td>Level</td><td>" + s.getLevel() + "</td>");
-                    out.println("<tr><td>Address</td><td>" + s.getAddress()  + "</td><tr><td>Phone</td><td>" + s.getPhone() + "</td>");
-                    out.println("<tr><td>Required Amount</td><td>" + s.getReqAmt() + "</td><tr><td>Outstanding Amount</td><td>" + s.getOutstandingAmt() + "</td>");
+                    out.println("<tr><td>StudentID</td><td>" + studentID  + "</td><tr><td>StudentName</td><td>" + s.getName() + "</td></tr>");
+                    out.println("<tr><td>Gender</td><td>" + s.getGender() + "</td><tr><td>Age</td><td>" + s.getAge() + "</td></tr>");
+                    out.println("<tr><td>Level</td><td>" + s.getLevel() + "</td></tr>");
+                    out.println("<tr><td>Address</td><td>" + s.getAddress()  + "</td><tr><td>Phone</td><td>" + s.getPhone() + "</td></tr>");
+                    out.println("<tr><td>Required Amount</td><td>" + s.getReqAmt() + "</td></tr><tr><td>Outstanding Amount</td><td>" + s.getOutstandingAmt() + "</td></tr>");
+                    out.println("<tr><td>Registered Classes</td>");
+                    for(Class cls: classes){
+                        out.println("<td>" + cls.getSubject()+ " " + cls.getClassDay() + " " + cls.getClassTime() + 
+                            " StartDate: " + cls.getStartDate() + "</td>");
+                    }
+                    out.println("</tr>");
+                    out.println("</table><table>");                  
                     Map<String, Map<String, StudentGrade>> grades = s.getGrades();
                     Set set = grades.entrySet();
                     Iterator iterator = set.iterator();

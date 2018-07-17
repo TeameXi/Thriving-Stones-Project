@@ -6,6 +6,7 @@
 package controller;
 
 import entity.Student;
+import entity.Class;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.servlet.RequestDispatcher;
@@ -14,7 +15,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.ClassDAO;
 import model.FirebaseConnection;
+import model.StudentClassDAO;
 import model.StudentDAO;
 
 /**
@@ -40,11 +43,13 @@ public class Retrieve_Update_StudentServlet extends HttpServlet {
         String studentID = request.getParameter("studentID");
         
         FirebaseConnection.initFirebase();
-        StudentDAO studentDAO = new StudentDAO();
-        ArrayList<Student> stu = studentDAO.retrieveStudentbyID(studentID);
+        ArrayList<Student> stu = StudentDAO.retrieveStudentbyID(studentID);
+        ArrayList<String> classesID = StudentClassDAO.retrieveStudentClassesID(studentID);
+        ArrayList<Class> classes = ClassDAO.getClassesByClassesID(classesID);
         
         request.setAttribute("StudentData", stu);
         request.setAttribute("StudentID", studentID);
+        request.setAttribute("StudentClasses", classes);
         if(request.getParameter("retrieve") != null){
             RequestDispatcher view = request.getRequestDispatcher("Retrieve_Update_StudentByID.jsp");
             view.forward(request, response);

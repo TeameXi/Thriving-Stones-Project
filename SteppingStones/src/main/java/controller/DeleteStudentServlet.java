@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.FirebaseConnection;
+import model.StudentClassDAO;
 import model.StudentDAO;
 
 /**
@@ -38,8 +39,8 @@ public class DeleteStudentServlet extends HttpServlet {
         
         String studentID = request.getParameter("studentID");
         FirebaseConnection.initFirebase();
-        StudentDAO studentDAO = new StudentDAO();
-        ArrayList<String> status = studentDAO.deleteStudentbyID(studentID);
+        ArrayList<String> status = StudentDAO.deleteStudentbyID(studentID);
+        StudentClassDAO.deleteStudentClassbyID(studentID);
         
         request.setAttribute("status", status);
         RequestDispatcher view = request.getRequestDispatcher("DeleteStudentByID.jsp");

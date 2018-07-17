@@ -10,6 +10,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import entity.Student;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -60,6 +62,71 @@ public class StudentClassDAO {
         });
         try {
             //wait for firebase to save record.
+            countDownLatch.await();
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+    public static ArrayList<String> retrieveStudentClassesID(String studentID){
+        final String ID = studentID;
+        final ArrayList<String> classesID = new ArrayList<>();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("StudentClass");
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        
+        ref.addValueEventListener(new ValueEventListener(){
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Iterable<DataSnapshot> classesDS = dataSnapshot.getChildren();
+                for(DataSnapshot classDS: classesDS){
+                    if(classDS.hasChild(ID)){
+                        classesID.add(classDS.getKey());
+                    }
+                }
+                countDownLatch.countDown();
+            }
+            @Override
+            public void onCancelled(DatabaseError de) {
+                System.out.println("The read failed: " + de.getCode());
+            }            
+        });
+        try {
+            //wait for firebase to retrieve record.
+            countDownLatch.await();
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+        return classesID;
+    }
+    
+    public static void deleteStudentClassbyID(String studentID){
+        final String ID = studentID;
+        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("StudentClass");
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+
+        ref.addValueEventListener(new ValueEventListener(){
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                System.out.println(dataSnapshot);
+                Iterable<DataSnapshot> classesDS = dataSnapshot.getChildren();
+                for(DataSnapshot classDS: classesDS){
+                    System.out.println(classDS);
+                    System.out.println(classDS.getValue());
+                    ref.child(classDS.getKey()).child(ID).removeValue(new DatabaseReference.CompletionListener(){
+                        @Override
+                        public void onComplete(DatabaseError de, DatabaseReference dr) {
+                        }                      
+                    });
+                }
+                countDownLatch.countDown();
+            }
+            @Override
+            public void onCancelled(DatabaseError de) {
+                System.out.println("The read failed: " + de.getCode());
+            }            
+        });
+        try {
+            //wait for firebase to delete record.
             countDownLatch.await();
         } catch (InterruptedException ex) {
             ex.printStackTrace();
