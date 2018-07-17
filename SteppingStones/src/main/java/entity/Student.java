@@ -13,6 +13,7 @@ import java.util.Map;
  * @author DEYU
  */
 public class Student {
+    private String studentID;
     private String studentName;
     private int age;
     private String gender;
@@ -51,6 +52,10 @@ public class Student {
         this.reqAmt = reqAmt;
         this.outstandingAmt = outstandingAmt;
         this.grades = grades;
+    }
+    
+    public String getStudentID() {
+        return this.studentID;
     }
     
     public String getName(){
@@ -119,5 +124,9 @@ public class Student {
     
     public void setGrades(Map<String, Map<String, StudentGrade>> grades){
         this.grades = grades;
+    }
+    
+    public void setStudentID(String id) {
+        this.studentID = id;
     }
 }

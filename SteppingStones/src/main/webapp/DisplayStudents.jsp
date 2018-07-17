@@ -1,7 +1,26 @@
-<%@page import="model.TutorDAO"%>
-<%@page import="entity.Tutor"%>
+<%@page import="model.StudentDAO"%>
+<%@page import="java.util.Iterator"%>
+<%@page import="java.util.Set"%>
+<%@page import="entity.StudentGrade"%>
+<%@page import="java.util.Map"%>
+<%@page import="entity.Student"%>
 <%@page import="java.util.ArrayList"%>
 <%@include file="header.jsp"%>
+<style>
+    #generate_btn{
+        padding: 5px;
+        margin-left : 50px;
+        background-color:#f7a4a3;
+        color:#fff;
+        border-radius: 5px;
+    }
+
+    #generate_btn:hover{
+        background:transparent;
+        border: 1px solid #f7a4a3;
+        color:#f7a4a3;
+    }
+</style>
 <style>/* Listing */
 
     * {
@@ -232,20 +251,20 @@
     <span class="toggler active" data-toggle="grid"><span class="zmdi zmdi-view-dashboard"></span></span>
     <span class="toggler" data-toggle="list"><span class="zmdi zmdi-view-list"></span></span>
     <ul class="surveys grid">
-      <%
-            TutorDAO tutuorDAO = new TutorDAO();
-            ArrayList<Tutor> tutors = tutuorDAO.retrieveAllTutors();
-
-            if (tutors != null) {
-                for (int i = 0; i < tutors.size(); i++) {
-                    Tutor tu = tutors.get(i);
-                    out.println("<li class='survey-item'><span class='survey-country list-only'>"+tu.getGender()+"</span>");
+        <%
+            StudentDAO studentDAO = new StudentDAO();
+            ArrayList<Student> students = studentDAO.listAllStudents();
+            
+            if (students != null) {
+                for (int i = 0; i < students.size(); i++) {
+                    Student stu = students.get(i);
+                    out.println("<li class='survey-item'><span class='survey-country list-only'>SG</span>");
                     out.println("<span class='survey-name'><i class='zmdi zmdi-account'>&nbsp;&nbsp;</i>");
-                    out.println(tu.getName() + "</span>");
+                    out.println(stu.getName() + "</span>");
                     out.println("<span class='survey-country grid-only'><i class='zmdi zmdi-pin'>&nbsp;&nbsp;</i>");
-                    out.println(tu.getEmail()+ "</span><br/>");
+                    out.println(stu.getAddress() + "</span><br/>");
                     out.println("<span class='survey-country'><i class='zmdi zmdi-graduation-cap'>&nbsp;&nbsp;</i>");
-                    out.println(tu.getAge() + "</span>");
+                    out.println(stu.getLevel() + "</span>");
 
         %>
         <div class="pull-right">
@@ -274,13 +293,12 @@
             </span>
 
 
-            <%                    
-                        out.println("<span class='survey-end-date'><i class='zmdi zmdi-phone'>&nbsp;&nbsp;</i>");
-                        out.println(tu.getPhone() + "</span></div></li>");
+            <%                    out.println("<span class='survey-end-date'><i class='zmdi zmdi-phone'>&nbsp;&nbsp;</i>");
+                        out.println(stu.getPhone() + "</span></div></li>");
                     }
 
                 } else {
-                    out.println("No User Yet!");
+                    out.println("No Students!");
                 }
 
             %>
@@ -304,4 +322,3 @@
 
     }).call(this);
 </script>
-  

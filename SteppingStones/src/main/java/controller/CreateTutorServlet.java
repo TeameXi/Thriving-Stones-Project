@@ -45,7 +45,7 @@ public class CreateTutorServlet extends HttpServlet {
 
         if (password.equals(password_rep)) {
             TutorDAO tDAO = new TutorDAO();
-            tDAO.addTutor(tutorID, name, age, phone, gender, email, password);
+//            tDAO.addTutor(tutorID, name, age, phone, gender, email, password);
             request.setAttribute("status", "Added tutor successfully");
         } else {
             request.setAttribute("status", "Failed to add tutor");

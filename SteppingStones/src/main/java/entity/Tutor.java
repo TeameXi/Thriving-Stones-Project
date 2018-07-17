@@ -9,19 +9,31 @@ public class Tutor {
 
     private String tutorID;
     private String name;
-    private int age;
+    private String age;
     private String phone;
     private String gender;
     private String email;
     private String password;
+    
+    public Tutor(){
+    }
 
-    public Tutor(String tutorID, String name, int age, String phoneNo, String gender, String emailAdd, String password) {
+    public Tutor(String tutorID, String name, String age, String phone, String gender, String email, String password) {
         this.tutorID = tutorID;
         this.name = name;
         this.age = age;
         this.phone = phone;
         this.gender = gender;
-        this.email = emailAdd;
+        this.email = email;
+        this.password = password;
+    }
+    
+    public Tutor(String name, String age, String phone, String gender, String email, String password) {
+        this.name = name;
+        this.age = age;
+        this.phone = phone;
+        this.gender = gender;
+        this.email = email;
         this.password = password;
     }
 
@@ -33,15 +45,15 @@ public class Tutor {
         return this.name;
     }
     
-    public int getAge(){
+    public String getAge(){
         return this.age;
     }
 
-    public String getPhoneNo() {
+    public String getPhone() {
         return this.phone;
     }
 
-    public void setPhoneNo(String newNumber) {
+    public void setPhone(String newNumber) {
         this.phone = newNumber;
     }
 
@@ -49,11 +61,11 @@ public class Tutor {
         return this.gender;
     }
 
-    public String getEmailAdd() {
+    public String getEmail() {
         return this.email;
     }
 
-    public void setEmailAdd(String newEmail) {
+    public void setEmail(String newEmail) {
         this.email = newEmail;
     }
 
@@ -63,5 +75,9 @@ public class Tutor {
 
     public void setPassword(String newPassword) {
         this.password = newPassword;
+    }
+    
+    public void setID(String id) {
+        this.tutorID = id;
     }
 }

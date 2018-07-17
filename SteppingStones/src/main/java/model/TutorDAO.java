@@ -28,20 +28,19 @@ public class TutorDAO {
     private DataSnapshot dataRequired;
     private volatile Boolean status = false;
 
-    public void addTutor(String tutorID, String name, int age, String phone, String gender, String email, String password) {
+    public void addTutor(String tutorID, Tutor tutor) {
         FirebaseConnection.initFirebase();
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ref = database.getReference().child("tutors").child(tutorID);
-
-        Tutor tutor = new Tutor(tutorID, name, age, phone, gender, email, password);
-        ref.setValue(tutor, new DatabaseReference.CompletionListener(){
+        
+        ref.setValue(tutor, new DatabaseReference.CompletionListener() {
             @Override
-                public void onComplete(DatabaseError de, DatabaseReference dr) {
-                    System.out.println("success");
-                }
+            public void onComplete(DatabaseError de, DatabaseReference dr) {
+                System.out.println("success");
+            }
         });
         
-        CreateRequest request = new CreateRequest().setEmail(email).setPassword(password);
+        CreateRequest request = new CreateRequest().setEmail(tutor.getEmail()).setPassword(tutor.getPassword());
         try {
             UserRecord userRecord = FirebaseAuth.getInstance().createUser(request);
         } catch (FirebaseAuthException ex) {
@@ -83,12 +82,12 @@ public class TutorDAO {
             }
         }
         String name = (String) dataRequired.child("name").getValue();
-        int age = (Integer) dataRequired.child("age").getValue();
-        String phoneNo = (String) dataRequired.child("phoneNo").getValue();
+        String age = (String) dataRequired.child("age").getValue();
+        String phone = (String) dataRequired.child("phone").getValue();
         String gender = (String) dataRequired.child("gender").getValue();
-        String emailAdd = (String) dataRequired.child("emailAdd").getValue();
+        String email = (String) dataRequired.child("email").getValue();
         String password = (String) dataRequired.child("password").getValue();
-        Tutor tutor = new Tutor(id, name, age, phoneNo, gender, emailAdd, password);
+        Tutor tutor = new Tutor(id, name, age, phone, gender, email, password);
         return tutor;
     }
     
@@ -110,7 +109,7 @@ public class TutorDAO {
                 while (iter.hasNext()) {
                     DataSnapshot data = (DataSnapshot) iter.next();
                     Tutor tutor = data.getValue(Tutor.class);
-                    if(tutor != null && tutor.getEmailAdd().equals(email)){
+                    if(tutor != null && tutor.getEmail().equals(email)){
                         tutorList.add(tutor);
                         System.out.println(tutorList.toString());
                     }
@@ -163,13 +162,8 @@ public class TutorDAO {
         Iterator iter = dataRequired.getChildren().iterator();
         while(iter.hasNext()){
             DataSnapshot data = (DataSnapshot) iter.next();
-            String name = (String) data.child("name").getValue();
-            int age = (Integer) data.child("age").getValue();
-            String phone = (String) data.child("phone").getValue();
-            String gender = (String) data.child("gender").getValue();
-            String email = (String) data.child("email").getValue();
-            String password = (String) data.child("password").getValue();
-            Tutor tutor = new Tutor((String)data.getKey(), name, age, phone, gender, email, password);
+            Tutor tutor = data.getValue(Tutor.class);
+            tutor.setID(data.getKey());
             tutors.add(tutor);
         }
         return tutors;
@@ -181,6 +175,14 @@ public class TutorDAO {
         // Get a reference to our posts
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ref = database.getReference().child("tutors");
+        
+        Tutor tutor = retrieveSpecificTutor(tutorID);
+        try {
+            UserRecord userRecord = FirebaseAuth.getInstance().getUserByEmail(tutor.getEmail());
+            FirebaseAuth.getInstance().deleteUser(userRecord.getUid());
+        } catch (FirebaseAuthException ex) {
+            Logger.getLogger(TutorDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
         ref.child(tutorID).removeValue(new DatabaseReference.CompletionListener() {
             @Override
