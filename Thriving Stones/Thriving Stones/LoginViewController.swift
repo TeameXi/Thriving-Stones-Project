@@ -34,7 +34,7 @@ class LoginViewController: UIViewController {
         
         self.view.addSubview(headerImage)
         
-        headerImage.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 220).isActive = true
+        headerImage.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 180).isActive = true
         headerImage.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: 40).isActive = true
         headerImage.rightAnchor.constraint(equalTo: self.view.rightAnchor, constant: -40).isActive = true
         
@@ -83,14 +83,22 @@ class LoginViewController: UIViewController {
         loginButton.setTitle("Login", for: .normal)
         loginButton.titleLabel?.textAlignment = .center
         loginButton.setTitleColor(UIColor.white, for: .normal)
-        loginButton.layer.cornerRadius = 6.0
         loginButton.backgroundColor = UIColor.init(red: 161/255, green: 203/255, blue: 186/255, alpha: 1)
+        loginButton.layer.cornerRadius = 3.0;
+        
+        loginButton.layer.borderWidth = 2.0;
+        loginButton.layer.borderColor = UIColor.clear.cgColor
+        
+        loginButton.layer.shadowColor = UIColor.init(red: 77/255, green: 153/255, blue: 77/255, alpha: 1).cgColor
+        loginButton.layer.shadowOpacity = 0.8;
+        loginButton.layer.shadowRadius = 1.0;
+        loginButton.layer.shadowOffset = CGSize.init(width: 3, height: 0)
         loginButton.addTarget(self, action: #selector(performLogin), for: .touchUpInside)
         
         self.view.addSubview(loginButton)
         
-        loginButton.topAnchor.constraint(equalTo: pwdField.bottomAnchor, constant: 20).isActive = true
-        loginButton.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: 60).isActive = true
+        loginButton.topAnchor.constraint(equalTo: pwdField.bottomAnchor, constant: 30).isActive = true
+        loginButton.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: 40).isActive = true
         loginButton.widthAnchor.constraint(equalToConstant: 100).isActive = true
         
         //Setting up reset pwd button
@@ -99,19 +107,31 @@ class LoginViewController: UIViewController {
         resetPwdButton.setTitle("Reset Password", for: .normal)
         resetPwdButton.titleLabel?.textAlignment = .center
         resetPwdButton.setTitleColor(UIColor.white, for: .normal)
-        resetPwdButton.layer.cornerRadius = 6.0
         resetPwdButton.backgroundColor = UIColor.init(red: 161/255, green: 203/255, blue: 186/255, alpha: 1)
+        resetPwdButton.layer.cornerRadius = 3.0;
+        
+        resetPwdButton.layer.borderWidth = 2.0;
+        resetPwdButton.layer.borderColor = UIColor.clear.cgColor
+        
+        resetPwdButton.layer.shadowColor = UIColor.init(red: 77/255, green: 153/255, blue: 77/255, alpha: 1).cgColor
+        resetPwdButton.layer.shadowOpacity = 0.8;
+        resetPwdButton.layer.shadowRadius = 1.0;
+        resetPwdButton.layer.shadowOffset = CGSize.init(width: 3, height: 0)
         resetPwdButton.addTarget(self, action: #selector(performReset), for: .touchUpInside)
         
         self.view.addSubview(resetPwdButton)
         
-        resetPwdButton.topAnchor.constraint(equalTo: pwdField.bottomAnchor, constant: 20).isActive = true
+        resetPwdButton.topAnchor.constraint(equalTo: pwdField.bottomAnchor, constant: 30).isActive = true
         resetPwdButton.leftAnchor.constraint(equalTo: loginButton.rightAnchor, constant: 10).isActive = true
-        resetPwdButton.rightAnchor.constraint(equalTo: self.view.rightAnchor, constant: -60).isActive = true
+        resetPwdButton.rightAnchor.constraint(equalTo: self.view.rightAnchor, constant: -40).isActive = true
     }
     
     @objc func performReset(){
-        //Link to website reset pwd page
+        let resetController = EmailResetViewController()
+        let nav = UINavigationController(rootViewController: resetController)
+        self.present(nav, animated: true) {
+            print("SUCCESS RESET")
+        }
     }
     
     @objc func performLogin(_sender: UIButton){

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		155EBFE9D6E55F67593D4DF5 /* Pods_Thriving_Stones.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D268D61F6F2F371B581D55C8 /* Pods_Thriving_Stones.framework */; };
+		BD0788A920FEE6A500C05F10 /* EmailResetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD0788A820FEE6A500C05F10 /* EmailResetViewController.swift */; };
 		BD3E60CB20F30BBD004ABA6F /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BD3E60CA20F30BBD004ABA6F /* Launch Screen.storyboard */; };
 		BD3E60D120F310B4004ABA6F /* SplashViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD3E60D020F310B4004ABA6F /* SplashViewController.swift */; };
 		BDA23DC320EF121F00A73858 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDA23DC220EF121F00A73858 /* AppDelegate.swift */; };
@@ -20,6 +21,7 @@
 /* Begin PBXFileReference section */
 		47503FE385E3756D8EABB047 /* Pods-Thriving Stones.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Thriving Stones.release.xcconfig"; path = "Pods/Target Support Files/Pods-Thriving Stones/Pods-Thriving Stones.release.xcconfig"; sourceTree = "<group>"; };
 		512B167CA9E9C6F5514A83A9 /* Pods-Thriving Stones.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Thriving Stones.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Thriving Stones/Pods-Thriving Stones.debug.xcconfig"; sourceTree = "<group>"; };
+		BD0788A820FEE6A500C05F10 /* EmailResetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailResetViewController.swift; sourceTree = "<group>"; };
 		BD3E60CA20F30BBD004ABA6F /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		BD3E60D020F310B4004ABA6F /* SplashViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SplashViewController.swift; sourceTree = "<group>"; };
 		BDA23DBF20EF121F00A73858 /* Thriving Stones.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Thriving Stones.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -74,6 +76,7 @@
 		BDA23DC120EF121F00A73858 /* Thriving Stones */ = {
 			isa = PBXGroup;
 			children = (
+				BD0788A820FEE6A500C05F10 /* EmailResetViewController.swift */,
 				BDAB526320FC8F7E003DF134 /* HomePageViewController.swift */,
 				BDAB525F20FC3B8C003DF134 /* LoginViewController.swift */,
 				BD3E60D020F310B4004ABA6F /* SplashViewController.swift */,
@@ -216,6 +219,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BDAB526420FC8F7E003DF134 /* HomePageViewController.swift in Sources */,
+				BD0788A920FEE6A500C05F10 /* EmailResetViewController.swift in Sources */,
 				BDAB526020FC3B8C003DF134 /* LoginViewController.swift in Sources */,
 				BDA23DC320EF121F00A73858 /* AppDelegate.swift in Sources */,
 				BD3E60D120F310B4004ABA6F /* SplashViewController.swift in Sources */,
