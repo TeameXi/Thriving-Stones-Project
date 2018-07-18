@@ -8,6 +8,7 @@ package controller;
 import entity.Student;
 import entity.Class;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -19,6 +20,7 @@ import model.ClassDAO;
 import model.FirebaseConnection;
 import model.StudentClassDAO;
 import model.StudentDAO;
+import org.json.JSONObject;
 
 /**
  *
@@ -38,7 +40,9 @@ public class Retrieve_Update_StudentServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+//        response.setContentType("text/html;charset=UTF-8");
+        
+        PrintWriter out = response.getWriter();
         
         String studentID = request.getParameter("studentID");
         
@@ -47,17 +51,45 @@ public class Retrieve_Update_StudentServlet extends HttpServlet {
         ArrayList<String> classesID = StudentClassDAO.retrieveStudentClassesID(studentID);
         ArrayList<Class> classes = ClassDAO.getClassesByClassesID(classesID);
         
-        request.setAttribute("StudentData", stu);
-        request.setAttribute("StudentID", studentID);
-        request.setAttribute("StudentClasses", classes);
-        if(request.getParameter("retrieve") != null){
-            RequestDispatcher view = request.getRequestDispatcher("Retrieve_Update_StudentByID.jsp");
-            view.forward(request, response);
+        JSONObject obj = new JSONObject();
+        try{
+            for(Student currStu : stu){
+                String name = currStu.getName();
+                int age = currStu.getAge();
+                String gender = currStu.getGender();
+                String lvl = currStu.getLevel();
+                String address = currStu.getAddress();
+                String phone = currStu.getPhone();
+                double required_amount = currStu.getReqAmt();
+                double outstanding_amount = currStu.getOutstandingAmt();
+                obj.put("name",name);
+                obj.put("age",age);
+                obj.put("gender",gender);
+                obj.put("lvl", lvl);
+                obj.put("address", address);
+                obj.put("phone", phone);
+                obj.put("r_amount", required_amount);
+                obj.put("o_amount",outstanding_amount);
+
+            }      
+            out.println(obj);
+        }finally{
+            out.flush();
+            out.close();
         }
-        if(request.getParameter("update") != null){
-            RequestDispatcher view = request.getRequestDispatcher("UpdateStudentDetails.jsp");
-            view.forward(request, response);
-        }      
+       
+        
+//        request.setAttribute("StudentData", stu);
+//        request.setAttribute("StudentID", studentID);
+//        request.setAttribute("StudentClasses", classes);
+//        if(request.getParameter("retrieve") != null){
+//            RequestDispatcher view = request.getRequestDispatcher("Retrieve_Update_StudentByID.jsp");
+//            view.forward(request, response);
+//        }
+//        if(request.getParameter("update") != null){
+//            RequestDispatcher view = request.getRequestDispatcher("UpdateStudentDetails.jsp");
+//            view.forward(request, response);
+//        }      
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

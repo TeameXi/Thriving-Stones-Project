@@ -6,8 +6,8 @@
 package controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import model.FirebaseConnection;
 import model.StudentClassDAO;
 import model.StudentDAO;
+
 
 /**
  *
@@ -35,14 +36,22 @@ public class DeleteStudentServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
         
+        
+        PrintWriter out = response.getWriter();
         String studentID = request.getParameter("studentID");
-        System.out.println(studentID);
-//        FirebaseConnection.initFirebase();
-//        ArrayList<String> status = StudentDAO.deleteStudentbyID(studentID);
-//        StudentClassDAO.deleteStudentClassbyID(studentID);
-//        
+
+        FirebaseConnection.initFirebase();
+        StudentDAO stuDao = new StudentDAO();
+        boolean deleled = stuDao.deleteStudentbyID(studentID);
+        StudentClassDAO.deleteStudentClassbyID(studentID);
+        
+        if(deleled == true){
+            out.println(1);
+        }else{
+            out.println(0);
+        }
+        
 //        request.setAttribute("status", status);
 //        RequestDispatcher view = request.getRequestDispatcher("DeleteStudentByID.jsp");
 //        view.forward(request, response);     
