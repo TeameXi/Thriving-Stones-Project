@@ -54,8 +54,9 @@ public class StudentDAO {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Student stu = dataSnapshot.getValue(Student.class);
-                System.out.println(dataSnapshot);
-                student.add(stu);
+                if(stu != null){
+                    student.add(stu);
+                }
                 countDownLatch.countDown();
             }
             @Override
@@ -145,7 +146,5 @@ public class StudentDAO {
             tutors.add(student);
         }
         return tutors;
-    }
-    
-    
+    } 
 }

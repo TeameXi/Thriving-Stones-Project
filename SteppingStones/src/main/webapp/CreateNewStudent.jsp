@@ -1,3 +1,4 @@
+<%@page import="java.util.ArrayList"%>
 <%@include file="header.jsp"%>
 
 <div class="col-md-10">
@@ -7,25 +8,37 @@
         <div class="col-md-3"></div>
         <div class="col-md-5 form">
             <h1>Create New Student</h1>
+            <%
+                ArrayList<String> errors = (ArrayList<String>) request.getAttribute("errorMsg");
+                if(errors != null){
+                    for(String error: errors){
+                        out.println(error);
+                    }
+                }
+                String studentExist = (String) request.getAttribute("studentExist");
+                if (studentExist != null) {
+                    out.println(studentExist);
+                }
+            %>
             <form action="CreateNewStudentServlet" method="post">
 
                 <div class="wrap-input100 validate-input m-b-23" data-validate = "Student ID is reauired">
                     <span class="label-input100">Student ID</span>
-                    <input class="input100" type="text" name="studentID" placeholder="Type Student ID">
+                    <input class="input100" type="text" name="studentID" placeholder="Type Student ID" required>
                     <span class="focus-input100" data-symbol="&#xf207;"></span>
                 </div>
                 <br/>
 
                 <div class="wrap-input100 validate-input m-b-23" data-validate = "Name is reauired">
                     <span class="label-input100">Student's name</span>
-                    <input class="input100" type="text" name="studentName" placeholder="Type Name">
+                    <input class="input100" type="text" name="studentName" placeholder="Type Name" required>
                     <span class="focus-input100" data-symbol="&#xf207;"></span>
                 </div>
                 <br/>
 
                 <div class="wrap-input100 validate-input" data-validate="Age is required">
                     <span class="label-input100">Age</span>
-                    <input class="input100" type="number" name="age" placeholder="Type age">
+                    <input class="input100" type="number" name="age" placeholder="Type age" required>
 
                 </div>
                 <br/>
@@ -34,15 +47,15 @@
                     <span class="label-input100">Gender</span>
                     <select id="gender" name="gender" class="cd-select">
                         <option value="-1" selected>Select Gender</option>
-                        <option value="1" class="icon-female">Female</option>
-                        <option value="2" class="icon-male">Male</option>
+                        <option value="F" class="icon-female">Female</option>
+                        <option value="M" class="icon-male">Male</option>
                     </select> 
                 </div>
                 
                 <br/>
                      <div class="wrap-input100 validate-input" data-validate="Address is required">
                     <span class="label-input100"> Student Address</span>
-                    <input class="input100" type="text" name="address" placeholder="Type Address">
+                    <input class="input100" type="text" name="address" placeholder="Type Address" required>
                     <span class="focus-input100" data-symbol="&#xf1a8;"></span>
                 </div>
                 <br/>
@@ -60,28 +73,22 @@
                         <option value="Sec 3">Secondary 3</option>
                         <option value="Sec 4">Secondary 4</option>
                     </select> 
-                </div>
-
-
-
-
-           
+                </div>     
 
                 <div class="wrap-input100 validate-input" data-validate="Phone Number is required">
                     <span class="label-input100"> Student Contact Number</span>
-                    <input class="input100" type="text" name="phone" placeholder="Type phone number">
+                    <input class="input100" type="text" name="phone" placeholder="Type phone number" required>
                     <span class="focus-input100" data-symbol="&#xf2be;"></span>
                 </div>
                 <br/>
-
 
                 Most Recent School Result:<br>
                 <select name = "Sub1">
                     <option value="Engish">Engish</option>
                     <option value="Maths">Maths</option>
                     <option value="Science">Science</option>
-                    <option value="E.Maths">E.Maths</option>
-                    <option value="Add.Maths">Add.Maths</option>
+                    <option value="E-Maths">E.Maths</option>
+                    <option value="Add-Maths">Add.Maths</option>
                 </select>
                 CA1<input type ="text" name ="FCA1">SA1<input type ="text" name ="FSA1">
                 CA2<input type ="text" name ="FCA2">SA2<input type ="text" name ="FSA2"><br>            
@@ -89,8 +96,8 @@
                     <option value="Engish">Engish</option>
                     <option value="Maths">Maths</option>
                     <option value="Science">Science</option>
-                    <option value="E.Maths">E.Maths</option>
-                    <option value="Add.Maths">Add.Maths</option>
+                    <option value="E-Maths">E.Maths</option>
+                    <option value="Add-Maths">Add.Maths</option>
                 </select>
                 CA1<input type ="text" name ="SCA1">SA1<input type ="text" name ="SSA1">
                 CA2<input type ="text" name ="SCA2">SA2<input type ="text" name ="SSA2"><br>
@@ -98,8 +105,8 @@
                     <option value="Engish">Engish</option>
                     <option value="Maths">Maths</option>
                     <option value="Science">Science</option>
-                    <option value="E.Maths">E.Maths</option>
-                    <option value="Add.Maths">Add.Maths</option>
+                    <option value="E-Maths">E.Maths</option>
+                    <option value="Add-Maths">Add.Maths</option>
                 </select>
                 CA1<input type ="text" name ="TCA1">SA1<input type ="text" name ="TSA1">
                 CA2<input type ="text" name ="TCA2">SA2<input type ="text" name ="TSA2"><br>
@@ -107,7 +114,7 @@
                 <div class="container-login100-form-btn">
                     <div class="wrap-login100-form-btn">
                         <div class="login100-form-bgbtn"></div>
-                        <button class="login100-form-btn" type="submit">
+                        <button class="login100-form-btn" type="submit" value = "insert" name = "insert">
                             Insert Student
                         </button>
                     </div>

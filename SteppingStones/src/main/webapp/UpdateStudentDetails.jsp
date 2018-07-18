@@ -14,6 +14,12 @@
         <title>Update Student Details</title>
     </head>
     <%
+        ArrayList<String> errors = (ArrayList<String>) request.getAttribute("errorMsg");
+        if(errors != null){
+            for(String error: errors){
+                out.println(error);
+            }
+        }
         ArrayList<Student> stu = (ArrayList<Student>)request.getAttribute("StudentData");
         String studentID = (String)request.getAttribute("StudentID");
         if(stu != null){
