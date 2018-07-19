@@ -12,8 +12,11 @@ package entity;
 public class Users {
     private String email;
     private String password;
+    private String username;
+    
 
-    public Users(String email, String password){
+    public Users(String username, String email, String password){
+        this.username = username;
         this.email = email;
         this.password = password;
     }
@@ -37,6 +40,13 @@ public class Users {
         this.password = password;
     }
 
+     public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
     
     public boolean authenticateUser(Users user, String password){
        if (user != null && user.getPassword().equals(password)) {

@@ -124,6 +124,47 @@ public class TutorDAO {
         }
         return tutorList.get(0);
     }
+    
+    public Tutor getTutorByEmail(final String email) {
+        FirebaseConnection.initFirebase();
+        // Get a reference to our posts
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference().child("tutors");
+
+        // Attach a listener to read the data at our posts reference
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                dataRequired = dataSnapshot;
+                status = true;
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+
+        while (!status) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(TutorDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        Tutor tutors = null;
+        
+        Iterator iter = dataRequired.getChildren().iterator();
+        while(iter.hasNext()){
+            DataSnapshot data = (DataSnapshot) iter.next();
+            Tutor tutor = data.getValue(Tutor.class);
+            tutor.setID(data.getKey());
+            if(tutor.getEmail().equals(email)){
+                tutors = tutor;
+            }            
+        }
+        return tutors;
+    }
 
     public ArrayList<Tutor> retrieveAllTutors() {
         FirebaseConnection.initFirebase();

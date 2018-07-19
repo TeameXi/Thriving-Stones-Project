@@ -20,14 +20,15 @@ import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import static model.FirebaseConnection.initFirebase;
+import java.util.Iterator;
 
 /**
  *
  * @author Riana
  */
 public class UsersDAO {
-    
-    private volatile Boolean status;
+    private DataSnapshot dataRequired;   
+    private volatile Boolean status= false;
     
     public static List<Users> getUser(final String username) {
         final List<Users> userList = new ArrayList<>();
@@ -108,5 +109,46 @@ public class UsersDAO {
                 Logger.getLogger(TutorDAO.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+    }
+    
+     public Users retrieveUserByEmail(final String email) {
+        FirebaseConnection.initFirebase();
+        // Get a reference to our posts
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference().child("users");
+
+        // Attach a listener to read the data at our posts reference
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                dataRequired = dataSnapshot;
+                status = true;
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+
+        while (!status) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(TutorDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        Users users = null;
+        
+        Iterator iter = dataRequired.getChildren().iterator();
+        while(iter.hasNext()){
+            DataSnapshot data = (DataSnapshot) iter.next();
+            Users user = data.getValue(Users.class);
+            user.setUsername(data.getKey());
+            if(user.getEmail().equals(email)){
+                users = user;
+            }            
+        }
+        return users;
     }
 }
