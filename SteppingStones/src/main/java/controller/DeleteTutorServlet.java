@@ -5,6 +5,7 @@
  */
 package controller;
 
+import entity.Validation;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.RequestDispatcher;
@@ -38,7 +39,7 @@ public class DeleteTutorServlet extends HttpServlet {
             /* TODO output your page here. You may use following sample code. */
             String tutorID = request.getParameter("tutorID");
             
-            if (!tutorID.isEmpty()){
+            if (Validation.isValidID(tutorID)){
                 TutorDAO tutors = new TutorDAO();
                 tutors.removeTutor(tutorID);
                 request.setAttribute("status", "Deleted");

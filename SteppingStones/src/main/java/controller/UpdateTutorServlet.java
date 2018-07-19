@@ -5,6 +5,7 @@
  */
 package controller;
 
+import entity.Validation;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -36,45 +37,32 @@ public class UpdateTutorServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            Map<String, Object> updates = new HashMap<>();
-                    
+        Map<String, Object> updates = new HashMap<>();
+
+        try {
             String tutorID = request.getParameter("tutorID");
             String name = request.getParameter("name");
-            String age = (String) request.getParameter("age");
+            int age = Integer.parseInt(request.getParameter("age"));
             String phone = (String) request.getParameter("phone");
-            String gender = request.getParameter("gender");
             String email = request.getParameter("email");
-            
-            if(tutorID != null && !tutorID.equals("")){
-                if(name != null && !name.equals("")){
+
+            if (!Validation.isValidID(tutorID)) {
+                if (name != null && !name.equals("")) {
                     updates.put("name", name);
                 }
-                
-                if(age != null && !age.equals("")){
-                    updates.put("age", age);
+
+                updates.put("age", age);
+
+                if (Validation.isValidPhoneNo(phone)) {
+                    updates.put("phone", phone);
+
                 }
-                
-                if(phone != null && !phone.equals("")){
-                    if(phone.length() == 8){
-                        updates.put("phone", phone);
-                    }
+
+                if (Validation.isValidEmail(email)) {
+                    updates.put("email", email);
                 }
-                
-                if(gender != null && !gender.equals("")){
-                    String genderUpdate = gender.toUpperCase();
-                    if(genderUpdate.equals("F") || genderUpdate.equals("M")){
-                        updates.put("gender", gender);
-                    }
-                }
-                
-                if(email != null && !email.equals("")){
-                    if(email.contains("@")){
-                        updates.put("email", email);
-                    }
-                }
-                
-                if(!updates.isEmpty()){
+
+                if (!updates.isEmpty()) {
                     TutorDAO tutors = new TutorDAO();
                     tutors.updateTutor(tutorID, updates);
                     request.setAttribute("status", "Updated");
@@ -82,11 +70,12 @@ public class UpdateTutorServlet extends HttpServlet {
                     view.forward(request, response);
                 }
             }
-            
+
+        } catch (Exception e) {
             request.setAttribute("status", "Fail");
-            RequestDispatcher view = request.getRequestDispatcher("UpdateTutor.jsp");
-            view.forward(request, response);
         }
+        RequestDispatcher view = request.getRequestDispatcher("UpdateTutor.jsp");
+        view.forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

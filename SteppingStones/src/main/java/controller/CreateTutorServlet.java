@@ -47,7 +47,7 @@ public class CreateTutorServlet extends HttpServlet {
             FirebaseConnection.initFirebase();
 
             if (Validation.isValidGender(gender) && Validation.isValidPassword(password) && Validation.isValidEmail(email) && Validation.isValidID(tutorID)
-                    && Validation.isValidPhoneNo(phone)) {
+                    && Validation.isValidPhoneNo(phone) && name != null && !name.equals("")) {
                 TutorDAO tDAO = new TutorDAO();
                 Tutor tempTutor = new Tutor(name, age, phone, gender, email, password);
                 tDAO.addTutor(tutorID, tempTutor);
