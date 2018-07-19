@@ -13,6 +13,7 @@ import com.google.firebase.database.ValueEventListener;
 import entity.Student;
 import java.util.Iterator;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,6 +26,7 @@ public class StudentDAO {
     private DataSnapshot dataRequired;
     private volatile Boolean status = false;
     private volatile Boolean deletedStatus = false;
+    private volatile Boolean updatedStatus = false;
     
     public static void insertStudent(String studentID, String studentName, int age, String gender, String lvl, String address, String phone, double reqAmt, double outstandingAmt){
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("students").child(studentID); 
@@ -147,4 +149,28 @@ public class StudentDAO {
         }
         return tutors;
     } 
+    
+    public boolean updateStudent(String studentID, Map<String, Object> updates){
+       
+        FirebaseConnection.initFirebase();
+        // Get a reference to our posts
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference().child("students").child(studentID);
+        
+        Iterator iter = updates.keySet().iterator();
+        
+        while(iter.hasNext()){
+            String toUpdate = (String) iter.next();
+            System.out.println(toUpdate);
+            String valueToUpdate = (String) updates.get(toUpdate);
+            ref.child(toUpdate).setValue(valueToUpdate, new DatabaseReference.CompletionListener() {
+                @Override
+                public void onComplete(DatabaseError de, DatabaseReference dr) {
+                    updatedStatus = true;
+                }
+            });
+        }
+        
+        return updatedStatus;
+    }
 }
