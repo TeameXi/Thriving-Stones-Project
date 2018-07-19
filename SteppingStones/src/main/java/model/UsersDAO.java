@@ -35,15 +35,15 @@ public class UsersDAO {
         initFirebase();
         // Get a reference to our posts
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ref = database.getReference().child("users");
+        DatabaseReference ref = database.getReference().child("users");;
         // Attach a listener to read the data at our posts reference
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 userList.clear();
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                for(DataSnapshot postSnapshot : dataSnapshot.getChildren()){
                     Users users = postSnapshot.getValue(Users.class);
-                    if (users != null && users.getUsername().equals(username)) {
+                    if(users != null && users.getEmail().equals(username)){
                         userList.add(users);
                     }
                 }
@@ -57,7 +57,7 @@ public class UsersDAO {
             }
 
         });
-        try {
+        try { 
             done.await();
         } catch (InterruptedException ex) {
             Logger.getLogger(UsersDAO.class.getName()).log(Level.SEVERE, null, ex);

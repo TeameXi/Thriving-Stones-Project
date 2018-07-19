@@ -10,37 +10,36 @@ package entity;
  * @author Riana
  */
 public class Users {
-    private String username;
-    private String pwd;
+    private String email;
+    private String password;
 
-    public Users(String username, String pwd){
-        this.username = username;
-        this.pwd = pwd;
+    public Users(String email, String password){
+        this.email = email;
+        this.password = password;
     }
 
     public Users() {
         
     }
-    public String getUsername() {
-        return username;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public String getPwd() {
-        return pwd;
+    public String getPassword() {
+        return password;
     }
 
-    public void setPwd(String pwd) {
-        this.pwd = pwd;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     
-    
-    public boolean authenticateUser(Users user, String pwd){
-       if (user != null && user.getPwd().equals(pwd)) {
+    public boolean authenticateUser(Users user, String password){
+       if (user != null && user.getPassword().equals(password)) {
             return true;
         }
         return false;

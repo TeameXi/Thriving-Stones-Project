@@ -1,4 +1,12 @@
+<%@page import="entity.Users"%>
 <!DOCTYPE html>
+<%
+            Users user = (Users) session.getAttribute("user");
+            if (user == null) {
+                response.sendRedirect("Login.jsp");
+                return;
+            }
+%>
 <html>
 <head>
 	<title>Stepping Stones</title>

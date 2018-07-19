@@ -1,4 +1,7 @@
+<%@page import="java.util.List"%>
+<%@page import="java.util.Map"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page session="true" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -9,16 +12,24 @@
         <title>Login</title>
     </head>
     <body>
-        
+        <%
+            if(request.getSession().getAttribute("response") != null){
+                
+                Map<String, String> error = (Map<String, String>) request.getSession().getAttribute("response");
+                session.invalidate();
+                %>
+                <script>alert('Login fail.\n<%= error.get("error")%>'   )</script><%
+            }
+        %>
         
         <div class="limiter">
             <div class="signIn"><img style="max-width: 100%;" src="${pageContext.request.contextPath}/styling/img/signIn.png"></img></div>
             <div class="container-login100">
                 <div class="wrap-login100 p-l-55 p-r-55 p-t-65 p-b-54">
                     <form class="login100-form validate-form" action="LoginServlet" method="post">
-                        <div class="wrap-input100 validate-input m-b-23" data-validate = "Username is reauired">
+                        <div class="wrap-input100 validate-input m-b-23" data-validate = "Username is required">
                                 <span class="label-input100">Username</span>
-                                <input class="input100" type="text" name="username" placeholder="Type your username">
+                                <input class="input100" type="text" id ="txtusername" name="username" placeholder="Type your username">
                                 <span class="focus-input100" data-symbol="&#xf206;"></span>
                         </div>
 
