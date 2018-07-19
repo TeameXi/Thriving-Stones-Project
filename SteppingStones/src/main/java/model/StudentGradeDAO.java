@@ -30,7 +30,7 @@ public class StudentGradeDAO {
         ref.setValue(grade, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError de, DatabaseReference dr) {
-                System.out.println("Record saved!");
+                System.out.println("School grade records saved!");
                 countDownLatch.countDown();
             }
         });
@@ -49,7 +49,7 @@ public class StudentGradeDAO {
         ref.setValue(grades, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError de, DatabaseReference dr) {
-                System.out.println("Record saved!");
+                System.out.println("Grade records saved!");
                 countDownLatch.countDown();
             }
         });

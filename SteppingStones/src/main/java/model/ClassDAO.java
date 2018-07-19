@@ -28,7 +28,7 @@ public class ClassDAO {
         ref.push().setValue(cls, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError de, DatabaseReference dr) {
-                System.out.println("Record saved!");
+                System.out.println("New Class record saved!");
                 countDownLatch.countDown();
             }
         });

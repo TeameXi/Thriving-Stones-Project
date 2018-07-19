@@ -10,7 +10,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import entity.Student;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -56,7 +55,7 @@ public class StudentClassDAO {
         ref.setValue(students, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError de, DatabaseReference dr) {
-                System.out.println("Record saved!");
+                System.out.println("Class with students record saved!");
                 countDownLatch.countDown();
             }
         });
@@ -107,11 +106,11 @@ public class StudentClassDAO {
         ref.addValueEventListener(new ValueEventListener(){
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                System.out.println(dataSnapshot);
+//                System.out.println("Enter delete function " + dataSnapshot);
                 Iterable<DataSnapshot> classesDS = dataSnapshot.getChildren();
                 for(DataSnapshot classDS: classesDS){
-                    System.out.println(classDS);
-                    System.out.println(classDS.getValue());
+                    //System.out.println(classDS);
+                    //System.out.println(classDS.getValue());
                     ref.child(classDS.getKey()).child(ID).removeValue(new DatabaseReference.CompletionListener(){
                         @Override
                         public void onComplete(DatabaseError de, DatabaseReference dr) {

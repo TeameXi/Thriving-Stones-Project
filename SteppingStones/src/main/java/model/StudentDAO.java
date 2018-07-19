@@ -36,7 +36,7 @@ public class StudentDAO {
         ref.setValue(stu, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError de, DatabaseReference dr) {
-                System.out.println("Record saved!");
+                System.out.println("Student record saved!");
                 countDownLatch.countDown();
             }
         });
@@ -56,8 +56,8 @@ public class StudentDAO {
         ref.addValueEventListener(new ValueEventListener(){
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Student stu = dataSnapshot.getValue(Student.class);
-                if(stu != null){
+                if(dataSnapshot.getValue() != null){
+                    Student stu = dataSnapshot.getValue(Student.class);
                     student.add(stu);
                 }
                 countDownLatch.countDown();
