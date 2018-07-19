@@ -9,7 +9,7 @@ public class Tutor {
 
     private String tutorID;
     private String name;
-    private String age;
+    private int age;
     private String phone;
     private String gender;
     private String email;
@@ -18,7 +18,7 @@ public class Tutor {
     public Tutor(){
     }
 
-    public Tutor(String tutorID, String name, String age, String phone, String gender, String email, String password) {
+    public Tutor(String tutorID, String name, int age, String phone, String gender, String email, String password) {
         this.tutorID = tutorID;
         this.name = name;
         this.age = age;
@@ -28,7 +28,7 @@ public class Tutor {
         this.password = password;
     }
     
-    public Tutor(String name, String age, String phone, String gender, String email, String password) {
+    public Tutor(String name, int age, String phone, String gender, String email, String password) {
         this.name = name;
         this.age = age;
         this.phone = phone;
@@ -45,7 +45,7 @@ public class Tutor {
         return this.name;
     }
     
-    public String getAge(){
+    public int getAge(){
         return this.age;
     }
 

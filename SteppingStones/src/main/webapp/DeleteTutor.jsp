@@ -15,7 +15,9 @@
         
         <%
             String status = (String) request.getAttribute("status");
-            out.println(status);
+            if (status != null){
+                out.println(status);
+            }
         %>
     </body>
 </html>

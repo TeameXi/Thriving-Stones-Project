@@ -5,6 +5,8 @@
  */
 package controller;
 
+import entity.Tutor;
+import entity.Validation;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.RequestDispatcher;
@@ -15,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.FirebaseConnection;
 import model.TutorDAO;
+import model.UsersDAO;
 
 @WebServlet(name = "CreateTutorServlet", urlPatterns = {"/CreateTutorServlet"})
 public class CreateTutorServlet extends HttpServlet {
@@ -32,22 +35,29 @@ public class CreateTutorServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
 
-        String tutorID = request.getParameter("tutorID");
-        String name = request.getParameter("name");
-        int age = Integer.parseInt(request.getParameter("age"));
-        String gender = request.getParameter("gender");
-        String phone = request.getParameter("phone");
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
-        String password_rep = request.getParameter("password-rep");
+        try {
+            String tutorID = request.getParameter("tutorID");
+            String name = request.getParameter("name");
+            int age = Integer.parseInt(request.getParameter("age"));
+            String gender = request.getParameter("gender");
+            String phone = request.getParameter("phone");
+            String email = request.getParameter("email");
+            String password = request.getParameter("password");
 
-        FirebaseConnection.initFirebase();
+            FirebaseConnection.initFirebase();
 
-        if (password.equals(password_rep)) {
-            TutorDAO tDAO = new TutorDAO();
-//            tDAO.addTutor(tutorID, name, age, phone, gender, email, password);
-            request.setAttribute("status", "Added tutor successfully");
-        } else {
+            if (Validation.isValidGender(gender) && Validation.isValidPassword(password) && Validation.isValidEmail(email) && Validation.isValidID(tutorID)
+                    && Validation.isValidPhoneNo(phone)) {
+                TutorDAO tDAO = new TutorDAO();
+                Tutor tempTutor = new Tutor(name, age, phone, gender, email, password);
+                tDAO.addTutor(tutorID, tempTutor);
+                UsersDAO uDAO = new UsersDAO();
+                uDAO.addUser(tempTutor);
+                request.setAttribute("status", "Added tutor successfully");
+            } else {
+                request.setAttribute("status", "Failed to add tutor");
+            }
+        } catch (Exception e) {
             request.setAttribute("status", "Failed to add tutor");
         }
         RequestDispatcher view = request.getRequestDispatcher("CreateTutor.jsp");
