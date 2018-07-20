@@ -67,9 +67,15 @@ public class LoginServlet extends HttpServlet {
             if(user != null) {
                 String pwd = user.getPassword();
                 if(password.equals(pwd)) {
-                    session.setAttribute("user", user);
-                    RequestDispatcher view = request.getRequestDispatcher("HomePage.jsp");
-                    view.forward(request, response);
+                    if(user.getEmail().equals("admin")){
+                        session.setAttribute("user", user);
+                        RequestDispatcher view = request.getRequestDispatcher("HomePage.jsp");
+                        view.forward(request, response);
+                    }else{
+                        session.setAttribute("user", user);
+                        RequestDispatcher view = request.getRequestDispatcher("TutorHomepage.jsp");
+                        view.forward(request, response);
+                    }
                 }else{
                     System.out.println(pwd);
                     errors.put("error", "Incorrect Password");
