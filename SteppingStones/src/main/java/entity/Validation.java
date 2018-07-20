@@ -22,10 +22,33 @@ public class Validation {
         return !password.contains(" ") && password.length() >= 8;
     }
 
+    /**
+     * Method that validates the phone number format
+     *
+     * @param phoneNo phone number to validate
+     * @return true if phone number is of valid length and if it does not
+     * contain spacing, false otherwise
+     */
     public static boolean isValidPhoneNo(String phoneNo) {
+        try {
+            Integer.parseInt(phoneNo);
+        } catch (NumberFormatException e) {
+            return false;
+        }
         return !phoneNo.contains(" ") && phoneNo.length() == 8;
     }
-    
+
+    /**
+     * Method that validates the age format
+     *
+     * @param age age to validate
+     * @return true if age is an integer
+     * false otherwise
+     */
+    public static boolean isValidAge(int age) {
+        return (age >= 7 && age <= 70);
+    }
+
     /**
      * Method that validates the email format
      *
@@ -49,16 +72,29 @@ public class Validation {
         }
         return gender.charAt(0) == 'M' || gender.charAt(0) == 'F';
     }
-    
+
     /**
      * Method that validates the ID format
      *
      * @param ID id to validate
      * @return true if ID is valid, false otherwise
      */
-    public static boolean isValidID(String ID){
+    public static boolean isValidID(String ID) {
         ID = ID.toUpperCase();
-        return ID.matches("^[A-Z]{1}" + "[0-9]{7}" + "[A-Z]{1}$");
+        return ID.matches("^[STFG]{1}" + "[0-9]{7}" + "[A-Z]{1}$");
     }
 
+    public static boolean isValidAmt(String amt){
+        try {
+            Double.parseDouble(amt);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        return true;
+    }
+    
+    public static boolean isValidLevel(String level){
+        return level.matches("(Pri|Sec)" + " " + "[1-6]");
+    }
+    
 }

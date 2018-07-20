@@ -22,14 +22,14 @@
             %>
             <form action="CreateNewStudentServlet" method="post">
 
-                <div class="wrap-input100 validate-input m-b-23" data-validate = "Student ID is reauired">
+                <div class="wrap-input100 validate-input m-b-23" data-validate = "Student ID is required">
                     <span class="label-input100">Student ID</span>
                     <input class="input100" type="text" name="studentID" placeholder="Type Student ID" required>
                     <span class="focus-input100" data-symbol="&#xf207;"></span>
                 </div>
                 <br/>
 
-                <div class="wrap-input100 validate-input m-b-23" data-validate = "Name is reauired">
+                <div class="wrap-input100 validate-input m-b-23" data-validate = "Name is required">
                     <span class="label-input100">Student's name</span>
                     <input class="input100" type="text" name="studentName" placeholder="Type Name" required>
                     <span class="focus-input100" data-symbol="&#xf207;"></span>

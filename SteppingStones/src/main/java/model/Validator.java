@@ -5,6 +5,7 @@
  */
 package model;
 
+import entity.Validation;
 import java.util.ArrayList;
 
 /**
@@ -12,82 +13,72 @@ import java.util.ArrayList;
  * @author DEYU
  */
 public class Validator {
-    public static ArrayList<String> validateStudent(String studentID, int age, String gender, String lvl, String phone, String sub1, String sub2, String sub3){
+
+    public static ArrayList<String> validateStudent(String studentID, int age, String gender, String lvl, String phone, String sub1, String sub2, String sub3) {
         ArrayList<String> errors = new ArrayList<>();
-        
-        boolean validStudentID = idCheck(studentID);
-        if(!validStudentID){
+
+        if (!Validation.isValidID(studentID)) {
             errors.add("Invalid Student ID!");
         }
-        
-        boolean validAge = age > 0 && age < 99;
-        if(!validAge){
+
+        if (!Validation.isValidAge(age)) {
             errors.add("Invalid Age!");
         }
-        
-        boolean validGender = !(gender.equals("-1"));
-        if(!validGender){
+
+        if (!Validation.isValidGender(gender)) {
             errors.add("Please Select Gender!");
         }
-        
-        boolean validLevel = !(lvl.equals("-1"));
-        if(!validLevel){
+
+        if (!Validation.isValidLevel(lvl)) {
             errors.add("Please Select Academic Level!");
         }
-        
-        boolean validPhone = phoneCheck(phone);
-        if(!validPhone){
+
+        if (!Validation.isValidPhoneNo(phone)) {
             errors.add("Invalid Phone Number!");
         }
-        
-        boolean invalidSubject = sub1.equals(sub2) || sub1.equals(sub3)|| sub2.equals(sub3);
-        if(invalidSubject){
+
+        boolean invalidSubject = sub1.equals(sub2) || sub1.equals(sub3) || sub2.equals(sub3);
+        if (invalidSubject) {
             errors.add("Please choose different subjects for most recent school result");
         }
         return errors;
     }
-    
-    public static ArrayList<String> validateStudentWithAmt(String studentID, int age, String gender, String lvl, String phone, String reqAmt, String outstandingAmt){
+
+    public static ArrayList<String> validateStudentWithAmt(String studentID, int age, String gender, String lvl, String phone, String reqAmt, String outstandingAmt) {
         ArrayList<String> errors = new ArrayList<>();
-        
-        boolean validStudentID = idCheck(studentID);
-        if(!validStudentID){
+
+        if (!Validation.isValidID(studentID)) {
             errors.add("Invalid Student ID!");
         }
-        
-        boolean validAge = age > 0 && age < 99;
-        if(!validAge){
+
+        if (!Validation.isValidAge(age)) {
             errors.add("Invalid Age!");
         }
-        
-        boolean validGender = !(gender.equals("-1"));
-        if(!validGender){
+
+        if (!Validation.isValidGender(gender)) {
             errors.add("Please Select Gender!");
         }
-        
-        boolean validLevel = !(lvl.equals("-1"));
-        if(!validLevel){
+
+        if (!Validation.isValidLevel(lvl)) {
             errors.add("Please Select Academic Level!");
         }
-        
-        boolean validPhone = phoneCheck(phone);
-        if(!validPhone){
+
+        if (!Validation.isValidPhoneNo(phone)) {
             errors.add("Invalid Phone Number!");
         }
-        
-        boolean validReqAmt = amtCheck(reqAmt);
-        if(!validReqAmt){
+
+        if (!Validation.isValidAmt(reqAmt)) {
             errors.add("Invalid Required Amount!");
         }
-        
-        boolean validOutstandingAmt = amtCheck(outstandingAmt);
-        if(!validOutstandingAmt){
+
+        if (!Validation.isValidAmt(outstandingAmt)) {
             errors.add("Invalid Outsatnding Amount!");
         }
-        
+
         return errors;
     }
-    
+
+    /*
     public static boolean idCheck(String ID){
         char arrayID[] = new char[9];
         int arrayWeight[] = new int [7];
@@ -126,7 +117,7 @@ public class Validator {
         }
         return (arrayID[8] == lastChar);
     }
-    
+   
     public static boolean phoneCheck(String phone){
         if(phone.length() != 8){
             return false;
@@ -138,13 +129,14 @@ public class Validator {
         }
         return true;
     }
-    
-    public static boolean amtCheck(String amt){
-        try{
+     
+    public static boolean amtCheck(String amt) {
+        try {
             Double.parseDouble(amt);
-        }catch(NumberFormatException e){
+        } catch (NumberFormatException e) {
             return false;
         }
         return true;
     }
+     */
 }

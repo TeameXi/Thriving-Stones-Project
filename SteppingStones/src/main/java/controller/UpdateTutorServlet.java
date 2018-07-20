@@ -5,6 +5,7 @@
  */
 package controller;
 
+import entity.Validation;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -44,46 +45,29 @@ public class UpdateTutorServlet extends HttpServlet {
             String gender = request.getParameter("gender");
             String email = request.getParameter("email");
             String phone = (String) request.getParameter("phone");
-            
 
-            if(tutorID != null && !tutorID.equals("")){
-                if(name != null && !name.equals("")){
-                    updates.put("name", name);
-                }
-                
-                if(age > 0){
-                    updates.put("age", age);
-                }       
-                
-                if(email != null && !email.equals("")){
-                    updates.put("email", email);
-                }
-                
-                if(phone != null && !phone.equals("")){
-                    if(phone.length() == 8){
-                        updates.put("phone", phone);
-                    }
-                }
-                
-                if(gender != null && !gender.equals("")){
-                    String genderUpdate = gender.toUpperCase();
-                    if(genderUpdate.equals("F") || genderUpdate.equals("M")){
-                        updates.put("gender", gender);
-                    }
-                }
-                
-                if(!updates.isEmpty()){
-                    TutorDAO tutors = new TutorDAO();
-                    boolean status = tutors.updateTutor(tutorID, updates);
-                    if(status){
-                        out.println(1);
-                    }else{
-                        out.println(0);
-                    }
-                   
-                }
+            if (Validation.isValidGender(gender) && Validation.isValidEmail(email) && Validation.isValidID(tutorID)
+                    && Validation.isValidPhoneNo(phone) && Validation.isValidAge(age) && name != null && !name.equals("")) {
+                updates.put("name", name);
+                updates.put("email", email);
+                updates.put("phone", phone);
+                updates.put("gender", gender);
             }
-            
+
+            if (age > 0) {
+                updates.put("age", age);
+            }
+
+            if (!updates.isEmpty()) {
+                TutorDAO tutors = new TutorDAO();
+                boolean status = tutors.updateTutor(tutorID, updates);
+                if (status) {
+                    out.println(1);
+                } else {
+                    out.println(0);
+                }
+
+            }
 
         }
     }
