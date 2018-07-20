@@ -76,20 +76,7 @@ public class Retrieve_Update_StudentServlet extends HttpServlet {
         }finally{
             out.flush();
             out.close();
-        }
-       
-        
-//        request.setAttribute("StudentData", stu);
-//        request.setAttribute("StudentID", studentID);
-//        request.setAttribute("StudentClasses", classes);
-//        if(request.getParameter("retrieve") != null){
-//            RequestDispatcher view = request.getRequestDispatcher("Retrieve_Update_StudentByID.jsp");
-//            view.forward(request, response);
-//        }
-//        if(request.getParameter("update") != null){
-//            RequestDispatcher view = request.getRequestDispatcher("UpdateStudentDetails.jsp");
-//            view.forward(request, response);
-//        }      
+        }    
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

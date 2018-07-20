@@ -23,7 +23,7 @@
                 <form class="login100-form validate-form" action="CreateTutorServlet">
 
                     <div class="wrap-input100 validate-input m-b-23" data-validate = "Tutor ID is reauired">
-                        <span class="label-input100">Tutor's ID</span>
+                        <span class="label-input100">Tutor's NRIC</span>
                         <input class="input100" type="text" name="tutorID" placeholder="Type ID">
                         <span class="focus-input100" data-symbol="&#xf207;"></span>
                     </div>

@@ -50,11 +50,7 @@ public class DeleteStudentServlet extends HttpServlet {
             out.println(1);
         }else{
             out.println(0);
-        }
-        
-//        request.setAttribute("status", status);
-//        RequestDispatcher view = request.getRequestDispatcher("DeleteStudentByID.jsp");
-//        view.forward(request, response);     
+        }     
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
