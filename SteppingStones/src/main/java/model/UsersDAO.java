@@ -144,9 +144,9 @@ public class UsersDAO {
         while(iter.hasNext()){
             DataSnapshot data = (DataSnapshot) iter.next();
             Users user = data.getValue(Users.class);
-            user.setUsername(data.getKey());
             if(user.getEmail().equals(email)){
                 users = user;
+                System.out.println(user.getEmail());
             }            
         }
         return users;

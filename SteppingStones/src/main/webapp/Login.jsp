@@ -18,7 +18,7 @@
                 Map<String, String> error = (Map<String, String>) request.getSession().getAttribute("response");
                 session.invalidate();
                 %>
-                <script>alert('Login fail.\n<%= error.get("error")%>'   )</script><%
+                <script>alert('Login fail.\n<%= error.get("error")%>')</script><%
             }
         %>
         

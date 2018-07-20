@@ -50,7 +50,7 @@ public class ForgotPasswordServlet extends HttpServlet {
             UsersDAO userDAO = new UsersDAO();
             Users user =  userDAO.retrieveUserByEmail(email); 
             if (user != null) {
-                out.println(user.getUsername());
+                out.println(user.getEmail());
             }
             
             TutorDAO tutorDAO = new TutorDAO();           
