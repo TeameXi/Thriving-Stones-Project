@@ -10,14 +10,17 @@ import entity.Users;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import model.TutorDAO;
 
 /**
@@ -39,66 +42,53 @@ public class LoginServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        Map<String, String> authObj = new LinkedHashMap<>();
-            String status = "";
-            String message = "";
-            String username = request.getParameter("username");
-            String password = request.getParameter("password");
-            if (username == null) {
-                status = "error";
-                message = "Missing username";
-                
-            }
-            if (password == null) {
-                status = "error";
-                message = "Missing password";
-            }
-
-            if (username != null && username.isEmpty()) {
-                status = "error";
-                message = "Blank username";
-            }
-
-            if (password != null && password.isEmpty()) {
-                status = "error";
-                message = "Blank password";
-            }
-
-            if (!(status.equals("error"))) {
-                
-                List<Users> user =  UsersDAO.getUser(username);
-                
-                if (!user.isEmpty()) {
-                    if(user.get(0).authenticateUser(user.get(0), password)){
-                        try{
-                            if(TutorDAO.retrieveTutorByEmail(username)!= null){
-                            request.getSession(true).setAttribute("user", user.get(0));
-                            request.getRequestDispatcher("tutorHomepage.jsp").forward(request,response);
-                        }
-                        }catch(IndexOutOfBoundsException  e){
-                            request.getSession(true).setAttribute("user", user.get(0));
-                            request.getRequestDispatcher("HomePage.jsp").forward(request,response);
-                        }
-                        
+        HashMap<String, String> errors = new HashMap<>();
+        HttpSession session = request.getSession();
+                    
+        String email = request.getParameter("username");
+        String password = request.getParameter("password");
+        
+        if ((email == null || email.isEmpty()) && (password == null || password.isEmpty())) {
+            errors.put("error", "Missing Email & Password");
+        }
+        
+        if (email == null || email.isEmpty()) {
+            errors.put("error", "Missing Email & Password");
+        }
+        
+        if(password == null || password.isEmpty()){
+            errors.put("error", "Missing Password");
+        }
+        
+        if(errors.isEmpty()) {
+            UsersDAO users = new UsersDAO();
+            Users user = users.retrieveUserByEmail(email);
+            
+            if(user != null) {
+                String pwd = user.getPassword();
+                if(password.equals(pwd)) {
+                    if(user.getEmail().equals("admin")){
+                        session.setAttribute("user", user);
+                        RequestDispatcher view = request.getRequestDispatcher("HomePage.jsp");
+                        view.forward(request, response);
                     }else{
-                        status = "error";
-                        message = "Invalid password";
-                        authObj.put(status, message);
-                        request.getSession(true).setAttribute("response", authObj);
-                        request.getRequestDispatcher("Login.jsp").forward(request,response);
+                        session.setAttribute("user", user);
+                        RequestDispatcher view = request.getRequestDispatcher("TutorHomepage.jsp");
+                        view.forward(request, response);
                     }
-                } else {
-                    status = "error";
-                    message = "Invalid username";
-                    authObj.put(status, message);
-                    request.getSession(true).setAttribute("response", authObj);
-                    request.getRequestDispatcher("Login.jsp").forward(request,response);
+                }else{
+                    System.out.println(pwd);
+                    errors.put("error", "Incorrect Password");
+                    session.setAttribute("response", errors);
+                    RequestDispatcher view = request.getRequestDispatcher("Login.jsp");
+                    view.forward(request, response);
                 }
-            } else {
-                authObj.put(status, message);
-                request.getSession(true).setAttribute("response", authObj);
-                request.getRequestDispatcher("Login.jsp").forward(request,response);
             }
+        }else {
+            session.setAttribute("response", errors);
+            RequestDispatcher view = request.getRequestDispatcher("Login.jsp");
+            view.forward(request, response);
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

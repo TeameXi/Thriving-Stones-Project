@@ -205,7 +205,7 @@ public class TutorDAO {
         return tutors;
     }
 
-    public void removeTutor(String tutorID) {
+    public boolean removeTutor(String tutorID) {
         status = false;
         FirebaseConnection.initFirebase();
         // Get a reference to our posts
@@ -235,9 +235,11 @@ public class TutorDAO {
                 Logger.getLogger(TutorDAO.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        return status;
     }
 
-    public void updateTutor(String tutorID, Map<String, Object> updates) {
+    public boolean updateTutor(String tutorID, Map<String, Object> updates) {
+        status = false;
         FirebaseConnection.initFirebase();
         // Get a reference to our posts
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -252,9 +254,10 @@ public class TutorDAO {
             ref.child(toUpdate).setValue(valueToUpdate, new DatabaseReference.CompletionListener() {
                 @Override
                 public void onComplete(DatabaseError de, DatabaseReference dr) {
-                    System.out.println("success");
+                    status = true;
                 }
             });
         }
+        return status;
     }
 }

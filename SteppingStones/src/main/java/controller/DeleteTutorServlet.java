@@ -14,7 +14,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.FirebaseConnection;
 import model.TutorDAO;
+import model.UsersDAO;
 
 /**
  *
@@ -35,21 +37,19 @@ public class DeleteTutorServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            String tutorID = request.getParameter("tutorID");
-            
-            if (Validation.isValidID(tutorID)){
-                TutorDAO tutors = new TutorDAO();
-                tutors.removeTutor(tutorID);
-                request.setAttribute("status", "Deleted");
-                RequestDispatcher view = request.getRequestDispatcher("DeleteTutor.jsp");
-                view.forward(request, response);
-            }
-            
-            request.setAttribute("status", "Fail");
-            RequestDispatcher view = request.getRequestDispatcher("DeleteTutor.jsp");
-            view.forward(request, response);
+        PrintWriter out = response.getWriter();
+        String tutorID = request.getParameter("tutorID");
+
+        FirebaseConnection.initFirebase();
+        UsersDAO users = new UsersDAO();
+        users.deleteUser(tutorID);
+        TutorDAO tutors = new TutorDAO();
+        boolean status = tutors.removeTutor(tutorID);
+        
+        if(status == true){
+            out.println(1);
+        }else{
+            out.println(0);
         }
     }
 
