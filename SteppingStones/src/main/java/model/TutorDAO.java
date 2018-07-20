@@ -240,24 +240,25 @@ public class TutorDAO {
 
     public boolean updateTutor(String tutorID, Map<String, Object> updates) {
         status = false;
-        FirebaseConnection.initFirebase();
-        // Get a reference to our posts
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ref = database.getReference().child("tutors").child(tutorID);
-
-        Iterator iter = updates.keySet().iterator();
-
-        while (iter.hasNext()) {
-            String toUpdate = (String) iter.next();
-            System.out.println(toUpdate);
-            String valueToUpdate = (String) updates.get(toUpdate);
-            ref.child(toUpdate).setValue(valueToUpdate, new DatabaseReference.CompletionListener() {
-                @Override
-                public void onComplete(DatabaseError de, DatabaseReference dr) {
-                    status = true;
-                }
-            });
-        }
+        Tutor tutor = new Tutor((String)updates.get("name"), (int)updates.get("age"), (String)updates.get("phone"), (String)updates.get("gender"), (String)updates.get("email"), (String)updates.get("password"));
+       DatabaseReference ref = FirebaseDatabase.getInstance().getReference("tutors").child(tutorID); 
+      
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        
+        ref.setValue(tutor, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError de, DatabaseReference dr) {
+                System.out.println("Record saved!");
+                countDownLatch.countDown();
+                status = true;
+            }
+        });
+        try {
+            //wait for firebase to save record.
+            countDownLatch.await();
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }      
         return status;
     }
 }
