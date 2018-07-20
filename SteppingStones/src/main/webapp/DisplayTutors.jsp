@@ -228,7 +228,8 @@
     }
 </style>
 <div class="col-md-10">
-    <div style="margin: 20px;"><h3>Student Lists</h3></div>
+    <div style="margin: 20px;"><h3>Tutor Lists</h3></div>
+     <div class="row" id="errorMsg"></div>
     <span class="toggler active" data-toggle="grid"><span class="zmdi zmdi-view-dashboard"></span></span>
     <span class="toggler" data-toggle="list"><span class="zmdi zmdi-view-list"></span></span>
     <ul class="surveys grid">
@@ -237,15 +238,16 @@
             ArrayList<Tutor> tutors = tutuorDAO.retrieveAllTutors();
 
             if (tutors != null) {
-                for (int i = 0; i < tutors.size(); i++) {
-                    Tutor tu = tutors.get(i);
-                    out.println("<li class='survey-item'><span class='survey-country list-only'>"+tu.getGender()+"</span>");
-                    out.println("<span class='survey-name'><i class='zmdi zmdi-account'>&nbsp;&nbsp;</i>");
-                    out.println(tu.getName() + "</span>");
-                    out.println("<span class='survey-country grid-only'><i class='zmdi zmdi-pin'>&nbsp;&nbsp;</i>");
-                    out.println(tu.getEmail()+ "</span><br/>");
-                    out.println("<span class='survey-country'><i class='zmdi zmdi-graduation-cap'>&nbsp;&nbsp;</i>");
-                    out.println(tu.getAge() + "</span>");
+                for(Tutor tu: tutors) {
+                    int age = (Integer)tu.getAge();
+                    String id = tu.getTutorID();
+                    out.println("<li class='survey-item' id='tid_" +id+ "'><span class='survey-country list-only'><span id='gender_"+id+"'>"+tu.getGender()+"</span></span>");
+                    out.println("<span class='survey-name'><i class='zmdi zmdi-account'>&nbsp;&nbsp;</i><span id='name_"+id+"'>");
+                    out.println(tu.getName() + "</span></span>");
+                    out.println("<span class='survey-country grid-only'><i class='zmdi zmdi-email'>&nbsp;&nbsp;</i><span id='email_"+id+"'>");
+                    out.println(tu.getEmail()+ "</span></span><br/>");
+                    out.println("<span class='survey-country'><i class='zmdi zmdi-cake'>&nbsp;&nbsp;</i><span id='age_"+id+"'>");
+                    out.println(age + "</span></span>");
 
         %>
         <div class="pull-right">
@@ -264,19 +266,19 @@
 
 
                     <span class="survey-progress-label">
-                        <a href="#"><i class="zmdi zmdi-edit"></i></a>
+                        <a href="#editTutor" data-toggle="modal" data-target-id="<%=tu.getTutorID()%>"><i class="zmdi zmdi-edit"></i></a>
                     </span>
 
                     <span class="survey-completes">
-                        <a href="#"><i class="zmdi zmdi-delete"></i></a>
+                        <a href="#small" onclick="deleteTutor('<%=tu.getTutorID()%>')" data-toggle="modal"><i class="zmdi zmdi-delete"></i></a>
                     </span>
                 </span>
             </span>
 
 
             <%                    
-                        out.println("<span class='survey-end-date'><i class='zmdi zmdi-phone'>&nbsp;&nbsp;</i>");
-                        out.println(tu.getPhone() + "</span></div></li>");
+                        out.println("<span class='survey-end-date'><i class='zmdi zmdi-phone'>&nbsp;&nbsp;</i><span id='phone_"+id+"'>");
+                        out.println(tu.getPhone() + "</span></span></div></li>");
                     }
 
                 } else {
@@ -289,19 +291,198 @@
 </div>
 </div>
 
+<!-- Delete Dialog -->
+<div class="modal fade bs-modal-sm" id="small" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <span class="pc_title centered">Alert</span>
+            </div>
+            <div class="modal-body smaller-fonts centered">Are you sure you want to delete this item?</div>
+            <div class="modal-footer centered">
+                <a id="confirm_btn"><button type="button" class="small_button pw_button del_button autowidth">Yes, Remove</button></a>
+                <button type="button" class="small_button del_button pw_button autowidth" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- End of Delete -->
+
+<!-- Edit Dialog -->
+<div class="modal fade" id="editTutor" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <span class="pc_title centered">Edit Tutor</span>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class = "col-sm-4">
+                        <p class = "form-control-label">Name :</p>
+                    </div>
+                    <div class = "col-sm-8">
+                        <p><input type = "text" class = "form-control" id="name" value =""/></p>
+                        <input type="hidden" id="id" value="" />
+                    </div>
+                </div><br/>
+                
+                <div class="row">
+                    <div class = "col-sm-4">
+                        <p class = "form-control-label">Age :</p>
+                    </div>
+                    <div class = "col-sm-8">
+                        <p><input type ="text" class = "form-control" id="age" value =""/></p>
+                    </div>
+                </div><br/>
+                
+                <div class="row">
+                    <div class = "col-sm-4">
+                        <p class = "form-control-label">Gender :</p>
+                    </div>
+                    <div class = "col-sm-8">
+                        <p><select class="form-control" id="gender"><option value="F">Female</option><option value="M">Male</option></select></p>
+                    </div>
+                </div><br/>
+                
+           
+                
+                <div class="row">
+                    <div class = "col-sm-4">
+                        <p class = "form-control-label">Email :</p>
+                    </div>
+                    <div class = "col-sm-8">
+                        <p><input type ="text" class = "form-control" id="email"/></p>
+                    </div>
+                </div><br/>
+                
+                <div class="row">
+                    <div class = "col-sm-4">
+                        <p class = "form-control-label">Contact No :</p>
+                    </div>
+                    <div class = "col-sm-8">
+                        <p><input type ="text" class = "form-control" id="phone" value =""/></p>
+                    </div>
+                </div><br/>
+                
+               
+            </div>  
+
+            <div class="modal-footer spaced-top-small centered">
+                <button type="button" class="btn btn-success"  onclick="editTutor()">Save Changes</button>
+            </div>
+        </div>       
+    </div>
+</div>
+
+<!-- End of Edit -->
+
 <%@include file="footer.jsp"%>
-<script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+
 <script>
+    $(document).ready(function(){
+        $("#editTutor").on("show.bs.modal", function(e) {
+            var tutor_id = $(e.relatedTarget).data('target-id');   
+            $.ajax({
+               url: 'RetrieveTutorServlet',
+               dataType: 'JSON',
+               data: {tutorID: tutor_id},
+               success: function (data) {
+                  $("#id").val(tutor_id);
+                  $("#name").val(data["name"]);
+                  $("#age").val(data["age"]);
+                  $("#email").val(data["email"]);
+                  $("#gender").val(data["gender"]);
+                  $("#phone").val(data["phone"]);
+               }
+            });
+
+        });
+    });
+    
     (function () {
         $(function () {
             return $('[data-toggle]').on('click', function () {
                 var toggle;
                 toggle = $(this).addClass('active').attr('data-toggle');
                 $(this).siblings('[data-toggle]').removeClass('active');
-                return $('.surveys').removeClass('grid list').addClass(toggle);
+                if (toggle !== "modal") {
+                    return $('.surveys').removeClass('grid list').addClass(toggle);
+                }
             });
         });
-
     }).call(this);
+        
+    function deleteTutor(tutor_id) {
+        $("#confirm_btn").prop('onclick', null).off('click');
+        $("#confirm_btn").click(function () {
+            deleteTutorQueryAjax(tutor_id);
+        });
+    }
+        
+        
+    function deleteTutorQueryAjax(tutor_id) {
+        $('#small').modal('hide');
+        $("#tid_" + tutor_id).remove();
+        $.ajax({
+            type: 'POST',
+            url: 'DeleteTutorServlet',
+            dataType: 'JSON',
+            data: {tutorID: tutor_id},
+            success: function (data) {
+                if (data === 1) {
+                    $("#tid_" + tutor_id).remove();
+                    html = '<div class="alert alert-success col-md-5"><strong>Success!</strong> Deleted Student record successfully</div>';
+                } else {
+                    html = '<div class="alert alert-danger col-md-5"><strong>Sorry!</strong> Something went wrong</div>';
+                }
+
+                $("#errorMsg").html(html);
+                $('#errorMsg').fadeIn().delay(2000).fadeOut();
+            }
+        });
+    }
+    
+    
+    function editTutor(){
+        id = $("#id").val();
+        name = $("#name").val();
+        age =  $("#age").val();
+        email =  $("#email").val();      
+        gender = $("#gender").val();
+        phone  = $("#phone").val();
+        $('#editTutor').modal('hide');
+        
+        $.ajax({
+            type: 'POST',
+            url: 'UpdateTutorServlet',
+            dataType: 'JSON',
+            data: {tutorID: id,name:name,age:age,email:email,gender:gender,phone:phone},
+            success: function (data) {
+                if (data === 1) {
+                    $("#name_"+id).text(name);
+                    $("#email_"+id).text(email);
+                    $("#gender_"+id).text(gender);
+                    $("#phone_"+id).text(phone);
+                    $("#age_"+id).text(age);
+                    html = '<div class="alert alert-success col-md-5"><strong>Success!</strong> Update Tutor record successfully</div>';
+                } else {
+                    html = '<div class="alert alert-danger col-md-5"><strong>Sorry!</strong> Something went wrong</div>';
+                }
+
+                $("#errorMsg").html(html);
+                $('#errorMsg').fadeIn().delay(2000).fadeOut();
+            }
+        });
+    }
+    
+    
 </script>
+
   

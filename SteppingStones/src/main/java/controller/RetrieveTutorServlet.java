@@ -5,29 +5,24 @@
  */
 package controller;
 
-import entity.Student;
-import entity.Class;
+import entity.Tutor;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.ClassDAO;
 import model.FirebaseConnection;
-import model.StudentClassDAO;
-import model.StudentDAO;
+import model.TutorDAO;
 import org.json.JSONObject;
 
 /**
  *
- * @author DEYU
+ * @author MOH MOH SAN
  */
-@WebServlet(name = "Retrieve_Update_StudentServlet", urlPatterns = {"/Retrieve_Update_StudentServlet"})
-public class Retrieve_Update_StudentServlet extends HttpServlet {
+@WebServlet(name = "RetrieveTutorServlet", urlPatterns = {"/RetrieveTutorServlet"})
+public class RetrieveTutorServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -40,56 +35,33 @@ public class Retrieve_Update_StudentServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-//        response.setContentType("text/html;charset=UTF-8");
-        
-        PrintWriter out = response.getWriter();
-        
-        String studentID = request.getParameter("studentID");
-        
-        FirebaseConnection.initFirebase();
-        ArrayList<Student> stu = StudentDAO.retrieveStudentbyID(studentID);
-        ArrayList<String> classesID = StudentClassDAO.retrieveStudentClassesID(studentID);
-        ArrayList<Class> classes = ClassDAO.getClassesByClassesID(classesID);
-        
-        JSONObject obj = new JSONObject();
-        try{
-            for(Student currStu : stu){
-                String name = currStu.getName();
-                int age = currStu.getAge();
-                String gender = currStu.getGender();
-                String lvl = currStu.getLevel();
-                String address = currStu.getAddress();
-                String phone = currStu.getPhone();
-                double required_amount = currStu.getReqAmt();
-                double outstanding_amount = currStu.getOutstandingAmt();
+        response.setContentType("text/html; charset=utf-8");
+        try (PrintWriter out = response.getWriter()) {
+          
+            JSONObject obj = new JSONObject();
+            String tutorID = request.getParameter("tutorID");
+            FirebaseConnection.initFirebase();
+            TutorDAO tutorDao = new TutorDAO();
+            Tutor tu = tutorDao.retrieveSpecificTutor(tutorID);
+            if(tu != null){
+                String name = tu.getName();
+                int age = tu.getAge();
+                String gender = tu.getGender();
+                String email = tu.getEmail();
+                String phone = tu.getPhone();
                 obj.put("name",name);
                 obj.put("age",age);
                 obj.put("gender",gender);
-                obj.put("lvl", lvl);
-                obj.put("address", address);
+                obj.put("email", email);
                 obj.put("phone", phone);
-                obj.put("r_amount", required_amount);
-                obj.put("o_amount",outstanding_amount);
-
-            }      
+               
+            }
+            
             out.println(obj);
-        }finally{
-            out.flush();
-            out.close();
-        }
        
+        }
         
-//        request.setAttribute("StudentData", stu);
-//        request.setAttribute("StudentID", studentID);
-//        request.setAttribute("StudentClasses", classes);
-//        if(request.getParameter("retrieve") != null){
-//            RequestDispatcher view = request.getRequestDispatcher("Retrieve_Update_StudentByID.jsp");
-//            view.forward(request, response);
-//        }
-//        if(request.getParameter("update") != null){
-//            RequestDispatcher view = request.getRequestDispatcher("UpdateStudentDetails.jsp");
-//            view.forward(request, response);
-//        }      
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

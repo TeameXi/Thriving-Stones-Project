@@ -259,13 +259,15 @@
             if (students != null) {
                 for (int i = 0; i < students.size(); i++) {
                     Student stu = students.get(i);
-                    out.println("<li class='survey-item' id='sid_" + stu.getStudentID() + "'><span class='survey-country list-only'>SG</span>");
-                    out.println("<span class='survey-name'><i class='zmdi zmdi-account'>&nbsp;&nbsp;</i>");
-                    out.println(stu.getName() + "</span>");
-                    out.println("<span class='survey-country grid-only'><i class='zmdi zmdi-pin'>&nbsp;&nbsp;</i>");
-                    out.println(stu.getAddress() + "</span><br/>");
-                    out.println("<span class='survey-country'><i class='zmdi zmdi-graduation-cap'>&nbsp;&nbsp;</i>");
-                    out.println(stu.getLevel() + "</span>");
+                    int age = (Integer)stu.getAge();
+                    String id = stu.getStudentID();
+                    out.println("<li class='survey-item' id='sid_" + id + "'><span class='survey-country list-only'>SG</span>");
+                    out.println("<span class='survey-name'><i class='zmdi zmdi-account'>&nbsp;&nbsp;</i><span id='name_"+id+"'>");
+                    out.println(stu.getName() + "</span></span>");
+                    out.println("<span class='survey-country grid-only'><i class='zmdi zmdi-pin'>&nbsp;&nbsp;</i><span id='address_"+id+"'>");
+                    out.println(stu.getAddress() + "</span></span><br/>");
+                    out.println("<span class='survey-country'><i class='zmdi zmdi-graduation-cap'>&nbsp;&nbsp;</i><span id='lvl_"+id+"'>");
+                    out.println(stu.getLevel() + "</span></span>");
 
 
         %>
@@ -295,8 +297,8 @@
             </span>
 
 
-            <%          out.println("<span class='survey-end-date'><i class='zmdi zmdi-phone'>&nbsp;&nbsp;</i>");
-                        out.println(stu.getPhone() + "</span></div></li>");
+            <%          out.println("<span class='survey-end-date'><i class='zmdi zmdi-phone'>&nbsp;&nbsp;</i><span id='phone_"+id+"'>");
+                        out.println(stu.getPhone() + "</span></span></div></li>");
                     }
 
                 } else {
@@ -368,7 +370,7 @@
                 
                 <div class="row">
                     <div class = "col-sm-4">
-                        <p class = "form-control-label">Gender :</p>
+                        <p class = "form-control-label">Level :</p>
                     </div>
                     <div class = "col-sm-8">
                         <p><input type ="text" class = "form-control" id="lvl" value =""/></p>
@@ -477,7 +479,7 @@
             dataType: 'JSON',
             data: {studentID: student_id},
             success: function (data) {
-                if (data == 1) {
+                if (data === 1) {
                     $("#sid_" + student_id).remove();
                     html = '<div class="alert alert-success col-md-5"><strong>Success!</strong> Deleted Student record successfully</div>';
                 } else {
@@ -493,14 +495,28 @@
     
     function editStudent(){
         id = $("#id").val();
+        name = $("#name").val();
+        age =  $("#age").val();
+        gender = $("#gender").val();
+        lvl = $("#lvl").val();
+        address = $("#address").val();
+        phone  = $("#phone").val();
+        r_amount =  $("#r_amount").val(); 
+        o_amount =  $("#o_amount").val();    
+        
+        $('#editStudent').modal('hide');
         $.ajax({
             type: 'POST',
-            url: 'DeleteStudentServlet',
+            url: 'UpdateStudentServlet',
             dataType: 'JSON',
-            data: {studentID: id},
+            data: {studentID: id,name:name,age:age,gender:gender,lvl:lvl,address:address,phone:phone,r_amount:r_amount,o_amount:o_amount},
             success: function (data) {
-                if (data == 1) {
-                    $("#sid_" + student_id).remove();
+                if (data === 1) {
+                    $("#name_"+id).text(name);
+                    $("#address_"+id).text(address);
+                    $("#lvl_"+id).text(lvl);
+                    $("#phone_"+id).text(phone);
+                    $("#age_"+id).text(age);
                     html = '<div class="alert alert-success col-md-5"><strong>Success!</strong> Update Student record successfully</div>';
                 } else {
                     html = '<div class="alert alert-danger col-md-5"><strong>Sorry!</strong> Something went wrong</div>';

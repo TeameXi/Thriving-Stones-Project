@@ -5,10 +5,9 @@
  */
 package controller;
 
+import entity.Student;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -36,11 +35,10 @@ public class UpdateStudentServlet extends HttpServlet {
             throws ServletException, IOException {
 
         try (PrintWriter out = response.getWriter()) {
-            Map<String, Object> updates = new HashMap<>();
                     
             String studentID = request.getParameter("studentID");
             String name = request.getParameter("name");
-            String age = (String) request.getParameter("age");
+            int age = Integer.parseInt(request.getParameter("age"));
             String gender = request.getParameter("gender");
             String lvl = request.getParameter("lvl");
             String address = request.getParameter("address");
@@ -48,59 +46,15 @@ public class UpdateStudentServlet extends HttpServlet {
             Double r_amount = Double.parseDouble(request.getParameter("r_amount"));
             Double o_amount = Double.parseDouble(request.getParameter("o_amount"));
             
-
-            if(studentID != null && !studentID.equals("")){
-                if(name != null && !name.equals("")){
-                    updates.put("name", name);
-                }
-                
-                if(age != null && !age.equals("")){
-                    updates.put("age", age);
-                }
-                
-                
-                if(lvl != null && !lvl.equals("")){
-                    updates.put("level", gender);
-                }        
-                
-                if(address != null && !address.equals("")){
-                    updates.put("address", address);
-                }
-                
-                if(phone != null && !phone.equals("")){
-                    if(phone.length() == 8){
-                        updates.put("phone", phone);
-                    }
-                }
-                
-                if(gender != null && !gender.equals("")){
-                    String genderUpdate = gender.toUpperCase();
-                    if(genderUpdate.equals("F") || genderUpdate.equals("M")){
-                        updates.put("gender", gender);
-                    }
-                }
-                
-                if(r_amount != null){
-                    updates.put("reqAmt",r_amount);
-                }
-                
-                if(o_amount != null){
-                    updates.put("outstandingAmt",o_amount);
-                }
-                
-                if(!updates.isEmpty()){
-                    StudentDAO student = new StudentDAO();
-                    boolean status = student.updateStudent(studentID, updates);
-                    if(status){
-                        out.println(1);
-                    }else{
-                        out.println(0);
-                    }
-                   
-                }
-            }
+            Student student = new Student(name,age,gender,lvl,address,phone,r_amount,o_amount);
             
-
+            StudentDAO studentDao = new StudentDAO();
+            boolean status = studentDao.updateStudent(studentID, student);
+            if(status){
+                out.println(1);
+            }else{
+                out.println(0);
+            }
         }
     }
 

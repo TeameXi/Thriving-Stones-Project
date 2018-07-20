@@ -150,26 +150,26 @@ public class StudentDAO {
         return tutors;
     } 
     
-    public boolean updateStudent(String studentID, Map<String, Object> updates){
-       
-        FirebaseConnection.initFirebase();
-        // Get a reference to our posts
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ref = database.getReference().child("students").child(studentID);
+    public boolean updateStudent(String studentID,Student student){
+       updatedStatus = false;
+       DatabaseReference ref = FirebaseDatabase.getInstance().getReference("students").child(studentID); 
+      
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
         
-        Iterator iter = updates.keySet().iterator();
-        
-        while(iter.hasNext()){
-            String toUpdate = (String) iter.next();
-            System.out.println(toUpdate);
-            String valueToUpdate = (String) updates.get(toUpdate);
-            ref.child(toUpdate).setValue(valueToUpdate, new DatabaseReference.CompletionListener() {
-                @Override
-                public void onComplete(DatabaseError de, DatabaseReference dr) {
-                    updatedStatus = true;
-                }
-            });
-        }
+        ref.setValue(student, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError de, DatabaseReference dr) {
+                System.out.println("Record saved!");
+                countDownLatch.countDown();
+                updatedStatus = true;
+            }
+        });
+        try {
+            //wait for firebase to save record.
+            countDownLatch.await();
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }      
         
         return updatedStatus;
     }
