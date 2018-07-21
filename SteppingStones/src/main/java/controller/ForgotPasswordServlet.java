@@ -54,7 +54,7 @@ public class ForgotPasswordServlet extends HttpServlet {
             }
             
             TutorDAO tutorDAO = new TutorDAO();           
-            Tutor tutor =  tutorDAO.getTutorByEmail(email);           
+            Tutor tutor =  tutorDAO.retrieveSpecificTutor(email);           
 
             //out.print(user.get(0).getUsername());
                 if (tutor != null) {

@@ -40,9 +40,10 @@ public class RetrieveTutorServlet extends HttpServlet {
           
             JSONObject obj = new JSONObject();
             String tutorID = request.getParameter("tutorID");
-            FirebaseConnection.initFirebase();
+            System.out.println(tutorID);
             TutorDAO tutorDao = new TutorDAO();
             Tutor tu = tutorDao.retrieveSpecificTutor(tutorID);
+            System.out.println(tu.getEmail() + " " + tu.getName());
             if(tu != null){
                 String name = tu.getName();
                 int age = tu.getAge();

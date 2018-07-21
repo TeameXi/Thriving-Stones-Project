@@ -5,260 +5,169 @@
  */
 package model;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.UserRecord;
-import com.google.firebase.auth.UserRecord.CreateRequest;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import entity.Tutor;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class TutorDAO {
-
-    private DataSnapshot dataRequired;
-    private volatile Boolean status = false;
-
     public void addTutor(String tutorID, Tutor tutor) {
-        FirebaseConnection.initFirebase();
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ref = database.getReference().child("tutors").child(tutorID);
-
-        ref.setValue(tutor, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError de, DatabaseReference dr) {
-                System.out.println("success");
-            }
-        });
-
-        CreateRequest request = new CreateRequest().setEmail(tutor.getEmail()).setPassword(tutor.getPassword());
+        Gson gson = new GsonBuilder().create();
+        
         try {
-            UserRecord userRecord = FirebaseAuth.getInstance().createUser(request);
-        } catch (FirebaseAuthException ex) {
+            String urlString = "https://team-exi-thriving-stones.firebaseio.com/tutors/" + tutorID + ".json";
+            URL url = new URL(urlString);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("PUT");
+            connection.setDoOutput(true);
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setRequestProperty("Accept", "application/json");
+            String userData = gson.toJson(tutor);
+            OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
+            writer.write(userData);
+            writer.flush();
+            writer.close();
+        } catch (Exception ex) {
             Logger.getLogger(TutorDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public Tutor retrieveSpecificTutor(final String id) {
-        FirebaseConnection.initFirebase();
-        // Get a reference to our posts
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ref = database.getReference().child("tutors");
-
-        // Attach a listener to read the data at our posts reference
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Iterator iter = dataSnapshot.getChildren().iterator();
-                while (iter.hasNext()) {
-                    DataSnapshot data = (DataSnapshot) iter.next();
-                    if (data.getKey().equals(id)) {
-                        dataRequired = data;
-                        status = true;
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                System.out.println("The read failed: " + databaseError.getCode());
-            }
-        });
-
-        while (!status) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(TutorDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+    public Tutor retrieveSpecificTutor(String id) {
+        Gson gson = new GsonBuilder().create();
+        
+        try {
+            String urlString = "https://team-exi-thriving-stones.firebaseio.com/tutors/" + id + ".json";
+            URL url = new URL(urlString);
+            System.out.println(urlString);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(
+                            connection.getInputStream()));
+            String jsonString = reader.readLine();
+            System.out.println(jsonString);
+            Tutor tutor = gson.fromJson(jsonString, Tutor.class);
+            tutor.setID(id);
+            reader.close();
+            System.out.println(connection.getResponseCode());
+            return tutor;
+        } catch (Exception ex) {
+            Logger.getLogger(TutorDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-        Tutor tutor = dataRequired.getValue(Tutor.class);
-        tutor.setID(id);
-        return tutor;
+        return null;
     }
 
     public static Tutor retrieveTutorByEmail(final String email) {
-        final List<Tutor> tutorList = new ArrayList<>();
-        final CountDownLatch done = new CountDownLatch(1);
-        FirebaseConnection.initFirebase();
-        // Get a reference to our posts
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ref = database.getReference().child("tutors");
-        System.out.println("-----------retrieve tutor ----------");
-        // Attach a listener to read the data at our posts reference
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                tutorList.clear();
-                System.out.println(dataSnapshot.toString());
-                Iterator iter = dataSnapshot.getChildren().iterator();
-                while (iter.hasNext()) {
-                    DataSnapshot data = (DataSnapshot) iter.next();
-                    Tutor tutor = data.getValue(Tutor.class);
-                    if (tutor != null && tutor.getEmail().equals(email)) {
-                        tutorList.add(tutor);
-                        System.out.println(tutorList.toString());
-                    }
-                }
-                done.countDown();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                System.out.println("The read failed: " + databaseError.getCode());
-            }
-        });
+        Gson gson = new GsonBuilder().create();
+        
         try {
-            done.await();
-        } catch (InterruptedException ex) {
+            URL userURL = new URL("https://team-exi-thriving-stones.firebaseio.com/tutors.json");
+            URLConnection connection = userURL.openConnection();
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(
+                            connection.getInputStream()));
+            String jsonString = reader.readLine();
+            JsonElement jelement = new JsonParser().parse(jsonString);
+            JsonObject  jobject = jelement.getAsJsonObject();
+            Set entries = jobject.keySet();
+            Iterator iter = entries.iterator();
+            while(iter.hasNext()){
+                String tutor = (String) iter.next();
+                JsonElement userDataString = jobject.get(tutor);
+                Tutor tutorToReturn = gson.fromJson(userDataString, Tutor.class);
+                if(tutorToReturn.getEmail().equals(email)) {
+                    tutorToReturn.setID(tutor);
+                    return tutorToReturn;
+                }
+            }
+            reader.close();
+        } catch (Exception ex) {
             Logger.getLogger(TutorDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return tutorList.get(0);
-    }
-    
-    public Tutor getTutorByEmail(final String email) {
-        FirebaseConnection.initFirebase();
-        // Get a reference to our posts
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ref = database.getReference().child("tutors");
-
-        // Attach a listener to read the data at our posts reference
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                dataRequired = dataSnapshot;
-                status = true;
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                System.out.println("The read failed: " + databaseError.getCode());
-            }
-        });
-
-        while (!status) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(TutorDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        Tutor tutors = null;
-        
-        Iterator iter = dataRequired.getChildren().iterator();
-        while(iter.hasNext()){
-            DataSnapshot data = (DataSnapshot) iter.next();
-            Tutor tutor = data.getValue(Tutor.class);
-            tutor.setID(data.getKey());
-            if(tutor.getEmail().equals(email)){
-                tutors = tutor;
-            }            
-        }
-        return tutors;
+        return null;
     }
 
     public ArrayList<Tutor> retrieveAllTutors() {
-        FirebaseConnection.initFirebase();
-        // Get a reference to our posts
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ref = database.getReference().child("tutors");
-
-        // Attach a listener to read the data at our posts reference
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                dataRequired = dataSnapshot;
-                status = true;
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                System.out.println("The read failed: " + databaseError.getCode());
-            }
-        });
-
-        while (!status) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(TutorDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+        Gson gson = new GsonBuilder().create();
         ArrayList<Tutor> tutors = new ArrayList<>();
-
-        Iterator iter = dataRequired.getChildren().iterator();
-        while (iter.hasNext()) {
-            DataSnapshot data = (DataSnapshot) iter.next();
-            Tutor tutor = data.getValue(Tutor.class);
-            tutor.setID(data.getKey());
-            tutors.add(tutor);
+        
+        try {
+            URL userURL = new URL("https://team-exi-thriving-stones.firebaseio.com/tutors.json");
+            URLConnection connection = userURL.openConnection();
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(
+                            connection.getInputStream()));
+            String jsonString = reader.readLine();
+            JsonElement jelement = new JsonParser().parse(jsonString);
+            JsonObject  jobject = jelement.getAsJsonObject();
+            Set entries = jobject.keySet();
+            Iterator iter = entries.iterator();
+            while(iter.hasNext()){
+                String user = (String) iter.next();
+                JsonElement userDataString = jobject.get(user);
+                Tutor tutor = gson.fromJson(userDataString, Tutor.class);
+                tutor.setID(user);
+                tutors.add(tutor);
+            }
+            reader.close();
+        } catch (Exception ex) {
+            Logger.getLogger(TutorDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return tutors;
     }
 
-    public boolean removeTutor(String tutorID) {
-        status = false;
-        FirebaseConnection.initFirebase();
-        // Get a reference to our posts
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ref = database.getReference().child("tutors");
-
-        Tutor tutor = retrieveSpecificTutor(tutorID);
+    public boolean updateTutor(String tutorID, Map<String, Object> updates) {
+        Gson gson = new GsonBuilder().create();
+        
         try {
-            UserRecord userRecord = FirebaseAuth.getInstance().getUserByEmail(tutor.getEmail());
-            FirebaseAuth.getInstance().deleteUser(userRecord.getUid());
-        } catch (FirebaseAuthException ex) {
+            String urlString = "https://team-exi-thriving-stones.firebaseio.com/tutors/" + tutorID + "/.json";
+            URL url = new URL(urlString);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestProperty("X-HTTP-Method-Override", "PATCH");
+            connection.setRequestMethod("POST");
+            connection.setDoOutput(true);
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setRequestProperty("Accept", "application/json");
+            String userData = gson.toJson(updates);
+            OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
+            writer.write(userData);
+            writer.flush();
+            writer.close();
+            return true;
+        } catch (Exception ex) {
             Logger.getLogger(TutorDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        ref.child(tutorID).removeValue(new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError de, DatabaseReference dr) {
-                System.out.println("SUCCESSS");
-                status = true;
-            }
-        });
-
-        while (!status) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(TutorDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        return status;
+        return false;
     }
-
-    public boolean updateTutor(String tutorID, Map<String, Object> updates) {
-        status = false;
-        Tutor tutor = new Tutor((String)updates.get("name"), (int)updates.get("age"), (String)updates.get("phone"), (String)updates.get("gender"), (String)updates.get("email"), (String)updates.get("password"));
-       DatabaseReference ref = FirebaseDatabase.getInstance().getReference("tutors").child(tutorID); 
-      
-        final CountDownLatch countDownLatch = new CountDownLatch(1);
-        
-        ref.setValue(tutor, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError de, DatabaseReference dr) {
-                System.out.println("Record saved!");
-                countDownLatch.countDown();
-                status = true;
-            }
-        });
+    
+    public boolean removeTutor(String tutorID) {
         try {
-            //wait for firebase to save record.
-            countDownLatch.await();
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
-        }      
-        return status;
+            String urlString = "https://team-exi-thriving-stones.firebaseio.com/tutors/" + tutorID + ".json";
+            System.out.println(urlString + " HALP LA");
+            URL url = new URL(urlString);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded" );
+            connection.setRequestMethod("DELETE");
+            connection.setDoOutput(true);
+            connection.connect();
+            System.out.println(connection.getResponseCode() + " HALP LA");
+            return true;
+        } catch (Exception ex) {
+            Logger.getLogger(TutorDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
     }
 }

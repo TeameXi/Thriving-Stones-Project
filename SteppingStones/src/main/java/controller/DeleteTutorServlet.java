@@ -39,8 +39,7 @@ public class DeleteTutorServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         String tutorID = request.getParameter("tutorID");
-
-        FirebaseConnection.initFirebase();
+        
         UsersDAO users = new UsersDAO();
         users.deleteUser(tutorID);
         TutorDAO tutors = new TutorDAO();

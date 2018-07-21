@@ -41,8 +41,8 @@ public class UsersDAO {
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setRequestProperty("Accept", "application/json");
             JsonObject userData = new JsonObject();
-            userData.addProperty("email", "huixin@steppingstones.com.sg");
-            userData.addProperty("password", "huixin");
+            userData.addProperty("email", tutor.getEmail());
+            userData.addProperty("password", tutor.getPassword());
             OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
             writer.write(userData.toString());
             writer.flush();
@@ -86,7 +86,9 @@ public class UsersDAO {
                 String user = (String) iter.next();
                 JsonElement userDataString = jobject.get(user);
                 Users userToReturn = gson.fromJson(userDataString, Users.class);
-                return userToReturn;
+                if(userToReturn.getEmail().equals(email)) {
+                    return userToReturn;
+                }
             }
             reader.close();
         } catch (Exception ex) {
