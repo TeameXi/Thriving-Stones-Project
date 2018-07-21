@@ -5,11 +5,6 @@
  */
 package model;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -19,17 +14,10 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import static model.FirebaseConnection.initFirebase;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -63,6 +51,20 @@ public class UsersDAO {
     }
 
     public void deleteUser(String tutorID) {
+        try {
+            TutorDAO tutors = new TutorDAO();
+            String email = tutors.retrieveSpecificTutor(tutorID).getEmail();
+            String key = email.substring(0,email.indexOf("@"));
+            String urlString = "https://team-exi-thriving-stones.firebaseio.com/users/" + key + ".json";
+            URL url = new URL(urlString);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded" );
+            connection.setRequestMethod("DELETE");
+            connection.setDoOutput(true);
+            connection.connect();
+        } catch (Exception ex) {
+            Logger.getLogger(UsersDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
      public Users retrieveUserByEmail(final String email) {
