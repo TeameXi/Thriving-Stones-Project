@@ -17,6 +17,8 @@ import entity.Users;
 import entity.Tutor;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -36,88 +38,31 @@ import java.util.Set;
  * @author Riana
  */
 public class UsersDAO {
-    private DataSnapshot dataRequired;   
-    private volatile Boolean status= false;
-    
-    public static List<Users> getUser(final String username) {
-        final List<Users> userList = new ArrayList<>();
-        final CountDownLatch done = new CountDownLatch(1);
-        initFirebase();
-        // Get a reference to our posts
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ref = database.getReference().child("users");;
-        // Attach a listener to read the data at our posts reference
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                userList.clear();
-                for(DataSnapshot postSnapshot : dataSnapshot.getChildren()){
-                    Users users = postSnapshot.getValue(Users.class);
-                    if(users != null && users.getEmail().equals(username)){
-                        userList.add(users);
-                    }
-                }
-                System.out.println("user " + userList);
-                done.countDown();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                System.out.println("The read failed: " + databaseError.getCode());
-            }
-
-        });
-        try { 
-            done.await();
-        } catch (InterruptedException ex) {
+    public void addUser(Tutor tutor) {
+        String email = tutor.getEmail();
+        String key = email.substring(0,email.indexOf("@"));
+        
+        try {
+            String urlString = "https://team-exi-thriving-stones.firebaseio.com/users/" + key + ".json";
+            URL url = new URL(urlString);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("PUT");
+            connection.setDoOutput(true);
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setRequestProperty("Accept", "application/json");
+            JsonObject userData = new JsonObject();
+            userData.addProperty("email", "huixin@steppingstones.com.sg");
+            userData.addProperty("password", "huixin");
+            OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
+            writer.write(userData.toString());
+            writer.flush();
+            writer.close();
+        } catch (Exception ex) {
             Logger.getLogger(UsersDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return userList;
-    }
-
-    public void addUser(Tutor tutor) {
-        FirebaseConnection.initFirebase();
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        int index = tutor.getEmail().indexOf("@");
-        String key = tutor.getEmail().substring(0, index);
-        DatabaseReference ref = database.getReference().child("users").child(key);
-
-        Map<String, Object> updates = new HashMap<>();
-        updates.put("email", tutor.getEmail());
-        updates.put("password", tutor.getPassword());
-
-        ref.setValue(updates, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError de, DatabaseReference dr) {
-                System.out.println("success");
-            }
-        });
     }
 
     public void deleteUser(String tutorID) {
-        status = false;
-        FirebaseConnection.initFirebase();
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference toDelete = database.getReference().child("users");
-        TutorDAO tDAO = new TutorDAO();
-        Tutor temp = tDAO.retrieveSpecificTutor(tutorID);
-        String userName = temp.getEmail().substring(0, temp.getEmail().indexOf("@"));
-        
-        toDelete.child(userName).removeValue(new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError de, DatabaseReference dr) {
-                System.out.println("SUCCESSS");
-                status = true;
-            }
-        });
-
-        while (!status) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(TutorDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
     }
     
      public Users retrieveUserByEmail(final String email) {
