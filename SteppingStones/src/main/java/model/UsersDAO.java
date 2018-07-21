@@ -10,8 +10,16 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import entity.Users;
 import entity.Tutor;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +29,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import static model.FirebaseConnection.initFirebase;
 import java.util.Iterator;
+import java.util.Set;
 
 /**
  *
@@ -112,43 +121,30 @@ public class UsersDAO {
     }
     
      public Users retrieveUserByEmail(final String email) {
-        FirebaseConnection.initFirebase();
-        // Get a reference to our posts
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ref = database.getReference().child("users");
-
-        // Attach a listener to read the data at our posts reference
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                dataRequired = dataSnapshot;
-                status = true;
+        try {
+            URL userURL = new URL("https://team-exi-thriving-stones.firebaseio.com/users.json");
+            URLConnection userConnection = userURL.openConnection();
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(
+                            userConnection.getInputStream()));
+            String jsonString = reader.readLine();
+            JsonElement jelement = new JsonParser().parse(jsonString);
+            JsonObject  jobject = jelement.getAsJsonObject();
+            Set entries = jobject.keySet();
+            Iterator iter = entries.iterator();
+            while(iter.hasNext()){
+                String user = (String) iter.next();
+                JsonElement userDataString = jobject.get(user);
+                JsonObject userData = userDataString.getAsJsonObject();
+                String userEmail = userData.get("email").getAsString();
+                String pwd = userData.get("password").getAsString();
+                Users userToReturn = new Users(userEmail, pwd);
+                return userToReturn;
             }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                System.out.println("The read failed: " + databaseError.getCode());
-            }
-        });
-
-        while (!status) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(TutorDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            reader.close();
+        } catch (Exception ex) {
+            Logger.getLogger(UsersDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-        Users users = null;
-        
-        Iterator iter = dataRequired.getChildren().iterator();
-        while(iter.hasNext()){
-            DataSnapshot data = (DataSnapshot) iter.next();
-            Users user = data.getValue(Users.class);
-            if(user.getEmail().equals(email)){
-                users = user;
-                System.out.println(user.getEmail());
-            }            
-        }
-        return users;
+        return null;
     }
 }
