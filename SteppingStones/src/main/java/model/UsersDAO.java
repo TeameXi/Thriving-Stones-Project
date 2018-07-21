@@ -5,6 +5,8 @@
  */
 package model;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -68,6 +70,7 @@ public class UsersDAO {
     }
     
      public Users retrieveUserByEmail(final String email) {
+        Gson gson = new GsonBuilder().create();
         try {
             URL userURL = new URL("https://team-exi-thriving-stones.firebaseio.com/users.json");
             URLConnection userConnection = userURL.openConnection();
@@ -82,10 +85,7 @@ public class UsersDAO {
             while(iter.hasNext()){
                 String user = (String) iter.next();
                 JsonElement userDataString = jobject.get(user);
-                JsonObject userData = userDataString.getAsJsonObject();
-                String userEmail = userData.get("email").getAsString();
-                String pwd = userData.get("password").getAsString();
-                Users userToReturn = new Users(userEmail, pwd);
+                Users userToReturn = gson.fromJson(userDataString, Users.class);
                 return userToReturn;
             }
             reader.close();
