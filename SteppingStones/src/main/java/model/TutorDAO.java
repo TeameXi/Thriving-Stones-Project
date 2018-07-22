@@ -25,9 +25,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class TutorDAO {
+
     public void addTutor(String tutorID, Tutor tutor) {
         Gson gson = new GsonBuilder().create();
-        
+
         try {
             String urlString = "https://team-exi-thriving-stones.firebaseio.com/tutors/" + tutorID + ".json";
             URL url = new URL(urlString);
@@ -48,7 +49,7 @@ public class TutorDAO {
 
     public Tutor retrieveSpecificTutor(String id) {
         Gson gson = new GsonBuilder().create();
-        
+
         try {
             String urlString = "https://team-exi-thriving-stones.firebaseio.com/tutors/" + id + ".json";
             URL url = new URL(urlString);
@@ -72,7 +73,7 @@ public class TutorDAO {
 
     public static Tutor retrieveTutorByEmail(final String email) {
         Gson gson = new GsonBuilder().create();
-        
+
         try {
             URL userURL = new URL("https://team-exi-thriving-stones.firebaseio.com/tutors.json");
             URLConnection connection = userURL.openConnection();
@@ -81,14 +82,14 @@ public class TutorDAO {
                             connection.getInputStream()));
             String jsonString = reader.readLine();
             JsonElement jelement = new JsonParser().parse(jsonString);
-            JsonObject  jobject = jelement.getAsJsonObject();
+            JsonObject jobject = jelement.getAsJsonObject();
             Set entries = jobject.keySet();
             Iterator iter = entries.iterator();
-            while(iter.hasNext()){
+            while (iter.hasNext()) {
                 String tutor = (String) iter.next();
                 JsonElement userDataString = jobject.get(tutor);
                 Tutor tutorToReturn = gson.fromJson(userDataString, Tutor.class);
-                if(tutorToReturn.getEmail().equals(email)) {
+                if (tutorToReturn.getEmail().equals(email)) {
                     tutorToReturn.setID(tutor);
                     return tutorToReturn;
                 }
@@ -103,7 +104,7 @@ public class TutorDAO {
     public ArrayList<Tutor> retrieveAllTutors() {
         Gson gson = new GsonBuilder().create();
         ArrayList<Tutor> tutors = new ArrayList<>();
-        
+
         try {
             URL userURL = new URL("https://team-exi-thriving-stones.firebaseio.com/tutors.json");
             URLConnection connection = userURL.openConnection();
@@ -112,10 +113,10 @@ public class TutorDAO {
                             connection.getInputStream()));
             String jsonString = reader.readLine();
             JsonElement jelement = new JsonParser().parse(jsonString);
-            JsonObject  jobject = jelement.getAsJsonObject();
+            JsonObject jobject = jelement.getAsJsonObject();
             Set entries = jobject.keySet();
             Iterator iter = entries.iterator();
-            while(iter.hasNext()){
+            while (iter.hasNext()) {
                 String user = (String) iter.next();
                 JsonElement userDataString = jobject.get(user);
                 Tutor tutor = gson.fromJson(userDataString, Tutor.class);
@@ -131,7 +132,7 @@ public class TutorDAO {
 
     public boolean updateTutor(String tutorID, Map<String, Object> updates) {
         Gson gson = new GsonBuilder().create();
-        
+
         try {
             String urlString = "https://team-exi-thriving-stones.firebaseio.com/tutors/" + tutorID + "/.json";
             URL url = new URL(urlString);
@@ -152,18 +153,16 @@ public class TutorDAO {
         }
         return false;
     }
-    
+
     public boolean removeTutor(String tutorID) {
         try {
             String urlString = "https://team-exi-thriving-stones.firebaseio.com/tutors/" + tutorID + ".json";
-            System.out.println(urlString + " HALP LA");
             URL url = new URL(urlString);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded" );
+            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             connection.setRequestMethod("DELETE");
             connection.setDoOutput(true);
             connection.connect();
-            System.out.println(connection.getResponseCode() + " HALP LA");
             return true;
         } catch (Exception ex) {
             Logger.getLogger(TutorDAO.class.getName()).log(Level.SEVERE, null, ex);

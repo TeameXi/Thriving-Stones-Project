@@ -84,6 +84,10 @@ public class Validation {
         return ID.matches("^[STFG]{1}" + "[0-9]{7}" + "[A-Z]{1}$");
     }
 
+    public static boolean isValidName(String name){
+        return (name != null && !name.equals(""));
+    }
+    
     public static boolean isValidAmt(String amt){
         try {
             Double.parseDouble(amt);

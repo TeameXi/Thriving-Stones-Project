@@ -6,9 +6,8 @@
 package controller;
 
 import entity.Tutor;
-import entity.Validation;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.util.ArrayList;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import model.FirebaseConnection;
 import model.TutorDAO;
 import model.UsersDAO;
+import entity.Validator;
 
 @WebServlet(name = "CreateTutorServlet", urlPatterns = {"/CreateTutorServlet"})
 public class CreateTutorServlet extends HttpServlet {
@@ -45,16 +45,20 @@ public class CreateTutorServlet extends HttpServlet {
 
         FirebaseConnection.initFirebase();
 
-        if (Validation.isValidGender(gender) && Validation.isValidPassword(password) && Validation.isValidEmail(email) && Validation.isValidID(tutorID)
-                && Validation.isValidPhoneNo(phone) && Validation.isValidAge(age) && name != null && !name.equals("")) {
-            TutorDAO tDAO = new TutorDAO();
+        TutorDAO tDAO = new TutorDAO();
+        ArrayList<String> errors = Validator.validateNewTutor(tutorID, name, age, phone, gender, email, password);
+        Tutor existingTutor = tDAO.retrieveSpecificTutor(tutorID);
+        if (errors.isEmpty() && existingTutor == null) {
             Tutor tempTutor = new Tutor(name, age, phone, gender, email, password);
             tDAO.addTutor(tutorID, tempTutor);
             UsersDAO uDAO = new UsersDAO();
             uDAO.addUser(tempTutor);
             request.setAttribute("status", "Added tutor successfully");
         } else {
-            request.setAttribute("status", "Failed to add tutor");
+            if(existingTutor != null){
+                    request.setAttribute("tutorExist", "There was already a record of tutor with ID: " + tutorID);
+                }
+                request.setAttribute("errorMsg", errors);
         }
         RequestDispatcher view = request.getRequestDispatcher("CreateTutor.jsp");
         view.forward(request, response);

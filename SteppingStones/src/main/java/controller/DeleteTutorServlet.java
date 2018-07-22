@@ -37,18 +37,20 @@ public class DeleteTutorServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+
         PrintWriter out = response.getWriter();
         String tutorID = request.getParameter("tutorID");
-        
-        UsersDAO users = new UsersDAO();
-        users.deleteUser(tutorID);
-        TutorDAO tutors = new TutorDAO();
-        boolean status = tutors.removeTutor(tutorID);
-        
-        if(status == true){
-            out.println(1);
-        }else{
-            out.println(0);
+
+        if (Validation.isValidID(tutorID)) {
+            UsersDAO users = new UsersDAO();
+            users.deleteUser(tutorID);
+            TutorDAO tutors = new TutorDAO();
+            boolean status = tutors.removeTutor(tutorID);
+            if (status == true) {
+                out.println(1);
+            } else {
+                out.println(0);
+            }
         }
     }
 

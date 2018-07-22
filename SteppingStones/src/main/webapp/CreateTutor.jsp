@@ -1,3 +1,4 @@
+<%@page import="java.util.ArrayList"%>
 <%@include file="header.jsp"%>
 <style>
     #generate_btn{
@@ -13,83 +14,99 @@
         border: 1px solid #f7a4a3;
         color:#f7a4a3;
     }
+    <%        ArrayList<String> errors = (ArrayList<String>) request.getAttribute("errorMsg");
+        if (errors != null) {
+            for (String error : errors) {
+                out.println(error);
+            }
+        }
+        String studentExist = (String) request.getAttribute("studentExist");
+        if (studentExist != null) {
+            out.println(studentExist);
+        }
+    %> 
 </style>
 <div class="col-md-10">
     <div style="text-align: center;margin: 20px;"><a href="#">Add User </a> / <a href="#">Upload User</a></h5></div>
 
-        <div class="row">
-            <div class="col-md-3"></div>
-            <div class="col-md-5 form">
-                <form class="login100-form validate-form" action="CreateTutorServlet">
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-5 form">
+            <form class="login100-form validate-form" action="CreateTutorServlet">
 
-                    <div class="wrap-input100 validate-input m-b-23" data-validate = "Tutor ID is reauired">
-                        <span class="label-input100">Tutor's NRIC</span>
-                        <input class="input100" type="text" name="tutorID" placeholder="Type ID">
-                        <span class="focus-input100" data-symbol="&#xf207;"></span>
+                <div class="wrap-input100 validate-input m-b-23" data-validate = "Tutor ID is reauired">
+                    <span class="label-input100">Tutor's NRIC</span>
+                    <input class="input100" type="text" name="tutorID" placeholder="Type ID">
+                    <span class="focus-input100" data-symbol="&#xf207;"></span>
+                </div>
+                <br/>
+
+                <div class="wrap-input100 validate-input m-b-23" data-validate = "Tutor Name is reauired">
+                    <span class="label-input100">Tutor's name</span>
+                    <input class="input100" type="text" name="name" placeholder="Type username">
+                    <span class="focus-input100" data-symbol="&#xf207;"></span>
+                </div>
+                <br/>
+
+                <div class="wrap-input100 validate-input" data-validate="Phone Number is required">
+                    <span class="label-input100">Phone number</span>
+                    <input class="input100" type="text" name="phone" placeholder="Type phone number">
+                    <span class="focus-input100" data-symbol="&#xf2be;"></span>
+                </div>
+                <br/>
+
+
+                <div class="wrap-input100 validate-input" data-validate="Email is required">
+                    <span class="label-input100">Email</span>
+                    <input class="input100" type="email" name="email" placeholder="Type email">
+                    <span class="focus-input100" data-symbol="&#xf15a;"></span>
+                </div>
+                <br/>
+
+
+                <div class="wrap-input100 validate-input" data-validate="Age is required">
+                    <span class="label-input100">Age</span>
+                    <input class="input100" type="age" name="age" placeholder="Type age">
+
+                </div>
+                <br/>
+
+                <div>
+                    <span class="label-input100">Gender</span>
+                    <select id="gender" name="gender" class="cd-select">
+                        <option value="-1" selected>Select Gender</option>
+                        <option value="F" class="icon-female">Female</option>
+                        <option value="M" class="icon-male">Male</option>
+                    </select> 
+                </div>
+                <br/>
+
+                <div class="wrap-input100 validate-input" data-validate="Password is required"> 
+                    <span class="label-input100">Generate Password  <input id="generate_btn" type="button" value="Generate" onClick="generatePassword(16);"</span>  
+                    <input class="input100" type="password" name="password" id="password" placeholder="Type your password">
+                    <span class="focus-input100" data-symbol="&#xf190;"></span>
+                </div>
+                <br/>
+
+                <div class="container-login100-form-btn">
+                    <div class="wrap-login100-form-btn">
+                        <div class="login100-form-bgbtn"></div>
+                        <button class="login100-form-btn" type="submit">
+                            Create Tutor
+                        </button>
                     </div>
-                    <br/>
-
-                    <div class="wrap-input100 validate-input m-b-23" data-validate = "Tutor Name is reauired">
-                        <span class="label-input100">Tutor's name</span>
-                        <input class="input100" type="text" name="name" placeholder="Type username">
-                        <span class="focus-input100" data-symbol="&#xf207;"></span>
-                    </div>
-                    <br/>
-
-                    <div class="wrap-input100 validate-input" data-validate="Phone Number is required">
-                        <span class="label-input100">Phone number</span>
-                        <input class="input100" type="text" name="phone" placeholder="Type phone number">
-                        <span class="focus-input100" data-symbol="&#xf2be;"></span>
-                    </div>
-                    <br/>
-
-
-                    <div class="wrap-input100 validate-input" data-validate="Email is required">
-                        <span class="label-input100">Email</span>
-                        <input class="input100" type="email" name="email" placeholder="Type email">
-                        <span class="focus-input100" data-symbol="&#xf15a;"></span>
-                    </div>
-                    <br/>
-
-
-                    <div class="wrap-input100 validate-input" data-validate="Age is required">
-                        <span class="label-input100">Age</span>
-                        <input class="input100" type="age" name="age" placeholder="Type age">
-
-                    </div>
-                    <br/>
-
-                    <div>
-                        <span class="label-input100">Gender</span>
-                        <select id="gender" name="gender" class="cd-select">
-                            <option value="-1" selected>Select Gender</option>
-                            <option value="F" class="icon-female">Female</option>
-                            <option value="M" class="icon-male">Male</option>
-                        </select> 
-                    </div>
-                    <br/>
-
-                    <div class="wrap-input100 validate-input" data-validate="Password is required"> 
-                        <span class="label-input100">Generate Password  <input id="generate_btn" type="button" value="Generate" onClick="generatePassword(16);"</span>  
-                        <input class="input100" type="password" name="password" id="password" placeholder="Type your password">
-                        <span class="focus-input100" data-symbol="&#xf190;"></span>
-                    </div>
-                    <br/>
-
-                    <div class="container-login100-form-btn">
-                        <div class="wrap-login100-form-btn">
-                            <div class="login100-form-bgbtn"></div>
-                            <button class="login100-form-btn" type="submit">
-                                Create Tutor
-                            </button>
-                        </div>
-                    </div>	
-                </form>
-            </div>
+                </div>	
+            </form>
         </div>
-
-
     </div>
+    <%
+        String status = (String) request.getAttribute("status");
+        if (status != null) {
+            out.println(status);
+        }
+    %>
+
+</div>
 </div>
 </div>
 

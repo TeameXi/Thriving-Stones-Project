@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import model.ClassDAO;
 import model.StudentDAO;
 import model.StudentGradeDAO;
-import model.Validator;
+import entity.Validator;
 
 /**
  *
@@ -69,7 +69,7 @@ public class CreateNewStudentServlet extends HttpServlet {
         StudentGrade tGrade = new StudentGrade(tCA1 , tCA2, tSA1 , tSA2);
            
         if(request.getParameter("insert") != null){
-            ArrayList<String> errors = Validator.validateStudent(studentID, age, gender, lvl, phone, sub1, sub2, sub3);
+            ArrayList<String> errors = Validator.validateStudent(studentID, studentName, age, gender, lvl, phone, sub1, sub2, sub3);
             Student existingStudent = StudentDAO.retrieveStudentbyID(studentID);
             if(errors.isEmpty() && existingStudent == null){
                 StudentDAO.insertStudent(studentID, studentName, age, gender, lvl, address, phone, 0, 0); 

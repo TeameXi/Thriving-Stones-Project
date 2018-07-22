@@ -5,9 +5,10 @@
  */
 package controller;
 
-import entity.Validation;
+import entity.Validator;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.ServletException;
@@ -46,16 +47,14 @@ public class UpdateTutorServlet extends HttpServlet {
             String email = request.getParameter("email");
             String phone = (String) request.getParameter("phone");
 
-            if (Validation.isValidGender(gender) && Validation.isValidEmail(email) && Validation.isValidID(tutorID)
-                    && Validation.isValidPhoneNo(phone) && Validation.isValidAge(age) && name != null && !name.equals("")) {
+            ArrayList<String> errors = Validator.validateUpdateTutor(tutorID, name, age, phone, gender, email);
+
+            if (errors.isEmpty()) {
                 updates.put("name", name);
-                updates.put("email", email);
+                updates.put("age", age);
                 updates.put("phone", phone);
                 updates.put("gender", gender);
-            }
-
-            if (age > 0) {
-                updates.put("age", age);
+                updates.put("email", email);
             }
 
             if (!updates.isEmpty()) {
