@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import model.FirebaseConnection;
 import model.TutorDAO;
 import model.UsersDAO;
-import entity.Validator;
+import entity.Validation;
 
 @WebServlet(name = "CreateTutorServlet", urlPatterns = {"/CreateTutorServlet"})
 public class CreateTutorServlet extends HttpServlet {
@@ -46,7 +46,7 @@ public class CreateTutorServlet extends HttpServlet {
         FirebaseConnection.initFirebase();
 
         TutorDAO tDAO = new TutorDAO();
-        ArrayList<String> errors = Validator.validateNewTutor(tutorID, name, age, phone, gender, email, password);
+        ArrayList<String> errors = Validation.validateNewTutor(tutorID, name, age, phone, gender, email, password);
         Tutor existingTutor = tDAO.retrieveSpecificTutor(tutorID);
         if (errors.isEmpty() && existingTutor == null) {
             Tutor tempTutor = new Tutor(name, age, phone, gender, email, password);

@@ -5,7 +5,7 @@
  */
 package controller;
 
-import entity.Validator;
+import entity.Validation;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -47,7 +47,7 @@ public class UpdateTutorServlet extends HttpServlet {
             String email = request.getParameter("email");
             String phone = (String) request.getParameter("phone");
 
-            ArrayList<String> errors = Validator.validateUpdateTutor(tutorID, name, age, phone, gender, email);
+            ArrayList<String> errors = Validation.validateUpdateTutor(tutorID, name, age, phone, gender, email);
 
             if (errors.isEmpty()) {
                 updates.put("name", name);
