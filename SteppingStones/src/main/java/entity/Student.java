@@ -14,10 +14,10 @@ import java.util.Map;
  */
 public class Student {
     private String studentID;
-    private String studentName;
+    private String name;
     private int age;
     private String gender;
-    private String lvl;
+    private String level;
     private String address;
     private String phone;
     private double reqAmt;
@@ -26,27 +26,23 @@ public class Student {
     
     public Student(){  
     }
-    
-    public Student(String studentName, int age, String gender, String lvl, String address, String phone){
-        this(studentName, age, gender, lvl, address, phone, 0, 0);
-    }
                    
-    public Student(String studentName, int age, String gender, String lvl, String address, String phone, double reqAmt, double outstandingAmt){
-        this.studentName = studentName;
+    public Student(String name, int age, String gender, String level, String address, String phone, double reqAmt, double outstandingAmt){
+        this.name = name;
         this.age = age;
         this.gender = gender;
-        this.lvl = lvl;
+        this.level = level;
         this.address = address;
         this.phone = phone;
         this.reqAmt = reqAmt;
         this.outstandingAmt = outstandingAmt;
     }
     
-    public Student(String studentName, int age, String gender, String lvl, String address, String phone, double reqAmt, double outstandingAmt, Map<String, Map<String, StudentGrade>> grades){
-        this.studentName = studentName;
+    public Student(String name, int age, String gender, String level, String address, String phone, double reqAmt, double outstandingAmt, Map<String, Map<String, StudentGrade>> grades){
+        this.name = name;
         this.age = age;
         this.gender = gender;
-        this.lvl = lvl;
+        this.level = level;
         this.address = address;
         this.phone = phone;
         this.reqAmt = reqAmt;
@@ -59,7 +55,7 @@ public class Student {
     }
     
     public String getName(){
-        return studentName;
+        return name;
     }
     
     public int getAge(){
@@ -71,7 +67,7 @@ public class Student {
     }
     
     public String getLevel(){
-        return lvl;
+        return level;
     }
     
     public String getAddress(){
@@ -95,15 +91,15 @@ public class Student {
     }
     
     public void setName(String newStudentName){
-        this.studentName = newStudentName;
+        this.name = newStudentName;
     }
     
     public void setAge(int newAge){
         this.age = newAge;
     }
     
-    public void setLevel(String newLvl){
-        this.lvl = newLvl;
+    public void setLevel(String newLevel){
+        this.level = newLevel;
     }
     
     public void setAddress(String newAddress){

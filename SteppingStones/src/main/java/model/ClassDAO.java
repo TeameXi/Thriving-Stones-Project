@@ -6,99 +6,64 @@
 package model;
 
 import entity.Class;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
+import java.util.Set;
+import org.json.JSONObject;
 
 /**
  *
  * @author DEYU
  */
 public class ClassDAO {
+
     public static void saveClasses(String level, String subject, String classTime, String classDay, double mthlyFees, String startDate){
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("classes");
-        final CountDownLatch countDownLatch = new CountDownLatch(1);
         Class cls = new Class(level, subject, classTime, classDay, mthlyFees, startDate);
-        ref.push().setValue(cls, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError de, DatabaseReference dr) {
-                System.out.println("New Class record saved!");
-                countDownLatch.countDown();
-            }
-        });
-        try {
-            //wait for firebase to save record.
-            countDownLatch.await();
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
+        String json = new Gson().toJson(cls);
+        try{
+            String url = "https://team-exi-thriving-stones.firebaseio.com/classes.json";         
+            FirebaseRESTHTTPRequest.post(url, json);
+            System.out.println("Save class successfully");
+        }catch(Exception e){
+            System.out.println("Insert Student Error");
         }
     }
     
     public static Map<String, Class> getClassByLevel(String level){
-        final String lvl = level;
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("classes");
-        final CountDownLatch countDownLatch = new CountDownLatch(1);
-        //final ArrayList<Class> classes = new ArrayList<>();
-        final Map<String, Class> classes = new HashMap<>();
-        
-        ref.addValueEventListener(new ValueEventListener(){
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Iterable<DataSnapshot> classs = dataSnapshot.getChildren();
-                for(DataSnapshot clas: classs){
-                    Class cls = clas.getValue(Class.class);
-                    if(cls != null){
-                        if(cls.getLevel().equals(lvl)){
-                            classes.put(clas.getKey(), cls);
-                        }
+        Map<String, Class> classes = new HashMap<>();
+        try{
+            String url = "https://team-exi-thriving-stones.firebaseio.com/classes.json";
+            JSONObject result = FirebaseRESTHTTPRequest.get(url);
+            if (result != null) {
+                Set<String> keys = result.keySet();
+                for(String key: keys){
+                    Class cls = new Gson().fromJson(result.getJSONObject(key).toString(), Class.class);
+                    if(cls.getLevel().equals(level)){
+                        classes.put(key, cls);
                     }
-                }                
-                countDownLatch.countDown();
-            }
-            @Override
-            public void onCancelled(DatabaseError de) {
-                System.out.println("The read failed: " + de.getCode());
-            }            
-        });        
-        try {
-            //wait for firebase to save record.
-            countDownLatch.await();
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
-        }
+                } 
+            } 
+        }catch(Exception e){
+            System.out.println("Retrieve Student by ID Error");
+        } 
         return classes;
     }
-    
-    public static ArrayList<Class> getClassesByClassesID(ArrayList<String> classesID){
-        final CountDownLatch countDownLatch = new CountDownLatch(classesID.size());
-        final ArrayList<Class> classes = new ArrayList<>();
         
+    public static ArrayList<Class> getClassesByClassIDs(ArrayList<String> classesID){
+        ArrayList<Class> classes = new ArrayList<>();
         for(String classID: classesID){
-            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("classes").child(classID);
-            ref.addValueEventListener(new ValueEventListener(){
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    Class cls = dataSnapshot.getValue(Class.class);
+            try{
+                String url = "https://team-exi-thriving-stones.firebaseio.com/classes/" + classID + ".json";
+                JSONObject result = FirebaseRESTHTTPRequest.get(url);
+                if (result != null) {
+                    Class cls = new Gson().fromJson(result.toString(), Class.class);
                     classes.add(cls);
-                    countDownLatch.countDown(); 
                 }
-                @Override
-                public void onCancelled(DatabaseError de) {
-                    System.out.println("The read failed: " + de.getCode());
-                }              
-            });
-        }      
-        try {
-            //wait for firebase to save record.
-            countDownLatch.await();
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
+            }catch(Exception e){
+                System.out.println("Retrieve Student by ID Error");
+            } 
         }
         return classes;
     }

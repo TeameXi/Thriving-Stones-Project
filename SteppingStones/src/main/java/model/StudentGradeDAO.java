@@ -5,13 +5,10 @@
  */
 package model;
 
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.gson.Gson;
 import entity.StudentGrade;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
 
 /**
  *
@@ -20,44 +17,30 @@ import java.util.concurrent.CountDownLatch;
 public class StudentGradeDAO {
     
     public static void saveSchoolGrade(String studentID, String sub1, StudentGrade stuGrade1, String sub2, StudentGrade stuGrade2, String sub3, StudentGrade stuGrade3){
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("students").child(studentID).child("grades").child("School");
-        Map<String, StudentGrade> grade = new HashMap<>();
-        grade.put(sub1, stuGrade1);
-        grade.put(sub2, stuGrade2);
-        grade.put(sub3, stuGrade3);
-        final CountDownLatch countDownLatch = new CountDownLatch(1);
-        
-        ref.setValue(grade, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError de, DatabaseReference dr) {
-                System.out.println("School grade records saved!");
-                countDownLatch.countDown();
-            }
-        });
-        try {
-            //wait for firebase to save record.
-            countDownLatch.await();
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
-        }
+        Map<String, StudentGrade> Schoolgrades = new HashMap<>();
+        Schoolgrades.put(sub1, stuGrade1);
+        Schoolgrades.put(sub2, stuGrade2);
+        Schoolgrades.put(sub3, stuGrade3);
+        String json = new Gson().toJson(Schoolgrades);
+        try{
+            String url = "https://team-exi-thriving-stones.firebaseio.com/students/" + studentID + "/grades/School.json";
+            FirebaseRESTHTTPRequest.put(url, json);
+            System.out.println("Save Grades successfully");
+        }catch(Exception e){
+            System.out.println("Insert Grades Error");
+        } 
     }
-    
-    public static void saveGrades(String studentID, Map<String, Map<String, StudentGrade>> grades){
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("students").child(studentID).child("grades");
-        final CountDownLatch countDownLatch = new CountDownLatch(1);
-        
-        ref.setValue(grades, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError de, DatabaseReference dr) {
-                System.out.println("Grade records saved!");
-                countDownLatch.countDown();
-            }
-        });
-        try {
-            //wait for firebase to save record.
-            countDownLatch.await();
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
-        }
+   
+    public static void saveGrades(String studentID, Map<String, Map<String, StudentGrade>> grades){ 
+        System.out.println("Grade Line" + grades);
+        String json = new Gson().toJson(grades);
+        System.out.println("Grade" + json);
+        try{
+            String url = "https://team-exi-thriving-stones.firebaseio.com/students/" + studentID + "/grades.json";
+            FirebaseRESTHTTPRequest.put(url, json);
+            System.out.println("Save Grades successfully");
+        }catch(Exception e){
+            System.out.println("Insert Grades Error");
+        } 
     }
 }

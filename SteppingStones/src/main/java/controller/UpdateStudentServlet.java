@@ -5,7 +5,7 @@
  */
 package controller;
 
-import entity.Student;
+import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -46,10 +46,18 @@ public class UpdateStudentServlet extends HttpServlet {
             Double r_amount = Double.parseDouble(request.getParameter("r_amount"));
             Double o_amount = Double.parseDouble(request.getParameter("o_amount"));
             
-            Student student = new Student(name,age,gender,lvl,address,phone,r_amount,o_amount);
+            JsonObject student = new JsonObject();
+            student.addProperty("name", name);
+            student.addProperty("age", age);
+            student.addProperty("gender", gender);
+            student.addProperty("level", lvl);
+            student.addProperty("address", address);
+            student.addProperty("phone", phone);
+            student.addProperty("reqAmt", r_amount);
+            student.addProperty("outstandingAmt", o_amount);
+            String studentJson = student.toString();
             
-            StudentDAO studentDao = new StudentDAO();
-            boolean status = studentDao.updateStudent(studentID, student);
+            boolean status = StudentDAO.updateStudent(studentID, studentJson);
             if(status){
                 out.println(1);
             }else{

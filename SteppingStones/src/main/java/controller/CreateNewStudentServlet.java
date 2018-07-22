@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.ClassDAO;
-import model.FirebaseConnection;
 import model.StudentDAO;
 import model.StudentGradeDAO;
 import model.Validator;
@@ -68,13 +67,11 @@ public class CreateNewStudentServlet extends HttpServlet {
         String tSA1 = request.getParameter("TSA1");
         String tSA2 = request.getParameter("TSA2");
         StudentGrade tGrade = new StudentGrade(tCA1 , tCA2, tSA1 , tSA2);
-        
-        FirebaseConnection.initFirebase(); 
            
         if(request.getParameter("insert") != null){
             ArrayList<String> errors = Validator.validateStudent(studentID, age, gender, lvl, phone, sub1, sub2, sub3);
-            ArrayList<Student> existingStudent = StudentDAO.retrieveStudentbyID(studentID);
-            if(errors.isEmpty() && existingStudent.isEmpty()){
+            Student existingStudent = StudentDAO.retrieveStudentbyID(studentID);
+            if(errors.isEmpty() && existingStudent == null){
                 StudentDAO.insertStudent(studentID, studentName, age, gender, lvl, address, phone, 0, 0); 
                 StudentGradeDAO.saveSchoolGrade(studentID, sub1, fGrade, sub2, sGrade, sub3, tGrade);
                 Map<String, Class> classes = ClassDAO.getClassByLevel(lvl);
@@ -85,33 +82,11 @@ public class CreateNewStudentServlet extends HttpServlet {
                 RequestDispatcher view = request.getRequestDispatcher("SignUpForClass.jsp");
                 view.forward(request, response);
             }else{
-                if(!existingStudent.isEmpty()){
+                if(existingStudent != null){
                     request.setAttribute("studentExist", "There was already a record of student with ID: " + studentID);
                 }
                 request.setAttribute("errorMsg", errors);
                 RequestDispatcher view = request.getRequestDispatcher("CreateNewStudent.jsp");
-                view.forward(request, response);
-            }
-        }
-        
-        if(request.getParameter("update") != null){
-            String reqAmtStr = request.getParameter("reqAmt");
-            String outstandingAmtStr = request.getParameter("outstandingAmt");
-            ArrayList<String> errors = Validator.validateStudentWithAmt(studentID, age, gender, lvl, phone, reqAmtStr, outstandingAmtStr);
-            if(errors.isEmpty()){
-                double reqAmt = Double.parseDouble(reqAmtStr);
-                double outstandingAmt = Double.parseDouble(outstandingAmtStr);
-                Student stu = StudentDAO.retrieveStudentbyID(studentID).get(0);
-                StudentDAO.insertStudent(studentID, studentName, age, gender, lvl, address, phone, reqAmt, outstandingAmt);
-                Map<String, Map<String, StudentGrade>> grades = stu.getGrades();
-                StudentGradeDAO.saveGrades(studentID, grades);
-
-                request.setAttribute("status", "Student Updated successfully!");
-                RequestDispatcher view = request.getRequestDispatcher("Retrieve_Update_StudentByID.jsp");
-                view.forward(request, response);
-            }else{
-                request.setAttribute("errorMsg", errors);
-                RequestDispatcher view = request.getRequestDispatcher("UpdateStudentDetails.jsp");
                 view.forward(request, response);
             }
         }

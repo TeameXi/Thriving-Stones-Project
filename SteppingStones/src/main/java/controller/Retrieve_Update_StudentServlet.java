@@ -10,14 +10,12 @@ import entity.Class;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.ClassDAO;
-import model.FirebaseConnection;
 import model.StudentClassDAO;
 import model.StudentDAO;
 import org.json.JSONObject;
@@ -46,32 +44,29 @@ public class Retrieve_Update_StudentServlet extends HttpServlet {
         
         String studentID = request.getParameter("studentID");
         
-        FirebaseConnection.initFirebase();
-        ArrayList<Student> stu = StudentDAO.retrieveStudentbyID(studentID);
+        Student currStu = StudentDAO.retrieveStudentbyID(studentID);
         ArrayList<String> classesID = StudentClassDAO.retrieveStudentClassesID(studentID);
-        ArrayList<Class> classes = ClassDAO.getClassesByClassesID(classesID);
+        ArrayList<Class> classes = ClassDAO.getClassesByClassIDs(classesID);
         
         JSONObject obj = new JSONObject();
         try{
-            for(Student currStu : stu){
-                String name = currStu.getName();
-                int age = currStu.getAge();
-                String gender = currStu.getGender();
-                String lvl = currStu.getLevel();
-                String address = currStu.getAddress();
-                String phone = currStu.getPhone();
-                double required_amount = currStu.getReqAmt();
-                double outstanding_amount = currStu.getOutstandingAmt();
-                obj.put("name",name);
-                obj.put("age",age);
-                obj.put("gender",gender);
-                obj.put("lvl", lvl);
-                obj.put("address", address);
-                obj.put("phone", phone);
-                obj.put("r_amount", required_amount);
-                obj.put("o_amount",outstanding_amount);
-
-            }      
+            String name = currStu.getName();
+            int age = currStu.getAge();
+            String gender = currStu.getGender();
+            String lvl = currStu.getLevel();
+            String address = currStu.getAddress();
+            String phone = currStu.getPhone();
+            double required_amount = currStu.getReqAmt();
+            double outstanding_amount = currStu.getOutstandingAmt();
+            obj.put("name",name);
+            obj.put("age",age);
+            obj.put("gender",gender);
+            obj.put("lvl", lvl);
+            obj.put("address", address);
+            obj.put("phone", phone);
+            obj.put("r_amount", required_amount);
+            obj.put("o_amount",outstanding_amount);
+    
             out.println(obj);
         }finally{
             out.flush();

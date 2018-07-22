@@ -7,13 +7,11 @@ package controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.FirebaseConnection;
 import model.StudentClassDAO;
 import model.StudentDAO;
 
@@ -41,9 +39,7 @@ public class DeleteStudentServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         String studentID = request.getParameter("studentID");
 
-        FirebaseConnection.initFirebase();
-        StudentDAO stuDao = new StudentDAO();
-        boolean deleled = stuDao.deleteStudentbyID(studentID);
+        boolean deleled = StudentDAO.deleteStudentbyID(studentID);
         StudentClassDAO.deleteStudentClassbyID(studentID);
         
         if(deleled == true){
