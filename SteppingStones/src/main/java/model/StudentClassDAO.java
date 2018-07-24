@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import org.json.JSONObject;
+import entity.Student;
 
 /**
  *
@@ -74,5 +75,23 @@ public class StudentClassDAO {
         }catch(Exception e){
             System.out.println("Retrieve Student by ID Error");
         } 
+    }
+    
+    public static ArrayList<entity.Student> getStudentsByClassID(String classID) {
+        ArrayList<entity.Student> students = new ArrayList<>();
+        try {
+            String url = "https://team-exi-thriving-stones.firebaseio.com/StudentClass/" + classID + ".json";
+            JSONObject result = FirebaseRESTHTTPRequest.get(url);
+            if (result != null) {
+                Set<String> keys = result.keySet();
+                for (String key : keys) {
+                    Student stu = StudentDAO.retrieveStudentbyID(key);
+                    students.add(stu);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("List all students Error");
+        }
+        return students;
     }
 }

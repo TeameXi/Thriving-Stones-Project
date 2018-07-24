@@ -55,4 +55,25 @@ public class StudentGradeDAO {
             System.out.println("Insert Center Grade Error");
         } 
     }
+    
+    public static boolean createGrade(String studentID, String location, String subject, String examination, String grade){
+        try{
+            String url = "https://team-exi-thriving-stones.firebaseio.com/students/" + studentID + "/grades/" + location + ".json";
+            
+            FirebaseRESTHTTPRequest.put(url, subject);
+            url = "https://team-exi-thriving-stones.firebaseio.com/students/" + studentID + "/grades/" + location + "/" + subject + ".json";
+            
+            FirebaseRESTHTTPRequest.put(url, examination);
+            url = "https://team-exi-thriving-stones.firebaseio.com/students/" + studentID + "/grades/" + location + "/" + subject + "/" + examination + ".json";
+            
+            
+            FirebaseRESTHTTPRequest.put(url, grade);
+            System.out.println("Grade Update successfully");
+            return true;
+        
+        }catch(Exception e){
+            System.out.println("Database error");
+        }
+        return false;
+    }
 }

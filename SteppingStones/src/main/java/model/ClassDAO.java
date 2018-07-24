@@ -7,10 +7,17 @@ package model;
 
 import entity.Class;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.JSONObject;
 
 /**
@@ -27,7 +34,7 @@ public class ClassDAO {
             FirebaseRESTHTTPRequest.post(url, json);
             System.out.println("Save class successfully");
         }catch(Exception e){
-            System.out.println("Insert Student Error");
+            System.out.println("Insert Class Error");
         }
     }
     
@@ -46,7 +53,7 @@ public class ClassDAO {
                 } 
             } 
         }catch(Exception e){
-            System.out.println("Retrieve Student by ID Error");
+            System.out.println("Retrieve Class Error");
         } 
         return classes;
     }
@@ -61,7 +68,7 @@ public class ClassDAO {
                 cls.setClassID(classID);
             }
         }catch(Exception e){
-            System.out.println("Retrieve Student by ID Error");
+            System.out.println("Retrieve Class Error");
         } 
         return cls;
     }
@@ -83,5 +90,44 @@ public class ClassDAO {
             System.out.println("List all classes Error");
         } 
         return classes;
+    }
+    
+    public static ArrayList<String> getAllClassesNames() {
+        ArrayList<String> classes = new ArrayList<>();
+
+        try {
+            String url = "https://team-exi-thriving-stones.firebaseio.com/classes/.json";
+            JSONObject result = FirebaseRESTHTTPRequest.get(url);
+            if (result != null) {
+                Set<String> keys = result.keySet();
+                for (String key : keys) {
+                    classes.add(key);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Retrieve Classes Error");
+        }
+        return classes;
+    }
+    
+    public static String getClassLevel(String classID) {
+        
+        Gson gson = new GsonBuilder().create();
+
+        try {
+            String urlString = "https://team-exi-thriving-stones.firebaseio.com/classes/" + classID + ".json";
+            URL url = new URL(urlString);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(
+                            connection.getInputStream()));
+            String jsonString = reader.readLine();
+            Class classes = gson.fromJson(jsonString, Class.class);
+            reader.close();
+            return classes.getLevel();
+        } catch (Exception ex) {
+            Logger.getLogger(TutorDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 }

@@ -67,7 +67,7 @@
                         <option value="Pri 3">Primary 3</option>
                         <option value="Pri 4">Primary 4</option>
                         <option value="Pri 5">Primary 5</option>
-                        <option value="Pri 6">Primary 6</option
+                        <option value="Pri 6">Primary 6</option>
                         <option value="Sec 1">Secondary 1</option>
                         <option value="Sec 2">Secondary 2</option>
                         <option value="Sec 3">Secondary 3</option>
