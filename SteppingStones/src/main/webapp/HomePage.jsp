@@ -29,7 +29,7 @@
                         </a>
                     </li>
                     <li class="featured-list_item">
-                        <a href="scheduling" class="featured-list_link">
+                        <a href="${pageContext.request.contextPath}/RetrieveScheduleCreationDetails" class="featured-list_link">
                             <img class="featured-list_img" src="${pageContext.request.contextPath}/styling/img/icons/schedule.png" alt="Schedule">
                             <h3 class="featured-list_title">Scheduling Classes</h3>
                         </a>

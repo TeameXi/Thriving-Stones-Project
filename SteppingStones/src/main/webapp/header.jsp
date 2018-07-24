@@ -66,7 +66,7 @@
                         </ul>
                     </li>
 
-                    <li><a href="calendar.html"><i class="zmdi zmdi-calendar-note"></i> Scheduling Classes</a></li>
+                    <li><a href="${pageContext.request.contextPath}/RetrieveScheduleCreationDetails"><i class="zmdi zmdi-calendar-note"></i> Scheduling Classes</a></li>
                     <li><a href="stats.html"><i class="zmdi zmdi-chart"></i> Financial Reports</a></li>
                     <li><a href="tables.html"><i class="zmdi zmdi-money-box"></i> Payment Handling</a></li>
                     <li><a href="buttons.html"><i class="zmdi zmdi-graduation-cap"></i>Student Management</a></li>
