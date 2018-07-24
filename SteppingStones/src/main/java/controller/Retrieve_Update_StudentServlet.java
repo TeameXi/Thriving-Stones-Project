@@ -46,7 +46,11 @@ public class Retrieve_Update_StudentServlet extends HttpServlet {
         
         Student currStu = StudentDAO.retrieveStudentbyID(studentID);
         ArrayList<String> classesID = StudentClassDAO.retrieveStudentClassesID(studentID);
-        ArrayList<Class> classes = ClassDAO.getClassesByClassIDs(classesID);
+        ArrayList<Class> classes = new ArrayList<>();
+        for(String classID: classesID){
+            Class cls = ClassDAO.getClassByID(classID);
+            classes.add(cls);
+        }
         
         JSONObject obj = new JSONObject();
         try{

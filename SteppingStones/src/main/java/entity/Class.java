@@ -7,6 +7,7 @@ package entity;
 
 public class Class {
 
+    private String classID;
     private String level;
     private String subject;
     private String classTime;
@@ -26,7 +27,11 @@ public class Class {
         this.mthlyFees = mthlyFees;
         this.startDate = startDate;
     }
-
+    
+    public String getClassID() {
+        return this.classID;
+    }
+        
     public String getLevel() {
         return this.level;
     }
@@ -53,6 +58,10 @@ public class Class {
 
     public String getClassDay() {
         return this.classDay;
+    }
+    
+     public void setClassID(String id) {
+        this.classID = id;
     }
 
     public void setClassDay(String newClassDay) {

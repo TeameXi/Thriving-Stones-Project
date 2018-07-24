@@ -103,6 +103,24 @@ public class Validation {
         return level.matches("(Pri|Sec)" + " " + "[1-6]");
     }
     
+    public static boolean isValidAssessmentType(String assessmentType){
+        return assessmentType.equals("ca1") || assessmentType.equals("sa1") || assessmentType.equals("ca2") || assessmentType.equals("sa2");
+    }
+    
+    public static boolean isValidSubject(String subject){
+        return subject.equals("English") || subject.equals("Maths") || subject.equals("Science") || subject.equals("Add-Maths") || subject.equals("E-Maths");
+    }
+    
+    public static boolean isValidScore(String score){
+        int scr;
+        try{
+            scr = Integer.parseInt(score);     
+        }catch(NumberFormatException ex){
+            return false;
+        }
+        return scr >= 0 && scr <= 100; 
+    }
+    
     public static ArrayList<String> validateStudent(String studentID, String studentName, int age, String gender, String lvl, String phone, String sub1, String sub2, String sub3) {
         ArrayList<String> errors = new ArrayList<>();
 
@@ -274,6 +292,27 @@ public class Validation {
             errors.add("Invalid Email!");
         }
 
+        return errors;
+    }
+    
+    public static ArrayList<String> validateUpdateGrade(String studentID, String sub, String assessmentType, String grade) {
+        ArrayList<String> errors = new ArrayList<>();
+        
+        if (!Validation.isValidID(studentID)) {
+            errors.add("Invalid Student ID!");
+        }
+
+        if (!Validation.isValidSubject(sub)) {
+            errors.add("Please Select Subject!");
+        }
+
+        if (!Validation.isValidAssessmentType(assessmentType)) {
+            errors.add("Please Select Assessement Type!");
+        }
+
+        if (!Validation.isValidScore(grade)) {
+            errors.add("Invalid Grade!");
+        }
         return errors;
     }
 }

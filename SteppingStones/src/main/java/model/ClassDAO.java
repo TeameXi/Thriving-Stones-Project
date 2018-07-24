@@ -50,21 +50,38 @@ public class ClassDAO {
         } 
         return classes;
     }
-        
-    public static ArrayList<Class> getClassesByClassIDs(ArrayList<String> classesID){
-        ArrayList<Class> classes = new ArrayList<>();
-        for(String classID: classesID){
-            try{
-                String url = "https://team-exi-thriving-stones.firebaseio.com/classes/" + classID + ".json";
-                JSONObject result = FirebaseRESTHTTPRequest.get(url);
-                if (result != null) {
-                    Class cls = new Gson().fromJson(result.toString(), Class.class);
+    
+    public static Class getClassByID(String classID){
+        Class cls = null;
+        try{
+            String url = "https://team-exi-thriving-stones.firebaseio.com/classes/" + classID + ".json";
+            JSONObject result = FirebaseRESTHTTPRequest.get(url);
+            if (result != null) {
+                cls = new Gson().fromJson(result.toString(), Class.class);
+                cls.setClassID(classID);
+            }
+        }catch(Exception e){
+            System.out.println("Retrieve Student by ID Error");
+        } 
+        return cls;
+    }
+    
+    public static ArrayList<Class> listAllClasses(){
+        ArrayList<Class> classes = new ArrayList();
+        try{
+            String url = "https://team-exi-thriving-stones.firebaseio.com/classes/.json";
+            JSONObject result = FirebaseRESTHTTPRequest.get(url);       
+            if (result != null) {
+                Set<String> keys = result.keySet();
+                for(String key: keys){
+                    Class cls = new Gson().fromJson(result.getJSONObject(key).toString(), Class.class);
+                    cls.setClassID(key);
                     classes.add(cls);
-                }
-            }catch(Exception e){
-                System.out.println("Retrieve Student by ID Error");
+                } 
             } 
-        }
+        }catch(Exception e){
+            System.out.println("List all classes Error");
+        } 
         return classes;
     }
 }

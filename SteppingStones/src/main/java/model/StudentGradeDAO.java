@@ -6,6 +6,7 @@
 package model;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import entity.StudentGrade;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,15 +33,26 @@ public class StudentGradeDAO {
     }
    
     public static void saveGrades(String studentID, Map<String, Map<String, StudentGrade>> grades){ 
-        System.out.println("Grade Line" + grades);
         String json = new Gson().toJson(grades);
-        System.out.println("Grade" + json);
         try{
             String url = "https://team-exi-thriving-stones.firebaseio.com/students/" + studentID + "/grades.json";
             FirebaseRESTHTTPRequest.put(url, json);
             System.out.println("Save Grades successfully");
         }catch(Exception e){
             System.out.println("Insert Grades Error");
+        } 
+    }
+    
+    public static void saveCenterGrades(String studentID, String sub, String assessmentType, String grade){
+        JsonObject centerGrade = new JsonObject();
+        centerGrade.addProperty(assessmentType, grade);
+        String json = new Gson().toJson(centerGrade);
+        try{
+            String url = "https://team-exi-thriving-stones.firebaseio.com/students/" + studentID + "/grades/Center/" + sub  + ".json";
+            FirebaseRESTHTTPRequest.patch(url, json);
+            System.out.println("Save Grades successfully");
+        }catch(Exception e){
+            System.out.println("Insert Center Grade Error");
         } 
     }
 }

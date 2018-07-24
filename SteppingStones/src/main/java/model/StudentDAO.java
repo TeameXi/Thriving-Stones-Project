@@ -37,6 +37,7 @@ public class StudentDAO {
             JSONObject result = FirebaseRESTHTTPRequest.get(url);
             if (result != null) {
                 stu = new Gson().fromJson(result.toString(), Student.class); 
+                stu.setStudentID(studentID);
             } 
         }catch(Exception e){
             System.out.println("Retrieve Student by ID Error");
