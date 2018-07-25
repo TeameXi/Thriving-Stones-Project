@@ -320,6 +320,8 @@ iframe {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
 .wrap-login100-form-btn {
@@ -1160,5 +1162,37 @@ footer .copy{
 
 .form{
     margin-bottom: 50px;
+}
+
+/* Download Btn*/
+.excel-bg {
+	background-color: #9ccbce;
+	color:white;
+}
+.excel-bg:hover {
+    background-color: transparent;
+	color:#9ccbce;
+	border-color: #9ccbce;
+}
+
+.small_button {
+    text-align: center;
+    padding: 3px 0px 0px;
+    letter-spacing: 1px;
+    width:65px;
+    border-radius: 15px;
+    display: inline-block;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+
+.small_button.autowidth {
+        width:auto;
+        padding:4px 10px 2px 10px;
+}
+
+.spaced-top{
+    margin-top: 20px;
 }
 

@@ -2,7 +2,7 @@
 <%@include file="header.jsp"%>
 
 <div class="col-md-10">
-    <div style="text-align: center;margin: 20px;"><a href="#">Add User </a> / <a href="#">Upload User</a></h5></div>
+    <div style="text-align: center;margin: 20px;"><a href="CreateNewStudent.jsp">Add Student </a> / <a class="active" href="UploadStudent.jsp">Upload Students</a></h5></div>
 
     <div class="row">
         <div class="col-md-3"></div>

@@ -23,7 +23,7 @@ public class FirebaseConnection {
             
  
 
-            FileInputStream serviceAccount = new FileInputStream("/Users/Riana/Desktop/FYP/Thriving-Stones-Project/SteppingStones/src/team-exi-thriving-stones-firebase-adminsdk-luopb-284f7a1c5a.json");
+            FileInputStream serviceAccount = new FileInputStream("/Users/Susan/Desktop/FYP/Thriving-Stones-Project/SteppingStones/src/team-exi-thriving-stones-firebase-adminsdk-luopb-284f7a1c5a.json");
 
             FirebaseOptions options = new FirebaseOptions.Builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))

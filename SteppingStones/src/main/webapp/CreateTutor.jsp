@@ -14,25 +14,26 @@
         border: 1px solid #f7a4a3;
         color:#f7a4a3;
     }
-    <%        ArrayList<String> errors = (ArrayList<String>) request.getAttribute("errorMsg");
+</style>
+    <%        
+        ArrayList<String> errors = (ArrayList<String>) request.getAttribute("errorMsg");
         if (errors != null) {
             for (String error : errors) {
                 out.println(error);
             }
         }
-        String studentExist = (String) request.getAttribute("studentExist");
-        if (studentExist != null) {
-            out.println(studentExist);
+        String tutorExist = (String) request.getAttribute("tutorExist");
+        if (tutorExist != null) {
+            out.println(tutorExist);
         }
     %> 
-</style>
-<div class="col-md-10">
-    <div style="text-align: center;margin: 20px;"><a href="#">Add User </a> / <a href="#">Upload User</a></h5></div>
 
+<div class="col-md-10">
+    <div style="text-align: center;margin: 20px;"><a class="active" href="CreateTutor.jsp">Add User </a> / <a href="UploadTutor.jsp">Upload User</a></h5></div>
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-5 form">
-            <form class="login100-form validate-form" action="CreateTutorServlet">
+            <form class="login100-form validate-form" action="CreateTutorServlet" autocomplete="off">
 
                 <div class="wrap-input100 validate-input m-b-23" data-validate = "Tutor ID is reauired">
                     <span class="label-input100">Tutor's NRIC</span>
@@ -58,7 +59,7 @@
 
                 <div class="wrap-input100 validate-input" data-validate="Email is required">
                     <span class="label-input100">Email</span>
-                    <input class="input100" type="email" name="email" placeholder="Type email">
+                    <input class="input100" type="email" name="tutorEmail" placeholder="Type email">
                     <span class="focus-input100" data-symbol="&#xf15a;"></span>
                 </div>
                 <br/>
@@ -83,7 +84,7 @@
 
                 <div class="wrap-input100 validate-input" data-validate="Password is required"> 
                     <span class="label-input100">Generate Password  <input id="generate_btn" type="button" value="Generate" onClick="generatePassword(16);"</span>  
-                    <input class="input100" type="password" name="password" id="password" placeholder="Type your password">
+                    <input class="input100" type="text" name="tutorPassword" id="tutorPassword" placeholder="Type your password">
                     <span class="focus-input100" data-symbol="&#xf190;"></span>
                 </div>
                 <br/>
@@ -113,56 +114,56 @@
 <%@include file="footer.jsp"%>
 <script type="text/javascript" src="${pageContext.request.contextPath}/styling/js/jquery.dropdown.js"></script>
 <script>
-                        var Password = {
+    var Password = {
 
-                            _pattern: /[a-zA-Z0-9_\-\+\.]/,
+        _pattern: /[a-zA-Z0-9_\-\+\.]/,
 
-                            _getRandomByte: function ()
+        _getRandomByte: function ()
+        {
+            if (window.crypto && window.crypto.getRandomValues)
+            {
+                var result = new Uint8Array(1);
+                window.crypto.getRandomValues(result);
+                return result[0];
+            } else if (window.msCrypto && window.msCrypto.getRandomValues)
+            {
+                var result = new Uint8Array(1);
+                window.msCrypto.getRandomValues(result);
+                return result[0];
+            } else
+            {
+                return Math.floor(Math.random() * 256);
+            }
+        },
+
+        generate: function (length)
+        {
+            return Array.apply(null, {'length': length})
+                    .map(function ()
+                    {
+                        var result;
+                        while (true)
+                        {
+                            result = String.fromCharCode(this._getRandomByte());
+                            if (this._pattern.test(result))
                             {
-                                if (window.crypto && window.crypto.getRandomValues)
-                                {
-                                    var result = new Uint8Array(1);
-                                    window.crypto.getRandomValues(result);
-                                    return result[0];
-                                } else if (window.msCrypto && window.msCrypto.getRandomValues)
-                                {
-                                    var result = new Uint8Array(1);
-                                    window.msCrypto.getRandomValues(result);
-                                    return result[0];
-                                } else
-                                {
-                                    return Math.floor(Math.random() * 256);
-                                }
-                            },
-
-                            generate: function (length)
-                            {
-                                return Array.apply(null, {'length': length})
-                                        .map(function ()
-                                        {
-                                            var result;
-                                            while (true)
-                                            {
-                                                result = String.fromCharCode(this._getRandomByte());
-                                                if (this._pattern.test(result))
-                                                {
-                                                    return result;
-                                                }
-                                            }
-                                        }, this)
-                                        .join('');
+                                return result;
                             }
-                        };
-
-                        function generatePassword(len) {
-                            var pwd = Password.generate(len);
-                            $("#password").val(pwd);
                         }
+                    }, this)
+                    .join('');
+        }
+    };
 
-                        $(function () {
+    function generatePassword(len) {
+        var pwd = Password.generate(len);
+        $("#tutorPassword").val(pwd);
+    }
 
-                            $('#gender').dropdown({
-                            });
+    $(function () {
 
-                        });
+        $('#gender').dropdown({
+        });
+
+    });
 </script>

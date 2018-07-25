@@ -23,7 +23,7 @@
             <section class="featured-content">
                 <ul class="featured-list">
                     <li class="featured-list_item">
-                        <a href="CreateTutor.jsp" class="featured-list_link">
+                        <a href="DisplayTutors.jsp" class="featured-list_link">
                             <img src="${pageContext.request.contextPath}/styling/img/icons/user.png" class="featured-list_img" alt ="Admin">
                             <h3 class="featured-list_title">Admin Management</h3>
                         </a>
@@ -47,7 +47,7 @@
                         </a>
                     </li>
                     <li class="featured-list_item">
-                        <a href="students.html" class="featured-list_link">
+                        <a href="DisplayStudents.html" class="featured-list_link">
                             <img class="featured-list_img" src="${pageContext.request.contextPath}/styling/img/icons/student.png" alt="Student">
                             <h3 class="featured-list_title">Students Data</h3>
                         </a>
