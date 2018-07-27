@@ -162,7 +162,7 @@ public class Validation {
             errors.add("Invalid Student ID!");
         }
         
-        if (!isValidID(studentName)) {
+        if (!isValidName(studentName)) {
             errors.add("Invalid Student Name!");
         }
 
@@ -200,7 +200,7 @@ public class Validation {
             errors.add("Invalid Student ID!");
         }
         
-        if (!isValidID(studentName)) {
+        if (!isValidName(studentName)) {
             errors.add("Invalid Student Name!");
         }
 
@@ -238,7 +238,7 @@ public class Validation {
             errors.add("Invalid Tutor ID!");
         }
 
-        if (!isValidID(name)) {
+        if (!isValidName(name)) {
             errors.add("Invalid Tutor Name!");
         }
         
@@ -272,7 +272,7 @@ public class Validation {
             errors.add("Invalid Tutor ID!");
         }
 
-        if (!isValidID(name)) {
+        if (!isValidName(name)) {
             errors.add("Invalid Tutor Name!");
         }
         
