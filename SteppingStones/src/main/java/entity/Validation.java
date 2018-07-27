@@ -258,7 +258,7 @@ public class Validation {
             errors.add("Invalid Email!");
         }
 
-        if (!isValidAmt(password)) {
+        if (!isValidPassword(password)) {
             errors.add("Invalid Password!");
         }
 
