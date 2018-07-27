@@ -31,17 +31,10 @@ public class TutorDAO {
 
         try {
             String urlString = "https://team-exi-thriving-stones.firebaseio.com/tutors/" + tutorID + ".json";
-            URL url = new URL(urlString);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("PUT");
-            connection.setDoOutput(true);
-            connection.setRequestProperty("Content-Type", "application/json");
-            connection.setRequestProperty("Accept", "application/json");
             String userData = gson.toJson(tutor);
-            OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
-            writer.write(userData);
-            writer.flush();
-            writer.close();
+            
+            FirebaseRESTHTTPRequest.put(urlString, userData);
+            
         } catch (Exception ex) {
             Logger.getLogger(TutorDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -135,18 +128,9 @@ public class TutorDAO {
 
         try {
             String urlString = "https://team-exi-thriving-stones.firebaseio.com/tutors/" + tutorID + "/.json";
-            URL url = new URL(urlString);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestProperty("X-HTTP-Method-Override", "PATCH");
-            connection.setRequestMethod("POST");
-            connection.setDoOutput(true);
-            connection.setRequestProperty("Content-Type", "application/json");
-            connection.setRequestProperty("Accept", "application/json");
             String userData = gson.toJson(updates);
-            OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
-            writer.write(userData);
-            writer.flush();
-            writer.close();
+            
+            FirebaseRESTHTTPRequest.patch(urlString, userData);
             return true;
         } catch (Exception ex) {
             Logger.getLogger(TutorDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -157,12 +141,7 @@ public class TutorDAO {
     public boolean removeTutor(String tutorID) {
         try {
             String urlString = "https://team-exi-thriving-stones.firebaseio.com/tutors/" + tutorID + ".json";
-            URL url = new URL(urlString);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            connection.setRequestMethod("DELETE");
-            connection.setDoOutput(true);
-            connection.connect();
+            FirebaseRESTHTTPRequest.delete(urlString);
             return true;
         } catch (Exception ex) {
             Logger.getLogger(TutorDAO.class.getName()).log(Level.SEVERE, null, ex);

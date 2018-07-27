@@ -44,10 +44,10 @@
             <span class="label-input100">Examination</span>
             <select id="examination" name="examination" class="cd-select">
                 <option value="-1" selected>Examination</option>
-                <option value="CA1">CA1</option>
-                <option value="SA1">SA1</option>
-                <option value="CA2">CA2</option>
-                <option value="SA2">SA2</option>
+                <option value="ca1">CA1</option>
+                <option value="sa1">SA1</option>
+                <option value="ca2">CA2</option>
+                <option value="sa2">SA2</option>
             </select> 
         </div>
 
