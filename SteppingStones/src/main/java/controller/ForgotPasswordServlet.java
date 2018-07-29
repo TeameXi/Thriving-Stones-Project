@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.UsersDAO;
+import model.SendMail;
 
 /**
  *
@@ -49,8 +50,11 @@ public class ForgotPasswordServlet extends HttpServlet {
             
             UsersDAO userDAO = new UsersDAO();
             Users user =  userDAO.retrieveUserByEmail(email); 
+            
+            SendMail sendEmail = new SendMail();
             if (user != null) {
                 out.println(user.getEmail());
+                sendEmail.sendingEmail(user.getEmail());
             }
             
             TutorDAO tutorDAO = new TutorDAO();           
@@ -58,7 +62,8 @@ public class ForgotPasswordServlet extends HttpServlet {
 
             //out.print(user.get(0).getUsername());
                 if (tutor != null) {
-                    out.println(tutor.getTutorID());
+                    out.println(tutor.getEmail());
+                    sendEmail.sendingEmail(tutor.getEmail());
                 } else {
                     authObj.put("status", "error");
                     String[] msgArray = {"This email doesn't exist"};
