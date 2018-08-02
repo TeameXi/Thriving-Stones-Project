@@ -10,13 +10,16 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import connection.ConnectionManager;
 import entity.Tutor;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
@@ -147,5 +150,25 @@ public class TutorDAO {
             Logger.getLogger(TutorDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
+    }
+    
+    public ArrayList<String> retrieveTutorList() {
+        ArrayList<String> tutors = new ArrayList<>();
+        String sql = "select tutor_fullname from tutor order by tutor_id";
+        System.out.println(sql);
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            
+            ResultSet rs = stmt.executeQuery();
+            
+            while(rs.next()){
+                System.out.println(rs.getString(1));
+                tutors.add(rs.getString(1));
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        
+        return tutors;
     }
 }

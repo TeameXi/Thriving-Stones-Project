@@ -139,7 +139,7 @@ public class ClassDAO {
         System.out.println(sql);
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setInt(1, Integer.parseInt(timing));
+            stmt.setString(1,timing);
             stmt.setInt(2, Integer.parseInt(level));
             stmt.setInt(3, Integer.parseInt(subject));
             System.out.println(stmt);

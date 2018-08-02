@@ -4,6 +4,7 @@
     Author     : HuiXin
 --%>
 
+<%@page import="model.TutorDAO"%>
 <%@page import="model.SubjectDAO"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="model.LevelDAO"%>
@@ -15,6 +16,9 @@
     <%
         LevelDAO level = new LevelDAO();
         ArrayList<String> levels = level.retrieveAllLevels();
+        TutorDAO tDAO = new TutorDAO();
+                // ArrayList<String> subjects = sDAO.retrieveSubjectsByLevel(level);
+                ArrayList<String> tutors = tDAO.retrieveTutorList();
     %>
 
     <form action="UpdateScheduleServlet">
@@ -42,7 +46,42 @@
                 }
             %>
         </select>
-        Timing: <input type="text" name="timing"/>
+        Day of Week: <select name="day">
+            <option value="">-Select Day-</option>
+            <option>Mon</option>
+            <option>Tue</option>
+            <option>Wed</option>
+            <option>Thurs</option>
+            <option>Fri</option>
+            <option>Sat</option>
+            <option>Sun</option>
+        </select>
+        Start Time: <select name="startTime">
+            <option value="">-Select Start Time-</option>
+            <%
+                for(int i=8; i <= 22; i ++){
+                    out.println("<option>" + i + "</option>");
+                }
+            %>
+        </select>
+        End Time: <select name="endTime">
+            <option value="">-Select Start Time-</option>
+            <%
+                for(int i=9; i <= 23; i ++){
+                    out.println("<option>" + i + "</option>");
+                }
+            %>
+        </select>
+        Tutor Assigned: <select name="tutor">
+            <option value="">-Select Tutor-</option>
+            <%
+                int index2 = 1;
+                for (String l : tutors) {%>
+            <option value=<%=index2%>><%=l%></option>
+            <%index2 += 1;
+                }
+            %>
+        </select>
         <input type="submit" value="Update Schedule">
     </form>
         

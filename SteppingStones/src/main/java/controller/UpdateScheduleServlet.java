@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.ClassDAO;
+import model.LessonDAO;
 
 /**
  *
@@ -36,9 +37,12 @@ public class UpdateScheduleServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         String level = request.getParameter("level");
         String subject = request.getParameter("subject");
-        String timing = request.getParameter("timing");
+        String day = request.getParameter("day");
+        String startTime = request.getParameter("startTime");
+        String endTime = request.getParameter("endTime");
+        String tutor = request.getParameter("tutor");
         ArrayList<String> errors = new ArrayList<>();
-        System.out.println(level + " " + subject + " " + timing);
+        System.out.println(level + " " + subject + " " + startTime + " " + endTime + " " + tutor);
         if(level == null || level.isEmpty()) {
             errors.add("Please select level");
         }
@@ -46,9 +50,16 @@ public class UpdateScheduleServlet extends HttpServlet {
         if(subject == null || subject.isEmpty()) {
             errors.add("Please select subject");
         }
+        if(day == null || day.isEmpty()) {
+            errors.add("Please select day");
+        }
         
-        if(timing == null || timing.isEmpty()) {
-            errors.add("Please enter timing");
+        if(startTime == null || startTime.isEmpty()) {
+            errors.add("Please select start time");
+        }
+        
+        if(endTime == null || endTime.isEmpty()) {
+            errors.add("Please select end time");
         }
         
         if(!errors.isEmpty()) {
@@ -57,6 +68,12 @@ public class UpdateScheduleServlet extends HttpServlet {
             RequestDispatcher view = request.getRequestDispatcher("UpdateSchedule.jsp");
             view.forward(request,response);
         }else{
+            if(tutor != null || !tutor.isEmpty()){
+                System.out.println("HALPPPP");
+                LessonDAO lesson = new LessonDAO();
+                lesson.updateLesson(tutor, level, subject);
+            }
+            String timing = day + " " + startTime + "-" + endTime;
             ClassDAO cDAO = new ClassDAO();
             boolean status = cDAO.updateClass(level, subject, timing);
             System.out.println(status);
