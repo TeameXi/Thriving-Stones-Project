@@ -67,36 +67,6 @@ public class TutorDAO {
         return null;
     }
 
-    public static Tutor retrieveTutorByEmail(final String email) {
-        Gson gson = new GsonBuilder().create();
-
-        try {
-            URL userURL = new URL("https://team-exi-thriving-stones.firebaseio.com/tutors.json");
-            URLConnection connection = userURL.openConnection();
-            BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(
-                            connection.getInputStream()));
-            String jsonString = reader.readLine();
-            JsonElement jelement = new JsonParser().parse(jsonString);
-            JsonObject jobject = jelement.getAsJsonObject();
-            Set entries = jobject.keySet();
-            Iterator iter = entries.iterator();
-            while (iter.hasNext()) {
-                String tutor = (String) iter.next();
-                JsonElement userDataString = jobject.get(tutor);
-                Tutor tutorToReturn = gson.fromJson(userDataString, Tutor.class);
-                if (tutorToReturn.getEmail().equals(email)) {
-                    tutorToReturn.setID(tutor);
-                    return tutorToReturn;
-                }
-            }
-            reader.close();
-        } catch (Exception ex) {
-            Logger.getLogger(TutorDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
-
     public ArrayList<Tutor> retrieveAllTutors() {
         Gson gson = new GsonBuilder().create();
         ArrayList<Tutor> tutors = new ArrayList<>();
@@ -170,5 +140,28 @@ public class TutorDAO {
         }
         
         return tutors;
+    }
+    
+    public Tutor retrieveTutorByEmail(String email){
+        Tutor tutor = null;
+        String sql = "select * from tutor where email = ?";
+        System.out.println(sql);
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, email);
+            
+            ResultSet rs = stmt.executeQuery();
+            
+            while(rs.next()){
+                tutor = new Tutor(rs.getString(1),rs.getString(2),rs.getString(3)
+                        ,rs.getString(4),rs.getString(5),rs.getString(6)
+                        ,rs.getString(7),rs.getString(8),rs.getString(9),rs.getString(10)
+                        ,rs.getInt(11),rs.getString(12));
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        
+        return tutor;
     }
 }

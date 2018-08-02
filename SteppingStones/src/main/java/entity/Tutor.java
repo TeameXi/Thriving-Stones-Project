@@ -8,14 +8,34 @@ package entity;
 public class Tutor {
 
     private String tutorID;
+    private String nric;
     private String name;
     private int age;
+    private String birthday;
+    private String address;
+    private String image_url;
+    private int branch_id;
+    private String updated;
     private String phone;
     private String gender;
     private String email;
     private String password;
     
     public Tutor(){
+    }
+    
+    public Tutor(String id, String ic, String name, String phone, String address, String image, String birthday, String gender, String email, String pwd, int branch, String updated){
+        this.tutorID = id;
+        this.nric = ic;
+        this.name = name;
+        this.phone = phone;
+        this.address = address;
+        this.image_url = image;
+        this.birthday = birthday;
+        this.gender = gender;
+        this.email = email;
+        this.branch_id = branch;
+        this.updated = updated;
     }
 
     public Tutor(String tutorID, String name, int age, String phone, String gender, String email, String password) {

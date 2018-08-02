@@ -7,20 +7,16 @@ package controller;
 
 import model.TutorDAO;
 import entity.Tutor;
-import entity.Users;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.UsersDAO;
 import model.SendMail;
 
 /**
@@ -42,36 +38,27 @@ public class ForgotPasswordServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-            PrintWriter out = response.getWriter();
-            Map<String, Object> authObj = new LinkedHashMap<>();
-            String email = request.getParameter("email");
-            String status = "";
-            ArrayList<String > errorList = new ArrayList<>();
-            
-            UsersDAO userDAO = new UsersDAO();
-            Users user =  userDAO.retrieveUserByEmail(email); 
-            
-            SendMail sendEmail = new SendMail();
-            if (user != null) {
-                out.println(user.getEmail());
-                sendEmail.sendingEmail(user.getEmail());
-            }
-            
-            TutorDAO tutorDAO = new TutorDAO();           
-            Tutor tutor =  tutorDAO.retrieveSpecificTutor(email);           
+        PrintWriter out = response.getWriter();
+        Map<String, Object> authObj = new LinkedHashMap<>();
+        String email = request.getParameter("email");
+        String status = "";
+        ArrayList<String> errorList = new ArrayList<>();
 
-            //out.print(user.get(0).getUsername());
-                if (tutor != null) {
-                    out.println(tutor.getEmail());
-                    sendEmail.sendingEmail(tutor.getEmail());
-                } else {
-                    authObj.put("status", "error");
-                    String[] msgArray = {"This email doesn't exist"};
-                    authObj.put("messages", msgArray);
-                    request.getSession(true).setAttribute("response", authObj);
-                    request.getRequestDispatcher("ResetPassword.jsp").forward(request,response);
-                }
-            
+        TutorDAO tutors = new TutorDAO();
+        Tutor tutor = tutors.retrieveTutorByEmail(email);
+
+        SendMail sendEmail = new SendMail();
+        if (tutor != null) {
+            System.out.println(tutor.getEmail());
+            out.println(tutor.getEmail());
+            sendEmail.sendingEmail(tutor.getEmail());
+        } else {
+            authObj.put("status", "error");
+            String[] msgArray = {"This email doesn't exist"};
+            authObj.put("messages", msgArray);
+            request.getSession(true).setAttribute("response", authObj);
+            request.getRequestDispatcher("ResetPassword.jsp").forward(request, response);
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
