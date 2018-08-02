@@ -8,10 +8,13 @@ package model;
 import entity.Class;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import connection.ConnectionManager;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -129,5 +132,23 @@ public class ClassDAO {
             Logger.getLogger(TutorDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
+    }
+    
+    public boolean updateClass(String level, String subject, String timing) {
+        String sql = "update class set timing = ? where level_id = ? and subject_id = ?";
+        System.out.println(sql);
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, Integer.parseInt(timing));
+            stmt.setInt(2, Integer.parseInt(level));
+            stmt.setInt(3, Integer.parseInt(subject));
+            System.out.println(stmt);
+            
+            stmt.executeUpdate();
+        } catch (Exception e) {
+            System.out.println(e);
+            return false;
+        }
+        return true;
     }
 }
