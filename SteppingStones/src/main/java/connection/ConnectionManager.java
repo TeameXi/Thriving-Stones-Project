@@ -47,15 +47,16 @@ public class ConnectionManager {
             //dbPassword = props.getProperty("db.password");
 
             // grab environment variable to check if we are on production environment
-            String osName = System.getProperty("os.name");
-            if (osName.equals("Linux")) {
-                // in production environment, use jelastic password
-                dbPassword = props.getProperty("password");
-                dbURL = props.getProperty("host");
-            } else {
+            String osName = System.getProperty("os.name").toLowerCase();
+            
+            if (osName.contains("windows") || osName.contains("mac")) {
                 // in local environment, use db.password
                 dbPassword = props.getProperty("db.password");
                 dbURL = "jdbc:mysql://" + host + ":" + port + "/" + dbName;
+            } else {
+                // in production environment, use jelastic password
+                dbPassword = props.getProperty("password");
+                dbURL = props.getProperty("host");
             }
         } catch (Exception ex) {
             // unable to load properties file
