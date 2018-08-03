@@ -59,12 +59,12 @@ public class UpdateTutorServlet extends HttpServlet {
 
             if (!updates.isEmpty()) {
                 TutorDAO tutors = new TutorDAO();
-                boolean status = tutors.updateTutor(tutorID, updates);
-                if (status) {
-                    out.println(1);
-                } else {
-                    out.println(0);
-                }
+//                boolean status = tutors.updateTutor(tutorID, updates);
+//                if (status) {
+//                    out.println(1);
+//                } else {
+//                    out.println(0);
+//                }
 
             }
 

@@ -78,7 +78,9 @@ public class StudentClassDAO {
     }
     
     public static ArrayList<entity.Student> getStudentsByClassID(String classID) {
+        
         ArrayList<entity.Student> students = new ArrayList<>();
+        /*
         try {
             String url = "https://team-exi-thriving-stones.firebaseio.com/StudentClass/" + classID + ".json";
             JSONObject result = FirebaseRESTHTTPRequest.get(url);
@@ -92,6 +94,7 @@ public class StudentClassDAO {
         } catch (Exception e) {
             System.out.println("List all students Error");
         }
+        */
         return students;
     }
 }

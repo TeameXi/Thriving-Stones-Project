@@ -5,18 +5,17 @@
  */
 package controller;
 
-import entity.Validation;
+
 import java.io.IOException;
 import java.io.PrintWriter;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.FirebaseConnection;
+
 import model.TutorDAO;
-import model.UsersDAO;
+
 
 /**
  *
@@ -38,20 +37,23 @@ public class DeleteTutorServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
 
-        PrintWriter out = response.getWriter();
-        String tutorID = request.getParameter("tutorID");
+        try(PrintWriter out = response.getWriter()){
+            if(request.getParameter("tutorID") != ""){
+                int tutorID = Integer.parseInt(request.getParameter("tutorID"));
 
-        if (Validation.isValidID(tutorID)) {
-            UsersDAO users = new UsersDAO();
-            users.deleteUser(tutorID);
-            TutorDAO tutors = new TutorDAO();
-            boolean status = tutors.removeTutor(tutorID);
-            if (status == true) {
-                out.println(1);
-            } else {
+                TutorDAO tutorDao = new TutorDAO();
+                boolean status =  tutorDao.deleteTutor(tutorID);
+
+                if (status == true) {
+                    out.println(1);
+                } else {
+                    out.println(0);
+                }
+            }else{
                 out.println(0);
             }
         }
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

@@ -1,11 +1,13 @@
 <%@page import="entity.Users"%>
 <!DOCTYPE html>
 <%
+   /*
             Users user = (Users) session.getAttribute("user");
             if (user == null) {
                 response.sendRedirect("Login.jsp");
                 return;
             }
+*/
 %>
 <html>
 <head>
@@ -53,35 +55,84 @@
             <div class="sidebar content-box" style="display: block;">
                 <ul class="nav">
                     <!-- Main menu -->
-
+                    <li><a href="dashboard.jsp"><i class="glyphicon glyphicon-dashboard"></i> Dashboard</a></li>
+                    
                     <li class="submenu">
                         <a href="#">
-                            <i class="zmdi zmdi-accounts-alt"></i> User Management
+                            <i class="zmdi zmdi-city-alt"></i> School
                             <span class="caret pull-right"></span>
                         </a>
                         <!-- Sub menu -->
                         <ul>
-                            <li><a href="CreateTutor.jsp">Create User</a></li>
-                            <li><a href="DisplayTutors.jsp">View Users</a></li>
+                            <li><a href="CreateBranch.jsp">Add Branch</a></li>
+                            <li><a href="DisplayBranch.jsp">View Branches</a></li>
                         </ul>
                     </li>
-
-                    <li><a href="${pageContext.request.contextPath}/RetrieveScheduleCreationDetails"><i class="zmdi zmdi-calendar-note"></i> Scheduling Classes</a></li>
-                    <li><a href="stats.html"><i class="zmdi zmdi-chart"></i> Financial Reports</a></li>
-                    <li><a href="tables.html"><i class="zmdi zmdi-money-box"></i> Payment Handling</a></li>
                     <li class="submenu">
                         <a href="#">
-                            <i class="zmdi zmdi-graduation-cap"></i> Student Management
+                            <i class="zmdi zmdi-account-o"></i> Admin
                             <span class="caret pull-right"></span>
                         </a>
                         <!-- Sub menu -->
                         <ul>
-                            <li><a href="CreateNewStudent.jsp">Create Student</a></li>
+                            <li><a href="CreateAdmin.jsp">Add Admin account</a></li>
+                            <li><a href="DisplayAdmins.jsp">View Admin</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="submenu">
+                        <a href="#">
+                            <i class="zmdi zmdi-accounts-alt"></i> Tutor
+                            <span class="caret pull-right"></span>
+                        </a>
+                        <!-- Sub menu -->
+                        <ul>
+                            <li><a href="CreateTutor.jsp">Create Tutor</a></li>
+                            <li><a href="DisplayTutors.jsp">View Tutors</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="submenu">
+                        <a href="#">
+                            <i class="zmdi zmdi-graduation-cap"></i> Student
+                            <span class="caret pull-right"></span>
+                        </a>
+                        <!-- Sub menu -->
+                        <ul>
+                            <li><a href="CreateStudent.jsp">Create Student</a></li>
                             <li><a href="DisplayStudents.jsp">View Students</a></li>
                         </ul>
                     </li>
+                    
+                    <li class="submenu">
+                        <a href="#">
+                            <i class="zmdi zmdi-male-female"></i> Parent
+                            <span class="caret pull-right"></span>
+                        </a>
+                        <!-- Sub menu -->
+                        <ul>
+                            <li><a href="CreateParent.jsp">Create Parent</a></li>
+                            <li><a href="DisplayParents.jsp">View Parents</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="submenu">
+                        <a href="#">
+                            <i class="zmdi zmdi-book"></i> Subject
+                            <span class="caret pull-right"></span>
+                        </a>
+                        <!-- Sub menu -->
+                        <ul>
+                            <li><a href="CreateSubject.jsp">Create Subject</a></li>
+                            <li><a href="DisplaySubjects.jsp">View Subjects</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="${pageContext.request.contextPath}/RetrieveScheduleCreationDetails"><i class="zmdi zmdi-calendar-note"></i> Scheduling Classes</a></li>
+                    <li><a href="stats.html"><i class="zmdi zmdi-chart"></i> Financial Reports</a></li>
+                    <li><a href="tables.html"><i class="zmdi zmdi-money-box"></i> Payment Handling</a></li>
+                    
 
-                    <li><a href="editors.html"><i class="zmdi zmdi-book"></i>Modules Planning</a></li>
+                    
 
 
                 </ul>

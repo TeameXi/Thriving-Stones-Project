@@ -7,17 +7,13 @@ package controller;
 
 import entity.Tutor;
 import java.io.IOException;
-import java.util.ArrayList;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.FirebaseConnection;
 import model.TutorDAO;
-import model.UsersDAO;
-import entity.Validation;
 
 @WebServlet(name = "CreateTutorServlet", urlPatterns = {"/CreateTutorServlet"})
 public class CreateTutorServlet extends HttpServlet {
@@ -34,34 +30,43 @@ public class CreateTutorServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-
-        String tutorID = request.getParameter("tutorID");
-        String name = request.getParameter("name");
-        int age = Integer.parseInt(request.getParameter("age"));
-        String gender = request.getParameter("gender");
-        String phone = request.getParameter("phone");
-        String email = request.getParameter("tutorEmail");
-        String password = request.getParameter("tutorPassword");
-
-        FirebaseConnection.initFirebase();
-
-        TutorDAO tDAO = new TutorDAO();
-        ArrayList<String> errors = Validation.validateNewTutor(tutorID, name, age, phone, gender, email, password);
-        Tutor existingTutor = tDAO.retrieveSpecificTutor(tutorID);
-        if (errors.isEmpty() && existingTutor == null) {
-            Tutor tempTutor = new Tutor(name, age, phone, gender, email, password);
-            tDAO.addTutor(tutorID, tempTutor);
-            UsersDAO uDAO = new UsersDAO();
-            uDAO.addUser(tempTutor);
-            request.setAttribute("status", "Added tutor successfully");
-        } else {
-            if(existingTutor != null){
-                    request.setAttribute("tutorExist", "There was already a record of tutor with ID: " + tutorID);
-                }
-                request.setAttribute("errorMsg", errors);
+        
+        String nric = request.getParameter("nric");
+        String name = request.getParameter("tutorName").trim().toLowerCase();
+        int phone = 0;
+        if(request.getParameter("phone") != null && request.getParameter("phone") != ""){
+            phone =  Integer.parseInt(request.getParameter("phone"));
         }
-        RequestDispatcher view = request.getRequestDispatcher("CreateTutor.jsp");
-        view.forward(request, response);
+        String address = request.getParameter("address");
+        String image_url = request.getParameter("tutorImage");
+        String birth_date = request.getParameter("birthDate");
+        String gender = request.getParameter("gender");
+        String email = request.getParameter("email"); 
+        String password = "";
+        if(request.getParameter("tutorPassword") != null){
+            password = request.getParameter("tutorPassword").trim();
+        }
+        
+        int branch = 0;
+
+        if(request.getParameter("branch") != null && request.getParameter("branch") != ""){
+            branch = Integer.parseInt(request.getParameter("branch"));
+        }
+
+        TutorDAO tutordao = new TutorDAO();
+        Tutor existingTutor = tutordao.retrieveSpecificTutor(name);
+        if(existingTutor != null){
+            request.setAttribute("existingTutor", existingTutor.getName());
+            RequestDispatcher dispatcher = request.getRequestDispatcher("CreateTutor.jsp");
+            dispatcher.forward(request, response);
+        }else{
+            Tutor tempTutor = new Tutor(nric,name,phone,address,image_url,birth_date,gender,email,password,branch);
+            boolean status = tutordao.addTutor(tempTutor);
+            request.setAttribute("creation_status",""+status);
+            RequestDispatcher dispatcher = request.getRequestDispatcher("DisplayTutors.jsp");
+            dispatcher.forward(request, response);
+            
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

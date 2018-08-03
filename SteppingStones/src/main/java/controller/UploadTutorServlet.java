@@ -7,11 +7,14 @@ package controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.TutorDAO;
 
 /**
  *
@@ -33,12 +36,48 @@ public class UploadTutorServlet extends HttpServlet {
             throws ServletException, IOException {
        
         try (PrintWriter out = response.getWriter()) {
-           out.println("HH");
-           String tutorIDs[] = request.getParameterValues("con_username[]");
-            for(int i = 0; i < tutorIDs.length; i++)
-                {
-                    out.println(tutorIDs[i]);
+            String tutorNrics[] = request.getParameterValues("con_nric[]");
+            String tutorNames[] = request.getParameterValues("con_username[]");
+            String phones[] = request.getParameterValues("con_phones[]");
+            String addresses[] = request.getParameterValues("con_addresses[]");
+            String images[] = request.getParameterValues("con_images[]");
+            String birth_dates[] = request.getParameterValues("con_birthdates[]");
+            String genders[] = request.getParameterValues("con_genders[]");
+            String emails[] = request.getParameterValues("con_emails[]");
+            String passwords[] = request.getParameterValues("con_pwd[]");
+            int branch_id = 0; 
+            if(request.getParameter("branch") != null && request.getParameter("branch") != ""){
+                branch_id = Integer.parseInt(request.getParameter("branch"));
+            }
+
+  
+            ArrayList<String> tutorLists = new ArrayList();
+            ArrayList<String> tutorNameLists = new ArrayList();
+            for(int i = 0; i < tutorNames.length; i++){
+                if("".equals(tutorNames[i].trim())) continue;
+              
+                int phone = 0;
+                if(!"".equals(phones[i])){
+                    phone = Integer.parseInt(phones[i]);
                 }
+                
+//                Tutor tempTutor = new Tutor(tutorNrics[i],tutorNames[i],phone,addresses[i],images[i],birth_dates[i],genders[i],emails[i],passwords[i],branch_id);
+
+                tutorLists.add("("+tutorNrics[i]+",'"+tutorNames[i].trim()+"',"+phone+",'"+addresses[i]+"','"+images[i]+"','"
+                       +birth_dates[i]+"','"+genders[i]+"','"+emails[i]+"','"+passwords[i]+"',"+branch_id+")");
+
+                tutorNameLists.add(tutorNames[i].trim());
+            }
+            
+            ArrayList<String>existingUsers = new ArrayList<>();
+            if(tutorLists.size() > 0){
+                TutorDAO tutorDao = new TutorDAO();
+                existingUsers = tutorDao.uploadTutor(tutorLists, tutorNameLists);
+                request.setAttribute("existingUserLists",existingUsers);
+            }
+          
+            RequestDispatcher dispatcher = request.getRequestDispatcher("DisplayTutors.jsp");
+            dispatcher.forward(request, response);
         }
     }
 
