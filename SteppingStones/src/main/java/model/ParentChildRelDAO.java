@@ -17,11 +17,11 @@ import static model.StudentDAO.retrieveStudentID;
  * @author DEYU
  */
 public class ParentChildRelDAO {
-    public static void insertParentChildRel(String parentName, String studentName, String BOD) {
+    public static void insertParentChildRel(String parentName, String studentName) {
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
             int parent_id = ParentDAO.retrieveParentID(parentName);
-            int student_id = retrieveStudentID(studentName, BOD);
+            int student_id = retrieveStudentID(studentName);
             String sql = "insert into parent_child_rel(parent_id, child_id) value(?, ? )";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, parent_id);

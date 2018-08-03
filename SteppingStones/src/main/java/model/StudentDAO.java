@@ -12,9 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  *
@@ -47,13 +45,12 @@ public class StudentDAO {
         }
     }
     
-    public static int retrieveStudentID(String studentName, String BOD){
+    public static int retrieveStudentID(String studentName){
         int result = 0;
         try(Connection conn = ConnectionManager.getConnection()){
-            String sql = "select student_id from student where student_name = ? and birth_date = ?";
+            String sql = "select student_id from student where student_name = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, studentName);
-            stmt.setString(2, BOD);
             ResultSet rs = stmt.executeQuery();
             while(rs.next()){
                 result = rs.getInt("student_id");
@@ -133,8 +130,7 @@ public class StudentDAO {
         }
         
         return students;
-    }
-    
+    }   
     
     public static Student retrieveStudentbyID(int studentID){
         Student stu  = null;
@@ -163,6 +159,21 @@ public class StudentDAO {
             System.out.print(e.getMessage());
         }       
         return stu;
+    }
+    
+    public static int retrieveStudentLevelbyName(String studentName){
+        int levelID = 0;
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement("select level_id from student where student_name = ?");
+            stmt.setString(1, studentName);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){
+                levelID = rs.getInt("level_id");
+            }
+        }catch(SQLException e){
+            System.out.print(e.getMessage());
+        }       
+        return levelID;
     }
    
     public static boolean deleteStudentbyID(int studentID){
@@ -194,6 +205,24 @@ public class StudentDAO {
             stmt.setDouble(5, req_amount);
             stmt.setDouble(6, out_amount);
             stmt.setDouble(7, studentID);
+            stmt.executeUpdate(); 
+            conn.commit();
+            updatedStatus = true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return updatedStatus;
+    } 
+    
+    public static boolean updateStudentFees(int studentID, double reqAmt, double outstandingAmt){
+        boolean updatedStatus = false;
+        try (Connection conn = ConnectionManager.getConnection();) {
+            conn.setAutoCommit(false);
+            String sql = "update student set required_amount = ?, outstanding_amount = ? where student_id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setDouble(1, reqAmt);
+            stmt.setDouble(2, outstandingAmt);
+            stmt.setInt(3, studentID);
             stmt.executeUpdate(); 
             conn.commit();
             updatedStatus = true;

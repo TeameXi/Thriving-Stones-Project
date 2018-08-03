@@ -6,29 +6,71 @@
 package model;
 
 import entity.Class;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import connection.ConnectionManager;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.json.JSONObject;
 
 /**
  *
  * @author DEYU
  */
 public class ClassDAO {
+    
+    public static ArrayList<Class> getClassByLevel(int level_id){
+        String level = LevelDAO.retrieveLevel(level_id);
+        ArrayList<Class> classList = new ArrayList();
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement("select * from class where branch_id = ? and level_id = ? and end_date > curdate() order by subject_id");
+            stmt.setInt(1, 1); // replace with branch_id
+            stmt.setInt(2, level_id);
+            ResultSet rs = stmt.executeQuery();
 
+            while(rs.next()){
+                int classID = rs.getInt("class_id");
+                int subjectID = rs.getInt("subject_id");
+                String classTime = rs.getString("timing");
+                String classDay = rs.getString("class_day");
+                String startDate = rs.getString("start_date");
+                String endDate = rs.getString("end_date");
+                int mthlyFees = rs.getInt("fees");
+                String subject = SubjectDAO.retrieveSubject(subjectID);
+                Class cls = new Class(classID, level, subject, classTime, classDay, mthlyFees, startDate, endDate);
+                classList.add(cls);
+            }
+        }catch(SQLException e){
+            System.out.print(e.getMessage());
+        }
+        return classList;
+    }
+    
+    public static Class getClassByID(int classID){
+        Class cls = null;
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement("select * from class where class_id = ?");
+            stmt.setInt(1, classID);
+            ResultSet rs = stmt.executeQuery();
+
+            while(rs.next()){
+                int levelID = rs.getInt("level_id");
+                int subjectID = rs.getInt("subject_id");
+                String classTime = rs.getString("timing");
+                String classDay = rs.getString("class_day");
+                String startDate = rs.getString("start_date");
+                String endDate = rs.getString("end_date");
+                int mthlyFees = rs.getInt("fees");
+                String subject = SubjectDAO.retrieveSubject(subjectID);
+                String level = LevelDAO.retrieveLevel(levelID);
+                cls = new Class(classID, level, subject, classTime, classDay, mthlyFees, startDate, endDate);
+            }
+        }catch(SQLException e){
+            System.out.print(e.getMessage());
+        }       
+        return cls;
+    }
+    /*
     public static void saveClasses(String level, String subject, String classTime, String classDay, double mthlyFees, String startDate){
         Class cls = new Class(level, subject, classTime, classDay, mthlyFees, startDate);
         String json = new Gson().toJson(cls);
@@ -39,41 +81,6 @@ public class ClassDAO {
         }catch(Exception e){
             System.out.println("Insert Class Error");
         }
-    }
-    
-    public static Map<String, Class> getClassByLevel(String level){
-        Map<String, Class> classes = new HashMap<>();
-        try{
-            String url = "https://team-exi-thriving-stones.firebaseio.com/classes.json";
-            JSONObject result = FirebaseRESTHTTPRequest.get(url);
-            if (result != null) {
-                Set<String> keys = result.keySet();
-                for(String key: keys){
-                    Class cls = new Gson().fromJson(result.getJSONObject(key).toString(), Class.class);
-                    if(cls.getLevel().equals(level)){
-                        classes.put(key, cls);
-                    }
-                } 
-            } 
-        }catch(Exception e){
-            System.out.println("Retrieve Class Error");
-        } 
-        return classes;
-    }
-    
-    public static Class getClassByID(String classID){
-        Class cls = null;
-        try{
-            String url = "https://team-exi-thriving-stones.firebaseio.com/classes/" + classID + ".json";
-            JSONObject result = FirebaseRESTHTTPRequest.get(url);
-            if (result != null) {
-                cls = new Gson().fromJson(result.toString(), Class.class);
-                cls.setClassID(classID);
-            }
-        }catch(Exception e){
-            System.out.println("Retrieve Class Error");
-        } 
-        return cls;
     }
     
     public static ArrayList<Class> listAllClasses(){
@@ -133,7 +140,7 @@ public class ClassDAO {
         }
         return null;
     }
-    
+    */
     public boolean updateClass(String level, String subject, String timing) {
         String sql = "update class set timing = ? where level_id = ? and subject_id = ?";
         System.out.println(sql);
@@ -151,4 +158,6 @@ public class ClassDAO {
         }
         return true;
     }
+    
 }
+    

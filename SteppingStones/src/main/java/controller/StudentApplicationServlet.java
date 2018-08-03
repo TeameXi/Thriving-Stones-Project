@@ -59,7 +59,7 @@ public class StudentApplicationServlet extends HttpServlet {
         
         StudentDAO.insertStudent(studentNRIC, studentName, phone, address, BOD, gender, stuEmail, stuPassword, level_id, 1); // replace with branch_id
         ParentDAO.insertParent(parentName, parentNationality, parentCompany, parentDesgination, parentPhone, parentEmail, parentPhone, 1); //replace with bracnch_id
-        ParentChildRelDAO.insertParentChildRel(parentName, studentName, BOD);
+        ParentChildRelDAO.insertParentChildRel(parentName, studentName);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

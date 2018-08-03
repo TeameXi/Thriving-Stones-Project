@@ -6,19 +6,37 @@
 package model;
 
 import com.google.gson.Gson;
+import connection.ConnectionManager;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import org.json.JSONObject;
-import entity.Student;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 
 /**
  *
  * @author DEYU
  */
 public class StudentClassDAO {
-    
+    public static boolean saveStudentToRegisterClass(int classID, int studentID){
+        boolean status = false;
+        try (Connection conn = ConnectionManager.getConnection();) {
+            conn.setAutoCommit(false);
+            String sql = "insert into class_student_rel(class_id, student_id) value(?, ?)";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, classID);
+            stmt.setInt(2, studentID);
+            stmt.executeUpdate(); 
+            conn.commit();
+            status = true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return status;
+     }
+    /*
      public static void saveClassWithStudent(String classKey, String studentID, String studentName){
         Map<String, String> studentClass = new HashMap<>();
         studentClass.put(studentID, studentName);
@@ -31,7 +49,7 @@ public class StudentClassDAO {
             System.out.println("Database error");
         }
      }
-     
+     */
      public static ArrayList<String> retrieveStudentClassesID(String studentID){
         final ArrayList<String> classIDs = new ArrayList<>();
         try{
