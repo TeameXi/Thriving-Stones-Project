@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.StudentGradeDAO;
+import entity.Validation;
+import java.util.ArrayList;
 
 @WebServlet(name = "CreateGradeServlet", urlPatterns = {"/CreateGradeServlet"})
 public class CreateGradeServlet extends HttpServlet {
@@ -35,21 +37,20 @@ public class CreateGradeServlet extends HttpServlet {
         String subject = request.getParameter("subject");
         String examination = request.getParameter("examination");
         String grade = request.getParameter("grade");
-        System.out.println("creategrade.kava");
-        System.out.println(student);
-        System.out.println(location);
-        System.out.println(subject);
-        System.out.println(examination);
-        System.out.println(grade);
         
-        boolean updateStatus = StudentGradeDAO.createGrade(student, location, subject, examination, grade);
+        ArrayList<String> validationError = Validation.validateCreateGrade(student, location, subject, examination, grade);
+        ArrayList<String> existingError = new ArrayList<String>();
+        if (validationError.isEmpty()){
+            existingError = StudentGradeDAO.createGrade(student, location, subject, examination, grade);
+        }
         
-        if (updateStatus){
+        if (existingError.isEmpty()){
             request.setAttribute("status", "Grades updated");
             RequestDispatcher view = request.getRequestDispatcher("SelectClass.jsp");
             view.forward(request, response);
         } else {
-            request.setAttribute("status", "Grades failed to update");
+            request.setAttribute("validationError", validationError);
+            request.setAttribute("existingError", existingError);
             RequestDispatcher view = request.getRequestDispatcher("SelectClass.jsp");
             view.forward(request, response);
         }

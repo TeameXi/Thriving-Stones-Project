@@ -4,6 +4,7 @@
     Author     : 
 --%>
 
+<%@page import="model.ClassDAO"%>
 <%@page import="entity.Student"%>
 <%@page import="java.util.ArrayList"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -22,8 +23,7 @@
         <div>
             <span class="label-input100">Select Student</span>
             <select id="student" name="student" class="cd-select">
-                <%                    
-                    ArrayList<Student> stuList = (ArrayList<Student>) request.getAttribute("students");
+                <%                    ArrayList<Student> stuList = (ArrayList<Student>) request.getAttribute("students");
                     for (Student tempStudent : stuList) {
                         out.println("<option value=\"" + tempStudent.getStudentID() + "\">" + tempStudent.getName() + "</option>");
                     }
@@ -51,39 +51,21 @@
             </select> 
         </div>
 
-        <%
-            String level = (String) request.getAttribute("level");
-            if (level.matches("(Pri)" + " " + "[1-6]")) {
-        %>
+
         <div>
             <span class="label-input100">Subject</span>
             <select id="subject" name="subject" class="cd-select">
-                <option value="-1" selected>Select Grade</option>
-                <option value="English">English</option>
-                <option value="Maths">Maths</option>
-                <option value="Science">Science</option>
+                <option value="-1" selected>Subject</option>
+                <%
+                    String classID = (String) request.getAttribute("class");
+                    String subject = ClassDAO.getClassByID(classID).getSubject();
+                    out.println("<option value=\"" + subject + "\">" + subject + "</option>");
+                %>
             </select> 
         </div>
-        <%
-        } else {
-        %>
-        <div>
-            <span class="label-input100">Subject</span>
-            <select id="subject" name="subject" class="cd-select">
-                <option value="-1" selected>Select Grade</option>
-                <option value="English">English</option>
-                <option value="Add-Maths">Add-Maths</option>
-                <option value="E-Maths">E-Maths</option>
-                <option value="Chemistry">Chemistry</option>
-                <option value="Biology">Biology</option>
-                <option value="Physics">Physics</option>
-            </select> 
-        </div>
-        <%            }
-        %>
 
         Grade: <input type="text" name="grade"><br>
-        
+
         <div class="container-login100-form-btn">
             <div class="wrap-login100-form-btn">
                 <div class="login100-form-bgbtn"></div>

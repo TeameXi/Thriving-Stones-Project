@@ -41,5 +41,19 @@
         if (status != null) {
             out.println(status);
         }
+        ArrayList<String> validationError = (ArrayList<String>) request.getAttribute("validationError");
+        if (validationError != null && !validationError.isEmpty()) {
+            out.println("Update failed!");
+            for (String e: validationError){
+                out.println(e);
+            }
+        }
+        ArrayList<String> existingError = (ArrayList<String>) request.getAttribute("existingError");
+        if (existingError != null && !existingError.isEmpty()) {
+            out.println("Update failed!");
+            for (String e: existingError){
+                out.println(e);
+            }
+        }
     %>
 </html>

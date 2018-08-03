@@ -43,6 +43,7 @@ public class SelectClassServlet extends HttpServlet {
         if (!stuList.isEmpty()) {    
             request.setAttribute("students", stuList);
             request.setAttribute("level", level);
+            request.setAttribute("class", classID);
             RequestDispatcher view = request.getRequestDispatcher("CreateGrade.jsp");
             view.forward(request, response);
         } else {
