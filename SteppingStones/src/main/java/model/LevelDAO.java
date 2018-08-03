@@ -6,6 +6,7 @@
 package model;
 
 import connection.ConnectionManager;
+import entity.Level;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -29,6 +30,26 @@ public class LevelDAO {
             while(rs.next()){
                 System.out.println(rs.getString(1));
                 levels.add(rs.getString(1));
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        
+        return levels;
+    }
+    
+    public ArrayList<Level> retrieveAllLevelLists() {
+        ArrayList<Level> levels = new ArrayList<>();
+        String sql = "select * from level";
+        System.out.println(sql);
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            
+            ResultSet rs = stmt.executeQuery();
+           
+            while(rs.next()){
+                Level lvl = new Level(rs.getInt(1),rs.getString(2));
+                levels.add(lvl);
             }
         } catch (Exception e) {
             System.out.println(e);

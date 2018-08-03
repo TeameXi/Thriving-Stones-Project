@@ -59,7 +59,7 @@
                     
                     <li class="submenu">
                         <a href="#">
-                            <i class="zmdi zmdi-city-alt"></i> School
+                            <i class="zmdi zmdi-city-alt"></i> Branch
                             <span class="caret pull-right"></span>
                         </a>
                         <!-- Sub menu -->

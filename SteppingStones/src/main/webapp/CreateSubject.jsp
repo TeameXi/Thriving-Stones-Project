@@ -4,6 +4,8 @@
     Author     : MOH MOH SAN
 --%>
 
+<%@page import="entity.Level"%>
+<%@page import="model.LevelDAO"%>
 <%@page import="java.util.ArrayList"%>
 <%@include file="header.jsp"%>
 <style>
@@ -23,13 +25,12 @@
 
 
 </style>
-<%   
-    ArrayList<String> errors = (ArrayList<String>) request.getAttribute("errorMsg");
+<%    ArrayList<String> errors = (ArrayList<String>) request.getAttribute("errorMsg");
     if (errors != null) {
         for (String error : errors) {
             out.println(error);
         }
-    }    
+    }
 %> 
 
 <div class="col-md-10">
@@ -38,24 +39,31 @@
         <div class="col-md-3"></div>
         <div class="col-md-7">
             <form id="createSubjectForm" method="POST" class="form-horizontal" action="">
-				<div class="form-group">
-                    <label class="col-lg-2 control-label">Level</label>  
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">Academic Level</label>  
                     <div class="col-lg-7 inputGroupContainer">
                         <div class="input-group">
-                            <span class="input-group-addon"><i class="zmdi zmdi-city"></i></span>
+                            <span class="input-group-addon"><i class="zmdi zmdi-badge-check"></i></span>
                             <select name="level" class="form-control" >
-                                <option value="" >Select Level</option>
-                                <option value="singapore">Singapore</option>
-                                <option value="malaysia">Malaysia</option>
+                                <%
+                                    LevelDAO lvlDao = new LevelDAO();
+                                    ArrayList<Level> lvlLists = lvlDao.retrieveAllLevelLists();
+                                %>
+                                <option value="-1" >Select Level</option>
+                                <%  for (Level lvl : lvlLists) {
+                                        out.println("<option value='" + lvl.getLevel_id() + "'>" + lvl.getLevelName() + "</option>");
+                                    }
+                                %>
                             </select>
                         </div>
                     </div>
                 </div>
+
                 <div class="form-group">
                     <label class="col-lg-2 control-label">Subject Name</label>  
                     <div class="col-lg-7 inputGroupContainer">
                         <div class="input-group">
-                            <span class="input-group-addon"><i class="zmdi zmdi-account"></i></span>
+                            <span class="input-group-addon"><i class="zmdi zmdi-book"></i></span>
                             <input id="subjectName"  name="subjectName" placeholder="Subject Name" class="form-control"  type="text">
                         </div>
                     </div>
@@ -83,32 +91,32 @@
 
 <script>
 
-$(function () {   
-    $('#createSubjectForm').bootstrapValidator({
-        // To use feedback icons, ensure that you use Bootstrap v3.1.0 or later
-        feedbackIcons: {
-            valid: 'glyphicon glyphicon-ok',
-            invalid: 'glyphicon glyphicon-remove',
-            validating: 'glyphicon glyphicon-refresh'
-        },
-        fields: {
-            subjectName: {
-                validators: {
-                    notEmpty: {
-                        message: 'Please enter subject name'
-                    }
-                }
+    $(function () {
+        $('#createSubjectForm').bootstrapValidator({
+            // To use feedback icons, ensure that you use Bootstrap v3.1.0 or later
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
             },
-			level: {
-                validators: {
-                    notEmpty: {
-                        message: 'Please select level'
+            fields: {
+                subjectName: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Please enter subject name'
+                        }
+                    }
+                },
+                level: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Please select level'
+                        }
                     }
                 }
             }
-        }
+        });
     });
-});
 </script>
 
 

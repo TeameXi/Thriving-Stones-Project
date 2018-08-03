@@ -1,3 +1,5 @@
+<%@page import="entity.Level"%>
+<%@page import="model.LevelDAO"%>
 <%@page import="entity.Branch"%>
 <%@page import="model.BranchDAO"%>
 <%@page import="java.util.ArrayList"%>
@@ -87,15 +89,15 @@
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-badge-check"></i></span>
                             <select name="lvl" class="form-control" >
+                                <%
+                                    LevelDAO lvlDao = new LevelDAO();
+                                    ArrayList<Level> lvlLists = lvlDao.retrieveAllLevelLists();
+                                %>
                                 <option value="-1" >Select Level</option>
-                                <option value="Primary 3">Primary 3</option>
-                                <option value="Primary 4">Primary 4</option>
-                                <option value="Primary 5">Primary 5</option>
-                                <option value="Primary 6">Primary 6</option>
-                                <option value="Secondary 1">Secondary 1</option>
-                                <option value="Secondary 2">Secondary 2</option>
-                                <option value="Secondary 3">Secondary 3</option>
-                                <option value="Secondary 4">Secondary 4</option>
+                                    <%  for(Level lvl: lvlLists){
+                                            out.println("<option value='"+lvl.getLevel_id()+"'>"+lvl.getLevelName()+"</option>");
+                                       }
+                                    %>
                             </select>
                         </div>
                     </div>
