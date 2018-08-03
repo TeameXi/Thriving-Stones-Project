@@ -44,11 +44,15 @@ public class Validation {
      * Method that validates the age format
      *
      * @param age age to validate
-     * @return true if age is an integer
-     * false otherwise
+     * @return true if age is an integer false otherwise
      */
-    public static boolean isValidAge(int age) {
-        return (age >= 7 && age <= 70);
+    public static boolean isValidAge(String ageToCheck) {
+        try {
+            int age = Integer.parseInt(ageToCheck);
+            return (age >= 7 && age <= 70);
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 
     /**
@@ -86,11 +90,11 @@ public class Validation {
         return ID.matches("^[STFG]{1}" + "[0-9]{7}" + "[A-Z]{1}$");
     }
 
-    public static boolean isValidName(String name){
+    public static boolean isValidName(String name) {
         return (name != null && !name.equals(""));
     }
-    
-    public static boolean isValidAmt(String amt){
+
+    public static boolean isValidAmt(String amt) {
         try {
             Double.parseDouble(amt);
         } catch (NumberFormatException e) {
@@ -98,36 +102,36 @@ public class Validation {
         }
         return true;
     }
-    
-    public static boolean isValidLevel(String level){
+
+    public static boolean isValidLevel(String level) {
         return level.matches("(Pri|Sec)" + " " + "[1-6]");
     }
-    
-    public static boolean isValidAssessmentType(String assessmentType){
-        return assessmentType.equals("ca1") || assessmentType.equals("sa1") || assessmentType.equals("ca2") || assessmentType.equals("sa2");
+
+    public static boolean isValidAssessmentType(String assessmentType) {
+        return assessmentType.matches("(ca1|sa1|ca2|sa2)");
     }
-    
-    public static boolean isValidSubject(String subject){
-        return subject.equals("English") || subject.equals("Maths") || subject.equals("Science") || subject.equals("Add-Maths") || subject.equals("E-Maths");
+
+    public static boolean isValidSubject(String subject) {
+        return subject.matches("(English|Maths|Science|Add-Maths|E-Maths|Chemistry|Biology|Physics)");
     }
-    
-    public static boolean isValidScore(String score){
+
+    public static boolean isValidScore(String score) {
         int scr;
-        try{
-            scr = Integer.parseInt(score);     
-        }catch(NumberFormatException ex){
+        try {
+            scr = Integer.parseInt(score);
+        } catch (NumberFormatException ex) {
             return false;
         }
-        return scr >= 0 && scr <= 100; 
+        return scr >= 0 && scr <= 100;
     }
-    
-    public static ArrayList<String> validateStudent(String studentID, String studentName, int age, String gender, String lvl, String phone, String sub1, String sub2, String sub3) {
+
+    public static ArrayList<String> validateStudent(String studentID, String studentName, String age, String gender, String lvl, String phone, String sub1, String sub2, String sub3) {
         ArrayList<String> errors = new ArrayList<>();
 
         if (!isValidID(studentID)) {
             errors.add("Invalid Student ID!");
         }
-        
+
         if (!isValidName(studentName)) {
             errors.add("Invalid Student Name!");
         }
@@ -155,51 +159,13 @@ public class Validation {
         return errors;
     }
 
-    public static ArrayList<String> validateStudentWithAmt(String studentID, String studentName, int age, String gender, String lvl, String phone, String reqAmt, String outstandingAmt) {
+    public static ArrayList<String> validateStudentWithAmt(String studentID, String studentName, String age, String gender, String lvl, String phone, String reqAmt, String outstandingAmt) {
         ArrayList<String> errors = new ArrayList<>();
 
         if (!isValidID(studentID)) {
             errors.add("Invalid Student ID!");
         }
-        
-        if (!isValidName(studentName)) {
-            errors.add("Invalid Student Name!");
-        }
 
-        if (!isValidAge(age)) {
-            errors.add("Invalid Age!");
-        }
-
-        if (!isValidGender(gender)) {
-            errors.add("Please Select Gender!");
-        }
-
-        if (!isValidLevel(lvl)) {
-            errors.add("Please Select Academic Level!");
-        }
-
-        if (!isValidPhoneNo(phone)) {
-            errors.add("Invalid Phone Number!");
-        }
-
-        if (!isValidAmt(reqAmt)) {
-            errors.add("Invalid Required Amount!");
-        }
-
-        if (!isValidAmt(outstandingAmt)) {
-            errors.add("Invalid Outsatnding Amount!");
-        }
-
-        return errors;
-    }
-    
-    public static ArrayList<String> validateUpdateStudent(String studentID, String studentName, int age, String gender, String lvl, String phone, String reqAmt, String outstandingAmt) {
-        ArrayList<String> errors = new ArrayList<>();
-
-        if (!isValidID(studentID)) {
-            errors.add("Invalid Student ID!");
-        }
-        
         if (!isValidName(studentName)) {
             errors.add("Invalid Student Name!");
         }
@@ -231,7 +197,45 @@ public class Validation {
         return errors;
     }
 
-    public static ArrayList<String> validateNewTutor(String tutorID, String name, int age, String phone, String gender, String email, String password) {
+    public static ArrayList<String> validateUpdateStudent(String studentID, String studentName, String age, String gender, String lvl, String phone, String reqAmt, String outstandingAmt) {
+        ArrayList<String> errors = new ArrayList<>();
+
+        if (!isValidID(studentID)) {
+            errors.add("Invalid Student ID!");
+        }
+
+        if (!isValidName(studentName)) {
+            errors.add("Invalid Student Name!");
+        }
+
+        if (!isValidAge(age)) {
+            errors.add("Invalid Age!");
+        }
+
+        if (!isValidGender(gender)) {
+            errors.add("Please Select Gender!");
+        }
+
+        if (!isValidLevel(lvl)) {
+            errors.add("Please Select Academic Level!");
+        }
+
+        if (!isValidPhoneNo(phone)) {
+            errors.add("Invalid Phone Number!");
+        }
+
+        if (!isValidAmt(reqAmt)) {
+            errors.add("Invalid Required Amount!");
+        }
+
+        if (!isValidAmt(outstandingAmt)) {
+            errors.add("Invalid Outstanding Amount!");
+        }
+
+        return errors;
+    }
+
+    public static ArrayList<String> validateNewTutor(String tutorID, String name, String age, String phone, String gender, String email, String password) {
         ArrayList<String> errors = new ArrayList<>();
 
         if (!isValidID(tutorID)) {
@@ -241,7 +245,7 @@ public class Validation {
         if (!isValidName(name)) {
             errors.add("Invalid Tutor Name!");
         }
-        
+
         if (!isValidAge(age)) {
             errors.add("Invalid Age!");
         }
@@ -264,8 +268,8 @@ public class Validation {
 
         return errors;
     }
-    
-    public static ArrayList<String> validateUpdateTutor(String tutorID, String name, int age, String phone, String gender, String email) {
+
+    public static ArrayList<String> validateUpdateTutor(String tutorID, String name, String age, String phone, String gender, String email) {
         ArrayList<String> errors = new ArrayList<>();
 
         if (!isValidID(tutorID)) {
@@ -275,7 +279,7 @@ public class Validation {
         if (!isValidName(name)) {
             errors.add("Invalid Tutor Name!");
         }
-        
+
         if (!isValidAge(age)) {
             errors.add("Invalid Age!");
         }
@@ -294,10 +298,35 @@ public class Validation {
 
         return errors;
     }
+
+    public static ArrayList<String> validateCreateGrade(String studentID, String location, String sub, String assessmentType, String grade) {
+        ArrayList<String> errors = new ArrayList<>();
+
+        if (!Validation.isValidID(studentID)) {
+            errors.add("Invalid Student ID!");
+        }
+
+        if (!location.equals("School") && !location.equals("Center")) {
+            errors.add("Please Select Location!");
+        }
+        
+        if (!Validation.isValidSubject(sub)) {
+            errors.add("Please Select Subject!");
+        }
+
+        if (!Validation.isValidAssessmentType(assessmentType)) {
+            errors.add("Please Select Assessement Type!");
+        }
+
+        if (!Validation.isValidScore(grade)) {
+            errors.add("Invalid Grade!");
+        }
+        return errors;
+    }
     
     public static ArrayList<String> validateUpdateGrade(String studentID, String sub, String assessmentType, String grade) {
         ArrayList<String> errors = new ArrayList<>();
-        
+
         if (!Validation.isValidID(studentID)) {
             errors.add("Invalid Student ID!");
         }
