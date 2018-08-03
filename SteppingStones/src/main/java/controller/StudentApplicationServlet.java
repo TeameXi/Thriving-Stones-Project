@@ -5,24 +5,23 @@
  */
 package controller;
 
-import com.google.gson.JsonObject;
-import entity.Validation;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.LevelDAO;
+import model.ParentChildRelDAO;
+import model.ParentDAO;
 import model.StudentDAO;
 
 /**
  *
- * @author MOH MOH SAN
+ * @author DEYU
  */
-@WebServlet(name = "UpdateStudentServlet", urlPatterns = {"/UpdateStudentServlet"})
-public class UpdateStudentServlet extends HttpServlet {
+@WebServlet(name = "StudentApplicationServlet", urlPatterns = {"/StudentApplicationServlet"})
+public class StudentApplicationServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -35,24 +34,32 @@ public class UpdateStudentServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        
+        String studentNRIC = request.getParameter("studentNRIC");
+        String studentName = request.getParameter("studentName");
+        String BOD = request.getParameter("bday");
+        String gender = request.getParameter("gender");
+        String lvl = request.getParameter("lvl");
+        int phone = Integer.parseInt(request.getParameter("phone"));
+        String stuEmail = request.getParameter("studentEmail");
+        String stuPassword = request.getParameter("studentPassword");
+        String parentName = request.getParameter("parentName");
+        String parentNationality = request.getParameter("parentNationality");
+        String parentCompany = request.getParameter("parentCompany");
+        String parentDesgination = request.getParameter("parentDesgination");
+        int parentPhone = Integer.parseInt(request.getParameter("parentPhone"));
+        String parentEmail = request.getParameter("parentEmail");
+        String address = request.getParameter("address");
 
-        try (PrintWriter out = response.getWriter()) {
-
-            int studentID = Integer.parseInt(request.getParameter("studentID"));
-            String name = request.getParameter("name");
-            String lvl = request.getParameter("lvl");
-            String address = request.getParameter("address");
-            int phone = Integer.parseInt(request.getParameter("phone"));
-            double req_amount = Double.parseDouble(request.getParameter("r_amount"));
-            double out_amount = Double.parseDouble(request.getParameter("o_amount"));
-            
-            boolean status = StudentDAO.updateStudent(studentID, name, lvl, address, phone, req_amount, out_amount);
-            if (status) {
-                out.println(1);
-            } else {
-                out.println(0);
-            }
-        }
+        int level_id = LevelDAO.retrieveLevelID(lvl);
+        System.out.println("LOL" + lvl);
+        //Admin admin = (Admin) request.getSession().getAttribute("admin");
+        //int branch_id = admin.getBranchID();
+        
+        StudentDAO.insertStudent(studentNRIC, studentName, phone, address, BOD, gender, stuEmail, stuPassword, level_id, 1); // replace with branch_id
+        ParentDAO.insertParent(parentName, parentNationality, parentCompany, parentDesgination, parentPhone, parentEmail, parentPhone, 1); //replace with bracnch_id
+        ParentChildRelDAO.insertParentChildRel(parentName, studentName, BOD);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

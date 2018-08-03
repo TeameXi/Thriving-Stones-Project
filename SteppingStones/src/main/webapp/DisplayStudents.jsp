@@ -1,3 +1,4 @@
+<%@page import="java.util.LinkedHashMap"%>
 <%@page import="model.StudentDAO"%>
 <%@page import="java.util.Iterator"%>
 <%@page import="java.util.Set"%>
@@ -254,20 +255,27 @@
     <ul class="surveys grid">
         <%
             StudentDAO studentDAO = new StudentDAO();
-            ArrayList<Student> students = studentDAO.listAllStudents();
-
-            if (students != null) {
-                for (int i = 0; i < students.size(); i++) {
-                    Student stu = students.get(i);
-                    int age = (Integer)stu.getAge();
-                    String id = stu.getStudentID();
-                    out.println("<li class='survey-item' id='sid_" + id + "'><span class='survey-country list-only'>SG</span>");
-                    out.println("<span class='survey-name'><i class='zmdi zmdi-account'>&nbsp;&nbsp;</i><span id='name_"+id+"'>");
-                    out.println(stu.getName() + "</span></span>");
-                    out.println("<span class='survey-country grid-only'><i class='zmdi zmdi-pin'>&nbsp;&nbsp;</i><span id='address_"+id+"'>");
-                    out.println(stu.getAddress() + "</span></span><br/>");
-                    out.println("<span class='survey-country'><i class='zmdi zmdi-graduation-cap'>&nbsp;&nbsp;</i><span id='lvl_"+id+"'>");
-                    out.println(stu.getLevel() + "</span></span>");
+            //ArrayList<Student> students = studentDAO.listAllStudents();
+            LinkedHashMap<String, ArrayList<Student>> studentList = studentDAO.listAllStudent();
+            if(studentList != null){
+                Set<String> level = studentList.keySet();
+                for(String lvl: level){
+                    out.println(lvl);
+                    ArrayList<Student> students = studentList.get(lvl);
+                    if (students != null) {
+                        for (int i = 0; i < students.size(); i++) {
+                            Student stu = students.get(i);
+                            //int age = (Integer)stu.getAge();
+                            int id = stu.getStudentID();
+                            out.println("<li class='survey-item' id='sid_" + id + "'><span class='survey-country list-only'>SG</span>");
+                            out.println("<span class='survey-name'><i class='zmdi zmdi-account'>&nbsp;&nbsp;</i><span id='name_"+id+"'>");
+                            out.println(stu.getName() + "</span></span>");
+                            out.println("<span class='survey-country grid-only'><i class='zmdi zmdi-pin'>&nbsp;&nbsp;</i><span id='address_"+id+"'>");
+                            out.println(stu.getAddress() + "</span></span><br/>");
+                            out.println("<span class='survey-country'><i class='zmdi zmdi-graduation-cap'>&nbsp;&nbsp;</i><span id='lvl_"+id+"'>");
+                            out.println(stu.getLevel() + "</span></span>");
+                
+                
 
 
         %>
@@ -297,13 +305,15 @@
             </span>
 
 
-            <%          out.println("<span class='survey-end-date'><i class='zmdi zmdi-phone'>&nbsp;&nbsp;</i><span id='phone_"+id+"'>");
-                        out.println(stu.getPhone() + "</span></span></div></li>");
-                    }
+                <%          out.println("<span class='survey-end-date'><i class='zmdi zmdi-phone'>&nbsp;&nbsp;</i><span id='phone_"+id+"'>");
+                            out.println(stu.getPhone() + "</span></span></div></li>");
+                        }
 
-                } else {
-                    out.println("No Students!");
+                    } else {
+                        out.println("No Students!");
+                    }
                 }
+            }
 
             %>
     </ul>
@@ -347,24 +357,6 @@
                     <div class = "col-sm-8">
                         <p><input type = "text" class = "form-control" id="name" value =""/></p>
                         <input type="hidden" id="id" value="" />
-                    </div>
-                </div><br/>
-                
-                <div class="row">
-                    <div class = "col-sm-4">
-                        <p class = "form-control-label">Age :</p>
-                    </div>
-                    <div class = "col-sm-8">
-                        <p><input type ="text" class = "form-control" id="age" value =""/></p>
-                    </div>
-                </div><br/>
-                
-                <div class="row">
-                    <div class = "col-sm-4">
-                        <p class = "form-control-label">Gender :</p>
-                    </div>
-                    <div class = "col-sm-8">
-                        <p><input type ="text" class = "form-control" id="gender" value =""/></p>
                     </div>
                 </div><br/>
                 
@@ -436,9 +428,7 @@
                success: function (data) {
                   $("#id").val(student_id);
                   $("#name").val(data["name"]);
-                  $("#age").val(data["age"]);
                   $("#lvl").val(data["lvl"]);
-                  $("#gender").val(data["gender"]);
                   $("#phone").val(data["phone"]);
                   $("#address").val(data["address"]);
                   $("#r_amount").val(data["r_amount"]);
@@ -496,8 +486,6 @@
     function editStudent(){
         id = $("#id").val();
         name = $("#name").val();
-        age =  $("#age").val();
-        gender = $("#gender").val();
         lvl = $("#lvl").val();
         address = $("#address").val();
         phone  = $("#phone").val();
@@ -509,7 +497,7 @@
             type: 'POST',
             url: 'UpdateStudentServlet',
             dataType: 'JSON',
-            data: {studentID: id,name:name,age:age,gender:gender,lvl:lvl,address:address,phone:phone,r_amount:r_amount,o_amount:o_amount},
+            data: {studentID: id,name:name,lvl:lvl,address:address,phone:phone,r_amount:r_amount,o_amount:o_amount},
             success: function (data) {
                 if (data === 1) {
                     $("#name_"+id).text(name);

@@ -12,6 +12,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.ParentChildRelDAO;
+import model.ParentDAO;
 import model.StudentClassDAO;
 import model.StudentDAO;
 
@@ -37,12 +39,13 @@ public class DeleteStudentServlet extends HttpServlet {
         
         
         PrintWriter out = response.getWriter();
-        String studentID = request.getParameter("studentID");
-
-        boolean deleled = StudentDAO.deleteStudentbyID(studentID);
-        StudentClassDAO.deleteStudentClassbyID(studentID);
+        int studentID = Integer.parseInt(request.getParameter("studentID"));
+        int parentID = ParentChildRelDAO.getParentID(studentID);
+        boolean deleteStudent = StudentDAO.deleteStudentbyID(studentID);
+        boolean deleteParentChildRel = ParentChildRelDAO.deleteParentChildRel(studentID);
+        boolean deleteParent = ParentDAO.deleteParent(parentID);
         
-        if(deleled == true){
+        if(deleteStudent && deleteParentChildRel && deleteParent){
             out.println(1);
         }else{
             out.println(0);
