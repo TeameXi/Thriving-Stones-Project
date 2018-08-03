@@ -1,3 +1,5 @@
+<%@page import="entity.Branch"%>
+<%@page import="model.BranchDAO"%>
 <%@page import="model.TutorDAO"%>
 <%@page import="entity.Tutor"%>
 <%@page import="java.util.ArrayList"%>
@@ -91,8 +93,8 @@
     .survey-stage .stage {
         display: inline-block;
         vertical-align: middle;
-        width: 16px;
-        height: 16px;
+        width: 14px;
+        height: 14px;
         overflow: hidden;
         border-radius: 50%;
         padding: 0;
@@ -100,7 +102,7 @@
         background: #f2f2f2;
         text-indent: -9999px;
         color: transparent;
-        line-height: 16px;
+        line-height: 14px;
     }
     .survey-stage .stage.active {
         background: #A1A1A4;
@@ -124,7 +126,7 @@
         position: relative;
         display: inline-block;
         vertical-align: top;
-        height: 200px;
+        height: 170px;
         width: 250px;
         margin: 10px;
     }
@@ -229,25 +231,78 @@
 </style>
 <div class="col-md-10">
     <div style="margin: 20px;"><h3>Tutor Lists</h3></div>
-     <div class="row" id="errorMsg"></div>
+    <div class="row" id="errorMsg"></div>
+    <%        
+        String tutor_creation_status = (String) request.getAttribute("creation_status");
+        if (tutor_creation_status != null) {
+            if(tutor_creation_status == "true"){
+                out.println("<div class='row alert alert-danger col-md-12'><strong>Something Went wrong!</strong> </div>");
+            }else{
+                out.println("<div class='row alert alert-success col-md-12'><strong>Tutor record is inserted !</strong> </div>");
+            }
+        }
+    %> 
+   
+    
+    <div class="row  spaced-top">
+        <div class="col-sm-6">
+            <form id="searchTutor"> 
+        	<input class="form-control advanced_targeting_class" type="text" id="filter" placeholder="Tutor Name" style="width:237px; display:inline-block; margin-right:10px">
+                <input type = "submit" class="btn btn-default" value = "Search"/>
+            </form>
+	    </div>
+        <div class="col-sm-6">
+            <div class="portlet light portlet-fit smaller-fonts" >
+                <span class="sortby_span">
+                    Sort By
+                    <select class = "form-control" style = "display:inline-block;width:auto;" onchange="updateSort(this)">
+                    <%
+                    if(request.getParameter("sortby") != null){
+                            
+                    }else{ %>
+                        <option value = "name" selected>Tutor Name</option>
+                        <option value = "gender">Gender</option>
+                        <% if(true){ %><option value = "branch">Branch</option><% } %>
+                        <option value="latest">Latest</option>
+                    <%
+                    }
+                    %>
+                    </select>
+                </span>
+                <br style="clear:both">
+            </div>
+        </div>
+    </div>
+    
+    
     <span class="toggler active" data-toggle="grid"><span class="zmdi zmdi-view-dashboard"></span></span>
     <span class="toggler" data-toggle="list"><span class="zmdi zmdi-view-list"></span></span>
     <ul class="surveys grid">
       <%
             TutorDAO tutuorDAO = new TutorDAO();
             ArrayList<Tutor> tutors = tutuorDAO.retrieveAllTutors();
-
-            if (tutors != null) {
+            String branch_name = "";
+            ArrayList<Branch> branch_lists = null;
+            if (tutors.size() > 0) {
+                BranchDAO branchDao = new BranchDAO();
+                if(true) {
+                    branch_lists = branchDao.retrieveAllBranches(); 
+                }else{
+                    Branch b = branchDao.retrieveBranchById(2);
+                    branch_name = b.getName();
+                }       
+                
+                
                 for(Tutor tu: tutors) {
-                    int age = (Integer)tu.getAge();
-                    String id = tu.getTutorID();
+                    String dob = tu.getBirth_date();
+                    int id = tu.getTutorId();
                     out.println("<li class='survey-item' id='tid_" +id+ "'><span class='survey-country list-only'><span id='gender_"+id+"'>"+tu.getGender()+"</span></span>");
                     out.println("<span class='survey-name'><i class='zmdi zmdi-account'>&nbsp;&nbsp;</i><span id='name_"+id+"'>");
                     out.println(tu.getName() + "</span></span>");
                     out.println("<span class='survey-country grid-only'><i class='zmdi zmdi-email'>&nbsp;&nbsp;</i><span id='email_"+id+"'>");
                     out.println(tu.getEmail()+ "</span></span><br/>");
-                    out.println("<span class='survey-country'><i class='zmdi zmdi-cake'>&nbsp;&nbsp;</i><span id='age_"+id+"'>");
-                    out.println(age + "</span></span>");
+                    out.println("<span class='survey-country'><i class='zmdi zmdi-phone'>&nbsp;&nbsp;</i><span id='phone_"+id+"'>");
+                    out.println(tu.getPhone() + "</span></span>");
 
         %>
         <div class="pull-right">
@@ -266,23 +321,21 @@
 
 
                     <span class="survey-progress-label">
-                        <a href="#editTutor" data-toggle="modal" data-target-id="<%=tu.getTutorID()%>"><i class="zmdi zmdi-edit"></i></a>
+                        <a href="#editTutor" data-toggle="modal" data-target-id="<%=tu.getTutorId()%>"><i class="zmdi zmdi-edit"></i></a>
                     </span>
 
                     <span class="survey-completes">
-                        <a href="#small" onclick="deleteTutor('<%=tu.getTutorID()%>')" data-toggle="modal"><i class="zmdi zmdi-delete"></i></a>
+                        <a href="#small" onclick="deleteTutor('<%=tu.getTutorId()%>')" data-toggle="modal"><i class="zmdi zmdi-delete"></i></a>
                     </span>
                 </span>
             </span>
 
 
             <%                    
-                        out.println("<span class='survey-end-date'><i class='zmdi zmdi-phone'>&nbsp;&nbsp;</i><span id='phone_"+id+"'>");
-                        out.println(tu.getPhone() + "</span></span></div></li>");
                     }
 
                 } else {
-                    out.println("No User Yet!");
+                    out.println("<div class='alert alert-warning col-md-5'>No Tutor Yet! <strong> <a href='CreateTutor.jsp'>Create One</a></strong> </div>");
                 }
 
             %>
@@ -325,20 +378,56 @@
             <div class="modal-body">
                 <div class="row">
                     <div class = "col-sm-4">
-                        <p class = "form-control-label">Name :</p>
+                        <p class = "form-control-label">NRIC :</p>
                     </div>
                     <div class = "col-sm-8">
-                        <p><input type = "text" class = "form-control" id="name" value =""/></p>
-                        <input type="hidden" id="id" value="" />
+                        <p><input type="text" class="form-control" id="tutor_nric" value =""/></p>
+                        <input type="hidden" id="tutor_id" value="" />
                     </div>
                 </div><br/>
                 
                 <div class="row">
                     <div class = "col-sm-4">
-                        <p class = "form-control-label">Age :</p>
+                        <p class = "form-control-label">Name :</p>
                     </div>
                     <div class = "col-sm-8">
-                        <p><input type ="text" class = "form-control" id="age" value =""/></p>
+                        <p><input type = "text" class = "form-control" id="tutor_name" value =""/></p>
+                    </div>
+                </div><br/>
+                
+                <div class="row">
+                    <div class = "col-sm-4">
+                        <p class = "form-control-label">Phone :</p>
+                    </div>
+                    <div class = "col-sm-8">
+                        <p><input type ="text" class = "form-control" id="phone" value =""/></p>
+                    </div>
+                </div><br/>
+                
+                <div class="row">
+                    <div class = "col-sm-4">
+                        <p class = "form-control-label">Address :</p>
+                    </div>
+                    <div class = "col-sm-8">
+                        <p><textarea class = "form-control" id="address" value =""></textarea></p>
+                    </div>
+                </div><br/>
+                
+                <div class="row">
+                    <div class = "col-sm-4">
+                        <p class = "form-control-label">Image :</p>
+                    </div>
+                    <div class = "col-sm-8">
+                        <p><div id="image_container"></div><input type='file' class = "form-control" id="tutor_image" value =""/></p>
+                    </div>
+                </div><br/>
+                
+                <div class="row">
+                    <div class = "col-sm-4">
+                        <p class = "form-control-label">Birth Date :</p>
+                    </div>
+                    <div class = "col-sm-8">
+                        <p><input type='text' class = "form-control" id="dob" value =""/></p>
                     </div>
                 </div><br/>
                 
@@ -364,10 +453,22 @@
                 
                 <div class="row">
                     <div class = "col-sm-4">
-                        <p class = "form-control-label">Contact No :</p>
+                        <p class = "form-control-label">Branch :</p>
                     </div>
                     <div class = "col-sm-8">
-                        <p><input type ="text" class = "form-control" id="phone" value =""/></p>
+                        <%
+                            if(true){
+                   
+                                out.println("<p><select class='form-control' id='branch'>");
+                                for(Branch branch: branch_lists){
+                                    out.println("<option value='"+branch.getBranchId()+"'>"+branch.getName()+"</option>");
+                                }            
+                                out.println("</select></p>");
+                            }else{
+                                out.println("<p><label class='form-control'>"+branch_name+"</label></p>");
+                            }
+                        %>
+                       
                     </div>
                 </div><br/>
                 
@@ -384,9 +485,17 @@
 <!-- End of Edit -->
 
 <%@include file="footer.jsp"%>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.css" rel="stylesheet">
 
 <script>
     $(document).ready(function(){
+        
+        $('#dob').datetimepicker({
+            format: 'DD-MM-YYYY'
+        });
+    
         $("#editTutor").on("show.bs.modal", function(e) {
             var tutor_id = $(e.relatedTarget).data('target-id');   
             $.ajax({
@@ -394,12 +503,31 @@
                dataType: 'JSON',
                data: {tutorID: tutor_id},
                success: function (data) {
-                  $("#id").val(tutor_id);
-                  $("#name").val(data["name"]);
-                  $("#age").val(data["age"]);
-                  $("#email").val(data["email"]);
-                  $("#gender").val(data["gender"]);
+
+                   
+                  $("#id").val(data["id"]);
+                  $("#tutor_nric").val(data["nric"]);
+                  $("#tutor_name").val(data["fullname"]);
                   $("#phone").val(data["phone"]);
+                  $("#address").val(data["address"]);
+                  if(data['image_url'] !== null){
+                      $("#image_container").html("<img style='width:100px;padding:10px;' src='"+data['image_url']+"'></img>");
+                  }
+
+                  if(data["birth_date"] !== ""){
+                    $("#dob").val(data["birth_date"]);
+                  }
+                  
+                  if(data["gender"] !== ""){
+                      $("#gender").val(data["gender"]);
+                  }
+                  
+                  if(data["branch"] !== ""){
+                      $("#branch").val(data["branch"]);
+                  }
+                  
+                  $("#email").val(data["email"]);
+                  
                }
             });
 
@@ -438,13 +566,13 @@
             success: function (data) {
                 if (data === 1) {
                     $("#tid_" + tutor_id).remove();
-                    html = '<div class="alert alert-success col-md-5"><strong>Success!</strong> Deleted Student record successfully</div>';
+                    html = '<div class="alert alert-success col-md-12"><strong>Success!</strong> Deleted Student record successfully</div>';
                 } else {
-                    html = '<div class="alert alert-danger col-md-5"><strong>Sorry!</strong> Something went wrong</div>';
+                    html = '<div class="alert alert-danger col-md-12"><strong>Sorry!</strong> Something went wrong</div>';
                 }
 
                 $("#errorMsg").html(html);
-                $('#errorMsg').fadeIn().delay(2000).fadeOut();
+                $('#errorMsg').fadeIn().delay(1000).fadeOut();
             }
         });
     }
@@ -471,13 +599,13 @@
                     $("#gender_"+id).text(gender);
                     $("#phone_"+id).text(phone);
                     $("#age_"+id).text(age);
-                    html = '<div class="alert alert-success col-md-5"><strong>Success!</strong> Update Tutor record successfully</div>';
+                    html = '<div class="alert alert-success col-md-12"><strong>Success!</strong> Update Tutor record successfully</div>';
                 } else {
-                    html = '<div class="alert alert-danger col-md-5"><strong>Sorry!</strong> Something went wrong</div>';
+                    html = '<div class="alert alert-danger col-md-12"><strong>Sorry!</strong> Something went wrong</div>';
                 }
 
                 $("#errorMsg").html(html);
-                $('#errorMsg').fadeIn().delay(2000).fadeOut();
+                $('#errorMsg').fadeIn().delay(1000).fadeOut();
             }
         });
     }
