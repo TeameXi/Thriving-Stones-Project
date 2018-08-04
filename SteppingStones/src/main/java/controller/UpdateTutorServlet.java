@@ -47,18 +47,18 @@ public class UpdateTutorServlet extends HttpServlet {
             String email = request.getParameter("email");
             String phone = (String) request.getParameter("phone");
 
-            ArrayList<String> errors = Validation.validateUpdateTutor(tutorID, name, age, phone, gender, email);
+//            ArrayList<String> errors = Validation.validateUpdateTutor(tutorID, name, age, phone, gender, email);
 
-            if (errors.isEmpty()) {
-                updates.put("name", name);
-                updates.put("age", age);
-                updates.put("phone", phone);
-                updates.put("gender", gender);
-                updates.put("email", email);
-            }
-
-            if (!updates.isEmpty()) {
-                TutorDAO tutors = new TutorDAO();
+//            if (errors.isEmpty()) {
+//                updates.put("name", name);
+//                updates.put("age", age);
+//                updates.put("phone", phone);
+//                updates.put("gender", gender);
+//                updates.put("email", email);
+//            }
+//
+//            if (!updates.isEmpty()) {
+//                TutorDAO tutors = new TutorDAO();
 //                boolean status = tutors.updateTutor(tutorID, updates);
 //                if (status) {
 //                    out.println(1);
@@ -66,7 +66,7 @@ public class UpdateTutorServlet extends HttpServlet {
 //                    out.println(0);
 //                }
 
-            }
+//            }
 
         }
     }

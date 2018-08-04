@@ -8,9 +8,8 @@
 <body>
 
 <header class="header_layout">
-	<h1><img class="logo" src="${pageContext.request.contextPath}/styling/img/logo.png" alt=""></img></h1>
+    <h1><img style="width:200px;" class="logo" src="${pageContext.request.contextPath}/styling/img/Stepping-Stones-Logo.png" alt=""></img><br/><img class="logo" src="${pageContext.request.contextPath}/styling/img/logo.png" alt=""></img></h1>
 	<div class='inner'>
-	    <a href="signUp.html" class='home_btn fb'><span>Sign Up</span></a>
             <a href="Login.jsp" class='home_btn gp'><span>Log In</span></a>
 	</div>
 </header>
