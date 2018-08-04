@@ -11,7 +11,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.LevelDAO;
 import model.ParentChildRelDAO;
 import model.ParentDAO;
 import model.StudentDAO;
@@ -52,8 +51,8 @@ public class StudentApplicationServlet extends HttpServlet {
         String parentEmail = request.getParameter("parentEmail");
         String address = request.getParameter("address");
 
-        int level_id = LevelDAO.retrieveLevelID(lvl);
-        System.out.println("LOL" + lvl);
+        int level_id = Integer.parseInt(lvl);
+
         //Admin admin = (Admin) request.getSession().getAttribute("admin");
         //int branch_id = admin.getBranchID();
         

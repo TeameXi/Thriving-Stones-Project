@@ -19,13 +19,15 @@ import java.util.ArrayList;
  */
 public class ClassDAO {
     
-    public static ArrayList<Class> getClassByLevel(int level_id){
+    public static ArrayList<Class> getClassesToEnrolled(int level_id, int student_id){
         String level = LevelDAO.retrieveLevel(level_id);
         ArrayList<Class> classList = new ArrayList();
         try(Connection conn = ConnectionManager.getConnection()){
-            PreparedStatement stmt = conn.prepareStatement("select * from class where branch_id = ? and level_id = ? and end_date > curdate() order by subject_id");
+            PreparedStatement stmt = conn.prepareStatement("select * from class where branch_id = ? and level_id = ? and end_date > curdate() and "
+                    + "class_id not in (select class_id from class_student_rel where student_id = ?) order by subject_id");
             stmt.setInt(1, 1); // replace with branch_id
             stmt.setInt(2, level_id);
+            stmt.setInt(3, student_id);
             ResultSet rs = stmt.executeQuery();
 
             while(rs.next()){
@@ -69,6 +71,33 @@ public class ClassDAO {
             System.out.print(e.getMessage());
         }       
         return cls;
+    }
+    
+    public static ArrayList<Class> getStudentEnrolledClass(int student_id){
+        ArrayList<Class> classList = new ArrayList();
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement("select * from class c, class_student_rel cs where c.class_id = cs.class_id and end_date > curdate() and student_id = ?");
+            stmt.setInt(1, student_id);
+            ResultSet rs = stmt.executeQuery();
+
+            while(rs.next()){
+                int classID = rs.getInt("class_id");
+                int subjectID = rs.getInt("subject_id");
+                int levelID = rs.getInt("level_id");
+                String classTime = rs.getString("timing");
+                String classDay = rs.getString("class_day");
+                String startDate = rs.getString("start_date");
+                String endDate = rs.getString("end_date");
+                int mthlyFees = rs.getInt("fees");
+                String subject = SubjectDAO.retrieveSubject(subjectID);
+                String level = LevelDAO.retrieveLevel(levelID);
+                Class cls = new Class(classID, level, subject, classTime, classDay, mthlyFees, startDate, endDate);
+                classList.add(cls);
+            }
+        }catch(SQLException e){
+            System.out.print(e.getMessage());
+        }
+        return classList;
     }
     /*
     public static void saveClasses(String level, String subject, String classTime, String classDay, double mthlyFees, String startDate){

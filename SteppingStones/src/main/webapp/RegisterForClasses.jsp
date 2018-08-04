@@ -31,6 +31,7 @@
             }
             
             ArrayList<Class> classes = (ArrayList<Class>) request.getAttribute("classes");
+            ArrayList<Class> enrolledClasses = (ArrayList<Class>) request.getAttribute("enrolledClasses");
             String level = (String) request.getAttribute("level");
             String studentName = (String) request.getAttribute("studentName");
             
@@ -39,9 +40,18 @@
         %>
         Student Name: <%out.println(studentName);%><br>
         Level: <%out.println(level);%><br>
-        Register for Classes: <br> 
-        
+        <br>Currently Enrolled Classes:<br>
         <%
+                if(enrolledClasses != null){
+                    for(Class cls: enrolledClasses){
+                        out.println(cls.getSubject()+ ", " + cls.getClassDay() + " " + cls.getClassTime() + 
+                            ", StartDate: " + cls.getStartDate() + ", Monthly Fees: " + cls.getMthlyFees() + "<br>");
+                    }
+                }
+        %> 
+        <br>Register for Classes: <br>                
+        <%
+                
                 for(Class cls: classes){
                     request.setAttribute("value", cls.getClassID());
         %>
@@ -54,7 +64,7 @@
                             ", StartDate: " + cls.getStartDate() + ", Monthly Fees: " + cls.getMthlyFees() + "<br>");
                 }
         %>
-            <button type="submit" value = "select" name = "select">Select</button> 
+        <br><button type="submit" value = "select" name = "select">Select</button> 
         </form>
         <%
             }

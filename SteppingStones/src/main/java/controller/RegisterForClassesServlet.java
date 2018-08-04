@@ -43,13 +43,16 @@ public class RegisterForClassesServlet extends HttpServlet {
         if(request.getParameter("search") != null){
             String studentName = (String) request.getParameter("studentName");
             int levelID = StudentDAO.retrieveStudentLevelbyName(studentName);
+            int studentID = StudentDAO.retrieveStudentID(studentName);
             if(levelID == 0){
                 request.setAttribute("errorMsg", studentName + " Not Exists in Database, Please Create Student First.");           
             }else{
-                ArrayList<Class> cls = ClassDAO.getClassByLevel(levelID);
+                ArrayList<Class> cls = ClassDAO.getClassesToEnrolled(levelID, studentID);
+                ArrayList<Class> enrolledCls = ClassDAO.getStudentEnrolledClass(studentID);
                 request.setAttribute("level", LevelDAO.retrieveLevel(levelID));
                 request.setAttribute("studentName", studentName);
                 request.setAttribute("classes", cls);
+                request.setAttribute("enrolledClasses", enrolledCls);
             }
             RequestDispatcher view = request.getRequestDispatcher("RegisterForClasses.jsp");
             view.forward(request, response);
@@ -73,8 +76,6 @@ public class RegisterForClassesServlet extends HttpServlet {
                         if(update){
                             request.setAttribute("status", "Successfully Registered.");
                         }
-                    }else{
-                        request.setAttribute("errorMsg", studentName + " Already Enrolled in Class"); 
                     }
                 }
             }
