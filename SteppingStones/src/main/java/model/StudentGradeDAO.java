@@ -6,8 +6,10 @@
 package model;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
+import connection.ConnectionManager;
 import entity.StudentGrade;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +20,43 @@ import org.json.JSONObject;
  * @author DEYU
  */
 public class StudentGradeDAO {
-
+    
+    public static boolean saveTuitionGrades(int studentID, int classID, String assessmentType, String grade) {
+        boolean status = false;
+        try (Connection conn = ConnectionManager.getConnection();) {
+            conn.setAutoCommit(false);
+            String sql = "insert into tuition_grade(student_id, class_id, assessment_type, grade)"
+                    + " value(?, ?, ?, ?)";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, studentID);
+            stmt.setInt(2, classID);
+            stmt.setString(3, assessmentType);
+            stmt.setString(4, grade);
+            stmt.executeUpdate(); 
+            conn.commit();
+            status = true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return status;
+    }
+    
+    public static boolean deleteStudentTuitionGrade(int studentID){
+        boolean deletedStatus = false;
+        try (Connection conn = ConnectionManager.getConnection();) {
+            conn.setAutoCommit(false);
+            String sql = "delete from tuition_grade where student_id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, studentID);
+            stmt.executeUpdate(); 
+            conn.commit();
+            deletedStatus = true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return deletedStatus;
+    }
+    
     public static void saveSchoolGrade(String studentID, String sub1, StudentGrade stuGrade1, String sub2, StudentGrade stuGrade2, String sub3, StudentGrade stuGrade3) {
         Map<String, StudentGrade> Schoolgrades = new HashMap<>();
         Schoolgrades.put(sub1, stuGrade1);
@@ -45,18 +83,7 @@ public class StudentGradeDAO {
         }
     }
 
-    public static void saveCenterGrades(String studentID, String sub, String assessmentType, String grade) {
-        JsonObject centerGrade = new JsonObject();
-        centerGrade.addProperty(assessmentType, grade);
-        String json = new Gson().toJson(centerGrade);
-        try {
-            String url = "https://team-exi-thriving-stones.firebaseio.com/students/" + studentID + "/grades/Center/" + sub + ".json";
-            FirebaseRESTHTTPRequest.patch(url, json);
-            System.out.println("Save Grades successfully");
-        } catch (Exception e) {
-            System.out.println("Insert Center Grade Error");
-        }
-    }
+    
 
     public static ArrayList<String> createGrade(String studentID, String location, String subject, String examination, String grade) {
         ArrayList<String> errorGrade = new ArrayList<String>();

@@ -16,6 +16,7 @@ import model.ParentChildRelDAO;
 import model.ParentDAO;
 import model.StudentClassDAO;
 import model.StudentDAO;
+import model.StudentGradeDAO;
 
 
 /**
@@ -44,8 +45,10 @@ public class DeleteStudentServlet extends HttpServlet {
         boolean deleteStudent = StudentDAO.deleteStudentbyID(studentID);
         boolean deleteParentChildRel = ParentChildRelDAO.deleteParentChildRel(studentID);
         boolean deleteParent = ParentDAO.deleteParent(parentID);
+        boolean deleteTuitionGrade = StudentGradeDAO.deleteStudentTuitionGrade(studentID);
+        boolean deleteStudentClassRel = StudentClassDAO.deleteStudentClassRel(studentID);
         
-        if(deleteStudent && deleteParentChildRel && deleteParent){
+        if(deleteStudent && deleteParentChildRel && deleteParent && deleteTuitionGrade && deleteStudentClassRel){
             out.println(1);
         }else{
             out.println(0);

@@ -99,6 +99,34 @@ public class ClassDAO {
         }
         return classList;
     }
+    
+    public static ArrayList<Class> listAllClasses(){
+        ArrayList<Class> classList = new ArrayList();
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement("select * from class where branch_id = ? and end_date > curdate()");
+            stmt.setInt(1, 1); // replace with branch_id
+            ResultSet rs = stmt.executeQuery();
+
+            while(rs.next()){
+                int classID = rs.getInt("class_id");
+                int subjectID = rs.getInt("subject_id");
+                int levelID = rs.getInt("level_id");
+                String classTime = rs.getString("timing");
+                String classDay = rs.getString("class_day");
+                String startDate = rs.getString("start_date");
+                String endDate = rs.getString("end_date");
+                int mthlyFees = rs.getInt("fees");
+                String subject = SubjectDAO.retrieveSubject(subjectID);
+                String level = LevelDAO.retrieveLevel(levelID);
+                Class cls = new Class(classID, level, subject, classTime, classDay, mthlyFees, startDate, endDate);
+                classList.add(cls);
+            }
+        }catch(SQLException e){
+            System.out.print(e.getMessage());
+        }       
+        return classList;
+    }
+    
     /*
     public static void saveClasses(String level, String subject, String classTime, String classDay, double mthlyFees, String startDate){
         Class cls = new Class(level, subject, classTime, classDay, mthlyFees, startDate);
@@ -112,24 +140,7 @@ public class ClassDAO {
         }
     }
     
-    public static ArrayList<Class> listAllClasses(){
-        ArrayList<Class> classes = new ArrayList();
-        try{
-            String url = "https://team-exi-thriving-stones.firebaseio.com/classes/.json";
-            JSONObject result = FirebaseRESTHTTPRequest.get(url);       
-            if (result != null) {
-                Set<String> keys = result.keySet();
-                for(String key: keys){
-                    Class cls = new Gson().fromJson(result.getJSONObject(key).toString(), Class.class);
-                    cls.setClassID(key);
-                    classes.add(cls);
-                } 
-            } 
-        }catch(Exception e){
-            System.out.println("List all classes Error");
-        } 
-        return classes;
-    }
+    
     
     public static ArrayList<String> getAllClassesNames() {
         ArrayList<String> classes = new ArrayList<>();

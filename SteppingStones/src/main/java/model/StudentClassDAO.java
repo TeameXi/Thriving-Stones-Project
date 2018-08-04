@@ -14,6 +14,7 @@ import java.util.Set;
 import org.json.JSONObject;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 /**
  *
@@ -36,20 +37,41 @@ public class StudentClassDAO {
         }
         return status;
      }
-    /*
-     public static void saveClassWithStudent(String classKey, String studentID, String studentName){
-        Map<String, String> studentClass = new HashMap<>();
-        studentClass.put(studentID, studentName);
-        String json = new Gson().toJson(studentClass);
-        try{
-            String url = "https://team-exi-thriving-stones.firebaseio.com/StudentClass/" + classKey + ".json";
-            FirebaseRESTHTTPRequest.patch(url, json);
-            System.out.println("Patched successfully");
-        }catch(Exception e){
-            System.out.println("Database error");
+    
+    public static ArrayList<String> listStudentsinSpecificClass(int classID){
+        ArrayList<String> studentList = new ArrayList<>();
+        try (Connection conn = ConnectionManager.getConnection();) {
+            String sql = "select student_name from student s, class_student_rel cs where s.student_id = cs.student_id and class_id = ?;";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, classID);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){
+                String studentName = rs.getString("student_name");
+                studentList.add(studentName);
+            } 
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
-     }
-     */
+        return studentList;
+    }
+    
+    public static boolean deleteStudentClassRel(int studentID){
+        boolean deletedStatus = false;
+        try (Connection conn = ConnectionManager.getConnection();) {
+            conn.setAutoCommit(false);
+            String sql = "delete from class_student_rel where student_id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, studentID);
+            stmt.executeUpdate(); 
+            conn.commit();
+            deletedStatus = true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return deletedStatus;
+    }
+    
+    
      public static ArrayList<String> retrieveStudentClassesID(String studentID){
         final ArrayList<String> classIDs = new ArrayList<>();
         try{
