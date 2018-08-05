@@ -12,6 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -114,5 +115,24 @@ public class BranchDAO {
             System.out.println(ex.getMessage());
         }
         return null;
+    }
+     public List<Branch> retrieveBranches(){
+        List<Branch> branches = new ArrayList<>();
+        String sql = "select branch_id, name from branch";
+        
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            
+            ResultSet rs = stmt.executeQuery();
+            
+            while(rs.next()){
+                Branch branch = new Branch(rs.getInt(1), rs.getString(2));
+                branches.add(branch);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        
+        return branches;
     }
 }
