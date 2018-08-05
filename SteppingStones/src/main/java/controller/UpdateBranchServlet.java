@@ -12,15 +12,14 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.ClassDAO;
-import entity.Class;
-import entity.Student;
-import java.util.ArrayList;
-import javax.servlet.RequestDispatcher;
-import model.StudentClassDAO;
+import model.BranchDAO;
 
-@WebServlet(name = "SelectClassServlet", urlPatterns = {"/SelectClassServlet"})
-public class SelectClassServlet extends HttpServlet {
+/**
+ *
+ * @author Shawn
+ */
+@WebServlet(name = "UpdateBranchServlet", urlPatterns = {"/UpdateBranchServlet"})
+public class UpdateBranchServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -34,24 +33,32 @@ public class SelectClassServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        /*
-        String classID = request.getParameter("class");
+        try (PrintWriter out = response.getWriter()) {
+            String branchID = request.getParameter("branchID");
+            if (branchID != "" && branchID != null) {
+                int id = Integer.parseInt(branchID);
+                String branchName = request.getParameter("branchName");
 
-        ArrayList<Student> stuList = StudentClassDAO.getStudentsByClassID(classID);
-        String level = ClassDAO.getClassLevel(classID);
-        
-        if (!stuList.isEmpty()) {    
-            request.setAttribute("students", stuList);
-            request.setAttribute("level", level);
-            request.setAttribute("class", classID);
-            RequestDispatcher view = request.getRequestDispatcher("CreateGrade.jsp");
-            view.forward(request, response);
-        } else {
-            RequestDispatcher view = request.getRequestDispatcher("SelectClass.jsp");
-            view.forward(request, response);
+                int phone = 0;
+                if (request.getParameter("phone") != "") {
+                    phone = Integer.parseInt(request.getParameter("phone"));
+                }
+                String branchAddress = request.getParameter("branchAddress");
+                String startDate = request.getParameter("startDate");
+
+                BranchDAO branches = new BranchDAO();
+
+                boolean status = branches.updateBranch(id, branchName, startDate, branchAddress, phone);
+                if (status) {
+                    out.println(1);
+                } else {
+                    out.println(0);
+                }
+            } else {
+                out.println(0);
+            }
+
         }
-        */
-
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
