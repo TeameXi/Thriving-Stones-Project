@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 /**
@@ -181,12 +182,12 @@ public class ClassDAO {
         return null;
     }
     */
-    public boolean insertClass(int level, int subject, int term, int hasReminderForFees, int branch, String classTime, String classDay, double mthlyFees, String startDate, String endDate) {
+    public int insertClass(int level, int subject, int term, int hasReminderForFees, int branch, String classTime, String classDay, double mthlyFees, String startDate, String endDate) {
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
             String sql = "INSERT into CLASS (level_id, subject_id, term, fees, has_reminder_for_fees, timing, class_day, start_date, end_date, branch_id)"
                 + "VALUES (?,?,?,?,?,?,?,?,?,?)";
-            PreparedStatement stmt = conn.prepareStatement(sql);
+            PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             stmt.setInt(1, level);
             stmt.setInt(2, subject);
             stmt.setInt(3, term);
@@ -199,10 +200,15 @@ public class ClassDAO {
             stmt.setInt(10, branch);
             stmt.executeUpdate(); 
             conn.commit();
-            return true;
+            ResultSet rs = stmt.getGeneratedKeys();
+            int generatedKey = 0;
+            if (rs.next()) {
+                generatedKey = rs.getInt(1);
+            }
+            return generatedKey;
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            return false;
+            return 0;
         }
     }
     public boolean updateClass(String level, String subject, String timing) {

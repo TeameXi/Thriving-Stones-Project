@@ -11,8 +11,13 @@ import entity.Subject;
 import entity.Tutor;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -45,17 +50,6 @@ public class ScheduleCreationServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
 
-        String[] days = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
-        String[] time = {"08:00", "09:00", "10:00", "11:00", "12:00",
-            "13:00", "14:00", "15:00", "16:00"};
-        String[] arr = request.getParameterValues("p");
-        String startDate = request.getParameter("startDate");
-        System.out.println(arr);
-        /*
-        if (startDate == null) {
-            request.setAttribute("Status", "Start Date is required");
-=======
-
         int branchid = 0;
         int term = 0;
         int levelid = 0;
@@ -66,7 +60,12 @@ public class ScheduleCreationServlet extends HttpServlet {
         String classDay = "";
         String startDate = "";
         String endDate = "";
+        Date dStart = new Date();
+        Date dEnd = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
+        
+        
         ArrayList<String> errors = new ArrayList<>();
 
         if (request.getParameter("branch") == null || request.getParameter("branch").isEmpty()) {
@@ -74,7 +73,6 @@ public class ScheduleCreationServlet extends HttpServlet {
         } else {
             branchid = Integer.parseInt(request.getParameter("branch"));
         }
->>>>>>> 62718fa5f727adce4a818957f9ff3fac8429e663
 
         if (request.getParameter("term") == null || request.getParameter("term").isEmpty()) {
             errors.add("Please select term");
@@ -97,9 +95,9 @@ public class ScheduleCreationServlet extends HttpServlet {
         if (request.getParameter("fees") == null || request.getParameter("fees").isEmpty()) {
             errors.add("Please fill in fees");
         } else {
-            try{
+            try {
                 fee = Double.parseDouble(request.getParameter("fees"));
-            }catch(NumberFormatException e){
+            } catch (NumberFormatException e) {
                 errors.add("fees must be in money format");
             }
         }
@@ -119,49 +117,94 @@ public class ScheduleCreationServlet extends HttpServlet {
             errors.add("Please fill in start date");
         } else {
             startDate = request.getParameter("startDate");
+            try {
+                dStart = sdf.parse(startDate);
+            } catch (ParseException ex) {
+                errors.add("start date must be in DD/MM/YYYY format");
+            }
         }
 
         if (request.getParameter("endDate") == null || request.getParameter("endDate").isEmpty()) {
             errors.add("Please fill in end date");
         } else {
             endDate = request.getParameter("endDate");
+            try {
+                dEnd = sdf.parse(endDate);
+            } catch (ParseException ex) {
+                errors.add("end date must be in DD/MM/YYYY format");
+            }
         }
 
         if (errors.isEmpty()) {
             ClassDAO cDAO = new ClassDAO();
-            boolean status = cDAO.insertClass(levelid, subjectid, term, reminderfee, branchid, timing, classDay, fee, startDate, endDate);
-            if(!status){
-                errors.add("create fail"); 
+            int classid = cDAO.insertClass(levelid, subjectid, term, reminderfee, branchid, timing, classDay, fee, startDate, endDate);
+            if (classid == 0) {
+                errors.add("create fail");
                 request.setAttribute("errors", errors);
+            } else {
+                //insertLesson(dStart, dEnd, timing);
             }
-            
+
         } else {
             request.setAttribute("errors", errors);
-            
+
         }
-            //Retrieve all branch
-            BranchDAO branchDAO = new BranchDAO();
-            List<Branch> branchList = branchDAO.retrieveBranches();
+        //Retrieve all branch
+        BranchDAO branchDAO = new BranchDAO();
+        List<Branch> branchList = branchDAO.retrieveBranches();
 
-            //Retrieve all level
-            LevelDAO levelDAO = new LevelDAO();
-            List<Level> levelList = levelDAO.retrieveAllLevelLists();
+        //Retrieve all level
+        LevelDAO levelDAO = new LevelDAO();
+        List<Level> levelList = levelDAO.retrieveAllLevelLists();
 
-            //retrive all subject
-            SubjectDAO subjectDAO = new SubjectDAO();
-            List<Subject> subjectList = subjectDAO.retrieveAllSubjectsWithId();
+        //retrive all subject
+        SubjectDAO subjectDAO = new SubjectDAO();
+        List<Subject> subjectList = subjectDAO.retrieveAllSubjectsWithId();
 
-            request.setAttribute("BranchList", branchList);
-            request.setAttribute("LevelList", levelList);
-            request.setAttribute("SubjectList", subjectList);
+        request.setAttribute("BranchList", branchList);
+        request.setAttribute("LevelList", levelList);
+        request.setAttribute("SubjectList", subjectList);
 
-            RequestDispatcher view = request.getRequestDispatcher("ScheduleCreation.jsp");
-            view.forward(request, response);
-<<<<<<< HEAD
-        }
-        */
-
+        RequestDispatcher view = request.getRequestDispatcher("ScheduleCreation.jsp");
+        view.forward(request, response);
     }
+/*
+    private boolean insertLesson(Date startDate, Date endDate, String timing) {
+        int startWeek;
+        int finishWeek;
+        int diff;
+        Calendar cal;
+        Calendar startCountingCal;
+        
+        cal = Calendar.getInstance();
+
+        cal.setTime(startDate);
+        startWeek = cal.get(Calendar.WEEK_OF_YEAR);
+
+        cal.setTime(endDate);
+        finishWeek = cal.get(Calendar.WEEK_OF_YEAR);
+
+        diff = finishWeek - startWeek;
+
+        startCountingCal = Calendar.getInstance();
+        startCountingCal.setTime(startDate);
+
+        for (int i = 0; i < diff; i++) {
+
+            if (i == 0) {
+                System.out.println("WEEK " + i + " start: " + sdf.format(startCountingCal.getTime()));
+                startCountingCal.add(Calendar.DATE, 7);
+                System.out.println("WEEK " + i + " start: " + sdf.format(startCountingCal.getTime()));
+            } else {
+                System.out.println("WEEK " + i + " start: " + sdf.format(startCountingCal.getTime()));
+                startCountingCal.add(Calendar.DATE, 7);
+                System.out.println("WEEK " + i + " start: " + sdf.format(startCountingCal.getTime()));
+            }
+
+        }
+        
+        return true;
+    }*/
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
