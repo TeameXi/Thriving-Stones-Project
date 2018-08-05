@@ -232,12 +232,22 @@
 <div class="col-md-10">
     <div style="margin: 20px;"><h3>Tutor Lists</h3></div>
     <div class="row" id="errorMsg"></div>
-    <%        String tutor_creation_status = (String) request.getAttribute("creation_status");
+    <%        
+        String tutor_creation_status = (String) request.getAttribute("creation_status");
         if (tutor_creation_status != null) {
             if (tutor_creation_status == "true") {
                 out.println("<div id='creation_status' class='row alert alert-danger col-md-12'><strong>Something Went wrong!</strong> </div>");
             } else {
                 out.println("<div id='creation_status' class='row alert alert-success col-md-12'><strong>Tutor record is inserted !</strong> </div>");
+            }
+        }
+        
+
+        ArrayList<String>duplicatedUsers= (ArrayList)session.getAttribute("existingUserLists");
+        if(duplicatedUsers != null){
+            if(duplicatedUsers.size() > 0){
+                out.println("<div id='creation_status' class='row alert alert-danger col-md-12'>The following users are already <strong>( "+ String.join(",", duplicatedUsers)+" )</strong> existed;</div>");
+                session.removeAttribute("existingUserLists");
             }
         }
     %> 
@@ -552,7 +562,7 @@
                         <p class = "form-control-label">Gender :</p>
                     </div>
                     <div class = "col-sm-8">
-                        <p><select class="form-control" id="gender"><option value="">Select Gender</option><option value="F">Female</option><option value="M">Male</option></select></p>
+                        <p id='gender_container'></p>
                     </div>
                 </div><br/>
 
@@ -606,202 +616,210 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.css" rel="stylesheet">
 
 <script>
-                    $(document).ready(function () {
+$(document).ready(function () {
 
-                        $('#tutor_image').on("change",function(){
-                            var fileExtension = ['jpeg', 'jpg','png'];
-                            if ($.inArray($(this).val().split('.').pop().toLowerCase(), fileExtension) == -1) {
-                                $('#imageError').html("Only image(jpg,png,jpeg) are allowed.");
-                            }else{
-                                $('#imageError').html("");
-                            }
+    $('#tutor_image').on("change",function(){
+        var fileExtension = ['jpeg', 'jpg','png'];
+        if ($.inArray($(this).val().split('.').pop().toLowerCase(), fileExtension) == -1) {
+            $('#imageError').html("Only image(jpg,png,jpeg) are allowed.");
+        }else{
+            $('#imageError').html("");
+        }
 
-                        });
+    });
 
-                        $('#dob').datetimepicker({
-                            format: 'DD-MM-YYYY'
-                        });
+    $('#dob').datetimepicker({
+        format: 'DD-MM-YYYY'
+    });
 
-                        if ($('#creation_status').length) {
-                            $('#creation_status').fadeIn().delay(2000).fadeOut();
-                        }
+    if ($('#creation_status').length) {
+        $('#creation_status').fadeIn().delay(2000).fadeOut();
+    }
 
-                        $("#viewTutor").on("show.bs.modal", function (e) {
-                            var tutor_id = $(e.relatedTarget).data('target-id');
-                            $.ajax({
-                                url: 'RetrieveTutorServlet',
-                                dataType: 'JSON',
-                                data: {tutorID: tutor_id},
-                                success: function (data) {
+    $("#viewTutor").on("show.bs.modal", function (e) {
+        var tutor_id = $(e.relatedTarget).data('target-id');
+        $.ajax({
+            url: 'RetrieveTutorServlet',
+            dataType: 'JSON',
+            data: {tutorID: tutor_id},
+            success: function (data) {
+                if(data["nric"] != ""){
+                    $("#view_tutor_nric").text(data["nric"]);
+                }
+                $("#view_tutor_name").text(data["fullname"]);
+                if (data["phone"] !== "") {
+                    $("#view_phone").text(data["phone"]);
+                }
+                if (data["address"] !== "") {
+                    $("#view_address").text(data["address"]);
+                }
 
-                                    $("#view_tutor_nric").text(data["nric"]);
-                                    $("#view_tutor_name").text(data["fullname"]);
-                                    if (data["phone"] !== "") {
-                                        $("#view_phone").text(data["phone"]);
-                                    }
-                                    if (data["address"] !== "") {
-                                        $("#view_address").text(data["address"]);
-                                    }
+                if (data['image_url'] !== "") {
+                    $("#view_image_container").html("<img style='width:100px;padding:10px;' src='" + data['image_url'] + "'></img>");
+                }
 
-                                    if (data['image_url'] !== "") {
-                                        $("#view_image_container").html("<img style='width:100px;padding:10px;' src='" + data['image_url'] + "'></img>");
-                                    }
+                if (data["birth_date"] !== "") {
+                    $("#view_birthDate").text(data["birth_date"]);
+                }
 
-                                    if (data["birth_date"] !== "") {
-                                        $("#view_birthDate").text(data["birth_date"]);
-                                    }
+                if (data["gender"] === "F") {
+                    $("#view_gender").text("Female");
+                } else if (data["gender"] === "M") {
+                    $("#view_gender").text("Male");
+                }
 
-                                    if (data["gender"] === "F") {
-                                        $("#view_gender").text("Female");
-                                    } else if (data["gender"] === "M") {
-                                        $("#view_gender").text("Male");
-                                    }
+                if (data["branch"] !== "") {
+                    $("#branch").val(data["branch"]);
+                }
 
-                                    if (data["branch"] !== "") {
-                                        $("#branch").val(data["branch"]);
-                                    }
+                $("#view_email").text(data["email"]);
 
-                                    $("#view_email").text(data["email"]);
+            }
+        });
 
-                                }
-                            });
+    });
 
-                        });
+    $("#editTutor").on("show.bs.modal", function (e) {
+        var tutor_id = $(e.relatedTarget).data('target-id');
+        $("#tutor_nric").attr('readonly', false);
+        $("#tutor_nric").val("");
+        $("#dob").val("");
+        $('#tutor_image').val("");
 
-                        $("#editTutor").on("show.bs.modal", function (e) {
-                            var tutor_id = $(e.relatedTarget).data('target-id');
-                            $("#tutor_nric").attr('readonly', false);
-                            $('#tutor_image').val("");
-                            $("#gender").val("");
-                            $("#dob").attr('readonly', false);
-                            $("#gender").attr('readonly', false);
-                            $('#imageError').html("");
-                            $.ajax({
-                                url: 'RetrieveTutorServlet',
-                                dataType: 'JSON',
-                                data: {tutorID: tutor_id},
-                                success: function (data) {
+        $("#dob").attr('readonly', false);
 
-                                    $("#tutor_id").val(data["id"]);
-                                    if (data["nric"] !== "") {
-                                        $("#tutor_nric").val(data["nric"]);
-                                        $("#tutor_nric").attr('readonly', true);
-                                    }
-                                    $("#tutor_name").val(data["fullname"]);
-                                    $("#tutor_name").attr('readonly', true);
-                                    $("#phone").val(data["phone"]);
-                                    $("#address").val(data["address"]);
+        $('#imageError').html("");
+        $.ajax({
+            url: 'RetrieveTutorServlet',
+            dataType: 'JSON',
+            data: {tutorID: tutor_id},
+            success: function (data) {
 
-
-                                    if (data['image_url'] !== null) {
-                                        $("#image_container").html("<img style='width:100px;padding:10px;' src='" + data['image_url'] + "'></img>");
-                                    }
-
-                                    if (data["birth_date"] !== "") {
-                                        $("#dob").val(data["birth_date"]);
-                                        $("#dob").attr('readonly', true);
-                                    }
-
-                                    if (data["gender"] !== "") {
-                                        $("#gender").val(data["gender"]);
-                                        $("#gender").attr('readonly', true);
-                                    }
-
-                                    if (data["branch"] !== "") {
-                                        $("#branch").val(data["branch"]);
-                                    }
-
-                                    $("#email").val(data["email"]);
-
-                                }
-                            });
-
-                        });
-                    });
-
-                    (function () {
-                        $(function () {
-                            return $('[data-toggle]').on('click', function () {
-                                var toggle;
-                                toggle = $(this).addClass('active').attr('data-toggle');
-                                $(this).siblings('[data-toggle]').removeClass('active');
-                                if (toggle !== "modal") {
-                                    return $('.surveys').removeClass('grid list').addClass(toggle);
-                                }
-                            });
-                        });
-                    }).call(this);
-
-                    function deleteTutor(tutor_id) {
-                        $("#confirm_btn").prop('onclick', null).off('click');
-                        $("#confirm_btn").click(function () {
-                            deleteTutorQueryAjax(tutor_id);
-                        });
-                    }
+                $("#tutor_id").val(data["id"]);
+                if (data["nric"] !== "") {
+                    $("#tutor_nric").val(data["nric"]);
+                    $("#tutor_nric").attr('readonly', true);
+                }
+                $("#tutor_name").val(data["fullname"]);
+                $("#tutor_name").attr('readonly', true);
+                $("#phone").val(data["phone"]);
+                $("#address").val(data["address"]);
 
 
-                    function deleteTutorQueryAjax(tutor_id) {
-                        $('#small').modal('hide');
-                        $("#tid_" + tutor_id).remove();
-                        $.ajax({
-                            type: 'POST',
-                            url: 'DeleteTutorServlet',
-                            dataType: 'JSON',
-                            data: {tutorID: tutor_id},
-                            success: function (data) {
-                                console.log(data);
-                                if (data === 1) {
-                                    $("#tid_" + tutor_id).remove();
-                                    html = '<div class="alert alert-success col-md-12"><strong>Success!</strong> Deleted Student record successfully</div>';
-                                } else {
-                                    html = '<div class="alert alert-danger col-md-12"><strong>Sorry!</strong> Something went wrong</div>';
-                                }
+                if (data['image_url'] !== null) {
+                    $("#image_container").html("<img style='width:100px;padding:10px;' src='" + data['image_url'] + "'></img>");
+                }
 
-                                $("#errorMsg").html(html);
-                                $('#errorMsg').fadeIn().delay(1000).fadeOut();
-                            }
-                        });
-                    }
+                if (data["birth_date"] !== "") {
+                    $("#dob").val(data["birth_date"]);
+                    $("#dob").attr('readonly', true);
+                }
+
+                if (data["gender"] !== "" && data["gender"] === "F") {
+                    html = "<label>Female</label><input type='hidden' id='gender' value='F'/>";    
+                    $("#gender_container").html(html);
+                }else if(data["gender"] === "M"){
+                    html = "<label>Male</label><input type='hidden' id='gender' value='M' />";
+                    $("#gender_container").html(html);
+                }else{
+                    html = "<select class='form-control' id='gender'><option value=''>Select Gender</option><option value='F'>Female</option><option value='M'>Male</option></select>";
+                    $("#gender_container").html(html);
+                }
+
+                if (data["branch"] !== "") {
+                    $("#branch").val(data["branch"]);
+                }
+
+                $("#email").val(data["email"]);
+
+            }
+        });
+
+    });
+});
+
+(function () {
+    $(function () {
+        return $('[data-toggle]').on('click', function () {
+            var toggle;
+            toggle = $(this).addClass('active').attr('data-toggle');
+            $(this).siblings('[data-toggle]').removeClass('active');
+            if (toggle !== "modal") {
+                return $('.surveys').removeClass('grid list').addClass(toggle);
+            }
+        });
+    });
+}).call(this);
+
+function deleteTutor(tutor_id) {
+    $("#confirm_btn").prop('onclick', null).off('click');
+    $("#confirm_btn").click(function () {
+        deleteTutorQueryAjax(tutor_id);
+    });
+}
 
 
-                    function editTutor() {
-                        id = $("#tutor_id").val();
-                        nric = $("#tutor_nric").val();
-                        phone = $("#phone").val();
-                        address = $("#address").val();
-                        file_name = "";
-                        if($("#tutor_image").get(0).files.length !== 0){
-                            file_name = $("#tutor_image").prop("files")[0]["name"];
-                        }
-                        dob = $("#dob").val();
-                        gender = $("#gender").val();
-                        email = $("#email").val();
+function deleteTutorQueryAjax(tutor_id) {
+    $('#small').modal('hide');
+    $("#tid_" + tutor_id).remove();
+    $.ajax({
+        type: 'POST',
+        url: 'DeleteTutorServlet',
+        dataType: 'JSON',
+        data: {tutorID: tutor_id},
+        success: function (data) {
+            console.log(data);
+            if (data === 1) {
+                $("#tid_" + tutor_id).remove();
+                html = '<div class="alert alert-success col-md-12"><strong>Success!</strong> Deleted Student record successfully</div>';
+            } else {
+                html = '<div class="alert alert-danger col-md-12"><strong>Sorry!</strong> Something went wrong</div>';
+            }
+
+            $("#errorMsg").html(html);
+            $('#errorMsg').fadeIn().delay(1000).fadeOut();
+        }
+    });
+}
 
 
-                        $('#editTutor').modal('hide');
+function editTutor() {
+        id = $("#tutor_id").val();
+        nric = $("#tutor_nric").val();
+        phone = $("#phone").val();
+        address = $("#address").val();
+        file_name = "";
+        if($("#tutor_image").get(0).files.length !== 0){
+            file_name = $("#tutor_image").prop("files")[0]["name"];
+        }
+        dob = $("#dob").val();
+        gender = $("#gender").val();
+        email = $("#email").val();
 
-                        $.ajax({
-                            type: 'POST',
-                            url: 'UpdateTutorServlet',
-                            dataType: 'JSON',
-                            data: {tutorID: id,nric:nric,phone:phone,address:address,image:file_name,dob:dob,gender:gender,email:email},
-                            success: function (data) {
-                                if (data === 1) {
-                                    $("#name_" + id).text(name);
-                                    $("#email_" + id).text(email);
-                                    $("#gender_" + id).text(gender);
-                                    $("#phone_" + id).text(phone);
-                                 
-                                    html = '<div class="alert alert-success col-md-12"><strong>Success!</strong> Update Tutor record successfully</div>';
-                                } else {
-                                    html = '<div class="alert alert-danger col-md-12"><strong>Sorry!</strong> Something went wrong</div>';
-                                }
+        $('#editTutor').modal('hide');
 
-                                $("#errorMsg").html(html);
-                                $('#errorMsg').fadeIn().delay(2000).fadeOut();
-                            }
-                        });
-                    }
+        $.ajax({
+            type: 'POST',
+            url: 'UpdateTutorServlet',
+            dataType: 'JSON',
+            data: {tutorID: id,nric:nric,phone:phone,address:address,image:file_name,dob:dob,gender:gender,email:email},
+            success: function (data) {
+                if (data === 1) {
+                    $("#name_" + id).text(name);
+                    $("#email_" + id).text(email);
+                    $("#gender_" + id).text(gender);
+                    $("#phone_" + id).text(phone);
+
+                    html = '<div class="alert alert-success col-md-12"><strong>Success!</strong> Update Tutor record successfully</div>';
+                } else {
+                    html = '<div class="alert alert-danger col-md-12"><strong>Sorry!</strong> Something went wrong</div>';
+                }
+
+                $("#errorMsg").html(html);
+                $('#errorMsg').fadeIn().delay(2000).fadeOut();
+            }
+        });
+    }
 
 
 </script>

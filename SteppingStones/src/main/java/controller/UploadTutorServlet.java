@@ -14,6 +14,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import model.TutorDAO;
 
 /**
@@ -63,21 +64,27 @@ public class UploadTutorServlet extends HttpServlet {
                 
 //                Tutor tempTutor = new Tutor(tutorNrics[i],tutorNames[i],phone,addresses[i],images[i],birth_dates[i],genders[i],emails[i],passwords[i],branch_id);
 
-                tutorLists.add("("+tutorNrics[i]+",'"+tutorNames[i].trim()+"',"+phone+",'"+addresses[i]+"','"+images[i]+"','"
+                tutorLists.add("('"+tutorNrics[i]+"','"+tutorNames[i].trim()+"',"+phone+",'"+addresses[i]+"','"+images[i]+"','"
                        +birth_dates[i]+"','"+genders[i]+"','"+emails[i]+"','"+passwords[i]+"',"+branch_id+")");
 
                 tutorNameLists.add(tutorNames[i].trim());
+                
             }
+
             
             ArrayList<String>existingUsers = new ArrayList<>();
             if(tutorLists.size() > 0){
                 TutorDAO tutorDao = new TutorDAO();
                 existingUsers = tutorDao.uploadTutor(tutorLists, tutorNameLists);
-                request.setAttribute("existingUserLists",existingUsers);
+               HttpSession session = request.getSession();
+               session.setAttribute("existingUserLists",existingUsers);
             }
-          
-            RequestDispatcher dispatcher = request.getRequestDispatcher("DisplayTutors.jsp");
-            dispatcher.forward(request, response);
+            
+            response.sendRedirect("DisplayTutors.jsp");
+//          
+
+//            RequestDispatcher dispatcher = request.getRequestDispatcher("DisplayTutors.jsp");
+//            dispatcher.forward(request, response);
         }
     }
 

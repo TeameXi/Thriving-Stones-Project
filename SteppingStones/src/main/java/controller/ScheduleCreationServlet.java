@@ -44,7 +44,7 @@ public class ScheduleCreationServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-<<<<<<< HEAD
+
         String[] days = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
         String[] time = {"08:00", "09:00", "10:00", "11:00", "12:00",
             "13:00", "14:00", "15:00", "16:00"};
@@ -161,8 +161,6 @@ public class ScheduleCreationServlet extends HttpServlet {
         }
         */
 
-=======
->>>>>>> 62718fa5f727adce4a818957f9ff3fac8429e663
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
