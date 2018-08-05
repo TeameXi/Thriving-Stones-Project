@@ -5,22 +5,22 @@
  */
 package controller;
 
+import entity.Branch;
 import java.io.IOException;
-import java.io.PrintWriter;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.ClassDAO;
-import entity.Class;
-import entity.Student;
-import java.util.ArrayList;
-import javax.servlet.RequestDispatcher;
-import model.StudentClassDAO;
+import model.BranchDAO;
 
-@WebServlet(name = "SelectClassServlet", urlPatterns = {"/SelectClassServlet"})
-public class SelectClassServlet extends HttpServlet {
+/**
+ *
+ * @author Shawn
+ */
+@WebServlet(name = "CreateBranchServlet", urlPatterns = {"/CreateBranchServlet"})
+public class CreateBranchServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -34,24 +34,28 @@ public class SelectClassServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        /*
-        String classID = request.getParameter("class");
 
-        ArrayList<Student> stuList = StudentClassDAO.getStudentsByClassID(classID);
-        String level = ClassDAO.getClassLevel(classID);
-        
-        if (!stuList.isEmpty()) {    
-            request.setAttribute("students", stuList);
-            request.setAttribute("level", level);
-            request.setAttribute("class", classID);
-            RequestDispatcher view = request.getRequestDispatcher("CreateGrade.jsp");
-            view.forward(request, response);
-        } else {
-            RequestDispatcher view = request.getRequestDispatcher("SelectClass.jsp");
-            view.forward(request, response);
+        String branchName = request.getParameter("branchName");
+        String branchAddress = request.getParameter("branchAddress");
+        int phoneNo = 0;
+        if (request.getParameter("phoneNumber") != null && request.getParameter("phoneNumber") != "") {
+            phoneNo = Integer.parseInt(request.getParameter("phoneNumber"));
         }
-        */
+        String startDate = request.getParameter("startingDate");
 
+        BranchDAO branchdao = new BranchDAO();
+        Branch existingBranch = branchdao.retrieveBranchByName(branchName);
+        if (existingBranch != null) {
+            request.setAttribute("existingBranch", existingBranch.getName());
+            RequestDispatcher dispatcher = request.getRequestDispatcher("CreateBranch.jsp");
+            dispatcher.forward(request, response);
+        } else {
+            Branch tempBranch = new Branch(branchName, startDate, branchAddress, phoneNo);
+            boolean status = branchdao.addBranch(tempBranch);
+            request.setAttribute("creation_status", "" + status);
+            RequestDispatcher dispatcher = request.getRequestDispatcher("DisplayBranches.jsp");
+            dispatcher.forward(request, response);
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
