@@ -44,8 +44,7 @@ public class CreateSubjectServlet extends HttpServlet {
         boolean subjectStatus = subjects.addSubject(level,subjectName,branch);
         
         if(subjectStatus) {
-            RequestDispatcher view = request.getRequestDispatcher("CreateSubject.jsp");
-            view.forward(request,response);
+            response.sendRedirect("CreateSubject.jsp");
         }else{
             request.setAttribute("errorMsg", new ArrayList<>().add("Error creating subject!"));
             RequestDispatcher view = request.getRequestDispatcher("CreateSubject.jsp");
