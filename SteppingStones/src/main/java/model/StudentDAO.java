@@ -135,8 +135,9 @@ public class StudentDAO {
     public static Student retrieveStudentbyID(int studentID){
         Student stu  = null;
         try(Connection conn = ConnectionManager.getConnection()){
-            PreparedStatement stmt = conn.prepareStatement("select * from student where student_id = ?");
+            PreparedStatement stmt = conn.prepareStatement("select * from student where student_id = ? and branch_id = ?");
             stmt.setInt(1, studentID);
+            stmt.setInt(2, 1); //replace with branchID
             ResultSet rs = stmt.executeQuery();
 
             while(rs.next()){
@@ -164,8 +165,9 @@ public class StudentDAO {
     public static int retrieveStudentLevelbyName(String studentName){
         int levelID = 0;
         try(Connection conn = ConnectionManager.getConnection()){
-            PreparedStatement stmt = conn.prepareStatement("select level_id from student where student_name = ?");
+            PreparedStatement stmt = conn.prepareStatement("select level_id from student where student_name = ? and branch_id = ?");
             stmt.setString(1, studentName);
+            stmt.setInt(2, 1); //replace branch_id
             ResultSet rs = stmt.executeQuery();
             while(rs.next()){
                 levelID = rs.getInt("level_id");

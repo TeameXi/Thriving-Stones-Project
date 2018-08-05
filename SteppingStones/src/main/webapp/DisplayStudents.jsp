@@ -1,3 +1,5 @@
+<%@page import="model.ParentDAO"%>
+<%@page import="model.StudentGradeDAO"%>
 <%@page import="java.util.LinkedHashMap"%>
 <%@page import="model.StudentDAO"%>
 <%@page import="java.util.Iterator"%>
@@ -265,7 +267,6 @@
                     if (students != null) {
                         for (int i = 0; i < students.size(); i++) {
                             Student stu = students.get(i);
-                            //int age = (Integer)stu.getAge();
                             int id = stu.getStudentID();
                             out.println("<li class='survey-item' id='sid_" + id + "'><span class='survey-country list-only'>SG</span>");
                             out.println("<span class='survey-name'><i class='zmdi zmdi-account'>&nbsp;&nbsp;</i><span id='name_"+id+"'>");
@@ -273,10 +274,25 @@
                             out.println("<span class='survey-country grid-only'><i class='zmdi zmdi-pin'>&nbsp;&nbsp;</i><span id='address_"+id+"'>");
                             out.println(stu.getAddress() + "</span></span><br/>");
                             out.println("<span class='survey-country'><i class='zmdi zmdi-graduation-cap'>&nbsp;&nbsp;</i><span id='lvl_"+id+"'>");
-                            out.println(stu.getLevel() + "</span></span>");
-                
-                
-
+                            out.println(stu.getLevel() + "</span></span><br>");
+                            out.println("<span class='survey-country'>");
+                            out.println(ParentDAO.retrieveParentByStudentID(id) + "</span></span><br>");
+                           /*
+                           LinkedHashMap<String, ArrayList<String>> gradeLists = StudentGradeDAO.retrieveStudentTuitionGrade(id);
+                            if(gradeLists != null && !gradeLists.isEmpty()){
+                                Set<String> keys = gradeLists.keySet();
+                                out.println("<span class='survey-country'>Tuition Grades<br>" + "</span>");
+                                for(String subject: keys){
+                                    ArrayList<String> grades = gradeLists.get(subject);
+                                    out.println("<span class='survey-country'>" + subject + "</span>");
+                                    if(grades != null){
+                                        for(String grade: grades){
+                                            out.println("<span class='survey-country'>" + grade + "</span>");
+                                        }
+                                    }
+                                    out.println("<br>");
+                                }
+                            }     */
 
         %>
         <div class="pull-right">

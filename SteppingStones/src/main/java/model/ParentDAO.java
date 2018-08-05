@@ -69,4 +69,21 @@ public class ParentDAO {
         }
         return deletedStatus;
     }
+    
+    public static String retrieveParentByStudentID(int studentID){
+        String parentInfo = "";
+        try(Connection conn = ConnectionManager.getConnection()){
+            String sql = "select name, phone from parent_child_rel pc, parent p where pc.parent_id = p.parent_id and child_id = ?;";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, studentID);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){
+                parentInfo = parentInfo + "Guadiance<br>" + rs.getString("name") + " " + rs.getString("phone") ;
+            } 
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }  
+        return parentInfo;
+    }
+    
 }

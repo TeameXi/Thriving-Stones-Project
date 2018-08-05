@@ -10,8 +10,11 @@ import connection.ConnectionManager;
 import entity.StudentGrade;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import org.json.JSONObject;
 
@@ -55,6 +58,56 @@ public class StudentGradeDAO {
             System.out.println(e.getMessage());
         }
         return deletedStatus;
+    }
+    
+    public static LinkedHashMap<String, ArrayList<String>> retrieveStudentTuitionGrade(String studentName){
+        LinkedHashMap<String, ArrayList<String>> gradeLists = new LinkedHashMap<>();
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement("select subject_name, assessment_type, grade "
+                    + "from tuition_grade g, class c, subject s, student stu "
+                    + "where g.class_id = c.class_id and s.subject_id = c.subject_id and stu.student_id = g.student_id "
+                    + "and student_name = ? and stu.branch_id = ?;");
+            stmt.setString(1, studentName);
+            stmt.setInt(2, 1); //replace with branchID
+            ResultSet rs = stmt.executeQuery();
+
+            while(rs.next()){
+                String subjectName = rs.getString("subject_name");
+                String assessmentType = rs.getString("assessment_type");
+                String grade = rs.getString("grade");
+                if(gradeLists.get(subjectName) == null){
+                    ArrayList<String> subGrades = new ArrayList<>();
+                    subGrades.add(assessmentType + " : " + grade);
+                    gradeLists.put(subjectName, subGrades);
+                }else{
+                    ArrayList<String> subGrades = gradeLists.get(subjectName);
+                    subGrades.add(assessmentType + " : " + grade);
+                    gradeLists.put(subjectName, subGrades);
+                }
+            }
+        }catch(SQLException e){
+            System.out.print(e.getMessage());
+        }
+        return gradeLists;
+    }
+    
+    public static boolean updateTuitionGrade(int studentID, int classID, String assessmentType, String grade){
+        boolean updatedStatus = false;
+        try (Connection conn = ConnectionManager.getConnection();) {
+            conn.setAutoCommit(false);
+            String sql = "update tuition_grade set grade = ? where student_id = ? and class_id = ? and assessment_type = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, grade);
+            stmt.setInt(2, studentID);
+            stmt.setInt(3, classID);
+            stmt.setString(4, assessmentType);
+            stmt.executeUpdate(); 
+            conn.commit();
+            updatedStatus = true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return updatedStatus;
     }
     
     public static void saveSchoolGrade(String studentID, String sub1, StudentGrade stuGrade1, String sub2, StudentGrade stuGrade2, String sub3, StudentGrade stuGrade3) {

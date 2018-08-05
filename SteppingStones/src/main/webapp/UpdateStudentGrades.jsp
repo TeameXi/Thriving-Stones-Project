@@ -4,6 +4,8 @@
     Author     : DEYU
 --%>
 
+<%@page import="java.util.Set"%>
+<%@page import="java.util.Map"%>
 <%@page import="entity.Student"%>
 <%@page import="java.util.ArrayList"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -15,36 +17,37 @@
     </head>
     <body>
         <%
-            ArrayList<String> subs = (ArrayList<String>) request.getAttribute("subjects");
-            Student stu = (Student)request.getAttribute("StudentData");
-            if(stu != null){
-                request.setAttribute("studentID", stu.getStudentID());
+            Map<Integer, String> classSub = (Map<Integer, String>) request.getAttribute("classSub");
+            int studentID = (Integer) request.getAttribute("studentID");
+            String studentName = (String) request.getAttribute("studentName");
+            request.setAttribute("studentID", studentID);
             
-                    if(!subs.isEmpty()){     
+            if(!classSub.isEmpty()){     
         %>
         <h1>Update Student's Grade</h1>
         <form action="RetrieveUpdateGradesServlet" method="post">
             <input type="hidden" name="studentID" value="${studentID}">
             <%
-                        out.println("StudentName: " + stu.getName() + "</br></br>");
+                out.println("StudentName: " + studentName + "</br></br>");
             %>
             Subject:
             <select name = "subjects">
                 <option value="-1" selected>Select Subject</option>
-                <%
-                        for(String sub: subs){
-                            out.println("<option value=" + sub + ">" + sub + "</option>");
-                        }
+            <%
+                Set<Integer> classes = classSub.keySet();
+                for(int cls: classes){
+                    out.println("<option value=" + cls + ">" + classSub.get(cls) + "</option>");
+                }
                     
-                %>
+            %>
             </select><br>
             Level:
             <select name = "assessmentType">
                 <option value="-1" selected>Select Assessment Type</option>
-                <option value="ca1">CA1</option>
-                <option value="sa1">SA1</option>
-                <option value="ca2">CA2</option>
-                <option value="sa2">SA2</option>
+                <option value="CA1">CA1</option>
+                <option value="SA1">SA1</option>
+                <option value="CA2">CA2</option>
+                <option value="SA2">SA2</option>
             </select><br>
             Grade:
             <input type ="text" name ="grade"><br><br>
@@ -53,12 +56,10 @@
         </form>         
         
         <%
-                    }else{
-                        out.println("No grades to update, please create grade first!");
-                    }
             }else{
-                out.println("Student Record Not Found!");
+                out.println("No grades to update, please create grade first!");
             }
+
         %>              
     </body>
 </html>
