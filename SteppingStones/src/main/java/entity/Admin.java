@@ -19,6 +19,16 @@ public class Admin {
         
     }
 
+    public Admin(String admin_username, int branch_id){
+        this.admin_username = admin_username;
+        this.branch_id = branch_id;
+    }
+    
+    public Admin(String admin_username, String password, int branch_id){
+        this(admin_username, branch_id);
+        this.password = password;
+        this.branch_id = branch_id;
+    }
     /**
      * @return the admin_id
      */
