@@ -39,14 +39,15 @@ public class LoginServlet extends HttpServlet {
         HashMap<String, String> errors = new HashMap<>();
         HttpSession session = request.getSession();
                     
-        String email = request.getParameter("username");
+        String type = request.getParameter("type");
+        String username = request.getParameter("username");
         String password = request.getParameter("password");
         
-        if ((email == null || email.isEmpty()) && (password == null || password.isEmpty())) {
+        if ((username == null || username.isEmpty()) && (password == null || password.isEmpty())) {
             errors.put("error", "Missing Email & Password");
         }
         
-        if (email == null || email.isEmpty()) {
+        if (username == null || username.isEmpty()) {
             errors.put("error", "Missing Email & Password");
         }
         
@@ -56,22 +57,29 @@ public class LoginServlet extends HttpServlet {
         
         if(errors.isEmpty()) {
             UsersDAO users = new UsersDAO();
-            Users user = users.retrieveUserByEmail(email);
+            Users user = users.retrieveUserByUsername(type, username);
             
             if(user != null) {
                 String pwd = user.getPassword();
                 if(password.equals(pwd)) {
-                    if(user.getEmail().equals("admin")){
+                    if(type.equals("admin")){
                         session.setAttribute("user", user);
                         RequestDispatcher view = request.getRequestDispatcher("HomePage.jsp");
                         view.forward(request, response);
-                    }else{
+                    }else if (type.equals("tutor")){
                         session.setAttribute("user", user);
-                        RequestDispatcher view = request.getRequestDispatcher("TutorHomepage.jsp");
+                        RequestDispatcher view = request.getRequestDispatcher("tutorHomepage.jsp");
+                        view.forward(request, response);
+                    }else if (type.equals("student")){
+                        session.setAttribute("user", user);
+                        RequestDispatcher view = request.getRequestDispatcher("studentHomepage.jsp");
+                        view.forward(request, response);
+                    }else if (type.equals("parent")){
+                        session.setAttribute("user", user);
+                        RequestDispatcher view = request.getRequestDispatcher("parentHomepage.jsp");
                         view.forward(request, response);
                     }
                 }else{
-                    System.out.println(pwd);
                     errors.put("error", "Incorrect Password");
                     session.setAttribute("response", errors);
                     RequestDispatcher view = request.getRequestDispatcher("Login.jsp");

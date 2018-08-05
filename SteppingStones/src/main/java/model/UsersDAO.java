@@ -5,94 +5,68 @@
  */
 package model;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import connection.ConnectionManager;
 import entity.Users;
-import entity.Tutor;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.Iterator;
-import java.util.Set;
-
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.Scanner;
 /**
  *
  * @author Riana
  */
 public class UsersDAO {
-    public void addUser(Tutor tutor) {
-        String email = tutor.getEmail();
-        String key = email.substring(0,email.indexOf("@"));
-        
-        try {
-            String urlString = "https://team-exi-thriving-stones.firebaseio.com/users/" + key + ".json";
-            URL url = new URL(urlString);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("PUT");
-            connection.setDoOutput(true);
-            connection.setRequestProperty("Content-Type", "application/json");
-            connection.setRequestProperty("Accept", "application/json");
-            JsonObject userData = new JsonObject();
-            userData.addProperty("email", tutor.getEmail());
-            userData.addProperty("password", tutor.getPassword());
-            OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
-            writer.write(userData.toString());
-            writer.flush();
-            writer.close();
-        } catch (Exception ex) {
-            Logger.getLogger(UsersDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
 
-    public void deleteUser(String tutorID) {
-        try {
-            TutorDAO tutors = new TutorDAO();
-            String email = tutors.retrieveSpecificTutor(tutorID).getEmail();
-            String key = email.substring(0,email.indexOf("@"));
-            String urlString = "https://team-exi-thriving-stones.firebaseio.com/users/" + key + ".json";
-            URL url = new URL(urlString);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded" );
-            connection.setRequestMethod("DELETE");
-            connection.setDoOutput(true);
-            connection.connect();
-        } catch (Exception ex) {
-            Logger.getLogger(UsersDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
-     public Users retrieveUserByEmail(final String email) {
-        Gson gson = new GsonBuilder().create();
-        try {
-            URL userURL = new URL("https://team-exi-thriving-stones.firebaseio.com/users.json");
-            URLConnection userConnection = userURL.openConnection();
-            BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(
-                            userConnection.getInputStream()));
-            String jsonString = reader.readLine();
-            JsonElement jelement = new JsonParser().parse(jsonString);
-            JsonObject  jobject = jelement.getAsJsonObject();
-            Set entries = jobject.keySet();
-            Iterator iter = entries.iterator();
-            while(iter.hasNext()){
-                String user = (String) iter.next();
-                JsonElement userDataString = jobject.get(user);
-                Users userToReturn = gson.fromJson(userDataString, Users.class);
-                if(userToReturn.getEmail().equals(email)) {
-                    return userToReturn;
+    public Users retrieveUserByUsername(String type, final String user) {
+        try (Connection conn = ConnectionManager.getConnection()) {
+            if (type.equals("admin")) {
+                PreparedStatement stmt = conn.prepareStatement("select admin_password from admin where admin_username = '" + user + "'");
+                ResultSet rs = stmt.executeQuery();
+                String pwd = "";
+                while (rs.next()) {
+                    pwd = rs.getString(1);
                 }
+                Users userToReturn = new Users(user, pwd);
+                return userToReturn;
+
+            } else if (type.equals("tutor")) {
+                PreparedStatement stmt = conn.prepareStatement("select password from tutor where email = " + user);
+                ResultSet rs = stmt.executeQuery();
+                String pwd = "";
+                while (rs.next()) {
+                    pwd = rs.getString(1);
+                }
+                Users userToReturn = new Users(user, pwd);
+                return userToReturn;
+
+            } else if (type.equals("student")) { //name+birthdate.pass
+                Scanner sc = new Scanner(user);
+                sc.useDelimiter(".");
+                String name = sc.next();
+                String dob = sc.next();
+                sc.close();
+                PreparedStatement stmt = conn.prepareStatement("select password from student where student_name = " + name + "and birth_date = " + dob);
+                ResultSet rs = stmt.executeQuery();
+                String pwd = "";
+                while (rs.next()) {
+                    pwd = rs.getString(1);
+                }
+                Users userToReturn = new Users(user, pwd);
+                return userToReturn;
+
+            } else if (type.equals("parent")) {//phone.pass
+                PreparedStatement stmt = conn.prepareStatement("select password from parent where phone = " + user);
+                ResultSet rs = stmt.executeQuery();
+                String pwd = "";
+                while (rs.next()) {
+                    pwd = rs.getString(1);
+                }
+                Users userToReturn = new Users(user, pwd);
+                return userToReturn;
             }
-            reader.close();
-        } catch (Exception ex) {
-            Logger.getLogger(UsersDAO.class.getName()).log(Level.SEVERE, null, ex);
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return null;
     }
