@@ -39,14 +39,14 @@ public class BranchDAO {
         return false;
     }
 
-    public boolean updateBranch(String branchID, String branchName, String startDate, String branchAddress, int phoneNo) {
+    public boolean updateBranch(int branchID, String branchName, String startDate, String branchAddress, int phoneNo) {
         try (Connection conn = ConnectionManager.getConnection();
                 PreparedStatement preparedStatement = conn.prepareStatement("UPDATE tutor SET name=?,starting_year=?,school_address=?,phone_number=? WHERE branch_id =? ")) {
             preparedStatement.setString(1,branchName);
             preparedStatement.setString(2, startDate);
             preparedStatement.setString(3,branchAddress);
             preparedStatement.setInt(4,phoneNo);
-            preparedStatement.setString(5,branchID);
+            preparedStatement.setInt(5,branchID);
             
             int num = preparedStatement.executeUpdate();
             if (num != 0) {
