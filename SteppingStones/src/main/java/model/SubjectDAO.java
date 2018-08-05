@@ -5,24 +5,13 @@
  */
 package model;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import connection.ConnectionManager;
 import entity.Subject;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -106,5 +95,40 @@ public class SubjectDAO {
             System.out.println(e);
         }
         return subjects;
+    }
+    
+    public boolean addSubject(String level, String subject, String branch) {
+        int subjectID = 0;
+        boolean status = false;
+        String sql = "insert into subject(subject_name) values(?)";
+        
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1,subject);
+            
+            stmt.executeUpdate();
+            
+            sql = "select subject_id from subject where subject_name=?";
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1,subject);
+            
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){
+                subjectID = rs.getInt(1);
+            }
+            
+            if(subjectID > 0){
+                sql = "insert into lvl_sub_rel(level_id, subject_id, branch_id) values(?,?,?)";
+                stmt = conn.prepareStatement(sql);
+                stmt.setString(1,level);
+                stmt.setInt(2,subjectID);
+                stmt.setString(3, branch);
+                stmt.executeUpdate();
+                status = true;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(SubjectDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return status;
     }
 }
