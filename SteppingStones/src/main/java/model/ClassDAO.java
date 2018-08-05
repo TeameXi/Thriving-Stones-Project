@@ -181,6 +181,30 @@ public class ClassDAO {
         return null;
     }
     */
+    public boolean insertClass(int level, int subject, int term, int hasReminderForFees, int branch, String classTime, String classDay, double mthlyFees, String startDate, String endDate) {
+        try (Connection conn = ConnectionManager.getConnection();) {
+            conn.setAutoCommit(false);
+            String sql = "INSERT into CLASS (level_id, subject_id, term, fees, has_reminder_for_fees, timing, class_day, start_date, end_date, branch_id)"
+                + "VALUES (?,?,?,?,?,?,?,?,?,?)";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, level);
+            stmt.setInt(2, subject);
+            stmt.setInt(3, term);
+            stmt.setDouble(4, mthlyFees);
+            stmt.setInt(5, hasReminderForFees);
+            stmt.setString(6, classTime);
+            stmt.setString(7, classDay);
+            stmt.setString(8, startDate);
+            stmt.setString(9, endDate);
+            stmt.setInt(10, branch);
+            stmt.executeUpdate(); 
+            conn.commit();
+            return true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
+    }
     public boolean updateClass(String level, String subject, String timing) {
         String sql = "update class set timing = ? where level_id = ? and subject_id = ?";
         System.out.println(sql);

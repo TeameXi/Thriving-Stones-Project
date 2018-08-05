@@ -31,34 +31,6 @@ import java.util.logging.Logger;
  * @author Riana
  */
 public class SubjectDAO {
-    public static ArrayList<Subject> listAllSubjects(){
-       Gson gson = new GsonBuilder().create();
-        ArrayList<Subject> tutors = new ArrayList<>();
-
-        try {
-            URL userURL = new URL("https://team-exi-thriving-stones.firebaseio.com/subjects.json");
-            URLConnection connection = userURL.openConnection();
-            BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(
-                            connection.getInputStream()));
-            String jsonString = reader.readLine();
-            JsonElement jelement = new JsonParser().parse(jsonString);
-            JsonObject jobject = jelement.getAsJsonObject();
-            Set entries = jobject.keySet();
-            Iterator iter = entries.iterator();
-            while (iter.hasNext()) {
-                String user = (String) iter.next();
-                JsonElement userDataString = jobject.get(user);
-                Subject tutor = new Subject(gson.fromJson(userDataString, String.class));
-                tutor.setSubjectId(user);
-                tutors.add(tutor);
-            }
-            reader.close();
-        } catch (Exception ex) {
-            Logger.getLogger(SubjectDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return tutors;
-    }
     
     public ArrayList<String> retrieveSubjectsByLevel(String level) {
         ArrayList<String> subjects = new ArrayList<>();
@@ -115,5 +87,24 @@ public class SubjectDAO {
             System.out.println("error in retrieveSubject sql");
         }  
         return result;
+    }
+    public ArrayList<Subject> retrieveAllSubjectsWithId() {
+        ArrayList<Subject> subjects = new ArrayList<>();
+        String sql = "select subject_id, subject_name from subject order by subject_id";
+        System.out.println(sql);
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            System.out.println(stmt);
+            
+            ResultSet rs = stmt.executeQuery();
+            
+            while(rs.next()){
+                Subject subject = new Subject(rs.getInt(1), rs.getString(2));
+                subjects.add(subject);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return subjects;
     }
 }
