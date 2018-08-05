@@ -93,12 +93,36 @@ public class TutorDAO {
         }
         return false;
     }
+    
+    public boolean updateTutor(int tutorID,String nric,int phone,String address,String image,String dob,String gender,String email) {
+        String update_Tutor = "UPDATE tutor SET tutor_nric=?,phone=?,address=?,image_url=?,birth_date=?,gender=?,email=? WHERE tutor_id =? ";
+        try (Connection conn = ConnectionManager.getConnection();
+                PreparedStatement preparedStatement = conn.prepareStatement(update_Tutor)) {
+            preparedStatement.setString(1,nric);
+            preparedStatement.setInt(2, phone);
+            preparedStatement.setString(3,address);
+            preparedStatement.setString(4,image);
+            preparedStatement.setString(5,dob);
+            preparedStatement.setString(6,gender);
+            preparedStatement.setString(7, email);
+            preparedStatement.setInt(8,tutorID);
+            
+            int num = preparedStatement.executeUpdate();
+            if (num != 0) {
+                return true;
+            }
+
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return false;
+    }
 
     public ArrayList<String> uploadTutor(ArrayList<String> tutorLists, ArrayList<String> tutorNameLists) {
         ArrayList<String> duplicatedTutors = new ArrayList<>();
         if (tutorNameLists.size() > 0) {
             String nameList = "'" + String.join("','", tutorNameLists) + "'";
-            String select_tutor = "SELECT tutor_id,tutor_fullname FROM tutor WHERE external_user_id IN (" + nameList + ")";
+            String select_tutor = "SELECT tutor_id,tutor_fullname FROM tutor WHERE tutor_fullname IN (" + nameList + ")";
 
             ArrayList<String> existingTutors = new ArrayList();
             try (Connection conn = ConnectionManager.getConnection();
@@ -109,14 +133,14 @@ public class TutorDAO {
                     String tutor_fullname = rs.getString(2);
                     existingTutors.add(tutor_fullname);
                 }
+                
+                System.out.println(existingTutors.size());
 
                 String tutorList = String.join(",", tutorLists);
                 String insert_tutor = "INSERT IGNORE INTO tutor(tutor_nric,tutor_fullname,phone,address,image_url,birth_date,gender,email,password,branch_id) VALUES " + tutorList;
                 PreparedStatement insertStatement = conn.prepareStatement(insert_tutor);
                 int num = insertStatement.executeUpdate();
-                if (num != tutorNameLists.size()) {
-                    duplicatedTutors = existingTutors;
-                }
+                duplicatedTutors = existingTutors;
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }

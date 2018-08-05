@@ -26,7 +26,7 @@
 
     String existingTutor = (String) request.getAttribute("existingTutor");
     if (existingTutor != null) {
-        out.println("<div class='alert alert-danger col-md-12'>Tutor : <strong>"+existingTutor+"</strong> is already added. Try another tutor again. </div>");
+        out.println("<div id='creation_status' class='alert alert-danger col-md-12'>Tutor : <strong>"+existingTutor+"</strong> is already added. Try another tutor again. </div>");
     }
 %> 
     <div style="text-align: center;margin: 20px;"><span class="tab_active">Add Tutor </span> / <a href="UploadTutor.jsp">Upload Tutors</a></h5></div>
@@ -113,7 +113,6 @@
                                 <option value="" >Select Gender</option>
                                 <option value="M">Male</option>
                                 <option value="F">Female</option>
-                                <option value="O">Other</option>
                             </select>
                         </div>
                     </div>
@@ -274,6 +273,10 @@ $(function () {
     $('#birthDate').datetimepicker({
         format: 'DD-MM-YYYY'
     });
+    
+    if($('#creation_status').length){
+       $('#creation_status').fadeIn().delay(3000).fadeOut();
+    }
     
     
     

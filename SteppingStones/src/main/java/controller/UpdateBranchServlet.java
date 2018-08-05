@@ -5,18 +5,21 @@
  */
 package controller;
 
-import entity.Tutor;
 import java.io.IOException;
-import javax.servlet.RequestDispatcher;
+import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.TutorDAO;
+import model.BranchDAO;
 
-@WebServlet(name = "CreateTutorServlet", urlPatterns = {"/CreateTutorServlet"})
-public class CreateTutorServlet extends HttpServlet {
+/**
+ *
+ * @author Shawn
+ */
+@WebServlet(name = "UpdateBranchServlet", urlPatterns = {"/UpdateBranchServlet"})
+public class UpdateBranchServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -30,42 +33,31 @@ public class CreateTutorServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        
-        String nric = request.getParameter("tutorNric");
-        String name = request.getParameter("tutorName").trim().toLowerCase();
-        int phone = 0;
-        if(request.getParameter("phone") != null && request.getParameter("phone") != ""){
-            phone =  Integer.parseInt(request.getParameter("phone"));
-        }
-        String address = request.getParameter("address");
-        String image_url = request.getParameter("tutorImage");
-        String birth_date = request.getParameter("birthDate");
-        String gender = request.getParameter("gender");
-        String email = request.getParameter("email"); 
-        String password = "";
-        if(request.getParameter("tutorPassword") != null){
-            password = request.getParameter("tutorPassword").trim();
-        }
-        
-        int branch = 0;
+        try (PrintWriter out = response.getWriter()) {
+            String branchID = request.getParameter("branchID");
+            if (branchID != "" && branchID != null) {
+                int id = Integer.parseInt(branchID);
+                String branchName = request.getParameter("branchName");
 
-        if(request.getParameter("branch") != null && request.getParameter("branch") != ""){
-            branch = Integer.parseInt(request.getParameter("branch"));
-        }
+                int phone = 0;
+                if (request.getParameter("phone") != "") {
+                    phone = Integer.parseInt(request.getParameter("phone"));
+                }
+                String branchAddress = request.getParameter("branchAddress");
+                String startDate = request.getParameter("startDate");
 
-        TutorDAO tutordao = new TutorDAO();
-        Tutor existingTutor = tutordao.retrieveSpecificTutor(name);
-        if(existingTutor != null){
-            request.setAttribute("existingTutor", existingTutor.getName());
-            RequestDispatcher dispatcher = request.getRequestDispatcher("CreateTutor.jsp");
-            dispatcher.forward(request, response);
-        }else{
-            Tutor tempTutor = new Tutor(nric,name,phone,address,image_url,birth_date,gender,email,password,branch);
-            boolean status = tutordao.addTutor(tempTutor);
-            request.setAttribute("creation_status",""+status);
-            RequestDispatcher dispatcher = request.getRequestDispatcher("DisplayTutors.jsp");
-            dispatcher.forward(request, response);
-            
+                BranchDAO branches = new BranchDAO();
+
+                boolean status = branches.updateBranch(id, branchName, startDate, branchAddress, phone);
+                if (status) {
+                    out.println(1);
+                } else {
+                    out.println(0);
+                }
+            } else {
+                out.println(0);
+            }
+
         }
     }
 

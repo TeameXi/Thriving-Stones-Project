@@ -23,12 +23,11 @@
 
 
 </style>
-<%        ArrayList<String> errors = (ArrayList<String>) request.getAttribute("errorMsg");
-    if (errors != null) {
-        for (String error : errors) {
-            out.println(error);
-        }
-    }    
+<%  
+    String existingBranch = (String) request.getAttribute("existingBranch");
+    if (existingBranch != null) {
+        out.println("<div class='alert alert-danger col-md-12'>Tutor : <strong>"+existingBranch+"</strong> is already added. Try another branch again. </div>");
+    }
 %> 
 
 <div class="col-md-10">
@@ -36,7 +35,7 @@
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-7">
-            <form id="createBranchForm" method="POST" class="form-horizontal" action="">
+            <form id="createBranchForm" method="POST" class="form-horizontal" action="CreateBranchServlet">
                 <div class="form-group">
                     <label class="col-lg-2 control-label">Branch Name</label>  
                     <div class="col-lg-7 inputGroupContainer">
@@ -62,7 +61,7 @@
                     <div class="col-lg-7 inputGroupContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-phone"></i></span>
-                            <input name="phoneNumber" placeholder="97821212" class="form-control" type="text">
+                            <input name="phoneNumber" placeholder="Number" class="form-control" type="text">
                         </div>
                     </div>
                 </div>
@@ -75,7 +74,7 @@
                                 <span class="input-group-addon">
                                     <i class="glyphicon glyphicon-calendar"></i>
                                 </span>
-                                <input type='text' class="form-control" id="startingDate" />
+                                <input type='text' class="form-control" id="startingDate" name="startingDate"/>
                                 
                             </div>
                        

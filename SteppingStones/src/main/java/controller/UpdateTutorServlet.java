@@ -5,10 +5,9 @@
  */
 package controller;
 
-import entity.Validation;
+
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.ServletException;
@@ -41,32 +40,34 @@ public class UpdateTutorServlet extends HttpServlet {
 
         try (PrintWriter out = response.getWriter()) {
             String tutorID = request.getParameter("tutorID");
-            String name = request.getParameter("name");
-            int age = Integer.parseInt(request.getParameter("age"));
-            String gender = request.getParameter("gender");
-            String email = request.getParameter("email");
-            String phone = (String) request.getParameter("phone");
+            if(tutorID != ""){
+                int id = Integer.parseInt(tutorID);
+                String nric = request.getParameter("nric");
+                System.out.println(nric);
 
-//            ArrayList<String> errors = Validation.validateUpdateTutor(tutorID, name, age, phone, gender, email);
+                int phone = 0;
+                if(request.getParameter("phone")!= ""){
+                    phone = Integer.parseInt(request.getParameter("phone"));
+                }
+                String address = request.getParameter("address");
+                String image = request.getParameter("image");
+                String dob = request.getParameter("dob");
+                String gender = request.getParameter("gender").trim();
+                String email = request.getParameter("email");
 
-//            if (errors.isEmpty()) {
-//                updates.put("name", name);
-//                updates.put("age", age);
-//                updates.put("phone", phone);
-//                updates.put("gender", gender);
-//                updates.put("email", email);
-//            }
-//
-//            if (!updates.isEmpty()) {
-//                TutorDAO tutors = new TutorDAO();
-//                boolean status = tutors.updateTutor(tutorID, updates);
-//                if (status) {
-//                    out.println(1);
-//                } else {
-//                    out.println(0);
-//                }
+                TutorDAO tutors = new TutorDAO();
+                
+                
 
-//            }
+                boolean status = tutors.updateTutor(id,nric,phone,address,image,dob,gender,email);
+                if(status){
+                    out.println(1);
+                }else{
+                    out.println(0);
+                }
+            }else{
+                out.println(0);
+            }
 
         }
     }

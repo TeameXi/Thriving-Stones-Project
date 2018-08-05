@@ -40,7 +40,7 @@
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-7">
-            <form id="createSubjectForm" method="POST" class="form-horizontal" action="">
+            <form id="createSubjectForm" method="POST" class="form-horizontal" action="CreateSubjectServlet">
                 <div class="form-group">
                     <label class="col-lg-2 control-label">Academic Level</label>  
                     <div class="col-lg-7 inputGroupContainer">
@@ -73,7 +73,7 @@
                 
                 <%  
                     BranchDAO branchDao = new BranchDAO();
-                    if(false) {
+                    if(true) {
                         ArrayList<Branch> branch_lists = branchDao.retrieveAllBranches();          
                 %>
                             <div class="form-group">

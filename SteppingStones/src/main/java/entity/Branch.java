@@ -12,9 +12,10 @@ package entity;
 public class Branch {
     private int branchId;
     private String name;
+    private String startDate;
     private String address;
     private int phone;
-    private String country;
+    
     
     
     public Branch(){
@@ -25,6 +26,13 @@ public class Branch {
     public Branch(int branchId,String name){
         this.branchId = branchId;
         this.name = name;
+    }
+    
+    public Branch(String branchName, String startDate, String branchAddress, int phoneNo){
+        this.name = branchName;
+        this.startDate = startDate;
+        this.address = branchAddress;
+        this.phone = phoneNo;
     }
 
     /**
@@ -82,20 +90,18 @@ public class Branch {
     public void setPhone(int phone) {
         this.phone = phone;
     }
-
+    
     /**
-     * @return the country
+     * @return the phone
      */
-    public String getCountry() {
-        return country;
+    public String getStartDate() {
+        return startDate;
     }
 
     /**
-     * @param country the country to set
+     * @param phone the phone to set
      */
-    public void setCountry(String country) {
-        this.country = country;
+    public void setStartDate(String newStartDate) {
+        this.startDate = newStartDate;
     }
-    
-    
 }

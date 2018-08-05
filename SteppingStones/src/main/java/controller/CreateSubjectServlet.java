@@ -5,18 +5,22 @@
  */
 package controller;
 
-import entity.Tutor;
 import java.io.IOException;
+import java.util.ArrayList;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.TutorDAO;
+import model.SubjectDAO;
 
-@WebServlet(name = "CreateTutorServlet", urlPatterns = {"/CreateTutorServlet"})
-public class CreateTutorServlet extends HttpServlet {
+/**
+ *
+ * @author HuiXin
+ */
+@WebServlet(name = "CreateSubjectServlet", urlPatterns = {"/CreateSubjectServlet"})
+public class CreateSubjectServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -30,42 +34,21 @@ public class CreateTutorServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        String level = request.getParameter("level");
+        String subjectName = request.getParameter("subjectName");
+        String branch = request.getParameter("branch");
         
-        String nric = request.getParameter("tutorNric");
-        String name = request.getParameter("tutorName").trim().toLowerCase();
-        int phone = 0;
-        if(request.getParameter("phone") != null && request.getParameter("phone") != ""){
-            phone =  Integer.parseInt(request.getParameter("phone"));
-        }
-        String address = request.getParameter("address");
-        String image_url = request.getParameter("tutorImage");
-        String birth_date = request.getParameter("birthDate");
-        String gender = request.getParameter("gender");
-        String email = request.getParameter("email"); 
-        String password = "";
-        if(request.getParameter("tutorPassword") != null){
-            password = request.getParameter("tutorPassword").trim();
-        }
+        System.out.println(level + " " + subjectName + " " + branch);
         
-        int branch = 0;
-
-        if(request.getParameter("branch") != null && request.getParameter("branch") != ""){
-            branch = Integer.parseInt(request.getParameter("branch"));
-        }
-
-        TutorDAO tutordao = new TutorDAO();
-        Tutor existingTutor = tutordao.retrieveSpecificTutor(name);
-        if(existingTutor != null){
-            request.setAttribute("existingTutor", existingTutor.getName());
-            RequestDispatcher dispatcher = request.getRequestDispatcher("CreateTutor.jsp");
-            dispatcher.forward(request, response);
+        SubjectDAO subjects = new SubjectDAO();
+        boolean subjectStatus = subjects.addSubject(level,subjectName,branch);
+        
+        if(subjectStatus) {
+            response.sendRedirect("CreateSubject.jsp");
         }else{
-            Tutor tempTutor = new Tutor(nric,name,phone,address,image_url,birth_date,gender,email,password,branch);
-            boolean status = tutordao.addTutor(tempTutor);
-            request.setAttribute("creation_status",""+status);
-            RequestDispatcher dispatcher = request.getRequestDispatcher("DisplayTutors.jsp");
-            dispatcher.forward(request, response);
-            
+            request.setAttribute("errorMsg", new ArrayList<>().add("Error creating subject!"));
+            RequestDispatcher view = request.getRequestDispatcher("CreateSubject.jsp");
+            view.forward(request,response);
         }
     }
 
