@@ -5,6 +5,8 @@
  */
 package controller;
 
+import entity.Branch;
+import entity.Level;
 import entity.Subject;
 import entity.Tutor;
 import java.io.IOException;
@@ -16,6 +18,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.BranchDAO;
+import model.LevelDAO;
 import model.SubjectDAO;
 import model.TutorDAO;
 
@@ -38,10 +42,21 @@ public class RetrieveScheduleCreationDetailsServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        
+        //Retrieve all branch
+        BranchDAO branchDAO = new BranchDAO();
+        List<Branch> branchList = branchDAO.retrieveBranches();
+        
+        //Retrieve all level
+        LevelDAO levelDAO = new LevelDAO();
+        List<Level> levelList = levelDAO.retrieveAllLevelLists();
+        
         //retrive all subject
         SubjectDAO subjectDAO = new SubjectDAO();
-        List<Subject> subjectList = subjectDAO.listAllSubjects();
+        List<Subject> subjectList = subjectDAO.retrieveAllSubjectsWithId();
         
+        request.setAttribute("BranchList", branchList);
+        request.setAttribute("LevelList", levelList);
         request.setAttribute("SubjectList", subjectList);
         
         RequestDispatcher view=request.getRequestDispatcher("ScheduleCreation.jsp");
