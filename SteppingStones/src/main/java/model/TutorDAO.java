@@ -93,6 +93,32 @@ public class TutorDAO {
         }
         return false;
     }
+    
+    public boolean updateTutor(int tutorID,String nric,int phone,String address,String image,String dob,String gender,String email) {
+        String update_Tutor = "UPDATE tutor SET tutor_nric=?,phone=?,address=?,image_url=?,birth_date=?,gender =? and email =? WHERE tutor_id =? ";
+        try (Connection conn = ConnectionManager.getConnection();
+                PreparedStatement preparedStatement = conn.prepareStatement(update_Tutor)) {
+            preparedStatement.setString(1,nric);
+            preparedStatement.setInt(2, phone);
+            preparedStatement.setString(3,address);
+            preparedStatement.setString(4,image);
+            preparedStatement.setString(5,dob);
+            preparedStatement.setString(6,gender);
+            preparedStatement.setString(7, email);
+            preparedStatement.setInt(8,tutorID);
+            
+            System.out.println(update_Tutor);
+            System.out.println(gender);
+            int num = preparedStatement.executeUpdate();
+            if (num != 0) {
+                return true;
+            }
+
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return false;
+    }
 
     public ArrayList<String> uploadTutor(ArrayList<String> tutorLists, ArrayList<String> tutorNameLists) {
         ArrayList<String> duplicatedTutors = new ArrayList<>();

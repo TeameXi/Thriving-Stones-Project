@@ -34,7 +34,7 @@ public class SelectClassServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-
+        /*
         String classID = request.getParameter("class");
 
         ArrayList<Student> stuList = StudentClassDAO.getStudentsByClassID(classID);
@@ -50,6 +50,7 @@ public class SelectClassServlet extends HttpServlet {
             RequestDispatcher view = request.getRequestDispatcher("SelectClass.jsp");
             view.forward(request, response);
         }
+        */
 
     }
 

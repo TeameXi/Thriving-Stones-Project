@@ -45,7 +45,7 @@ public class ScheduleCreationServlet extends HttpServlet {
         String[] arr = request.getParameterValues("p");
         String startDate = request.getParameter("startDate");
         System.out.println(arr);
-
+        /*
         if (startDate == null) {
             request.setAttribute("Status", "Start Date is required");
 
@@ -105,6 +105,7 @@ public class ScheduleCreationServlet extends HttpServlet {
             RequestDispatcher view = request.getRequestDispatcher("ScheduleCreation.jsp");
             view.forward(request, response);
         }
+        */
 
     }
 

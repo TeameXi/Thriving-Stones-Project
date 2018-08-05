@@ -31,7 +31,7 @@ public class CreateTutorServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         
-        String nric = request.getParameter("nric");
+        String nric = request.getParameter("tutorNric");
         String name = request.getParameter("tutorName").trim().toLowerCase();
         int phone = 0;
         if(request.getParameter("phone") != null && request.getParameter("phone") != ""){
