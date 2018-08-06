@@ -6,29 +6,129 @@
 package model;
 
 import entity.Class;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import connection.ConnectionManager;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.json.JSONObject;
 
 /**
  *
  * @author DEYU
  */
 public class ClassDAO {
+    
+    public static ArrayList<Class> getClassesToEnrolled(int level_id, int student_id){
+        String level = LevelDAO.retrieveLevel(level_id);
+        ArrayList<Class> classList = new ArrayList();
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement("select * from class where branch_id = ? and level_id = ? and end_date > curdate() and "
+                    + "class_id not in (select class_id from class_student_rel where student_id = ?) order by subject_id");
+            stmt.setInt(1, 1); // replace with branch_id
+            stmt.setInt(2, level_id);
+            stmt.setInt(3, student_id);
+            ResultSet rs = stmt.executeQuery();
 
+            while(rs.next()){
+                int classID = rs.getInt("class_id");
+                int subjectID = rs.getInt("subject_id");
+                String classTime = rs.getString("timing");
+                String classDay = rs.getString("class_day");
+                String startDate = rs.getString("start_date");
+                String endDate = rs.getString("end_date");
+                int mthlyFees = rs.getInt("fees");
+                String subject = SubjectDAO.retrieveSubject(subjectID);
+                Class cls = new Class(classID, level, subject, classTime, classDay, mthlyFees, startDate, endDate);
+                classList.add(cls);
+            }
+        }catch(SQLException e){
+            System.out.print(e.getMessage());
+        }
+        return classList;
+    }
+    
+    public static Class getClassByID(int classID){
+        Class cls = null;
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement("select * from class where class_id = ?");
+            stmt.setInt(1, classID);
+            ResultSet rs = stmt.executeQuery();
+
+            while(rs.next()){
+                int levelID = rs.getInt("level_id");
+                int subjectID = rs.getInt("subject_id");
+                String classTime = rs.getString("timing");
+                String classDay = rs.getString("class_day");
+                String startDate = rs.getString("start_date");
+                String endDate = rs.getString("end_date");
+                int mthlyFees = rs.getInt("fees");
+                String subject = SubjectDAO.retrieveSubject(subjectID);
+                String level = LevelDAO.retrieveLevel(levelID);
+                cls = new Class(classID, level, subject, classTime, classDay, mthlyFees, startDate, endDate);
+            }
+        }catch(SQLException e){
+            System.out.print(e.getMessage());
+        }       
+        return cls;
+    }
+    
+    public static ArrayList<Class> getStudentEnrolledClass(int student_id){
+        ArrayList<Class> classList = new ArrayList();
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement("select * from class c, class_student_rel cs where c.class_id = cs.class_id and end_date > curdate() and student_id = ?");
+            stmt.setInt(1, student_id);
+            ResultSet rs = stmt.executeQuery();
+
+            while(rs.next()){
+                int classID = rs.getInt("class_id");
+                int subjectID = rs.getInt("subject_id");
+                int levelID = rs.getInt("level_id");
+                String classTime = rs.getString("timing");
+                String classDay = rs.getString("class_day");
+                String startDate = rs.getString("start_date");
+                String endDate = rs.getString("end_date");
+                int mthlyFees = rs.getInt("fees");
+                String subject = SubjectDAO.retrieveSubject(subjectID);
+                String level = LevelDAO.retrieveLevel(levelID);
+                Class cls = new Class(classID, level, subject, classTime, classDay, mthlyFees, startDate, endDate);
+                classList.add(cls);
+            }
+        }catch(SQLException e){
+            System.out.print(e.getMessage());
+        }
+        return classList;
+    }
+    
+    public static ArrayList<Class> listAllClasses(){
+        ArrayList<Class> classList = new ArrayList();
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement("select * from class where branch_id = ? and end_date > curdate()");
+            stmt.setInt(1, 1); // replace with branch_id
+            ResultSet rs = stmt.executeQuery();
+
+            while(rs.next()){
+                int classID = rs.getInt("class_id");
+                int subjectID = rs.getInt("subject_id");
+                int levelID = rs.getInt("level_id");
+                String classTime = rs.getString("timing");
+                String classDay = rs.getString("class_day");
+                String startDate = rs.getString("start_date");
+                String endDate = rs.getString("end_date");
+                int mthlyFees = rs.getInt("fees");
+                String subject = SubjectDAO.retrieveSubject(subjectID);
+                String level = LevelDAO.retrieveLevel(levelID);
+                Class cls = new Class(classID, level, subject, classTime, classDay, mthlyFees, startDate, endDate);
+                classList.add(cls);
+            }
+        }catch(SQLException e){
+            System.out.print(e.getMessage());
+        }       
+        return classList;
+    }
+    
+    /*
     public static void saveClasses(String level, String subject, String classTime, String classDay, double mthlyFees, String startDate){
         Class cls = new Class(level, subject, classTime, classDay, mthlyFees, startDate);
         String json = new Gson().toJson(cls);
@@ -41,59 +141,7 @@ public class ClassDAO {
         }
     }
     
-    public static Map<String, Class> getClassByLevel(String level){
-        Map<String, Class> classes = new HashMap<>();
-        try{
-            String url = "https://team-exi-thriving-stones.firebaseio.com/classes.json";
-            JSONObject result = FirebaseRESTHTTPRequest.get(url);
-            if (result != null) {
-                Set<String> keys = result.keySet();
-                for(String key: keys){
-                    Class cls = new Gson().fromJson(result.getJSONObject(key).toString(), Class.class);
-                    if(cls.getLevel().equals(level)){
-                        classes.put(key, cls);
-                    }
-                } 
-            } 
-        }catch(Exception e){
-            System.out.println("Retrieve Class Error");
-        } 
-        return classes;
-    }
     
-    public static Class getClassByID(String classID){
-        Class cls = null;
-        try{
-            String url = "https://team-exi-thriving-stones.firebaseio.com/classes/" + classID + ".json";
-            JSONObject result = FirebaseRESTHTTPRequest.get(url);
-            if (result != null) {
-                cls = new Gson().fromJson(result.toString(), Class.class);
-                cls.setClassID(classID);
-            }
-        }catch(Exception e){
-            System.out.println("Retrieve Class Error");
-        } 
-        return cls;
-    }
-    
-    public static ArrayList<Class> listAllClasses(){
-        ArrayList<Class> classes = new ArrayList();
-        try{
-            String url = "https://team-exi-thriving-stones.firebaseio.com/classes/.json";
-            JSONObject result = FirebaseRESTHTTPRequest.get(url);       
-            if (result != null) {
-                Set<String> keys = result.keySet();
-                for(String key: keys){
-                    Class cls = new Gson().fromJson(result.getJSONObject(key).toString(), Class.class);
-                    cls.setClassID(key);
-                    classes.add(cls);
-                } 
-            } 
-        }catch(Exception e){
-            System.out.println("List all classes Error");
-        } 
-        return classes;
-    }
     
     public static ArrayList<String> getAllClassesNames() {
         ArrayList<String> classes = new ArrayList<>();
@@ -133,7 +181,36 @@ public class ClassDAO {
         }
         return null;
     }
-    
+    */
+    public int insertClass(int level, int subject, int term, int hasReminderForFees, int branch, String classTime, String classDay, double mthlyFees, String startDate, String endDate) {
+        try (Connection conn = ConnectionManager.getConnection();) {
+            conn.setAutoCommit(false);
+            String sql = "INSERT into CLASS (level_id, subject_id, term, fees, has_reminder_for_fees, timing, class_day, start_date, end_date, branch_id)"
+                + "VALUES (?,?,?,?,?,?,?,?,?,?)";
+            PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            stmt.setInt(1, level);
+            stmt.setInt(2, subject);
+            stmt.setInt(3, term);
+            stmt.setDouble(4, mthlyFees);
+            stmt.setInt(5, hasReminderForFees);
+            stmt.setString(6, classTime);
+            stmt.setString(7, classDay);
+            stmt.setString(8, startDate);
+            stmt.setString(9, endDate);
+            stmt.setInt(10, branch);
+            stmt.executeUpdate(); 
+            conn.commit();
+            ResultSet rs = stmt.getGeneratedKeys();
+            int generatedKey = 0;
+            if (rs.next()) {
+                generatedKey = rs.getInt(1);
+            }
+            return generatedKey;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return 0;
+        }
+    }
     public boolean updateClass(String level, String subject, String timing) {
         String sql = "update class set timing = ? where level_id = ? and subject_id = ?";
         System.out.println(sql);
@@ -151,4 +228,6 @@ public class ClassDAO {
         }
         return true;
     }
+    
 }
+    

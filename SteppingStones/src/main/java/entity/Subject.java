@@ -10,17 +10,23 @@ package entity;
  * @author Riana
  */
 public class Subject {
-    private String subjectId;
+    private int subjectId;
     private String subjectName;
+
+    public Subject(int subjectId, String subjectName) {
+        this.subjectId = subjectId;
+        this.subjectName = subjectName;
+    }
+    
     
     public Subject(String subjectName){
         this.subjectName = subjectName;
     }
-    public String getSubjectId() {
+    public int getSubjectId() {
         return subjectId;
     }
 
-    public void setSubjectId(String subjectId) {
+    public void setSubjectId(int subjectId) {
         this.subjectId = subjectId;
     }
 

@@ -6,98 +6,207 @@
 package entity;
 
 public class Tutor {
-
-    private String tutorID;
+    private int tutorId;
     private String nric;
     private String name;
-    private int age;
-    private String birthday;
+    private int phone;
     private String address;
     private String image_url;
-    private int branch_id;
-    private String updated;
-    private String phone;
+    private String birth_date;
     private String gender;
     private String email;
     private String password;
-    
-    public Tutor(){
+    private int branch_id;
+
+    public Tutor() {
     }
     
-    public Tutor(String id, String ic, String name, String phone, String address, String image, String birthday, String gender, String email, String pwd, int branch, String updated){
-        this.tutorID = id;
-        this.nric = ic;
+    
+    public Tutor(String nric,String name,int phone,String address,String image_url,String birth_date,String gender,String email,String password,int branch_id) {
+        this.nric = nric;
         this.name = name;
         this.phone = phone;
         this.address = address;
-        this.image_url = image;
-        this.birthday = birthday;
-        this.gender = gender;
-        this.email = email;
-        this.branch_id = branch;
-        this.updated = updated;
-    }
-
-    public Tutor(String tutorID, String name, int age, String phone, String gender, String email, String password) {
-        this.tutorID = tutorID;
-        this.name = name;
-        this.age = age;
-        this.phone = phone;
+        this.image_url = image_url;
+        this.birth_date = birth_date;
         this.gender = gender;
         this.email = email;
         this.password = password;
+        this.branch_id = branch_id;
     }
     
-    public Tutor(String name, int age, String phone, String gender, String email, String password) {
+    public Tutor(int tutorId,String nric,String name,int phone,String address,String image_url,String birth_date,String gender,String email,String password,int branch_id) {
+        this.tutorId = tutorId;
+        this.nric = nric;
         this.name = name;
-        this.age = age;
         this.phone = phone;
+        this.address = address;
+        this.image_url = image_url;
+        this.birth_date = birth_date;
         this.gender = gender;
         this.email = email;
         this.password = password;
+        this.branch_id = branch_id;
     }
 
-    public String getTutorID() {
-        return this.tutorID;
+    /**
+     * @return the nric
+     */
+    public String getNric() {
+        return nric;
     }
 
+    /**
+     * @param nric the nric to set
+     */
+    public void setNric(String nric) {
+        this.nric = nric;
+    }
+
+    /**
+     * @return the name
+     */
     public String getName() {
-        return this.name;
-    }
-    
-    public int getAge(){
-        return this.age;
+        return name;
     }
 
-    public String getPhone() {
-        return this.phone;
+    /**
+     * @param name the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setPhone(String newNumber) {
-        this.phone = newNumber;
+    /**
+     * @return the phone
+     */
+    public int getPhone() {
+        return phone;
     }
 
+    /**
+     * @param phone the phone to set
+     */
+    public void setPhone(int phone) {
+        this.phone = phone;
+    }
+
+    /**
+     * @return the address
+     */
+    public String getAddress() {
+        return address;
+    }
+
+    /**
+     * @param address the address to set
+     */
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    /**
+     * @return the image_url
+     */
+    public String getImage_url() {
+        return image_url;
+    }
+
+    /**
+     * @param image_url the image_url to set
+     */
+    public void setImage_url(String image_url) {
+        this.image_url = image_url;
+    }
+
+    /**
+     * @return the birth_date
+     */
+    public String getBirth_date() {
+        return birth_date;
+    }
+
+    /**
+     * @param birth_date the birth_date to set
+     */
+    public void setBirth_date(String birth_date) {
+        this.birth_date = birth_date;
+    }
+
+    /**
+     * @return the gender
+     */
     public String getGender() {
-        return this.gender;
+        return gender;
     }
 
+    /**
+     * @param gender the gender to set
+     */
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    /**
+     * @return the email
+     */
     public String getEmail() {
-        return this.email;
+        return email;
     }
 
-    public void setEmail(String newEmail) {
-        this.email = newEmail;
+    /**
+     * @param email the email to set
+     */
+    public void setEmail(String email) {
+        this.email = email;
     }
 
+    /**
+     * @return the password
+     */
     public String getPassword() {
-        return this.password;
+        return password;
     }
 
-    public void setPassword(String newPassword) {
-        this.password = newPassword;
+    /**
+     * @param password the password to set
+     */
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    /**
+     * @return the branch_id
+     */
+    public int getBranch_id() {
+        return branch_id;
+    }
+
+    /**
+     * @param branch_id the branch_id to set
+     */
+    public void setBranch_id(int branch_id) {
+        this.branch_id = branch_id;
+    }
+
+    /**
+     * @return the tutorId
+     */
+    public int getTutorId() {
+        return tutorId;
+    }
+
+    /**
+     * @param tutorId the tutorId to set
+     */
+    public void setTutorId(int tutorId) {
+        this.tutorId = tutorId;
     }
     
-    public void setID(String id) {
-        this.tutorID = id;
+    
+    @Override
+    public String toString(){
+        return "NRIC : "+this.nric+", Name: "+this.name+",Address : "+this.address+",DOB :"+this.birth_date+", URL : "+this.image_url+", Email : "+this.email+", Pwd: "+this.password+", Branch : "+this.branch_id;
     }
+
 }

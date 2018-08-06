@@ -5,14 +5,139 @@
  */
 package entity;
 
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  *
  * @author DEYU
  */
 public class Student {
+    private int studentID;
+    private String studentNRIC;
+    private String name;
+    private String BOD;
+    private final String gender;
+    private String level;
+    private int branch_id;
+    private int phone;
+    private String address;
+    private String email;
+    private String password;
+    private double reqAmt;
+    private double outstandingAmt;
+                  
+    public Student(int studentID, String studentNRIC, String name, String BOD, String gender, String level, int branch_id, int phone, String address, String email, String password, double reqAmt, double outstandingAmt){
+        this.studentID = studentID;
+        this.studentNRIC = studentNRIC;
+        this.name = name;
+        this.BOD = BOD;
+        this.gender = gender;
+        this.level = level;
+        this.branch_id = branch_id;
+        this.address = address;
+        this.phone = phone;
+        this.email = email;
+        this.password = password;
+        this.reqAmt = reqAmt;
+        this.outstandingAmt = outstandingAmt;
+    }
+    
+    public int getStudentID() {
+        return studentID;
+    }
+    
+    public void setStudentID(int newStudentID){
+        this.studentID = newStudentID;
+    }
+    
+    public String getStudentNRIC() {
+        return studentNRIC;
+    }
+    
+    public void setStudentNRIC(String newStudentNRIC){
+        this.studentNRIC = newStudentNRIC;
+    }
+    
+    public String getName(){
+        return name;
+    }
+    
+    public void setName(String newStudentName){
+        this.name = newStudentName;
+    }
+    
+    public String getBOD(){
+        return BOD;
+    }
+    
+    public void setBOD(String newBOD){
+        this.BOD = newBOD;
+    }
+    
+    public String getGender(){
+        return gender;
+    }
+    
+    public String getLevel(){
+        return level;
+    }
+    
+    public void setLevel(String newLevel){
+        this.level = newLevel;
+    }
+    
+    public int getBranchlID(){
+        return branch_id;
+    }
+
+    public String getAddress(){
+        return address;
+    }
+    
+    public void setAddress(String newAddress){
+        this.address = newAddress;
+    }
+    
+    public int getPhone(){
+        return phone;
+    }
+    
+    public void setPhone(int newPhone){
+        this.phone = newPhone;
+    }
+    
+    public String getEmail(){
+        return email;
+    }
+    
+    public void setEmail(String newEmail){
+        this.email = newEmail;
+    }
+    
+    public String getPassword(){
+        return password;
+    }
+    
+    public void setPassword(String newPassword){
+        this.password = newPassword;
+    }
+    
+    public double getReqAmt(){
+        return reqAmt;
+    }
+    
+    public void setReqAmt(double newReqAmt){
+        this.reqAmt = newReqAmt;
+    }
+    
+    public double getOutstandingAmt(){
+        return outstandingAmt;
+    }
+    
+    public void setOutstandingAmt(double newOutstandingAmt){
+        this.outstandingAmt = newOutstandingAmt;
+    }
+    
+    /*
     private String studentID;
     private String name;
     private int age;
@@ -124,5 +249,5 @@ public class Student {
     
     public void setStudentID(String id) {
         this.studentID = id;
-    }
+    }*/
 }

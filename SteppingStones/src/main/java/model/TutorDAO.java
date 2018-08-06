@@ -1,146 +1,228 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package model;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import connection.ConnectionManager;
 import entity.Tutor;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class TutorDAO {
 
-    public void addTutor(String tutorID, Tutor tutor) {
-        Gson gson = new GsonBuilder().create();
+    public Tutor retrieveSpecificTutor(String tutorName) {
+        String select_tutor = "SELECT * FROM tutor WHERE tutor_fullname = ?";
+        try (Connection conn = ConnectionManager.getConnection();
+                PreparedStatement preparedStatement = conn.prepareStatement(select_tutor)) {
+            preparedStatement.setString(1, tutorName);
 
-        try {
-            String urlString = "https://team-exi-thriving-stones.firebaseio.com/tutors/" + tutorID + ".json";
-            String userData = gson.toJson(tutor);
-            
-            FirebaseRESTHTTPRequest.put(urlString, userData);
-            
-        } catch (Exception ex) {
-            Logger.getLogger(TutorDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                int id = rs.getInt(1);
+                String nric = rs.getString(2);
+                String fullname = rs.getString(3);
+                int phone = rs.getInt(4);
+                String address = rs.getString(5);
+                String image_url = rs.getString(6);
+                String birth_date = rs.getString(7);
+                String gender = rs.getString(8);
+                String email = rs.getString(9);
+                String password = rs.getString(10);
+                int branch_id = rs.getInt(11);
+                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email, password, branch_id);
+                return t;
+            }
 
-    public Tutor retrieveSpecificTutor(String id) {
-        Gson gson = new GsonBuilder().create();
-
-        try {
-            String urlString = "https://team-exi-thriving-stones.firebaseio.com/tutors/" + id + ".json";
-            URL url = new URL(urlString);
-            System.out.println(urlString);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(
-                            connection.getInputStream()));
-            String jsonString = reader.readLine();
-            System.out.println(jsonString);
-            Tutor tutor = gson.fromJson(jsonString, Tutor.class);
-            tutor.setID(id);
-            reader.close();
-            System.out.println(connection.getResponseCode());
-            return tutor;
-        } catch (Exception ex) {
-            Logger.getLogger(TutorDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
         }
         return null;
     }
 
-    public ArrayList<Tutor> retrieveAllTutors() {
-        Gson gson = new GsonBuilder().create();
-        ArrayList<Tutor> tutors = new ArrayList<>();
+    public Tutor retrieveSpecificTutorById(int tutorId) {
+        String select_tutor = "SELECT * FROM tutor WHERE tutor_id = ?";
+        try (Connection conn = ConnectionManager.getConnection();
+                PreparedStatement preparedStatement = conn.prepareStatement(select_tutor)) {
+            preparedStatement.setInt(1, tutorId);
 
-        try {
-            URL userURL = new URL("https://team-exi-thriving-stones.firebaseio.com/tutors.json");
-            URLConnection connection = userURL.openConnection();
-            BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(
-                            connection.getInputStream()));
-            String jsonString = reader.readLine();
-            JsonElement jelement = new JsonParser().parse(jsonString);
-            JsonObject jobject = jelement.getAsJsonObject();
-            Set entries = jobject.keySet();
-            Iterator iter = entries.iterator();
-            while (iter.hasNext()) {
-                String user = (String) iter.next();
-                JsonElement userDataString = jobject.get(user);
-                Tutor tutor = gson.fromJson(userDataString, Tutor.class);
-                tutor.setID(user);
-                tutors.add(tutor);
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                int id = rs.getInt(1);
+                String nric = rs.getString(2);
+                String fullname = rs.getString(3);
+                int phone = rs.getInt(4);
+                String address = rs.getString(5);
+                String image_url = rs.getString(6);
+                String birth_date = rs.getString(7);
+                String gender = rs.getString(8);
+                String email = rs.getString(9);
+                String password = rs.getString(10);
+                int branch_id = rs.getInt(11);
+                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email, password, branch_id);
+                return t;
             }
-            reader.close();
-        } catch (Exception ex) {
-            Logger.getLogger(TutorDAO.class.getName()).log(Level.SEVERE, null, ex);
+
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
         }
-        return tutors;
+        return null;
     }
 
-    public boolean updateTutor(String tutorID, Map<String, Object> updates) {
-        Gson gson = new GsonBuilder().create();
+    public boolean addTutor(Tutor tutor) {
+        String insert_Tutor = "INSERT INTO tutor(tutor_nric,tutor_fullname,phone,address,image_url,birth_date,gender,email,password,branch_id) VALUES(?,?,?,?,?,?,?,?,?,?)";
+        try (Connection conn = ConnectionManager.getConnection();
+                PreparedStatement preparedStatement = conn.prepareStatement(insert_Tutor)) {
+            preparedStatement.setString(1, tutor.getNric());
+            preparedStatement.setString(2, tutor.getName());
+            preparedStatement.setInt(3, tutor.getPhone());
+            preparedStatement.setString(4, tutor.getAddress());
+            preparedStatement.setString(5, tutor.getImage_url());
+            preparedStatement.setString(6, tutor.getBirth_date());
+            preparedStatement.setString(7, tutor.getGender());
+            preparedStatement.setString(8, tutor.getEmail());
+            preparedStatement.setString(9, tutor.getPassword());
+            preparedStatement.setInt(10, tutor.getBranch_id());
 
-        try {
-            String urlString = "https://team-exi-thriving-stones.firebaseio.com/tutors/" + tutorID + "/.json";
-            String userData = gson.toJson(updates);
-            
-            FirebaseRESTHTTPRequest.patch(urlString, userData);
-            return true;
-        } catch (Exception ex) {
-            Logger.getLogger(TutorDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return false;
-    }
+            int num = preparedStatement.executeUpdate();
+            if (num != 0) {
+                return true;
+            }
 
-    public boolean removeTutor(String tutorID) {
-        try {
-            String urlString = "https://team-exi-thriving-stones.firebaseio.com/tutors/" + tutorID + ".json";
-            FirebaseRESTHTTPRequest.delete(urlString);
-            return true;
-        } catch (Exception ex) {
-            Logger.getLogger(TutorDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
         }
         return false;
     }
     
-    public ArrayList<String> retrieveTutorList() {
-        ArrayList<String> tutors = new ArrayList<>();
-        String sql = "select tutor_fullname from tutor order by tutor_id";
-        System.out.println(sql);
-        try (Connection conn = ConnectionManager.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement(sql);
+    public boolean updateTutor(int tutorID,String nric,int phone,String address,String image,String dob,String gender,String email) {
+        String update_Tutor = "UPDATE tutor SET tutor_nric=?,phone=?,address=?,image_url=?,birth_date=?,gender=?,email=? WHERE tutor_id =? ";
+        try (Connection conn = ConnectionManager.getConnection();
+                PreparedStatement preparedStatement = conn.prepareStatement(update_Tutor)) {
+            preparedStatement.setString(1,nric);
+            preparedStatement.setInt(2, phone);
+            preparedStatement.setString(3,address);
+            preparedStatement.setString(4,image);
+            preparedStatement.setString(5,dob);
+            preparedStatement.setString(6,gender);
+            preparedStatement.setString(7, email);
+            preparedStatement.setInt(8,tutorID);
             
-            ResultSet rs = stmt.executeQuery();
-            
-            while(rs.next()){
-                System.out.println(rs.getString(1));
-                tutors.add(rs.getString(1));
+            int num = preparedStatement.executeUpdate();
+            if (num != 0) {
+                return true;
             }
-        } catch (Exception e) {
-            System.out.println(e);
+
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
         }
-        
-        return tutors;
+        return false;
     }
+
+    public ArrayList<String> uploadTutor(ArrayList<String> tutorLists, ArrayList<String> tutorNameLists) {
+        ArrayList<String> duplicatedTutors = new ArrayList<>();
+        if (tutorNameLists.size() > 0) {
+            String nameList = "'" + String.join("','", tutorNameLists) + "'";
+            String select_tutor = "SELECT tutor_id,tutor_fullname FROM tutor WHERE tutor_fullname IN (" + nameList + ")";
+
+            ArrayList<String> existingTutors = new ArrayList();
+            try (Connection conn = ConnectionManager.getConnection();
+                    PreparedStatement preparedStatement = conn.prepareStatement(select_tutor)) {
+
+                ResultSet rs = preparedStatement.executeQuery();
+                while (rs.next()) {
+                    String tutor_fullname = rs.getString(2);
+                    existingTutors.add(tutor_fullname);
+                }
+                
+                System.out.println(existingTutors.size());
+
+                String tutorList = String.join(",", tutorLists);
+                String insert_tutor = "INSERT IGNORE INTO tutor(tutor_nric,tutor_fullname,phone,address,image_url,birth_date,gender,email,password,branch_id) VALUES " + tutorList;
+                PreparedStatement insertStatement = conn.prepareStatement(insert_tutor);
+                int num = insertStatement.executeUpdate();
+                duplicatedTutors = existingTutors;
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+
+        return duplicatedTutors;
+    }
+
+    public ArrayList<Tutor> retrieveAllTutorsByBranch(int branchId) {
+        ArrayList<Tutor> tutorLists = new ArrayList<>();
+        String select_tutor = "SELECT * FROM tutor WHERE branch_id = ?";
+        try (Connection conn = ConnectionManager.getConnection();
+                PreparedStatement preparedStatement = conn.prepareStatement(select_tutor)) {
+            preparedStatement.setInt(1, branchId);
+
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt(1);
+                String nric = rs.getString(2);
+                String fullname = rs.getString(3);
+                int phone = rs.getInt(4);
+                String address = rs.getString(5);
+                String image_url = rs.getString(6);
+                String birth_date = rs.getString(7);
+                String gender = rs.getString(8);
+                String email = rs.getString(9);
+                String password = rs.getString(10);
+                int branch_id = rs.getInt(11);
+                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email, password, branch_id);
+                tutorLists.add(t);
+            }
+
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return tutorLists;
+    }
+
+    public ArrayList<Tutor> retrieveAllTutors() {
+        ArrayList<Tutor> tutorLists = new ArrayList<>();
+        String select_tutor = "SELECT * FROM tutor";
+        try (Connection conn = ConnectionManager.getConnection();
+                PreparedStatement preparedStatement = conn.prepareStatement(select_tutor)) {
+
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt(1);
+                String nric = rs.getString(2);
+                String fullname = rs.getString(3);
+                int phone = rs.getInt(4);
+                String address = rs.getString(5);
+                String image_url = rs.getString(6);
+                String birth_date = rs.getString(7);
+                String gender = rs.getString(8);
+                String email = rs.getString(9);
+                String password = rs.getString(10);
+                int branch_id = rs.getInt(11);
+                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email, password, branch_id);
+                tutorLists.add(t);
+            }
+
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return tutorLists;
+    }
+
+    public boolean deleteTutor(int tutorId) {
+        String delete_sql = "DELETE FROM tutor WHERE tutor_id = ?";
+        try (Connection conn = ConnectionManager.getConnection();
+                PreparedStatement preparedStatement = conn.prepareStatement(delete_sql)) {
+            preparedStatement.setInt(1, tutorId);
+            int num = preparedStatement.executeUpdate();
+            if(num != 0){
+                return true;
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return false;
+    }
+    
     
     public Tutor retrieveTutorByEmail(String email){
         Tutor tutor = null;
@@ -153,10 +235,18 @@ public class TutorDAO {
             ResultSet rs = stmt.executeQuery();
             
             while(rs.next()){
-                tutor = new Tutor(rs.getString(1),rs.getString(2),rs.getString(3)
-                        ,rs.getString(4),rs.getString(5),rs.getString(6)
-                        ,rs.getString(7),rs.getString(8),rs.getString(9),rs.getString(10)
-                        ,rs.getInt(11),rs.getString(12));
+                int id = rs.getInt(1);
+                String nric = rs.getString(2);
+                String fullname = rs.getString(3);
+                int phone = rs.getInt(4);
+                String address = rs.getString(5);
+                String image_url = rs.getString(6);
+                String birth_date = rs.getString(7);
+                String gender = rs.getString(8);
+                String email1 = rs.getString(9);
+                String password = rs.getString(10);
+                int branch_id = rs.getInt(11);
+                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email1, password, branch_id);
             }
         } catch (Exception e) {
             System.out.println(e);
@@ -164,4 +254,5 @@ public class TutorDAO {
         
         return tutor;
     }
+
 }

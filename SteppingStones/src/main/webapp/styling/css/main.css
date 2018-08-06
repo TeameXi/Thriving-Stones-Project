@@ -1196,3 +1196,9 @@ footer .copy{
     margin-top: 20px;
 }
 
+.tab_active{
+    padding:6px;
+    border-bottom:4px solid #ca5455;
+}
+    
+

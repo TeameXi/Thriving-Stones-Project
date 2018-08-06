@@ -5,17 +5,19 @@
  */
 package controller;
 
+import entity.Admin;
 import java.io.IOException;
+import java.io.PrintWriter;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.StudentGradeDAO;
+import model.AdminDAO;
 
-@WebServlet(name = "CreateGradeServlet", urlPatterns = {"/CreateGradeServlet"})
-public class CreateGradeServlet extends HttpServlet {
+@WebServlet(name = "CreateAdminServlet", urlPatterns = {"/CreateAdminServlet"})
+public class CreateAdminServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -29,31 +31,26 @@ public class CreateGradeServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        
-        String student = request.getParameter("student");
-        String location = request.getParameter("location");
-        String subject = request.getParameter("subject");
-        String examination = request.getParameter("examination");
-        String grade = request.getParameter("grade");
-        System.out.println("creategrade.kava");
-        System.out.println(student);
-        System.out.println(location);
-        System.out.println(subject);
-        System.out.println(examination);
-        System.out.println(grade);
-        
-        boolean updateStatus = StudentGradeDAO.createGrade(student, location, subject, examination, grade);
-        
-        if (updateStatus){
-            request.setAttribute("status", "Grades updated");
-            RequestDispatcher view = request.getRequestDispatcher("SelectClass.jsp");
-            view.forward(request, response);
-        } else {
-            request.setAttribute("status", "Grades failed to update");
-            RequestDispatcher view = request.getRequestDispatcher("SelectClass.jsp");
-            view.forward(request, response);
+        try (PrintWriter out = response.getWriter()) {
+            String admin_username = request.getParameter("admin_name");
+            String password = request.getParameter("adminPassword");
+            int branch_id = Integer.parseInt(request.getParameter("branch"));
+
+            AdminDAO adminDao = new AdminDAO();
+            Admin existingAdmin = adminDao.retrieveAdminByName(admin_username);
+            if (existingAdmin != null) {
+                request.setAttribute("existingBranch", existingAdmin.getAdmin_username());
+                RequestDispatcher dispatcher = request.getRequestDispatcher("CreateAdmin.jsp");
+                dispatcher.forward(request, response);
+            } else {
+                Admin tempAdmin = new Admin(admin_username, password, branch_id);
+                boolean status = adminDao.addAdmin(tempAdmin);
+                request.setAttribute("creation_status", "" + status);
+                RequestDispatcher dispatcher = request.getRequestDispatcher("DisplayAdmins.jsp");
+                dispatcher.forward(request, response);
+            }
+
         }
-        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

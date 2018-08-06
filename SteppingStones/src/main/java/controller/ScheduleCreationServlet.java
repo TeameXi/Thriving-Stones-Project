@@ -5,18 +5,28 @@
  */
 package controller;
 
+import entity.Branch;
+import entity.Level;
 import entity.Subject;
 import entity.Tutor;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.BranchDAO;
 import model.ClassDAO;
+import model.LevelDAO;
 import model.SubjectDAO;
 import model.TutorDAO;
 
@@ -39,75 +49,162 @@ public class ScheduleCreationServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String[] days = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
-        String[] time = {"08:00", "09:00", "10:00", "11:00", "12:00",
-            "13:00", "14:00", "15:00", "16:00"};
-        String[] arr = request.getParameterValues("p");
-        String startDate = request.getParameter("startDate");
-        System.out.println(arr);
 
-        if (startDate == null) {
-            request.setAttribute("Status", "Start Date is required");
+        int branchid = 0;
+        int term = 0;
+        int levelid = 0;
+        int subjectid = 0;
+        double fee = 0.0;
+        int reminderfee = "on".equals(request.getParameter("reminderfee")) ? 1 : 0;
+        String timing = "";
+        String classDay = "";
+        String startDate = "";
+        String endDate = "";
+        Date dStart = new Date();
+        Date dEnd = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-            //retrive all subject
-            SubjectDAO subjectDAO = new SubjectDAO();
-            List<Subject> subjectList = subjectDAO.listAllSubjects();
+        
+        
+        ArrayList<String> errors = new ArrayList<>();
 
-            request.setAttribute("SubjectList", subjectList);
-            RequestDispatcher view = request.getRequestDispatcher("ScheduleCreation.jsp");
-            view.forward(request, response);
+        if (request.getParameter("branch") == null || request.getParameter("branch").isEmpty()) {
+            errors.add("Please select branch");
+        } else {
+            branchid = Integer.parseInt(request.getParameter("branch"));
         }
 
-        if (arr == null || arr.length == 0) {
-            request.setAttribute("Status", "No Schedule is created");
-
-            //retrive all subject
-            SubjectDAO subjectDAO = new SubjectDAO();
-            List<Subject> subjectList = subjectDAO.listAllSubjects();
-
-            request.setAttribute("SubjectList", subjectList);
-            RequestDispatcher view = request.getRequestDispatcher("ScheduleCreation.jsp");
-            view.forward(request, response);
+        if (request.getParameter("term") == null || request.getParameter("term").isEmpty()) {
+            errors.add("Please select term");
+        } else {
+            term = Integer.parseInt(request.getParameter("term"));
         }
 
-        try {
-            for (String a : arr) {
-                //index 0 => subject Id
-                //index 1 => level + redips clone Id
-                //index 2 => time(row)
-                //index 3 => day(column)
-                String[] resultList = a.split("_");
-                //remove redips clone Id from level
-                String level = resultList[1].substring(0, resultList[1].length() - 2);
-                String subject = resultList[0];
-                String classDay = days[Integer.parseInt(resultList[3])];
-                String classTime = time[Integer.parseInt(resultList[2])] + " - " + time[Integer.parseInt(resultList[2]) + 1];
+        if (request.getParameter("level") == null || request.getParameter("level").isEmpty()) {
+            errors.add("Please select level");
+        } else {
+            levelid = Integer.parseInt(request.getParameter("level"));
+        }
 
-                ClassDAO.saveClasses(level, subject, classTime, classDay, 0, startDate);
+        if (request.getParameter("subject") == null || request.getParameter("subject").isEmpty()) {
+            errors.add("Please select subject");
+        } else {
+            subjectid = Integer.parseInt(request.getParameter("subject"));
+        }
+
+        if (request.getParameter("fees") == null || request.getParameter("fees").isEmpty()) {
+            errors.add("Please fill in fees");
+        } else {
+            try {
+                fee = Double.parseDouble(request.getParameter("fees"));
+            } catch (NumberFormatException e) {
+                errors.add("fees must be in money format");
             }
-            request.setAttribute("Status", "Schedule Created");
-
-            //retrive all subject
-            SubjectDAO subjectDAO = new SubjectDAO();
-            List<Subject> subjectList = subjectDAO.listAllSubjects();
-
-            request.setAttribute("SubjectList", subjectList);
-            RequestDispatcher view = request.getRequestDispatcher("ScheduleCreation.jsp");
-            view.forward(request, response);
-        } catch (Exception e) {
-            request.setAttribute("Status", "Error encountered when creating schedule");
-
-            //retrive all subject
-            SubjectDAO subjectDAO = new SubjectDAO();
-            List<Subject> subjectList = subjectDAO.listAllSubjects();
-
-            request.setAttribute("SubjectList", subjectList);
-            RequestDispatcher view = request.getRequestDispatcher("ScheduleCreation.jsp");
-            view.forward(request, response);
         }
 
-    }
+        if (request.getParameter("timing") == null || request.getParameter("timing").isEmpty()) {
+            errors.add("Please fill in timing");
+        } else {
+            timing = request.getParameter("timing");
+        }
+        if (request.getParameter("classDay") == null || request.getParameter("classDay").isEmpty()) {
+            errors.add("Please fill in class day");
+        } else {
+            classDay = request.getParameter("classDay");
+        }
 
+        if (request.getParameter("startDate") == null || request.getParameter("startDate").isEmpty()) {
+            errors.add("Please fill in start date");
+        } else {
+            startDate = request.getParameter("startDate");
+            try {
+                dStart = sdf.parse(startDate);
+            } catch (ParseException ex) {
+                errors.add("start date must be in DD/MM/YYYY format");
+            }
+        }
+
+        if (request.getParameter("endDate") == null || request.getParameter("endDate").isEmpty()) {
+            errors.add("Please fill in end date");
+        } else {
+            endDate = request.getParameter("endDate");
+            try {
+                dEnd = sdf.parse(endDate);
+            } catch (ParseException ex) {
+                errors.add("end date must be in DD/MM/YYYY format");
+            }
+        }
+
+        if (errors.isEmpty()) {
+            ClassDAO cDAO = new ClassDAO();
+            int classid = cDAO.insertClass(levelid, subjectid, term, reminderfee, branchid, timing, classDay, fee, startDate, endDate);
+            if (classid == 0) {
+                errors.add("create fail");
+                request.setAttribute("errors", errors);
+            } else {
+                //insertLesson(dStart, dEnd, timing);
+            }
+
+        } else {
+            request.setAttribute("errors", errors);
+
+        }
+        //Retrieve all branch
+        BranchDAO branchDAO = new BranchDAO();
+        List<Branch> branchList = branchDAO.retrieveBranches();
+
+        //Retrieve all level
+        LevelDAO levelDAO = new LevelDAO();
+        List<Level> levelList = levelDAO.retrieveAllLevelLists();
+
+        //retrive all subject
+        SubjectDAO subjectDAO = new SubjectDAO();
+        List<Subject> subjectList = subjectDAO.retrieveAllSubjectsWithId();
+
+        request.setAttribute("BranchList", branchList);
+        request.setAttribute("LevelList", levelList);
+        request.setAttribute("SubjectList", subjectList);
+
+        RequestDispatcher view = request.getRequestDispatcher("ScheduleCreation.jsp");
+        view.forward(request, response);
+    }
+/*
+    private boolean insertLesson(Date startDate, Date endDate, String timing) {
+        int startWeek;
+        int finishWeek;
+        int diff;
+        Calendar cal;
+        Calendar startCountingCal;
+        
+        cal = Calendar.getInstance();
+
+        cal.setTime(startDate);
+        startWeek = cal.get(Calendar.WEEK_OF_YEAR);
+
+        cal.setTime(endDate);
+        finishWeek = cal.get(Calendar.WEEK_OF_YEAR);
+
+        diff = finishWeek - startWeek;
+
+        startCountingCal = Calendar.getInstance();
+        startCountingCal.setTime(startDate);
+
+        for (int i = 0; i < diff; i++) {
+
+            if (i == 0) {
+                System.out.println("WEEK " + i + " start: " + sdf.format(startCountingCal.getTime()));
+                startCountingCal.add(Calendar.DATE, 7);
+                System.out.println("WEEK " + i + " start: " + sdf.format(startCountingCal.getTime()));
+            } else {
+                System.out.println("WEEK " + i + " start: " + sdf.format(startCountingCal.getTime()));
+                startCountingCal.add(Calendar.DATE, 7);
+                System.out.println("WEEK " + i + " start: " + sdf.format(startCountingCal.getTime()));
+            }
+
+        }
+        
+        return true;
+    }*/
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**

@@ -5,19 +5,17 @@
  */
 package controller;
 
-import entity.Student;
-import entity.StudentGrade;
-import entity.Validation;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.StudentClassDAO;
 import model.StudentDAO;
 import model.StudentGradeDAO;
 
@@ -41,48 +39,51 @@ public class RetrieveUpdateGradesServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         
-        String studentID = request.getParameter("studentID");
-        Student stu = StudentDAO.retrieveStudentbyID(studentID);        
+        
+        
+        String studentName = request.getParameter("studentName"); 
         
         if(request.getParameter("retrieve") != null){
-            request.setAttribute("StudentData", stu);
+            if(StudentDAO.retrieveStudentID(studentName) != 0){
+                LinkedHashMap<String, ArrayList<String>> gradeLists = StudentGradeDAO.retrieveStudentTuitionGrade(studentName);
+                request.setAttribute("gradeLists", gradeLists);
+                request.setAttribute("studentName", studentName);
+            }else{
+                request.setAttribute("status", studentName + " not found in database.");
+            }           
             RequestDispatcher view = request.getRequestDispatcher("RetrieveUpdateStudentGrade.jsp");
             view.forward(request, response);
         }
         
         if(request.getParameter("update") != null){
-            request.setAttribute("StudentData", stu);
-            ArrayList<String> subjects = new ArrayList<>();
-            if(stu != null){
-                Map<String, Map<String,StudentGrade>> stuGrades = stu.getGrades();
-                if(stuGrades.get("Center") != null){
-                    Map<String,StudentGrade> subGrades = stuGrades.get("Center");
-                    Set<String> subs = subGrades.keySet();
-                    System.out.println("Enter here");
-                    subjects.addAll(subs);
-                }
+            int studentID = StudentDAO.retrieveStudentID(studentName);
+            if(studentID != 0){
+                Map<Integer, String> classSub = StudentClassDAO.retrieveStudentClassSub(studentID);
+                request.setAttribute("classSub", classSub);
+                request.setAttribute("studentID", studentID);
+                request.setAttribute("studentName", studentName);
+            }else{
+                request.setAttribute("status", studentName + " not found in database.");
             }
-            System.out.println(subjects);
-            request.setAttribute("subjects", subjects);
             RequestDispatcher view = request.getRequestDispatcher("UpdateStudentGrades.jsp");
             view.forward(request, response);
         }
-        
+            
         if(request.getParameter("insert") != null){
-            String sub = request.getParameter("subjects");
+            int studentID = Integer.parseInt(request.getParameter("studentID"));
+            int classID = Integer.parseInt(request.getParameter("subjects"));
             String assessmentType = request.getParameter("assessmentType");
             String grade = request.getParameter("grade");
-            ArrayList<String> errors = Validation.validateUpdateGrade(studentID, sub, assessmentType, grade);
-            
-            if(errors.isEmpty()){
-                StudentGradeDAO.saveCenterGrades(studentID, sub, assessmentType, grade);
-                request.setAttribute("status", "Grade Updated Successfully!");
+            boolean status = StudentGradeDAO.updateTuitionGrade(studentID, classID, assessmentType, grade);
+            if(status){
+                request.setAttribute("status", "Grade Updated Successfully.");
             }else{
-                request.setAttribute("errorMsg", errors);
-            } 
+                request.setAttribute("status", "Error while Updating Grade.");
+            }
             RequestDispatcher view = request.getRequestDispatcher("RetrieveUpdateStudentGrade.jsp");
             view.forward(request, response);
         }
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

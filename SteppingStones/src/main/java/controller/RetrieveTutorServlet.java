@@ -39,23 +39,33 @@ public class RetrieveTutorServlet extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
           
             JSONObject obj = new JSONObject();
-            String tutorID = request.getParameter("tutorID");
-            System.out.println(tutorID);
+            int tutorID = Integer.parseInt(request.getParameter("tutorID"));
             TutorDAO tutorDao = new TutorDAO();
-            Tutor tu = tutorDao.retrieveSpecificTutor(tutorID);
-            System.out.println(tu.getEmail() + " " + tu.getName());
+            Tutor tu = tutorDao.retrieveSpecificTutorById(tutorID);
+
             if(tu != null){
-                String name = tu.getName();
-                int age = tu.getAge();
+                int id = tu.getTutorId();
+                String nric = tu.getNric();
+                String fullname = tu.getName();
+                int phone = tu.getPhone();
+                String address = tu.getAddress();
+                String image_url = tu.getImage_url();
+                String birth_date = tu.getBirth_date();
                 String gender = tu.getGender();
                 String email = tu.getEmail();
-                String phone = tu.getPhone();
-                obj.put("name",name);
-                obj.put("age",age);
+                int branch_id = tu.getBranch_id();
+                   
+                obj.put("id",id);
+                obj.put("nric",nric); 
+                obj.put("fullname",fullname); 
+                obj.put("phone",phone);
+                obj.put("address",address);
+                obj.put("image_url",image_url);
+                obj.put("birth_date",birth_date);
                 obj.put("gender",gender);
-                obj.put("email", email);
-                obj.put("phone", phone);
-               
+                obj.put("email",email);
+                obj.put("branch_id",branch_id);
+                                                
             }
             
             out.println(obj);

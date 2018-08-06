@@ -7,28 +7,37 @@ package entity;
 
 public class Class {
 
-    private String classID;
+    private int classID;
     private String level;
     private String subject;
+    private String term;
     private String classTime;
     private String classDay;   
     private double mthlyFees;
+    private int hasReminderForFees;
     private String startDate;
-    
+    private String endDate;
+    private String branch;
     public Class(){
         
     }
 
-    public Class(String level, String subject, String classTime, String classDay, double mthlyFees, String startDate) {
+    public Class(int classID, String level, String subject, String classTime, String classDay, double mthlyFees, String startDate, String endDate) {
+        this.classID = classID;
         this.level = level;
         this.subject = subject;
         this.classTime = classTime;
         this.classDay = classDay;
         this.mthlyFees = mthlyFees;
         this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
+    public Class(int classID, int level, int subject, String classTime, String classDay, int mthlyFees, String startDate) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
-    public String getClassID() {
+    public int getClassID() {
         return this.classID;
     }
         
@@ -60,7 +69,7 @@ public class Class {
         return this.classDay;
     }
     
-     public void setClassID(String id) {
+     public void setClassID(int id) {
         this.classID = id;
     }
 
@@ -86,7 +95,7 @@ public class Class {
     
     @Override
     public String toString(){
-        return this.level + "&" + this.subject + "&" + this.classTime + "&" + this.classDay + "&" +  this.mthlyFees + "&" + this.startDate;
+        return this.classID + "&" + this.level + "&" + this.subject + "&" + this.classTime + "&" + this.classDay + "&" +  this.mthlyFees + "&" + this.startDate + "&" + this.endDate;
     }
 }
 

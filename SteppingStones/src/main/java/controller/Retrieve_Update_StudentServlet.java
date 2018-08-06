@@ -6,17 +6,13 @@
 package controller;
 
 import entity.Student;
-import entity.Class;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.ClassDAO;
-import model.StudentClassDAO;
 import model.StudentDAO;
 import org.json.JSONObject;
 
@@ -42,29 +38,19 @@ public class Retrieve_Update_StudentServlet extends HttpServlet {
         
         PrintWriter out = response.getWriter();
         
-        String studentID = request.getParameter("studentID");
+        int studentID = Integer.parseInt(request.getParameter("studentID"));
         
         Student currStu = StudentDAO.retrieveStudentbyID(studentID);
-        ArrayList<String> classesID = StudentClassDAO.retrieveStudentClassesID(studentID);
-        ArrayList<Class> classes = new ArrayList<>();
-        for(String classID: classesID){
-            Class cls = ClassDAO.getClassByID(classID);
-            classes.add(cls);
-        }
         
         JSONObject obj = new JSONObject();
         try{
             String name = currStu.getName();
-            int age = currStu.getAge();
-            String gender = currStu.getGender();
             String lvl = currStu.getLevel();
             String address = currStu.getAddress();
-            String phone = currStu.getPhone();
+            int phone = currStu.getPhone();
             double required_amount = currStu.getReqAmt();
             double outstanding_amount = currStu.getOutstandingAmt();
             obj.put("name",name);
-            obj.put("age",age);
-            obj.put("gender",gender);
             obj.put("lvl", lvl);
             obj.put("address", address);
             obj.put("phone", phone);

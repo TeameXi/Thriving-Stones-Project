@@ -5,10 +5,12 @@
  */
 package model;
 
+import com.google.api.client.util.DateTime;
 import connection.ConnectionManager;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 
 /**
  *
@@ -40,6 +42,24 @@ public class LessonDAO {
             stmt.executeUpdate();
         } catch (Exception e) {
             System.out.println(e);
+        }
+    }
+    public boolean createLesson(int classid, int tutorid, Timestamp lessonDateTime) {
+        try (Connection conn = ConnectionManager.getConnection();) {
+            conn.setAutoCommit(false);
+            String sql = "INSERT into LESSON (class_id, lesson_date_time, tutor_id, tutor_attended)"
+                + "VALUES (?,?,?,?)";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, classid);
+            stmt.setTimestamp(2, lessonDateTime);
+            stmt.setInt(3, tutorid);
+            stmt.setInt(4, 0);
+            stmt.executeUpdate(); 
+            conn.commit();
+            return true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return false;
         }
     }
 }

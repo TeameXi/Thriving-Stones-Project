@@ -6,21 +6,21 @@
 package controller;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.ClassDAO;
-import entity.Class;
-import entity.Student;
-import java.util.ArrayList;
-import javax.servlet.RequestDispatcher;
-import model.StudentClassDAO;
+import model.ParentChildRelDAO;
+import model.ParentDAO;
+import model.StudentDAO;
 
-@WebServlet(name = "SelectClassServlet", urlPatterns = {"/SelectClassServlet"})
-public class SelectClassServlet extends HttpServlet {
+/**
+ *
+ * @author DEYU
+ */
+@WebServlet(name = "StudentApplicationServlet", urlPatterns = {"/StudentApplicationServlet"})
+public class StudentApplicationServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -34,22 +34,31 @@ public class SelectClassServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-
-        String classID = request.getParameter("class");
-
-        ArrayList<Student> stuList = StudentClassDAO.getStudentsByClassID(classID);
-        String level = ClassDAO.getClassLevel(classID);
         
-        if (!stuList.isEmpty()) {    
-            request.setAttribute("students", stuList);
-            request.setAttribute("level", level);
-            RequestDispatcher view = request.getRequestDispatcher("CreateGrade.jsp");
-            view.forward(request, response);
-        } else {
-            RequestDispatcher view = request.getRequestDispatcher("SelectClass.jsp");
-            view.forward(request, response);
-        }
+        String studentNRIC = request.getParameter("studentNRIC");
+        String studentName = request.getParameter("studentName");
+        String BOD = request.getParameter("bday");
+        String gender = request.getParameter("gender");
+        String lvl = request.getParameter("lvl");
+        int phone = Integer.parseInt(request.getParameter("phone"));
+        String stuEmail = request.getParameter("studentEmail");
+        String stuPassword = request.getParameter("studentPassword");
+        String parentName = request.getParameter("parentName");
+        String parentNationality = request.getParameter("parentNationality");
+        String parentCompany = request.getParameter("parentCompany");
+        String parentDesgination = request.getParameter("parentDesgination");
+        int parentPhone = Integer.parseInt(request.getParameter("parentPhone"));
+        String parentEmail = request.getParameter("parentEmail");
+        String address = request.getParameter("address");
 
+        int level_id = Integer.parseInt(lvl);
+
+        //Admin admin = (Admin) request.getSession().getAttribute("admin");
+        //int branch_id = admin.getBranchID();
+        
+        StudentDAO.insertStudent(studentNRIC, studentName, phone, address, BOD, gender, stuEmail, stuPassword, level_id, 1); // replace with branch_id
+        ParentDAO.insertParent(parentName, parentNationality, parentCompany, parentDesgination, parentPhone, parentEmail, parentPhone, 1); //replace with bracnch_id
+        ParentChildRelDAO.insertParentChildRel(parentName, studentName);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

@@ -5,8 +5,6 @@
  */
 package controller;
 
-import com.google.gson.JsonObject;
-import entity.Student;
 import java.io.IOException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -14,15 +12,19 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.ClassDAO;
 import model.StudentClassDAO;
+import entity.Class;
+import java.util.ArrayList;
 import model.StudentDAO;
+import model.StudentGradeDAO;
 
 /**
  *
  * @author DEYU
  */
-@WebServlet(name = "SignUpForClassServlet", urlPatterns = {"/SignUpForClassServlet"})
-public class SignUpForClassServlet extends HttpServlet {
+@WebServlet(name = "CreateTuitionGradeServlet", urlPatterns = {"/CreateTuitionGradeServlet"})
+public class CreateTuitionGradeServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -37,37 +39,36 @@ public class SignUpForClassServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         
-        String studentID = request.getParameter("studentID");
-        String studentName = request.getParameter("studentName");
-        String[] classValues =request.getParameterValues("classValue");
-        
-        Student s = StudentDAO.retrieveStudentbyID(studentID);
-
-        double reqAmt = s.getReqAmt();
-        double outstandingAmt = s.getOutstandingAmt();
-
-        if(classValues != null){
-            for(String classValue:classValues){
-                String[] parts = classValue.split("&");
-                String classKey = parts[0];
-                double mthlyFees = Double.parseDouble(parts[5]);
-                reqAmt = reqAmt + (mthlyFees*3);
-                outstandingAmt = outstandingAmt + (mthlyFees*3);
-
-                s.setReqAmt(reqAmt);
-                s.setOutstandingAmt(outstandingAmt);
-                StudentClassDAO.saveClassWithStudent(classKey, studentID, studentName);
-            }
+        if(request.getParameter("select") != null){
+            String classIDStr = request.getParameter("select");
+            int classID = Integer.parseInt(classIDStr);
+            ArrayList<String> students = StudentClassDAO.listStudentsinSpecificClass(classID);
+            Class cls = ClassDAO.getClassByID(classID);
+            
+            request.setAttribute("students", students);
+            request.setAttribute("class", cls);  
         }
-        JsonObject student = new JsonObject();
-        student.addProperty("reqAmt", reqAmt);
-        student.addProperty("outstandingAmt", outstandingAmt);
-        String studentJson = student.toString();
-        StudentDAO.updateStudent(studentID, studentJson);
+        if(request.getParameter("insert") != null){
+            String assessmentType = request.getParameter("assessmentType");
+            String classIDStr = request.getParameter("classID");
+            int classID = Integer.parseInt(classIDStr);
+            ArrayList<String> students = StudentClassDAO.listStudentsinSpecificClass(classID);
+            //System.out.println(assessmentType + classID + request.getParameter("Deyu"));
+            for(String studentName: students){
+                String grade = request.getParameter(studentName);
+                int studentID = StudentDAO.retrieveStudentID(studentName);
+                //System.out.println("studentID " + studentID + "Grade " + grade + "Assess " + assessmentType +"class:" +  classID);
+                boolean status = StudentGradeDAO.saveTuitionGrades(studentID, classID, assessmentType, grade);
+                if(status){
+                    request.setAttribute("status", "Successfully added");
+                }else{
+                    request.setAttribute("status", "Error while adding grade.");
+                }
+            }          
+        }
+        RequestDispatcher view = request.getRequestDispatcher("CreateTuitionGrade.jsp");
+        view.forward(request, response); 
         
-        request.setAttribute("status", "Sign Up successfully!");
-        RequestDispatcher view = request.getRequestDispatcher("CreateNewStudent.jsp");
-        view.forward(request, response);       
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
