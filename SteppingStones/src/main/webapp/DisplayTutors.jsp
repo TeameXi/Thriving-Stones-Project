@@ -324,7 +324,7 @@
 
                 <span class="survey-progress-labels">
                     <span class="survey-progress-view list-only">
-                        <a href="#"><i class="zmdi zmdi-eye"></i></a>
+                        <a href="#viewTutor" data-toggle="modal" data-target-id="<%=tu.getTutorId()%>"><i class="zmdi zmdi-eye"></i></a>
                     </span>
 
 

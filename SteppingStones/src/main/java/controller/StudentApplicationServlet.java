@@ -40,7 +40,10 @@ public class StudentApplicationServlet extends HttpServlet {
         String BOD = request.getParameter("bday");
         String gender = request.getParameter("gender");
         String lvl = request.getParameter("lvl");
-        int phone = Integer.parseInt(request.getParameter("phone"));
+        int phone = 0;
+        if(request.getParameter("phone") != ""){
+            phone = Integer.parseInt(request.getParameter("phone"));
+        }
         String stuEmail = request.getParameter("studentEmail");
         String stuPassword = request.getParameter("studentPassword");
         String parentName = request.getParameter("parentName");
@@ -59,6 +62,10 @@ public class StudentApplicationServlet extends HttpServlet {
         StudentDAO.insertStudent(studentNRIC, studentName, phone, address, BOD, gender, stuEmail, stuPassword, level_id, 1); // replace with branch_id
         ParentDAO.insertParent(parentName, parentNationality, parentCompany, parentDesgination, parentPhone, parentEmail, parentPhone, 1); //replace with bracnch_id
         ParentChildRelDAO.insertParentChildRel(parentName, studentName);
+        
+        
+        response.sendRedirect("RegisterForClasses.jsp?studentName="+studentName);
+       
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

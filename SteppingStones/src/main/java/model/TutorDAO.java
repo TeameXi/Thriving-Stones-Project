@@ -207,7 +207,38 @@ public class TutorDAO {
         }
         return tutorLists;
     }
+    
+    public ArrayList<Tutor> retrieveAllTutorsByLimit(int startingRow,int endingRow) {
+        ArrayList<Tutor> tutorLists = new ArrayList<>();
+        String select_tutor = "SELECT * FROM tutor Limit ?,?";
+        try (Connection conn = ConnectionManager.getConnection();
+                PreparedStatement preparedStatement = conn.prepareStatement(select_tutor)) {
+                preparedStatement.setInt(1, startingRow);
+                preparedStatement.setInt(2, endingRow);
 
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt(1);
+                String nric = rs.getString(2);
+                String fullname = rs.getString(3);
+                int phone = rs.getInt(4);
+                String address = rs.getString(5);
+                String image_url = rs.getString(6);
+                String birth_date = rs.getString(7);
+                String gender = rs.getString(8);
+                String email = rs.getString(9);
+                String password = rs.getString(10);
+                int branch_id = rs.getInt(11);
+                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email, password, branch_id);
+                tutorLists.add(t);
+            }
+
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return tutorLists;
+    }
+    
     public boolean deleteTutor(int tutorId) {
         String delete_sql = "DELETE FROM tutor WHERE tutor_id = ?";
         try (Connection conn = ConnectionManager.getConnection();

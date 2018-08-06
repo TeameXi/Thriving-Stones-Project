@@ -43,7 +43,7 @@
 
 
                 <div class="form-group">
-                    <label class="col-lg-2 control-label">Full Name</label>  
+                    <label class="col-lg-2 control-label">Name**</label>  
                     <div class="col-lg-7 inputGroupContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-account"></i></span>
@@ -77,14 +77,13 @@
                                 <option value="-1" >Select Gender</option>
                                 <option value="M">Male</option>
                                 <option value="F">Female</option>
-                                <option value="O">Other</option>
                             </select>
                         </div>
                     </div>
                 </div>
                 
                 <div class="form-group">
-                    <label class="col-lg-2 control-label">Academic Level</label>  
+                    <label class="col-lg-2 control-label">Academic Level**</label>  
                     <div class="col-lg-7 inputGroupContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-badge-check"></i></span>
@@ -93,7 +92,7 @@
                                     LevelDAO lvlDao = new LevelDAO();
                                     ArrayList<Level> lvlLists = lvlDao.retrieveAllLevelLists();
                                 %>
-                                <option value="-1" >Select Level</option>
+                                <option value="" >Select Level</option>
                                     <%  for(Level lvl: lvlLists){
                                             out.println("<option value='"+lvl.getLevel_id()+"'>"+lvl.getLevelName()+"</option>");
                                        }
@@ -165,7 +164,7 @@
                 <hr/>
                 <h3>Student's Account Information</h3><br/>
                 <div class="form-group">
-                    <label class="col-lg-2 control-label">Email</label>  
+                    <label class="col-lg-2 control-label">Email**</label>  
                     <div class="col-lg-7 inputGroupContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-email"></i></span>
@@ -175,7 +174,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="col-lg-1 control-label">Password</label>  
+                    <label class="col-lg-1 control-label">Password**</label>  
                     <div class="col-lg-2">
                         <input id="generate_btn" type="button" value="Generate" onClick="generatePassword(16);"/>
                     </div>
@@ -236,7 +235,7 @@
                 </div>
 
                <div class="form-group">
-                    <label class="col-lg-2 control-label">Mobile </label>  
+                    <label class="col-lg-2 control-label">Mobile** </label>  
                     <div class="col-lg-7 inputGroupContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-phone"></i></span>
@@ -246,8 +245,8 @@
                 </div>
                 
                 
-                        <div class="form-group">
-                    <label class="col-lg-2 control-label">Email</label>  
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">Email**</label>  
                     <div class="col-lg-7 inputGroupContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-email"></i></span>
@@ -351,7 +350,7 @@ $(function () {
             validating: 'glyphicon glyphicon-refresh'
         },
         fields: {
-            tutorID: {
+            studentNRIC: {
                 validators: {   
                     stringLength: {
                         min: 9,
@@ -363,15 +362,19 @@ $(function () {
             studentName:{
                 validators:{
                     notEmpty: {
-                        message: 'Please enter tutor name'
+                        message: 'Please enter student name'
+                    }
+                }
+            },
+            lvl:{
+                validators:{
+                    notEmpty: {
+                        message: 'Please select level'
                     }
                 }
             },
             phone: {
                 validators: {
-                    notEmpty: {
-                        message: 'Please enter phone number'
-                    },
                     between: {
                         min: 80000000,
                         max: 99999999,
@@ -379,7 +382,7 @@ $(function () {
                     }
                 }
             },
-            email: {
+            studentEmail: {
                 validators: {
                     notEmpty: {
                         message: 'Enter Email Address'
@@ -389,19 +392,17 @@ $(function () {
                     }
                 }
             },
-            tutorImage: {
-                validators: {
-                    file: {
-                        extension: 'jpeg,png',
-                        type: 'image/jpeg,image/png',
-                        message: 'Invalid format.Must be image'
+            parentPhone:{
+                validators:{
+                    notEmpty: {
+                        message: 'Phone cannot be empty'
                     }
                 }
             },
-            tutorPassword:{
+            parentEmail:{
                 validators:{
-                    notEmpty: {
-                        message: 'Password cannot be empty'
+                    emailAddress: {
+                        message: 'Email cannot be empty'
                     }
                 }
             }

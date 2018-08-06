@@ -44,6 +44,7 @@ public class RetrieveScheduleCreationDetailsServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         
         //Retrieve all branch
+        /*
         BranchDAO branchDAO = new BranchDAO();
         List<Branch> branchList = branchDAO.retrieveBranches();
         
@@ -61,6 +62,7 @@ public class RetrieveScheduleCreationDetailsServlet extends HttpServlet {
         
         RequestDispatcher view=request.getRequestDispatcher("ScheduleCreation.jsp");
         view.forward(request,response);
+        */
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
