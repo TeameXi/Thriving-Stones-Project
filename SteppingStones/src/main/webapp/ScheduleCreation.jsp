@@ -17,7 +17,6 @@
     <head>
     <%
          if(request.getAttribute("errors") != null){
-             System.out.println("im here");
                 List<String> errors = (ArrayList<String>)request.getAttribute("errors");
         
     %>
@@ -29,7 +28,7 @@
         List<Branch> branchList = (List<Branch>) request.getAttribute("BranchList");
         List<Level> levelList = (List<Level>) request.getAttribute("LevelList");
         List<Subject> subjectList = (List<Subject>) request.getAttribute("SubjectList");
-        
+        List<Tutor> tutorList = (List<Tutor>) request.getAttribute("TutorList");
         
     %>
     
@@ -98,6 +97,17 @@
             <br/>
             End Date : 
             <input type="text" name="endDate"/>
+            <br/>
+            Subject :
+            <select name="tutor">
+                <%
+                    for(Tutor t:tutorList){
+                        %>
+                        <option value="<%=t.getTutorId()%>"><%=t.getName()%></option>
+                        <%
+                    }
+                %>
+            </select>
             <br/>
             <input type="submit"/>
         </form>

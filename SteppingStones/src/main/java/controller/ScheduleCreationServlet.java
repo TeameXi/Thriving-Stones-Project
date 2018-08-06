@@ -160,13 +160,96 @@ public class ScheduleCreationServlet extends HttpServlet {
         //retrive all subject
         SubjectDAO subjectDAO = new SubjectDAO();
         List<Subject> subjectList = subjectDAO.retrieveAllSubjectsWithId();
-
+        
+        //retrieve all tutor
+        TutorDAO tutorDAO = new TutorDAO();
+        List<Tutor> tutorList = tutorDAO.retrieveAllTutors();
+        
         request.setAttribute("BranchList", branchList);
         request.setAttribute("LevelList", levelList);
         request.setAttribute("SubjectList", subjectList);
+        request.setAttribute("TutorList", tutorList);
 
         RequestDispatcher view = request.getRequestDispatcher("ScheduleCreation.jsp");
         view.forward(request, response);
+        
+        //Create multiple schedule
+        /*int branchid = 0;
+        int term = 0;
+        int levelid = 0;
+        int subjectid = 0;
+        double fee = 0.0;
+        int reminderfee = "on".equals(request.getParameter("reminderfee")) ? 1 : 0;
+        String timing = "";
+        String classDay = "";
+        String startDate = "";
+        String endDate = "";
+        Date dStart = new Date();
+        Date dEnd = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        ArrayList<String> errors = new ArrayList<>();
+        String[] arr = request.getParameterValues("z");
+        ClassDAO cDAO = new ClassDAO();
+         
+        if (arr == null || arr.length == 0) {
+            errors.add("No data found");
+        }else{
+        
+            for (String a : arr) {
+                try {
+                    //index 0 => branch id
+                    //index 1 => term
+                    //index 2 => level id
+                    //index 3 => subject id
+                    //index 4 => fee
+                    //index 5 => reminderfee
+                    //index 6 => timing
+                    //index 7 => class day
+                    //index 8 => startDate
+                    //index 9 => end date
+                    String[] resultList = a.split("_");
+                    //remove redips clone Id from level
+                    branchid = Integer.parseInt(resultList[0]);
+                    term = Integer.parseInt(resultList[1]);
+                    levelid = Integer.parseInt(resultList[2]);
+                    subjectid = Integer.parseInt(resultList[3]);
+                    fee = Double.parseDouble(resultList[4]);
+                    reminderfee = "on".equals(resultList[5]) ? 1 : 0;
+                    timing = resultList[6];
+                    classDay = resultList[7];
+                    startDate = resultList[8];
+                    endDate = resultList[9];
+                } catch (Exception e) {
+                    errors.add("data is invalid");
+                }
+                if(errors.isEmpty()){
+                    int classid = cDAO.insertClass(levelid, subjectid, term, reminderfee, branchid, timing, classDay, fee, startDate, endDate);
+                }
+            }
+        }
+        //Retrieve all branch
+        BranchDAO branchDAO = new BranchDAO();
+        List<Branch> branchList = branchDAO.retrieveBranches();
+
+        //Retrieve all level
+        LevelDAO levelDAO = new LevelDAO();
+        List<Level> levelList = levelDAO.retrieveAllLevelLists();
+
+        //retrive all subject
+        SubjectDAO subjectDAO = new SubjectDAO();
+        List<Subject> subjectList = subjectDAO.retrieveAllSubjectsWithId();
+        
+        //retrieve all tutor
+        TutorDAO tutorDAO = new TutorDAO();
+        List<Tutor> tutorList = tutorDAO.retrieveAllTutors();
+        
+        request.setAttribute("BranchList", branchList);
+        request.setAttribute("LevelList", levelList);
+        request.setAttribute("SubjectList", subjectList);
+        request.setAttribute("TutorList", tutorList);
+
+        RequestDispatcher view = request.getRequestDispatcher("ScheduleCreation.jsp");
+        view.forward(request, response);*/
     }
 /*
     private boolean insertLesson(Date startDate, Date endDate, String timing) {
