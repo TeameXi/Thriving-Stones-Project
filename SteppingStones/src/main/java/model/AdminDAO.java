@@ -17,7 +17,7 @@ public class AdminDAO {
 
     public boolean addAdmin(Admin admin) {
         try (Connection conn = ConnectionManager.getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO admin(admin_id,admin_username,password,branch_id) VALUES(?,?,?,?)")) {
+                PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO admin(admin_id,admin_username,password,branch_id) VALUES(?,?,?,?)")) {
             preparedStatement.setInt(1, retrieveNoOfAdmin() + 1);
             preparedStatement.setString(2, admin.getAdmin_username());
             preparedStatement.setString(3, admin.getPassword());
@@ -53,10 +53,25 @@ public class AdminDAO {
         return false;
     }
 
+    public boolean deleteAdmin(int adminId) {
+        try (Connection conn = ConnectionManager.getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement("DELETE FROM admin WHERE admin_id = ?")) {
+            preparedStatement.setInt(1, adminId);
+
+            int num = preparedStatement.executeUpdate();
+            if (num != 0) {
+                return true;
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return false;
+    }
+
     public int retrieveNoOfAdmin() {
         int number = 0;
         try (Connection conn = ConnectionManager.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement("SELECT count(*) FROM admin")) {
+            PreparedStatement preparedStatement = conn.prepareStatement("SELECT count(*) FROM admin")) {
 
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
@@ -72,7 +87,7 @@ public class AdminDAO {
     public ArrayList<Admin> retrieveAllAdmins() {
         ArrayList<Admin> admins = new ArrayList<>();
         try (Connection conn = ConnectionManager.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement("SELECT admin_username,branch_id FROM admin")) {
+            PreparedStatement preparedStatement = conn.prepareStatement("SELECT admin_username,branch_id FROM admin")) {
 
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
@@ -90,7 +105,7 @@ public class AdminDAO {
 
     public Admin retrieveAdminById(int admin_id) {
         try (Connection conn = ConnectionManager.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement("SELECT admin_username,branch_id FROM admin WHERE admin_id = ?")) {
+            PreparedStatement preparedStatement = conn.prepareStatement("SELECT admin_username,branch_id FROM admin WHERE admin_id = ?")) {
             preparedStatement.setInt(1, admin_id);
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
@@ -108,7 +123,7 @@ public class AdminDAO {
 
     public Admin retrieveAdminByName(String username) {
         try (Connection conn = ConnectionManager.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement("SELECT admin_username,branch_id FROM admin WHERE admin_username = ?")) {
+            PreparedStatement preparedStatement = conn.prepareStatement("SELECT admin_username,branch_id FROM admin WHERE admin_username = ?")) {
             preparedStatement.setString(1, username);
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
