@@ -20,21 +20,29 @@
 
 
 </style>
-<%        ArrayList<String> errors = (ArrayList<String>) request.getAttribute("errorMsg");
-    if (errors != null) {
-        for (String error : errors) {
-            out.println(error);
-        }
-    }    
+<%        
+    String existingAdmin = (String) request.getAttribute("existingAdmin");
+    if (existingAdmin != null) {
+        out.println("<div id='creation_status' class='alert alert-danger col-md-12'>Tutor : <strong>"+existingAdmin+"</strong> is already added. Try another tutor again. </div>");
+    }
+    
+    String status = (String) request.getAttribute("creation_status");
+    if (status != null && status == "true") {
+        out.println("<div id='creation_status' class='alert alert-success col-md-12'><strong>Admin account is created successfully</strong> </div>");
+    }else if(status != null && status == "false"){
+        out.println("<div id='creation_status' class='alert alert-danger col-md-12'><strong>Something Went Wrong</strong> </div>");
+ 
+    }
 %> 
 
 <div class="col-md-10">
-    <div style="text-align: center;margin: 20px;"><a class="tab_active" href="CreateAdmin.jsp">Add Admin</a></h5></div>
+    <div style="text-align: center;margin: 20px;"><span class="tab_active">Add Admin</span></h5></div>
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-7">
-            <form id="createAdminForm" method="POST" class="form-horizontal" action="">
-                <%  BranchDAO branchDao = new BranchDAO();
+            <form id="createAdminForm" method="POST" class="form-horizontal" action="CreateAdminServlet">
+                <%  
+                    BranchDAO branchDao = new BranchDAO();
                     List<Branch> branch_lists = branchDao.retrieveBranches();          
                 %>
                 
@@ -101,10 +109,6 @@
 </div>
 
 <%@include file="footer.jsp"%>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.css" rel="stylesheet">
-
 <link rel='stylesheet prefetch' href='http://cdnjs.cloudflare.com/ajax/libs/jquery.bootstrapvalidator/0.5.0/css/bootstrapValidator.min.css'>
 <script src='http://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.4.5/js/bootstrapvalidator.min.js'></script>
 
@@ -159,6 +163,10 @@ function generatePassword(len) {
 
 
 $(function () {   
+    if($('#creation_status').length){
+       $('#creation_status').fadeIn().delay(3000).fadeOut();
+    }
+    
     $('#createAdminForm').bootstrapValidator({
         // To use feedback icons, ensure that you use Bootstrap v3.1.0 or later
         feedbackIcons: {

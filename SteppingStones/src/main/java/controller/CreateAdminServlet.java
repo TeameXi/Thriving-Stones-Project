@@ -30,7 +30,7 @@ public class CreateAdminServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+  
         try (PrintWriter out = response.getWriter()) {
             String admin_username = request.getParameter("admin_name");
             String password = request.getParameter("adminPassword");
@@ -39,14 +39,14 @@ public class CreateAdminServlet extends HttpServlet {
             AdminDAO adminDao = new AdminDAO();
             Admin existingAdmin = adminDao.retrieveAdminByName(admin_username);
             if (existingAdmin != null) {
-                request.setAttribute("existingBranch", existingAdmin.getAdmin_username());
+                request.setAttribute("existingAdmin", existingAdmin.getAdmin_username());
                 RequestDispatcher dispatcher = request.getRequestDispatcher("CreateAdmin.jsp");
                 dispatcher.forward(request, response);
             } else {
                 Admin tempAdmin = new Admin(admin_username, password, branch_id);
                 boolean status = adminDao.addAdmin(tempAdmin);
                 request.setAttribute("creation_status", "" + status);
-                RequestDispatcher dispatcher = request.getRequestDispatcher("DisplayAdmins.jsp");
+                RequestDispatcher dispatcher = request.getRequestDispatcher("CreateAdmin.jsp");
                 dispatcher.forward(request, response);
             }
 

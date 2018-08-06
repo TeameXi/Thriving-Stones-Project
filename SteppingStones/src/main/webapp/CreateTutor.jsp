@@ -1,6 +1,6 @@
+<%@page import="java.util.List"%>
 <%@page import="entity.Branch"%>
 <%@page import="model.BranchDAO"%>
-<%@page import="java.util.ArrayList"%>
 <%@include file="header.jsp"%>
 <style>
     #generate_btn{
@@ -120,7 +120,7 @@
                 
                 <%  BranchDAO branchDao = new BranchDAO();
                     if(false) {
-                        ArrayList<Branch> branch_lists = branchDao.retrieveAllBranches();          
+                        List<Branch> branch_lists = branchDao.retrieveBranches();          
                 %>
                             <div class="form-group">
                                 <label class="col-lg-2 control-label">Branch</label>  
