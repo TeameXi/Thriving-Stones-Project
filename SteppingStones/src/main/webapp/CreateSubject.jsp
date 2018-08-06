@@ -1,15 +1,10 @@
-<%-- 
-    Document   : CreateSubject
-    Created on : Jul 29, 2018, 2:32:46 PM
-    Author     : MOH MOH SAN
---%>
-
 <%@page import="java.util.List"%>
 <%@page import="entity.Branch"%>
 <%@page import="model.BranchDAO"%>
 <%@page import="entity.Level"%>
 <%@page import="model.LevelDAO"%>
 <%@page import="java.util.ArrayList"%>
+<%@include file="protect_branch_admin.jsp"%>
 <%@include file="header.jsp"%>
 <style>
     #generate_btn{

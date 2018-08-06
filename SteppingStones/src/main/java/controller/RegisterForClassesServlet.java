@@ -39,10 +39,11 @@ public class RegisterForClassesServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        
+        int branchID = Integer.parseInt(request.getParameter("branch_id"));
         if(request.getParameter("search") != null){
             String studentName = (String) request.getParameter("studentName");
-            int levelID = StudentDAO.retrieveStudentLevelbyName(studentName);
+           
+            int levelID = StudentDAO.retrieveStudentLevelbyName(studentName,branchID);
             int studentID = StudentDAO.retrieveStudentID(studentName);
             if(levelID == 0){
                 request.setAttribute("errorMsg", studentName + " Not Exists in Database, Please Create Student First.");           
@@ -69,7 +70,7 @@ public class RegisterForClassesServlet extends HttpServlet {
                     System.out.println(status);
                     if(status){
                         Class cls = ClassDAO.getClassByID(classID);
-                        Student stu = StudentDAO.retrieveStudentbyID(studentID);
+                        Student stu = StudentDAO.retrieveStudentbyID(studentID,branchID);
                         double reqAmt = (cls.getMthlyFees() * 3) + stu.getReqAmt(); //reqAmt meaning 1 mth or for whole term how to calculate
                         double outstandingAmt = (cls.getMthlyFees() * 3) + stu.getOutstandingAmt();
                         boolean update = StudentDAO.updateStudentFees(studentID, reqAmt, outstandingAmt); 

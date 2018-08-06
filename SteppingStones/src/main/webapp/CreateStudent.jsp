@@ -3,6 +3,7 @@
 <%@page import="entity.Branch"%>
 <%@page import="model.BranchDAO"%>
 <%@page import="java.util.ArrayList"%>
+<%@include file="protect_branch_admin.jsp"%>
 <%@include file="header.jsp"%>
 <style>
     #generate_btn{

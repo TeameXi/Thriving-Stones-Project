@@ -2,6 +2,7 @@
 <%@page import="java.util.List"%>
 <%@page import="entity.Branch"%>
 <%@page import="model.BranchDAO"%>
+<%@include file="protect_master_admin.jsp"%>
 <%@include file="header.jsp"%>
 <style>
     #generate_btn{

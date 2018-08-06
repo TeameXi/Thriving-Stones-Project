@@ -36,7 +36,7 @@ public class StudentDAO {
             stmt.setDouble(8, 0);
             stmt.setDouble(9, 0);
             stmt.setInt(10, level_id);
-            stmt.setInt(11, 1); //replace with branch_id
+            stmt.setInt(11, branch_id);
             stmt.setString(12, studentNRIC);
             stmt.executeUpdate(); 
             conn.commit();
@@ -61,11 +61,11 @@ public class StudentDAO {
         return result;
     }
     
-    public static ArrayList<Student> listAllStudents(){
+    public static ArrayList<Student> listAllStudents(int branch_id){
         ArrayList<Student> studentList = new ArrayList();
         try(Connection conn = ConnectionManager.getConnection()){
             PreparedStatement stmt = conn.prepareStatement("select * from student where branch_id = ? order by level_id, student_name");
-            stmt.setInt(1, 1); // replace with branch_id
+            stmt.setInt(1,branch_id);
             ResultSet rs = stmt.executeQuery();
 
             while(rs.next()){
@@ -92,11 +92,11 @@ public class StudentDAO {
         return studentList;
     }
     
-    public static LinkedHashMap<String, ArrayList<Student>> listAllStudent(){
+    public static LinkedHashMap<String, ArrayList<Student>> listAllStudent(int branch_id){
         LinkedHashMap<String, ArrayList<Student>> students = new LinkedHashMap<>();
         try(Connection conn = ConnectionManager.getConnection()){
             PreparedStatement stmt = conn.prepareStatement("select * from student where branch_id = ? order by level_id, student_name");
-            stmt.setInt(1, 1); // replace with branch_id
+            stmt.setInt(1,branch_id);
             ResultSet rs = stmt.executeQuery();
 
             while(rs.next()){
@@ -132,12 +132,12 @@ public class StudentDAO {
         return students;
     }   
     
-    public static Student retrieveStudentbyID(int studentID){
+    public static Student retrieveStudentbyID(int studentID,int branch_id){
         Student stu  = null;
         try(Connection conn = ConnectionManager.getConnection()){
             PreparedStatement stmt = conn.prepareStatement("select * from student where student_id = ? and branch_id = ?");
             stmt.setInt(1, studentID);
-            stmt.setInt(2, 1); //replace with branchID
+            stmt.setInt(2,branch_id); 
             ResultSet rs = stmt.executeQuery();
 
             while(rs.next()){
@@ -162,12 +162,12 @@ public class StudentDAO {
         return stu;
     }
     
-    public static int retrieveStudentLevelbyName(String studentName){
+    public static int retrieveStudentLevelbyName(String studentName,int branch_id){
         int levelID = 0;
         try(Connection conn = ConnectionManager.getConnection()){
             PreparedStatement stmt = conn.prepareStatement("select level_id from student where student_name = ? and branch_id = ?");
             stmt.setString(1, studentName);
-            stmt.setInt(2, 1); //replace branch_id
+            stmt.setInt(2, branch_id);
             ResultSet rs = stmt.executeQuery();
             while(rs.next()){
                 levelID = rs.getInt("level_id");

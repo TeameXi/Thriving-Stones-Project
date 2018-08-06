@@ -4,6 +4,7 @@
 <%@page import="model.TutorDAO"%>
 <%@page import="entity.Tutor"%>
 <%@page import="java.util.ArrayList"%>
+<%@include file="protect_branch_admin.jsp"%>
 <%@include file="header.jsp"%>
 <style>/* Listing */
 
@@ -289,19 +290,15 @@
     <span class="toggler" data-toggle="list"><span class="zmdi zmdi-view-list"></span></span>
     <ul class="surveys grid">
         <%
+            int branch_id = 0;
+            if(user1 != null){
+                branch_id = user1.getBranchId();
+            }
             TutorDAO tutuorDAO = new TutorDAO();
-            ArrayList<Tutor> tutors = tutuorDAO.retrieveAllTutors();
-            String branch_name = "";
-            List<Branch> branch_lists = null;
+            ArrayList<Tutor> tutors = tutuorDAO.retrieveAllTutorsByBranch(branch_id);
+           
             if (tutors.size() > 0) {
-                BranchDAO branchDao = new BranchDAO();
-                if (true) {
-                    branch_lists = branchDao.retrieveBranches();
-                } else {
-                    Branch b = branchDao.retrieveBranchById(2);
-                    branch_name = b.getName();
-                }
-
+               
                 for (Tutor tu : tutors) {
                     String dob = tu.getBirth_date();
                     int id = tu.getTutorId();
@@ -459,25 +456,6 @@
                     </div>
                 </div><br/>
 
-                <div class="row">
-                    <div class = "col-sm-4">
-                        <p class = "form-control-label">Branch :</p>
-                    </div>
-                    <div class = "col-sm-8">
-                        <%                            if (true) {
-
-                                out.println("<p><select class='form-control' id='branch'>");
-                                for (Branch branch : branch_lists) {
-                                    out.println("<option value='" + branch.getBranchId() + "'>" + branch.getName() + "</option>");
-                                }
-                                out.println("</select></p>");
-                            } else {
-                                out.println("<p><label class='form-control'>" + branch_name + "</label></p>");
-                            }
-                        %>
-
-                    </div>
-                </div><br/>
 
 
             </div>  
@@ -578,27 +556,7 @@
                     </div>
                 </div><br/>
 
-                <div class="row">
-                    <div class = "col-sm-4">
-                        <p class = "form-control-label">Branch :</p>
-                    </div>
-                    <div class = "col-sm-8">
-                        <%
-                            if (true) {
-
-                                out.println("<p><select class='form-control' id='branch'>");
-                                for (Branch branch : branch_lists) {
-                                    out.println("<option value='" + branch.getBranchId() + "'>" + branch.getName() + "</option>");
-                                }
-                                out.println("</select></p>");
-                            } else {
-                                out.println("<p><label class='form-control'>" + branch_name + "</label></p>");
-                            }
-                        %>
-
-                    </div>
-                </div><br/>
-
+              
 
             </div>  
 

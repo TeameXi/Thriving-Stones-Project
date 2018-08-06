@@ -1,6 +1,7 @@
 <%@page import="java.util.List"%>
 <%@page import="entity.Branch"%>
 <%@page import="model.BranchDAO"%>
+<%@include file="protect_branch_admin.jsp"%>
 <%@include file="header.jsp"%>
 <style>
     #generate_btn{
@@ -28,6 +29,7 @@
     if (existingTutor != null) {
         out.println("<div id='creation_status' class='alert alert-danger col-md-12'>Tutor : <strong>"+existingTutor+"</strong> is already added. Try another tutor again. </div>");
     }
+    
 %> 
     <div style="text-align: center;margin: 20px;"><span class="tab_active">Add Tutor </span> / <a href="UploadTutor.jsp">Upload Tutors</a></h5></div>
     <div class="row">
@@ -40,6 +42,10 @@
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-account-box"></i></span>
                             <input id="tutorNric"  name="tutorNric" placeholder="NRIC" class="form-control"  type="text">
+                            <% if(user != null){
+                                    out.println("<input type='hidden' name='branch' value='"+user.getBranchId()+"'/>");
+                                }
+                            %>
                         </div>
                     </div>
                 </div>
@@ -118,44 +124,6 @@
                     </div>
                 </div>
                 
-                <%  BranchDAO branchDao = new BranchDAO();
-                    if(false) {
-                        List<Branch> branch_lists = branchDao.retrieveBranches();          
-                %>
-                            <div class="form-group">
-                                <label class="col-lg-2 control-label">Branch</label>  
-                                <div class="col-lg-7 inputGroupContainer">
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="zmdi zmdi-city"></i></span>
-                                        <select name="branch" class="form-control" >
-                                            <option value="0" >Select Center</option>
-                                            <% for(Branch branch: branch_lists){
-                                                    out.println("<option value='"+branch.getBranchId()+"'>"+branch.getName()+"</option>");
-                                               }
-                                            %>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        
-                <% 
-                    }else{
-                        Branch branch = branchDao.retrieveBranchById(2);
-                        String branch_name = branch.getName();
-                %>
-                        <div class="form-group">
-                                <label class="col-lg-2 control-label">Branch</label>  
-                                <div class="col-lg-7 inputGroupContainer">
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="zmdi zmdi-city"></i></span>
-                                        <label class='form-control'><%=branch_name%></label>
-                                    </div>
-                                </div>
-                            </div>
-                <%        
-                    }
-                %>
-
                 <div class="form-group">
                     <label class="col-lg-2 control-label">Email</label>  
                     <div class="col-lg-7 inputGroupContainer">

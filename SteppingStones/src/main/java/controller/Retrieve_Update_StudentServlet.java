@@ -40,7 +40,9 @@ public class Retrieve_Update_StudentServlet extends HttpServlet {
         
         int studentID = Integer.parseInt(request.getParameter("studentID"));
         
-        Student currStu = StudentDAO.retrieveStudentbyID(studentID);
+        int branchID = Integer.parseInt(request.getParameter("branch_id"));
+        
+        Student currStu = StudentDAO.retrieveStudentbyID(studentID,branchID);
         
         JSONObject obj = new JSONObject();
         try{

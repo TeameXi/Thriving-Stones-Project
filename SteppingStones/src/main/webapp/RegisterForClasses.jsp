@@ -1,6 +1,7 @@
 <%@page import="java.util.ArrayList"%>
 <%@page import="entity.Class"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@include file="protect_branch_admin.jsp"%>
 <%@include file="header.jsp"%>
 <div class="col-md-10">
 
@@ -23,7 +24,13 @@
                                         redirectStudentName = request.getParameter("studentName").trim();
                                     } 
 
+                                    int branch_id = 0;
+                                    if(user != null){
+                                        branch_id = user.getBranchId();
+                                    }
+
                                 %>
+                            <input type="hidden" value="<%=branch_id%>" name="branch_id"/>
                             <input id="studentNRIC"  name="studentName" placeholder="Name" class="form-control"  type="text" value="<%=redirectStudentName%>">
                         </div>
                     </div>
@@ -32,7 +39,6 @@
 
                 <div class="form-group">
                     <div class="col-lg-2 col-lg-offset-2">
-                        <!-- Do NOT use name="submit" or id="submit" for the Submit button -->
                         <button type="submit" class="btn btn-default" name="search">Search For Classes</button>
                     </div>
                 </div>

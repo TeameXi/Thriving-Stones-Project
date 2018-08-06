@@ -8,6 +8,7 @@
 <%@page import="java.util.Map"%>
 <%@page import="entity.Student"%>
 <%@page import="java.util.ArrayList"%>
+<%@include file="protect_branch_admin.jsp"%>
 <%@include file="header.jsp"%>
 <style>
     #generate_btn{
@@ -256,10 +257,15 @@
     <span class="toggler" data-toggle="list"><span class="zmdi zmdi-view-list"></span></span>
     <ul class="surveys grid">
         <%
+            int branch_id = 0;
+            if(user != null){
+                branch_id = user.getBranchId();
+            }
             StudentDAO studentDAO = new StudentDAO();
             //ArrayList<Student> students = studentDAO.listAllStudents();
-            LinkedHashMap<String, ArrayList<Student>> studentList = studentDAO.listAllStudent();
-            if(studentList != null){
+  
+            LinkedHashMap<String, ArrayList<Student>> studentList = studentDAO.listAllStudent(branch_id);
+            if(studentList.size() > 0){
                 Set<String> level = studentList.keySet();
                 for(String lvl: level){
                     out.println(lvl);
@@ -329,9 +335,11 @@
                         out.println("No Students!");
                     }
                 }
+            }else{
+                out.println("<div class='alert alert-warning col-md-5'>No Student Yet! <strong> <a href='CreateStudent.jsp'>Create One</a></strong> </div>");
+   
             }
-
-            %>
+        %>
     </ul>
 </div>
 </div>
@@ -373,6 +381,7 @@
                     <div class = "col-sm-8">
                         <p><input type = "text" class = "form-control" id="name" value =""/></p>
                         <input type="hidden" id="id" value="" />
+                        <input type="hidden" id="branch_id" value="<%=branch_id%>" />
                     </div>
                 </div><br/>
                 
@@ -437,10 +446,11 @@
     $(document).ready(function(){
         $("#editStudent").on("show.bs.modal", function(e) {
             var student_id = $(e.relatedTarget).data('target-id');   
+            var branch_id = $("#branch_id").val();
             $.ajax({
                url: 'Retrieve_Update_StudentServlet',
                dataType: 'JSON',
-               data: {studentID: student_id},
+               data: {studentID: student_id,branch_id:branch_id},
                success: function (data) {
                   $("#id").val(student_id);
                   $("#name").val(data["name"]);
@@ -506,7 +516,8 @@
         address = $("#address").val();
         phone  = $("#phone").val();
         r_amount =  $("#r_amount").val(); 
-        o_amount =  $("#o_amount").val();    
+        o_amount =  $("#o_amount").val(); 
+        
         
         $('#editStudent').modal('hide');
         $.ajax({
