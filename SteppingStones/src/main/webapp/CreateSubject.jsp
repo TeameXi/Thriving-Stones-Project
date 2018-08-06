@@ -4,6 +4,7 @@
     Author     : MOH MOH SAN
 --%>
 
+<%@page import="java.util.List"%>
 <%@page import="entity.Branch"%>
 <%@page import="model.BranchDAO"%>
 <%@page import="entity.Level"%>
@@ -27,15 +28,20 @@
 
 
 </style>
-<%    ArrayList<String> errors = (ArrayList<String>) request.getAttribute("errorMsg");
-    if (errors != null) {
-        for (String error : errors) {
-            out.println(error);
-        }
-    }
-%> 
+
 
 <div class="col-md-10">
+    <%    
+        String errorMsg = (String) request.getAttribute("errorMsg");
+        if (errorMsg != null) {
+            out.println("<div id='errorMsg' class='alert alert-danger col-md-12'><strong>"+errorMsg+"</strong></div>");
+        }
+        
+        String status = (String) request.getAttribute("status");
+        if (status != null) {
+            out.println("<div id='errorMsg' class='alert alert-success col-md-12'><strong>"+status+"</strong></div>");
+        }
+    %> 
     <div style="text-align: center;margin: 20px;"><a class="tab_active" href="CreateSubject.jsp">Add Subject </a></h5></div>
     <div class="row">
         <div class="col-md-3"></div>
@@ -51,7 +57,7 @@
                                     LevelDAO lvlDao = new LevelDAO();
                                     ArrayList<Level> lvlLists = lvlDao.retrieveAllLevelLists();
                                 %>
-                                <option value="-1" >Select Level</option>
+                                <option value="" >Select Level</option>
                                 <%  for (Level lvl : lvlLists) {
                                         out.println("<option value='" + lvl.getLevel_id() + "'>" + lvl.getLevelName() + "</option>");
                                     }
@@ -74,7 +80,7 @@
                 <%  
                     BranchDAO branchDao = new BranchDAO();
                     if(true) {
-                        ArrayList<Branch> branch_lists = branchDao.retrieveAllBranches();          
+                        List<Branch> branch_lists = branchDao.retrieveBranches();          
                 %>
                             <div class="form-group">
                                 <label class="col-lg-2 control-label">Branch</label>  
@@ -82,7 +88,7 @@
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="zmdi zmdi-city"></i></span>
                                         <select name="branch" class="form-control" >
-                                            <option value="0" >Select Center</option>
+                                            <option value="" >Select Center</option>
                                             <% for(Branch branch: branch_lists){
                                                     out.println("<option value='"+branch.getBranchId()+"'>"+branch.getName()+"</option>");
                                                }
@@ -115,7 +121,7 @@
                         <button type="submit" class="btn btn-default">Create Subject</button>
                     </div>
                 </div>
-            </form>
+            </form> 
         </div>
     </div>
 </div>

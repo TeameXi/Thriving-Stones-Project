@@ -35,18 +35,27 @@ public class CreateSubjectServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         String level = request.getParameter("level");
+        int levelID = 0;
+        int branchID = 0;
         String subjectName = request.getParameter("subjectName");
         String branch = request.getParameter("branch");
-        
+        if(level != null){
+            levelID = Integer.parseInt(level);
+        }
+        if(level != null){
+            branchID = Integer.parseInt(level);
+        }
         System.out.println(level + " " + subjectName + " " + branch);
         
         SubjectDAO subjects = new SubjectDAO();
-        boolean subjectStatus = subjects.addSubject(level,subjectName,branch);
+        boolean subjectStatus = subjects.addSubject(levelID, subjectName, branchID);
         
         if(subjectStatus) {
-            response.sendRedirect("CreateSubject.jsp");
+            request.setAttribute("status", "Subject created successfully!");
+            RequestDispatcher view = request.getRequestDispatcher("CreateSubject.jsp");
+            view.forward(request,response);
         }else{
-            request.setAttribute("errorMsg", new ArrayList<>().add("Error creating subject!"));
+            request.setAttribute("errorMsg", "Error creating subject!");
             RequestDispatcher view = request.getRequestDispatcher("CreateSubject.jsp");
             view.forward(request,response);
         }
