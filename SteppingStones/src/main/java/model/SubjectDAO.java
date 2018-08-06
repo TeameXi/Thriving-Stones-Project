@@ -77,6 +77,23 @@ public class SubjectDAO {
         }  
         return result;
     }
+    
+    public static int retrieveSubjectID(String subjectName) {
+        int result = 0;
+        try(Connection conn = ConnectionManager.getConnection()){
+            String sql = "select subject_id from subject where subject_name = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, subjectName);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){
+                result = rs.getInt("subject_id");
+            } 
+        } catch (SQLException ex) {
+            System.out.println("error in retrieveSubject sql");
+        }  
+        return result;
+    }
+    
     public ArrayList<Subject> retrieveAllSubjectsWithId() {
         ArrayList<Subject> subjects = new ArrayList<>();
         String sql = "select subject_id, subject_name from subject order by subject_id";
@@ -97,10 +114,9 @@ public class SubjectDAO {
         return subjects;
     }
     
-    public boolean addSubject(String level, String subject, String branch) {
-        int subjectID = 0;
+    public boolean addSubject(int levelID, String subject, int branchID) {
         boolean status = false;
-        String sql = "insert into subject(subject_name) values(?)";
+        String sql = "insert ignore into subject(subject_name) values(?)";
         
         try(Connection conn = ConnectionManager.getConnection()){
             PreparedStatement stmt = conn.prepareStatement(sql);
@@ -108,26 +124,20 @@ public class SubjectDAO {
             
             stmt.executeUpdate();
             
-            sql = "select subject_id from subject where subject_name=?";
-            stmt = conn.prepareStatement(sql);
-            stmt.setString(1,subject);
-            
-            ResultSet rs = stmt.executeQuery();
-            while(rs.next()){
-                subjectID = rs.getInt(1);
-            }
+            int subjectID = retrieveSubjectID(subject);
             
             if(subjectID > 0){
                 sql = "insert into lvl_sub_rel(level_id, subject_id, branch_id) values(?,?,?)";
                 stmt = conn.prepareStatement(sql);
-                stmt.setString(1,level);
-                stmt.setInt(2,subjectID);
-                stmt.setString(3, branch);
+                stmt.setInt(1, levelID);
+                stmt.setInt(2, subjectID);
+                stmt.setInt(3, branchID);
                 stmt.executeUpdate();
                 status = true;
             }
         } catch (SQLException ex) {
-            Logger.getLogger(SubjectDAO.class.getName()).log(Level.SEVERE, null, ex);
+            //Logger.getLogger(SubjectDAO.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println(ex.getMessage());
         }
         return status;
     }
