@@ -44,21 +44,21 @@
 
     <div class="row">
         <form  action="UploadTutorServlet" method="Post">
-            <%  if (true) {
+            <%  
+                
+                
+               
+                if (user != null && user.getBranchId() != 0) {
+                  
                     BranchDAO branchDao = new BranchDAO();
-                    ArrayList<Branch> branch_lists = branchDao.retrieveAllBranches();
+                    Branch branch = branchDao.retrieveBranchById(user.getBranchId());
             %>
             <div class="form-group" id="branchContainer">
                 <div class="col-lg-3"></div>  
                 <div class="col-lg-5 inputGroupContainer">
                     <div class="input-group">
-                        <span class="input-group-addon"><i class="zmdi zmdi-city"></i></span>
-                        <select name="branch" class="form-control">
-                            <% for (Branch branch : branch_lists) {
-                                    out.println("<option value='" + branch.getBranchId() + "'>" + branch.getName() + "</option>");
-                                }
-                            %>
-                        </select>
+                        <label><span><i class="zmdi zmdi-city">Branch : </i></span></label>
+                        <label><%=branch.getName()%></label>
                     </div>
                 </div>
             </div>
@@ -66,6 +66,7 @@
             <%
                 }
             %>
+            <br/>
             <div id="tutor_container"></div>
         </form>
     </div>

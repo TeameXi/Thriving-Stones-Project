@@ -123,44 +123,7 @@
                         </div>
                     </div>
                 </div>
-                    <%  BranchDAO branchDao = new BranchDAO();
-                    if(false) {
-                        ArrayList<Branch> branch_lists = branchDao.retrieveAllBranches();          
-                %>
-                            <div class="form-group">
-                                <label class="col-lg-2 control-label">Branch</label>  
-                                <div class="col-lg-7 inputGroupContainer">
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="zmdi zmdi-city"></i></span>
-                                        <select name="branch" class="form-control" >
-                                            <option value="0" >Select Center</option>
-                                            <% for(Branch branch: branch_lists){
-                                                    out.println("<option value='"+branch.getBranchId()+"'>"+branch.getName()+"</option>");
-                                               }
-                                            %>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        
-                <% 
-                    }else{
-                        Branch branch = branchDao.retrieveBranchById(2);
-                        String branch_name = branch.getName();
-                %>
-                        <div class="form-group">
-                                <label class="col-lg-2 control-label">Branch</label>  
-                                <div class="col-lg-7 inputGroupContainer">
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="zmdi zmdi-city"></i></span>
-                                        <label class='form-control'><%=branch_name%></label>
-                                    </div>
-                                </div>
-                            </div>
-                <%        
-                    }
-                %>
-
+                
                 <hr/>
                 <h3>Student's Account Information</h3><br/>
                 <div class="form-group">
