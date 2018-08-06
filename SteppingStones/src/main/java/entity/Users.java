@@ -12,12 +12,20 @@ package entity;
 public class Users {
     private String email;
     private String password;
+    private int branch_id;
     
 
     public Users(String email, String password){
         this.email = email;
         this.password = password;
     }
+    
+    public Users(String email, String password,int branch_id){
+        this.email = email;
+        this.password = password;
+        this.branch_id = branch_id;
+    }
+
 
     public Users() {
         
@@ -36,6 +44,14 @@ public class Users {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+    
+    public int getBranchId() {
+        return branch_id;
+    }
+
+    public void setBranchId(int branch_id) {
+        this.branch_id = branch_id;
     }
     
     public boolean authenticateUser(Users user, String password){

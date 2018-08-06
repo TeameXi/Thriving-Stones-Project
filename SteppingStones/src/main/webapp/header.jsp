@@ -1,14 +1,6 @@
 <%@page import="entity.Users"%>
 <!DOCTYPE html>
-<%
-   /*
-            Users user = (Users) session.getAttribute("user");
-            if (user == null) {
-                response.sendRedirect("Login.jsp");
-                return;
-            }
-*/
-%>
+<%@include file="protect.jsp"%>
 <html>
 <head>
 	<title>Stepping Stones</title>
@@ -36,7 +28,7 @@
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">My Account <b class="caret"></b></a>
                             <ul class="dropdown-menu animated fadeInUp">
                               <li><a href="profile.html">Profile</a></li>
-                              <li><a href="login.html">Logout</a></li>
+                              <li><a href="Logout.jsp">Logout</a></li>
                             </ul>
                           </li>
                         </ul>
@@ -57,6 +49,10 @@
                     <!-- Main menu -->
                     <li><a href="dashboard.jsp"><i class="glyphicon glyphicon-dashboard"></i> Dashboard</a></li>
                     
+                    <% 
+                        Users user = (Users)session.getAttribute("user");
+                        if(user != null && user.getBranchId() == 0){
+                    %>
                     <li class="submenu">
                         <a href="#">
                             <i class="zmdi zmdi-city-alt"></i> Branch
@@ -65,7 +61,7 @@
                         <!-- Sub menu -->
                         <ul>
                             <li><a href="CreateBranch.jsp">Add Branch</a></li>
-                            <li><a href="DisplayBranch.jsp">View Branches</a></li>
+                            <li><a href="DisplayBranches.jsp">View Branches</a></li>
                         </ul>
                     </li>
                     <li class="submenu">
@@ -79,6 +75,9 @@
                             <li><a href="DisplayAdmins.jsp">View Admin</a></li>
                         </ul>
                     </li>
+                    <%
+                        }else if(user != null && user.getBranchId() ==1){
+                    %>
                     
                     <li class="submenu">
                         <a href="#">
@@ -131,7 +130,9 @@
                     <li><a href="stats.html"><i class="zmdi zmdi-chart"></i> Financial Reports</a></li>
                     <li><a href="tables.html"><i class="zmdi zmdi-money-box"></i> Payment Handling</a></li>
                     
-
+                    <%
+                        }
+                        %>
                     
 
 

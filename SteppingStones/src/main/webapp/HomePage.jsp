@@ -1,13 +1,7 @@
 <%@page import="entity.Users"%>
 <!DOCTYPE html>
 <html lang="en">
-<%
-        Users user = (Users) session.getAttribute("user");
-        if (user == null) {
-            response.sendRedirect("Login.jsp");
-            return;
-        }
-%>
+<%@include file="protect.jsp"%>
 <head>
 	<title>Menu</title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -16,7 +10,6 @@
 	<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styling/css/main.css">
 </head>
 <body>
-	
 <div class="limiter">
 	<div class="signIn"><img style="max-width: 100%;" src="${pageContext.request.contextPath}/styling/img/menu.png"></img></div>
         <div class="container-login100">
@@ -63,6 +56,5 @@
             </section>	
         </div>
 </div>
-	
 </body>
 </html>

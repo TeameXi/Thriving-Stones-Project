@@ -20,14 +20,18 @@ public class UsersDAO {
     public Users retrieveUserByUsername(String type, final String user) {
         try (Connection conn = ConnectionManager.getConnection()) {
             if (type.equals("admin")) {
-                PreparedStatement stmt = conn.prepareStatement("select admin_password from admin where admin_username = '" + user + "'");
+                PreparedStatement stmt = conn.prepareStatement("select admin_username,admin_password,branch_id from admin where admin_username = '" + user + "'");
                 ResultSet rs = stmt.executeQuery();
-                String pwd = "";
+               
                 while (rs.next()) {
-                    pwd = rs.getString(1);
+                    String username = rs.getString(1);
+                    String pwd = rs.getString(2);
+                    int branch_id = rs.getInt(3);
+                    Users userToReturn = new Users(username, pwd,branch_id);
+                    return userToReturn;
                 }
-                Users userToReturn = new Users(user, pwd);
-                return userToReturn;
+               
+                return null;
 
             } else if (type.equals("tutor")) {
                 PreparedStatement stmt = conn.prepareStatement("select password from tutor where email = " + user);

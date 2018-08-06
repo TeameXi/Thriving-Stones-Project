@@ -8,8 +8,8 @@ package controller;
 import model.UsersDAO;
 import entity.Users;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashMap;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -38,58 +38,60 @@ public class LoginServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         HashMap<String, String> errors = new HashMap<>();
         HttpSession session = request.getSession();
-                    
+
         String type = request.getParameter("type");
         String username = request.getParameter("username");
         String password = request.getParameter("password");
-        
+
         if ((username == null || username.isEmpty()) && (password == null || password.isEmpty())) {
             errors.put("error", "Missing Email & Password");
         }
-        
+
         if (username == null || username.isEmpty()) {
             errors.put("error", "Missing Email & Password");
         }
-        
-        if(password == null || password.isEmpty()){
+
+        if (password == null || password.isEmpty()) {
             errors.put("error", "Missing Password");
         }
-        
-        if(errors.isEmpty()) {
+
+        PrintWriter out = response.getWriter();
+        if (errors.isEmpty()) {
             UsersDAO users = new UsersDAO();
             Users user = users.retrieveUserByUsername(type, username);
-            
-            if(user != null) {
+            if (user != null) {
+                out.println("Not null user");
                 String pwd = user.getPassword();
-                if(password.equals(pwd)) {
-                    if(type.equals("admin")){
+                if (password.equals(pwd)) {
+                    if (type.equals("admin")) {
                         session.setAttribute("user", user);
-                        RequestDispatcher view = request.getRequestDispatcher("HomePage.jsp");
-                        view.forward(request, response);
-                    }else if (type.equals("tutor")){
+                        session.setAttribute("role", "admin");
+                        response.sendRedirect("dashboard.jsp");
+
+                    } else if (type.equals("tutor")) {
                         session.setAttribute("user", user);
-                        RequestDispatcher view = request.getRequestDispatcher("tutorHomepage.jsp");
-                        view.forward(request, response);
-                    }else if (type.equals("student")){
+                        session.setAttribute("role", "tutor");
+                        response.sendRedirect("tutorHomepage.jsp");
+
+                    } else if (type.equals("student")) {
                         session.setAttribute("user", user);
-                        RequestDispatcher view = request.getRequestDispatcher("studentHomepage.jsp");
-                        view.forward(request, response);
-                    }else if (type.equals("parent")){
+                        session.setAttribute("role", "student");
+                        response.sendRedirect("studentHomepage.jsp");
+
+                    } else if (type.equals("parent")) {
                         session.setAttribute("user", user);
-                        RequestDispatcher view = request.getRequestDispatcher("parentHomepage.jsp");
-                        view.forward(request, response);
+                        session.setAttribute("role", "parent");
+                        response.sendRedirect("parentHomepage.jsp");
+
                     }
-                }else{
-                    errors.put("error", "Incorrect Password");
-                    session.setAttribute("response", errors);
-                    RequestDispatcher view = request.getRequestDispatcher("Login.jsp");
-                    view.forward(request, response);
+                } else {
+                    response.sendRedirect("Login.jsp?error=true");
                 }
+            } else {
+                response.sendRedirect("Login.jsp?error=true");
             }
-        }else {
-            session.setAttribute("response", errors);
-            RequestDispatcher view = request.getRequestDispatcher("Login.jsp");
-            view.forward(request, response);
+        } else {
+            response.sendRedirect("Login.jsp?error=true");
         }
     }
 
