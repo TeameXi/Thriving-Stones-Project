@@ -34,6 +34,14 @@ public class Branch {
         this.address = branchAddress;
         this.phone = phoneNo;
     }
+    
+    public Branch(int branchID, String branchName, String startDate, String branchAddress, int phoneNo){
+        this.branchId = branchID;
+        this.name = branchName;
+        this.startDate = startDate;
+        this.address = branchAddress;
+        this.phone = phoneNo;
+    }
 
     /**
      * @return the branchId

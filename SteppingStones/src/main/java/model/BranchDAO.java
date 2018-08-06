@@ -41,7 +41,7 @@ public class BranchDAO {
 
     public boolean updateBranch(int branchID, String branchName, String startDate, String branchAddress, int phoneNo) {
         try (Connection conn = ConnectionManager.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement("UPDATE tutor SET name=?,starting_year=?,school_address=?,phone_number=? WHERE branch_id =? ")) {
+            PreparedStatement preparedStatement = conn.prepareStatement("UPDATE branch SET name=?,starting_year=?,school_address=?,phone_number=? WHERE branch_id =? ")) {
             preparedStatement.setString(1, branchName);
             preparedStatement.setString(2, startDate);
             preparedStatement.setString(3, branchAddress);
@@ -130,6 +130,27 @@ public class BranchDAO {
             System.out.println(e);
         }
 
+        return branches;
+    }
+    
+    public ArrayList<Branch> retrieveAllBranches(){
+        ArrayList<Branch> branches = new ArrayList<>();
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement("select * from branch");
+            ResultSet rs = stmt.executeQuery();
+
+            while(rs.next()){
+                int branchID = rs.getInt("branch_id");
+                String branchName = rs.getString("name");
+                String startingYear = rs.getString("starting_year");
+                String schoolAddress = rs.getString("school_address");
+                int phoneNum = rs.getInt("phone_number");
+                Branch branch = new Branch(branchID, branchName, startingYear, schoolAddress, phoneNum);
+                branches.add(branch);
+            }
+        }catch(SQLException e){
+            System.out.print(e.getMessage());
+        }       
         return branches;
     }
 
