@@ -52,8 +52,12 @@ public class CreateBranchServlet extends HttpServlet {
         } else {
             Branch tempBranch = new Branch(branchName, startDate, branchAddress, phoneNo);
             boolean status = branchdao.addBranch(tempBranch);
-            request.setAttribute("creation_status", "" + status);
-            RequestDispatcher dispatcher = request.getRequestDispatcher("DisplayBranches.jsp");
+            if(status){
+                request.setAttribute("status", "Branch created successfully!");
+            }else{
+                request.setAttribute("errorMsg", "Error creating subject!");
+            }
+            RequestDispatcher dispatcher = request.getRequestDispatcher("CreateBranch.jsp");
             dispatcher.forward(request, response);
         }
     }

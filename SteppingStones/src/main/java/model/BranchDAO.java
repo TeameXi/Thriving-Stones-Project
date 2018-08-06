@@ -22,12 +22,11 @@ public class BranchDAO {
 
     public boolean addBranch(Branch branch) {
         try (Connection conn = ConnectionManager.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO branch(branch_id,name,starting_year,school_address,phone_number) VALUES(?,?,?,?,?)")) {
-            preparedStatement.setInt(1, retrieveNoOfBranch() + 1);
-            preparedStatement.setString(2, branch.getName());
-            preparedStatement.setString(3, branch.getStartDate());
-            preparedStatement.setString(4, branch.getAddress());
-            preparedStatement.setInt(5, branch.getPhone());
+            PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO branch(name,starting_year,school_address,phone_number) VALUES(?,?,?,?)")) {
+            preparedStatement.setString(1, branch.getName());
+            preparedStatement.setString(2, branch.getStartDate());
+            preparedStatement.setString(3, branch.getAddress());
+            preparedStatement.setInt(4, branch.getPhone());
 
             int num = preparedStatement.executeUpdate();
             if (num != 0) {
@@ -35,7 +34,7 @@ public class BranchDAO {
             }
 
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            System.out.println(ex.getMessage());
         }
         return false;
     }
