@@ -17,7 +17,7 @@ public class AdminDAO {
 
     public boolean addAdmin(Admin admin) {
         try (Connection conn = ConnectionManager.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO admin(admin_id,admin_username,password,branch_id) VALUES(?,?,?,?)")) {
+                PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO admin(admin_id,admin_username,admin_password,branch_id) VALUES(?,?,?,?)")) {
             preparedStatement.setInt(1, retrieveNoOfAdmin() + 1);
             preparedStatement.setString(2, admin.getAdmin_username());
             preparedStatement.setString(3, admin.getPassword());
