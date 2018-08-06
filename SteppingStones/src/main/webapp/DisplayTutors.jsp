@@ -1,3 +1,4 @@
+<%@page import="java.util.List"%>
 <%@page import="entity.Branch"%>
 <%@page import="model.BranchDAO"%>
 <%@page import="model.TutorDAO"%>
@@ -291,11 +292,11 @@
             TutorDAO tutuorDAO = new TutorDAO();
             ArrayList<Tutor> tutors = tutuorDAO.retrieveAllTutors();
             String branch_name = "";
-            ArrayList<Branch> branch_lists = null;
+            List<Branch> branch_lists = null;
             if (tutors.size() > 0) {
                 BranchDAO branchDao = new BranchDAO();
                 if (true) {
-                    branch_lists = branchDao.retrieveAllBranches();
+                    branch_lists = branchDao.retrieveBranches();
                 } else {
                     Branch b = branchDao.retrieveBranchById(2);
                     branch_name = b.getName();
