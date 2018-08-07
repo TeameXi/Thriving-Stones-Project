@@ -20,10 +20,11 @@ import java.util.LinkedHashMap;
  */
 public class StudentDAO {
 
-    public static void insertStudent(String studentNRIC, String studentName, int phone, String address, String BOD, String gender, String stuEmail, String stuPassword, int level_id, int branch_id) {
+    public static boolean insertStudent(String studentNRIC, String studentName, int phone, String address, String BOD, String gender, String stuEmail, String stuPassword, int level_id, int branch_id) {
+        boolean status = false;
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            String sql = "insert into student(student_name, phone, address, birth_date, gender, email, password, required_amount, outstanding_amount, level_id, branch_id, student_nric)"
+            String sql = "insert ignore into student(student_name, phone, address, birth_date, gender, email, password, required_amount, outstanding_amount, level_id, branch_id, student_nric)"
                     + " value(?, ?, ?, ?, ?, ?, ?, ?, ? ,?, ?, ? )";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, studentName);
@@ -40,9 +41,11 @@ public class StudentDAO {
             stmt.setString(12, studentNRIC);
             stmt.executeUpdate(); 
             conn.commit();
+            status = true;
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+        return status;
     }
     
     public static int retrieveStudentID(String studentName){

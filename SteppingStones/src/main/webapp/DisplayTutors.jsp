@@ -727,7 +727,7 @@ function deleteTutorQueryAjax(tutor_id) {
             console.log(data);
             if (data === 1) {
                 $("#tid_" + tutor_id).remove();
-                html = '<div class="alert alert-success col-md-12"><strong>Success!</strong> Deleted Student record successfully</div>';
+                html = '<div class="alert alert-success col-md-12"><strong>Success!</strong> Deleted Tutor record successfully</div>';
             } else {
                 html = '<div class="alert alert-danger col-md-12"><strong>Sorry!</strong> Something went wrong</div>';
             }

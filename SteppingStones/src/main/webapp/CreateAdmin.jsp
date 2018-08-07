@@ -39,7 +39,7 @@
             out.println("<div id='errorMsg' class='alert alert-success col-md-12'><strong>"+status+"</strong></div>");
         }
     %> 
-    <div style="text-align: center;margin: 20px;"><span class="tab_active">Add Admin</span></h5></div>
+    <div style="text-align: center;margin: 20px;"><span class="tab_active">Add Branch Admin</span></h5></div>
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-7">
@@ -72,6 +72,16 @@
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-account"></i></span>
                             <input id="admin_name"  name="admin_name" placeholder="Username" class="form-control"  type="text">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">Email**</label>  
+                    <div class="col-lg-7 inputGroupContainer">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="zmdi zmdi-email"></i></span>
+                            <input name="adminEmail" placeholder="E-Mail Address" class="form-control"  type="text">
                         </div>
                     </div>
                 </div>
@@ -184,8 +194,18 @@ $(function () {
                         message: 'Please enter username'
                     }
                 }
+            },
+            adminEmail:{
+                validators: {
+                    notEmpty: {
+                        message: 'Enter Email Address'
+                    },
+                    emailAddress: {
+                        message: 'Please enter valid email address'
+                    }
+                }
             }
-        }
+        }   
     });
 });
 </script>

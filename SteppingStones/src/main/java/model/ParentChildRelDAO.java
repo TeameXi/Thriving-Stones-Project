@@ -17,15 +17,16 @@ import static model.StudentDAO.retrieveStudentID;
  * @author DEYU
  */
 public class ParentChildRelDAO {
-    public static void insertParentChildRel(String parentName, String studentName) {
+    public static void insertParentChildRel(String parentName, String studentName, int branchID) {
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            int parent_id = ParentDAO.retrieveParentID(parentName);
-            int student_id = retrieveStudentID(studentName);
-            String sql = "insert into parent_child_rel(parent_id, child_id) value(?, ? )";
+            int parentID = ParentDAO.retrieveParentID(parentName);
+            int studentID = retrieveStudentID(studentName);
+            String sql = "insert into parent_child_rel(parent_id, child_id, branch_id) value(?, ?, ? )";
             PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setInt(1, parent_id);
-            stmt.setInt(2, student_id);
+            stmt.setInt(1, parentID);
+            stmt.setInt(2, studentID);
+            stmt.setInt(3, branchID);
             stmt.executeUpdate(); 
             conn.commit();
         } catch (Exception e) {
@@ -63,6 +64,22 @@ public class ParentChildRelDAO {
             System.out.println(e.getMessage());
         }
         return deletedStatus;
+    }
+    
+    public static int getNumOfChild(int parentID){
+        int numOfChild = 0;
+        try(Connection conn = ConnectionManager.getConnection()){
+            String sql = "select count(distinct child_id) as count from parent_child_rel group by parent_id having parent_id = ?;";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, parentID);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){
+                numOfChild = rs.getInt("count");
+            } 
+        } catch (SQLException ex) {
+            System.out.println("error in getParentID sql");
+        }  
+        return numOfChild;
     }
     
 }

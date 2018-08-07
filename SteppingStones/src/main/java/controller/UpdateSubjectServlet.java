@@ -5,26 +5,24 @@
  */
 package controller;
 
-import model.TutorDAO;
-import entity.Tutor;
+
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.SendMail;
+import model.SubjectDAO;
 
 /**
  *
- * @author Riana
+ * @author Hui Xin
  */
-@WebServlet(name = "ForgotPasswordServlet", urlPatterns = {"/ForgotPasswordServlet"})
-public class ForgotPasswordServlet extends HttpServlet {
+@WebServlet(name = "UpdateSubjectServlet", urlPatterns = {"/UpdateSubjectServlet"})
+public class UpdateSubjectServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,27 +36,26 @@ public class ForgotPasswordServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        Map<String, Object> authObj = new LinkedHashMap<>();
-        String email = request.getParameter("email");
-        String status = "";
-        ArrayList<String> errorList = new ArrayList<>();
+        Map<String, Object> updates = new HashMap<>();
 
-        TutorDAO tutors = new TutorDAO();
-        Tutor tutor = tutors.retrieveTutorByEmail(email);
+        try (PrintWriter out = response.getWriter()) {
+            String subjectID = request.getParameter("subjectID");
+            if(subjectID != ""){
+                int id = Integer.parseInt(subjectID);
+                String name = request.getParameter("name");
+                System.out.println(name);
 
-        if (tutor != null) {
-            System.out.println(tutor.getEmail());
-            out.println(tutor.getEmail());
-            String subject = "";
-            String text = "";
-            SendMail.sendingEmail(tutor.getEmail(), subject, text);
-        } else {
-            authObj.put("status", "error");
-            String[] msgArray = {"This email doesn't exist"};
-            authObj.put("messages", msgArray);
-            request.getSession(true).setAttribute("response", authObj);
-            request.getRequestDispatcher("ResetPassword.jsp").forward(request, response);
+                SubjectDAO subjects = new SubjectDAO();
+                boolean status = subjects.updateSubject(id, name);
+                if(status){
+                    out.println(1);
+                }else{
+                    out.println(0);
+                }
+            }else{
+                out.println(0);
+            }
+
         }
     }
 

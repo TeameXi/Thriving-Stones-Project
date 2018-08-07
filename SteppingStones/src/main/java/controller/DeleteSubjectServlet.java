@@ -5,26 +5,25 @@
  */
 package controller;
 
-import model.TutorDAO;
-import entity.Tutor;
+
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.SendMail;
+import model.SubjectDAO;
+
+import model.TutorDAO;
+
 
 /**
  *
- * @author Riana
+ * @author Hui Xin
  */
-@WebServlet(name = "ForgotPasswordServlet", urlPatterns = {"/ForgotPasswordServlet"})
-public class ForgotPasswordServlet extends HttpServlet {
+@WebServlet(name = "DeleteSubjectServlet", urlPatterns = {"/DeleteSubjectServlet"})
+public class DeleteSubjectServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,28 +37,24 @@ public class ForgotPasswordServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        Map<String, Object> authObj = new LinkedHashMap<>();
-        String email = request.getParameter("email");
-        String status = "";
-        ArrayList<String> errorList = new ArrayList<>();
 
-        TutorDAO tutors = new TutorDAO();
-        Tutor tutor = tutors.retrieveTutorByEmail(email);
+        try(PrintWriter out = response.getWriter()){
+            if(request.getParameter("subjectID") != ""){
+                int subjectID = Integer.parseInt(request.getParameter("subjectID"));
 
-        if (tutor != null) {
-            System.out.println(tutor.getEmail());
-            out.println(tutor.getEmail());
-            String subject = "";
-            String text = "";
-            SendMail.sendingEmail(tutor.getEmail(), subject, text);
-        } else {
-            authObj.put("status", "error");
-            String[] msgArray = {"This email doesn't exist"};
-            authObj.put("messages", msgArray);
-            request.getSession(true).setAttribute("response", authObj);
-            request.getRequestDispatcher("ResetPassword.jsp").forward(request, response);
+                SubjectDAO subjectDAO = new SubjectDAO();
+                boolean status =  subjectDAO.deleteSubject(subjectID);
+
+                if (status == true) {
+                    out.println(1);
+                } else {
+                    out.println(0);
+                }
+            }else{
+                out.println(0);
+            }
         }
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

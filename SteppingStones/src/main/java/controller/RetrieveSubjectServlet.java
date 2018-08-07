@@ -5,6 +5,7 @@
  */
 package controller;
 
+import entity.Branch;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -12,19 +13,16 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.ParentChildRelDAO;
-import model.ParentDAO;
-import model.StudentClassDAO;
-import model.StudentDAO;
-import model.StudentGradeDAO;
-
+import model.BranchDAO;
+import model.SubjectDAO;
+import org.json.JSONObject;
 
 /**
  *
- * @author DEYU
+ * @author MOH MOH SAN
  */
-@WebServlet(name = "DeleteStudentServlet", urlPatterns = {"/DeleteStudentServlet"})
-public class DeleteStudentServlet extends HttpServlet {
+@WebServlet(name = "RetrieveSubjectServlet", urlPatterns = {"/RetrieveSubjectServlet"})
+public class RetrieveSubjectServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -37,27 +35,28 @@ public class DeleteStudentServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        response.setContentType("text/html; charset=utf-8");
+        try (PrintWriter out = response.getWriter()) {
+          
+            JSONObject obj = new JSONObject();
+            int subjectID = Integer.parseInt(request.getParameter("subjectID"));
+            int branchID = Integer.parseInt(request.getParameter("branchID"));
+            SubjectDAO subjects = new SubjectDAO();
+            String subject = subjects.retrieveSubject(subjectID);
+            BranchDAO bDAO = new BranchDAO();
+            Branch b = bDAO.retrieveBranchById(branchID);
+
+            if(subject != null){
+                obj.put("id",subjectID);
+                obj.put("name",subject);
+                obj.put("branch", b.getBranchId());
+            }
+            
+            out.println(obj);
+       
+        }
         
         
-        PrintWriter out = response.getWriter();
-        int studentID = Integer.parseInt(request.getParameter("studentID"));
-        int parentID = ParentChildRelDAO.getParentID(studentID);
-        boolean deleteStudent = StudentDAO.deleteStudentbyID(studentID);
-        boolean deleteParentChildRel = ParentChildRelDAO.deleteParentChildRel(studentID);
-        boolean deleteParent;
-        if(ParentChildRelDAO.getNumOfChild(parentID) == 1){
-            deleteParent = ParentDAO.deleteParent(parentID);
-        }else{
-            deleteParent = true;
-        }     
-        boolean deleteTuitionGrade = StudentGradeDAO.deleteStudentTuitionGrade(studentID);
-        boolean deleteStudentClassRel = StudentClassDAO.deleteStudentClassRel(studentID);
-        
-        if(deleteStudent && deleteParentChildRel && deleteParent && deleteTuitionGrade && deleteStudentClassRel){
-            out.println(1);
-        }else{
-            out.println(0);
-        }     
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

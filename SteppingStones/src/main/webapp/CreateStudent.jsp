@@ -25,13 +25,19 @@
 
 
 <div class="col-md-10">
+    <%  
+        String existingStudent = (String) request.getAttribute("existingStudent");
+        if (existingStudent != null) {
+            out.println("<div id='creation_status' class='alert alert-danger col-md-12'>Student : <strong>"+existingStudent+"</strong> is already added. Try another student again. </div>");
+        }
+    %>
 
     <div style="text-align: center;margin: 20px;"><span class="tab_active">Add Student </span> / <a href="UploadStudents.jsp">Upload Students</a></h5></div>
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-7">
             <h3>Students Details</h3><br/>
-            <form id="createTutorForm" method="POST" class="form-horizontal" action="StudentApplicationServlet">
+            <form id="createTutorForm" method="POST" class="form-horizontal" action="CreateStudentServlet">
                 <div class="form-group">
                     <label class="col-lg-2 control-label">NRIC</label>  
                     <div class="col-lg-7 inputGroupContainer">
@@ -41,7 +47,11 @@
                         </div>
                     </div>
                 </div>
-
+                
+                <% if(user != null){
+                        out.println("<input type='hidden' name='branch' value='"+user.getBranchId()+"'/>");
+                    }
+                %>
 
                 <div class="form-group">
                     <label class="col-lg-2 control-label">Name**</label>  

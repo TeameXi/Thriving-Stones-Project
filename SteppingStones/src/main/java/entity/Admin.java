@@ -14,6 +14,7 @@ public class Admin {
     private String admin_username;
     private String password;
     private int branch_id;
+    private String email;
     
     public Admin(){
         
@@ -24,10 +25,11 @@ public class Admin {
         this.branch_id = branch_id;
     }
     
-    public Admin(String admin_username, String password, int branch_id){
+    public Admin(String admin_username, String password, String email, int branch_id){
         this(admin_username, branch_id);
         this.password = password;
         this.branch_id = branch_id;
+        this.email = email;
     }
     /**
      * @return the admin_id
@@ -85,5 +87,18 @@ public class Admin {
         this.branch_id = branch_id;
     }
     
+    /**
+     * @return the email
+     */
+    public String getEmail() {
+        return email;
+    }
+
+    /**
+     * @param email the admin_id to set
+     */
+    public void setEmail(String email) {
+        this.email = email;
+    }
     
 }

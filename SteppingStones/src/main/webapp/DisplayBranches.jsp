@@ -243,10 +243,8 @@
     }
 </style>
 <div class="col-md-10">
-    <div style="margin: 20px;"><h3>Student Lists</h3></div>
+    <div style="margin: 20px;"><h3>Branch Lists</h3></div>
     <div class="row" id="errorMsg"></div>
-    <span class="toggler active" data-toggle="grid"><span class="zmdi zmdi-view-dashboard"></span></span>
-    <span class="toggler" data-toggle="list"><span class="zmdi zmdi-view-list"></span></span>
     <ul class="surveys grid">
         <%
             BranchDAO branchDAO = new BranchDAO();

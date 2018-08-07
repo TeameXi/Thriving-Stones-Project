@@ -13,6 +13,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.SendMail;
 import model.TutorDAO;
 
 @WebServlet(name = "CreateTutorServlet", urlPatterns = {"/CreateTutorServlet"})
@@ -62,10 +63,17 @@ public class CreateTutorServlet extends HttpServlet {
         }else{
             Tutor tempTutor = new Tutor(nric,name,phone,address,image_url,birth_date,gender,email,password,branch);
             boolean status = tutordao.addTutor(tempTutor);
+            if(status){
+                String subject = "Stepping Stones Tuition Center Tutor's Account Creation";
+                String text = "Your account has been created.\n\nBelow is the username and password to access your account: \nUsername: " + name
+                        + "\nPassword: " + password + "\n\nYou can update your password via https://www.google.com/ or \n Login via https://www.google.com/";
+                if(email != null && !email.equals("")){
+                    SendMail.sendingEmail(email, subject, text);
+                }    
+            }
             request.setAttribute("creation_status",""+status);
             RequestDispatcher dispatcher = request.getRequestDispatcher("DisplayTutors.jsp");
             dispatcher.forward(request, response);
-            
         }
     }
 
