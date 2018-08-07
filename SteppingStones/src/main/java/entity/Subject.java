@@ -12,10 +12,17 @@ package entity;
 public class Subject {
     private int subjectId;
     private String subjectName;
+    private int branchId;
 
     public Subject(int subjectId, String subjectName) {
         this.subjectId = subjectId;
         this.subjectName = subjectName;
+    }
+    
+    public Subject(int subjectId, String subjectName, int branchId){
+        this.subjectId = subjectId;
+        this.subjectName = subjectName;
+        this.branchId = branchId;
     }
     
     
@@ -38,4 +45,12 @@ public class Subject {
         this.subjectName = subjectName;
     }
     
+    public void setBranchID(int branchId) {
+        this.branchId = branchId;
+    }
+    
+    public int getBranchId() {
+        return branchId;
+    }
+
 }
