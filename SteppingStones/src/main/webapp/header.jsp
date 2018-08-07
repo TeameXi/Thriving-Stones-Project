@@ -73,13 +73,13 @@
                             </li>
                             <li class="submenu">
                                 <a href="#">
-                                    <i class="zmdi zmdi-account-o"></i> Admin
+                                    <i class="zmdi zmdi-account-o"></i> Branch Admin
                                     <span class="caret pull-right"></span>
                                 </a>
                                 <!-- Sub menu -->
                                 <ul>
-                                    <li><a href="CreateAdmin.jsp">Add Admin account</a></li>
-                                    <li><a href="DisplayAdmins.jsp">View Admin</a></li>
+                                    <li><a href="CreateAdmin.jsp">Add Branch Admin account</a></li>
+                                    <li><a href="DisplayAdmins.jsp">View Branch Admin</a></li>
                                 </ul>
                             </li>
                     <%

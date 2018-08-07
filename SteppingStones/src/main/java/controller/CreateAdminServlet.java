@@ -15,6 +15,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.AdminDAO;
+import model.BranchDAO;
+import model.SendMail;
+import model.SendSMS;
 
 @WebServlet(name = "CreateAdminServlet", urlPatterns = {"/CreateAdminServlet"})
 public class CreateAdminServlet extends HttpServlet {
@@ -34,6 +37,8 @@ public class CreateAdminServlet extends HttpServlet {
         String admin_username = request.getParameter("admin_name");
         String password = request.getParameter("adminPassword");
         int branch_id = Integer.parseInt(request.getParameter("branch"));
+        String adminEmail = request.getParameter("adminEmail");
+        BranchDAO branchDao = new BranchDAO();
         AdminDAO adminDao = new AdminDAO();
         Admin existingAdmin = adminDao.retrieveAdminByName(admin_username);
         if (existingAdmin != null) {
@@ -41,9 +46,15 @@ public class CreateAdminServlet extends HttpServlet {
             RequestDispatcher dispatcher = request.getRequestDispatcher("CreateAdmin.jsp");
             dispatcher.forward(request, response);
         } else {
-            Admin tempAdmin = new Admin(admin_username, password, branch_id);
+            Admin tempAdmin = new Admin(admin_username, password, adminEmail, branch_id);
             boolean status = adminDao.addAdmin(tempAdmin);
             if(status){
+                String subject = "Stepping Stones Tuition Center Branch Admin's Account Creation";
+                String text = "Your account has been created.(Admin Account for " + branchDao.retrieveBranchById(branch_id).getName() + ")\n\nBelow is the username and password to access your account: \nUsername: " + admin_username
+                        + "\nPassword: " + password + "\n\nYou can update your password via https://www.google.com/ or \n Login via https://www.google.com/"; 
+                if(adminEmail != null && !adminEmail.equals("")){
+                    SendMail.sendingEmail(adminEmail, subject, text);
+                }
                 request.setAttribute("status", "Admin created successfully!");
             }else{
                 request.setAttribute("errorMsg", "Error creating admin!");

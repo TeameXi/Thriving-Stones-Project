@@ -66,7 +66,7 @@ public class ParentChildRelDAO {
         return deletedStatus;
     }
     
-    public static int countNumOfChild(int parentID){
+    public static int getNumOfChild(int parentID){
         int numOfChild = 0;
         try(Connection conn = ConnectionManager.getConnection()){
             String sql = "select count(distinct child_id) as count from parent_child_rel group by parent_id having parent_id = ?;";

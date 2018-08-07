@@ -17,11 +17,12 @@ public class AdminDAO {
 
     public boolean addAdmin(Admin admin) {
         try (Connection conn = ConnectionManager.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO admin(admin_id,admin_username,admin_password,branch_id) VALUES(?,?,?,?)")) {
+                PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO admin(admin_id,admin_username,admin_password,email,branch_id) VALUES(?,?,?,?,?)")) {
             preparedStatement.setInt(1, retrieveNoOfAdmin() + 1);
             preparedStatement.setString(2, admin.getAdmin_username());
             preparedStatement.setString(3, admin.getPassword());
-            preparedStatement.setInt(4, admin.getBranch_id());
+            preparedStatement.setString(4, admin.getEmail());
+            preparedStatement.setInt(5, admin.getBranch_id());
 
             int num = preparedStatement.executeUpdate();
             if (num != 0) {
