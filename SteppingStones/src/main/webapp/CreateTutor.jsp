@@ -274,9 +274,6 @@ $(function () {
             },
             phone: {
                 validators: {
-                    notEmpty: {
-                        message: 'Please enter phone number'
-                    },
                     between: {
                         min: 80000000,
                         max: 99999999,
@@ -297,8 +294,8 @@ $(function () {
             tutorImage: {
                 validators: {
                     file: {
-                        extension: 'jpeg,png',
-                        type: 'image/jpeg,image/png',
+                        extension: 'jpeg,png,jpg',
+                        type: 'image/jpeg,image/png,image/jpg',
                         message: 'Invalid format.Must be image'
                     }
                 }

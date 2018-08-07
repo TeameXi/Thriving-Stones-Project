@@ -10,9 +10,12 @@
 <body>
     <%
         Users user = (Users)session.getAttribute("user");
+        String role = (String)session.getAttribute("role");
         String account = "";
+        int branch_id = 0;
         if(user != null){
             account = user.getEmail();
+            branch_id = user.getBranchId();
         }
     %>
     <!--Header-->
@@ -33,7 +36,14 @@
                           <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%=account %><b class="caret"></b></a>
                             <ul class="dropdown-menu animated fadeInUp">
-                              <li><a href="profile.html">Profile</a></li>
+                                <%
+                                    if(role != null && role == "admin"){
+                                        out.println("<li><a href='ProfileForAdmin.jsp'>Manage Account</a></li>");
+                                    }else if(role != null && role == "tutor"){
+                                        out.println("<li><a href='ProfileForTutor.jsp'>Manage Account</a></li>");
+                                    }
+                                %>
+                              <li><a href="account_setting.html">Update Password</a></li>
                               <li><a href="Logout.jsp">Logout</a></li>
                             </ul>
                           </li>
@@ -57,8 +67,8 @@
                     
                     <% 
                 
-                        String role = (String)session.getAttribute("role");
-                        if(user != null && user.getBranchId() == 0){
+                       
+                        if(user != null && user.getBranchId() == 0 && role=="admin"){
                     %>
                             <li class="submenu">
                                 <a href="#">
@@ -140,7 +150,34 @@
                     
                     <%
                         }else if(role != null && user != null && role == "tutor" ){
-
+                    %>
+                            <li><a href=""><i class="zmdi zmdi-money-box"></i>Your Payment</a></li>
+                            <li><a href=""><i class="zmdi zmdi-money-box"></i>Classes</a></li>
+                            <li class="submenu">
+                                <a href="#">
+                                    <i class="zmdi zmdi zmdi-graduation-cap"></i> Student Attendance 
+                                    <span class="caret pull-right"></span>
+                                </a>
+                                <!-- Sub menu -->
+                                <ul>
+                                    <li><a href="CreateBranch.jsp">Mark Attendance</a></li>
+                                    <li><a href="DisplayBranches.jsp">View Attendance</a></li>
+                                </ul>
+                            </li>
+                            <li class="submenu">
+                                <a href="#">
+                                    <i class="zmdi zmdi-account-o"></i> Admin
+                                    <span class="caret pull-right"></span>
+                                </a>
+                                <!-- Sub menu -->
+                                <ul>
+                                    <li><a href="CreateAdmin.jsp">Add Admin account</a></li>
+                                    <li><a href="DisplayAdmins.jsp">View Admin</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="stats.html"><i class="zmdi zmdi-chart"></i>Your Attendance</a></li>
+                            <li><a href="stats.html"><i class="zmdi zmdi-chart"></i>Student's Grades</a></li>
+                    <%
                         }else if(role != null && user != null && role == "parent" ){
 
                         }else if(role != null && user != null && role == "student" ){

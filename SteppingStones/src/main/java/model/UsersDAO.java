@@ -17,55 +17,59 @@ import java.util.Scanner;
  */
 public class UsersDAO {
 
-    public Users retrieveUserByUsername(String type, final String user) {
+    public Users retrieveUserByUsername(String type,String name) {
         try (Connection conn = ConnectionManager.getConnection()) {
             if (type.equals("admin")) {
-                PreparedStatement stmt = conn.prepareStatement("select admin_username,admin_password,branch_id from admin where admin_username = '" + user + "'");
+                PreparedStatement stmt = conn.prepareStatement("select admin_username,admin_password,branch_id from admin where admin_username = ?");
+                stmt.setString(1, name.trim());
                 ResultSet rs = stmt.executeQuery();
                
                 while (rs.next()) {
                     String username = rs.getString(1);
                     String pwd = rs.getString(2);
                     int branch_id = rs.getInt(3);
-                    Users userToReturn = new Users(username, pwd,branch_id);
-                    return userToReturn;
+                    return new Users(username, pwd,branch_id);
                 }
                
                 return null;
 
             } else if (type.equals("tutor")) {
-                PreparedStatement stmt = conn.prepareStatement("select password from tutor where email = " + user);
+                System.out.println(type);
+                System.out.println(name.trim());
+                PreparedStatement stmt = conn.prepareStatement("select tutor_id,tutor_fullname,password from tutor where tutor_fullname = ?");
+                stmt.setString(1,name.trim());
                 ResultSet rs = stmt.executeQuery();
-                String pwd = "";
                 while (rs.next()) {
-                    pwd = rs.getString(1);
+                    int tutorId = rs.getInt(1);
+                    String username = rs.getString(2);
+                    String pwd = rs.getString(3);
+                    return new Users(tutorId,username, pwd);
                 }
-                Users userToReturn = new Users(user, pwd);
-                return userToReturn;
+                return null;
 
             } else if (type.equals("student")) { //name+birthdate.pass
-                Scanner sc = new Scanner(user);
+                Scanner sc = new Scanner(name);
                 sc.useDelimiter(".");
-                String name = sc.next();
+                String username = sc.next();
                 String dob = sc.next();
                 sc.close();
-                PreparedStatement stmt = conn.prepareStatement("select password from student where student_name = " + name + "and birth_date = " + dob);
+                PreparedStatement stmt = conn.prepareStatement("select password from student where student_name = " + username + "and birth_date = " + dob);
                 ResultSet rs = stmt.executeQuery();
                 String pwd = "";
                 while (rs.next()) {
                     pwd = rs.getString(1);
                 }
-                Users userToReturn = new Users(user, pwd);
+                Users userToReturn = new Users(name, pwd);
                 return userToReturn;
 
             } else if (type.equals("parent")) {//phone.pass
-                PreparedStatement stmt = conn.prepareStatement("select password from parent where phone = " + user);
+                PreparedStatement stmt = conn.prepareStatement("select password from parent where phone = ?");
                 ResultSet rs = stmt.executeQuery();
                 String pwd = "";
                 while (rs.next()) {
                     pwd = rs.getString(1);
                 }
-                Users userToReturn = new Users(user, pwd);
+                Users userToReturn = new Users(name, pwd);
                 return userToReturn;
             }
 

@@ -10,6 +10,7 @@ package entity;
  * @author Riana
  */
 public class Users {
+    private int user_id;
     private String email;
     private String password;
     private int branch_id;
@@ -25,7 +26,12 @@ public class Users {
         this.password = password;
         this.branch_id = branch_id;
     }
-
+    
+    public Users(int user_id,String email, String password){
+        this.user_id = user_id;
+        this.email = email;
+        this.password = password;
+    }
 
     public Users() {
         
@@ -52,6 +58,14 @@ public class Users {
 
     public void setBranchId(int branch_id) {
         this.branch_id = branch_id;
+    }
+    
+    public int getUserId() {
+        return user_id;
+    }
+
+    public void setUserId(int user_id) {
+        this.user_id = user_id;
     }
     
     public boolean authenticateUser(Users user, String password){

@@ -290,10 +290,7 @@
     <span class="toggler" data-toggle="list"><span class="zmdi zmdi-view-list"></span></span>
     <ul class="surveys grid">
         <%
-            int branch_id = 0;
-            if(user1 != null){
-                branch_id = user1.getBranchId();
-            }
+
             TutorDAO tutuorDAO = new TutorDAO();
             ArrayList<Tutor> tutors = tutuorDAO.retrieveAllTutorsByBranch(branch_id);
            
