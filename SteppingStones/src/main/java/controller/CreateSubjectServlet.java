@@ -6,7 +6,6 @@
 package controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -34,22 +33,22 @@ public class CreateSubjectServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String level = request.getParameter("level");
-        int levelID = 0;
-        int branchID = 0;
-        String subjectName = request.getParameter("subjectName");
+              
         String branch = request.getParameter("branch");
-        if(level != null){
-            levelID = Integer.parseInt(level);
+        int branchID = 0;
+        if(branch != null && !branch.equals("")){
+            branchID = Integer.parseInt(branch);
         }
+        String subjectName = request.getParameter("subjectName");
+        String[] level = request.getParameterValues("level");
+        boolean subjectStatus = false;
         if(level != null){
-            branchID = Integer.parseInt(level);
+            for(String lvl: level){
+                int levelID = Integer.parseInt(lvl);
+                SubjectDAO subjects = new SubjectDAO();
+                subjectStatus = subjects.addSubject(levelID, subjectName, branchID);
+            }    
         }
-        System.out.println(level + " " + subjectName + " " + branch);
-        
-        SubjectDAO subjects = new SubjectDAO();
-        boolean subjectStatus = subjects.addSubject(levelID, subjectName, branchID);
-        
         if(subjectStatus) {
             request.setAttribute("status", "Subject created successfully!");
             RequestDispatcher view = request.getRequestDispatcher("CreateSubject.jsp");

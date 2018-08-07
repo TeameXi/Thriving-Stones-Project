@@ -88,13 +88,15 @@ public class AdminDAO {
     public ArrayList<Admin> retrieveAllAdmins() {
         ArrayList<Admin> admins = new ArrayList<>();
         try (Connection conn = ConnectionManager.getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement("SELECT admin_username,branch_id FROM admin")) {
+            PreparedStatement preparedStatement = conn.prepareStatement("SELECT admin_username,email,branch_id FROM admin where branch_id <> 0 order by branch_id")) {
 
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 String admin_username = rs.getString(1);
-                int branch_id = rs.getInt(2);
-                Admin branch = new Admin(admin_username, branch_id);
+                String email = rs.getString(2);
+                int branch_id = rs.getInt(3);
+                System.out.println(email);
+                Admin branch = new Admin(admin_username, email, branch_id);
                 admins.add(branch);
             }
 
