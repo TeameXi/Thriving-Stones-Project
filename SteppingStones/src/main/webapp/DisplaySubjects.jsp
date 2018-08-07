@@ -9,7 +9,124 @@
 <%@page import="java.util.ArrayList"%>
 <%@include file="protect_branch_admin.jsp"%>
 <%@include file="header.jsp"%>
-<style>
+<style>/* Listing */
+
+    * {
+        box-sizing: border-box;
+    }
+
+    .toggler {
+        color: #A1A1A4;
+        font-size: 1.25em;
+        margin-left: 8px;
+        text-align: center;
+        cursor: pointer;
+    }
+    .toggler.active {
+        color: #000;
+    }
+
+    .surveys {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .survey-item {
+        display: block;
+        margin-top: 10px;
+        padding: 20px;
+        border-radius: 2px;
+        background: white;
+        box-shadow: 0 2px 1px rgba(170, 170, 170, 0.25);
+    }
+
+    .survey-name {
+        font-weight: 400;
+    }
+
+    .list .survey-item {
+        position: relative;
+        padding: 0;
+        font-size: 14px;
+        line-height: 40px;
+    }
+    .list .survey-item .pull-right {
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
+    @media screen and (max-width: 800px) {
+        .list .survey-item .stage:not(.active) {
+            display: none;
+        }
+    }
+    @media screen and (max-width: 700px) {
+        .list .survey-item .survey-progress-bg {
+            display: none;
+        }
+    }
+    @media screen and (max-width: 600px) {
+        .list .survey-item .pull-right {
+            position: static;
+            line-height: 20px;
+            padding-bottom: 10px;
+        }
+    }
+    .list .survey-country,
+    .list .survey-progress,
+    .list .survey-completes,
+    .list .survey-end-date {
+        color: #A1A1A4;
+    }
+    .list .survey-country,
+    .list .survey-completes,
+    .list .survey-end-date,
+    .list .survey-name{
+        margin: 0 10px;
+    }
+    .list .survey-country {
+        margin-right: 0;
+    }
+
+    .list .survey-country,
+    .list .survey-name {
+        vertical-align: middle;
+    }
+
+
+    .survey-stage .stage {
+        display: inline-block;
+        vertical-align: middle;
+        width: 14px;
+        height: 14px;
+        overflow: hidden;
+        border-radius: 50%;
+        padding: 0;
+        margin: 0 2px;
+        background: #f2f2f2;
+        text-indent: -9999px;
+        color: transparent;
+        line-height: 14px;
+    }
+    .survey-stage .stage.active {
+        background: #A1A1A4;
+    }
+
+    .list .list-only {
+        display: auto;
+    }
+    .list .grid-only {
+        display: none !important;
+    }
+
+    .grid .grid-only {
+        display: auto;
+    }
+    .grid .list-only {
+        display: none !important;
+    }
+
     .grid .survey-item {
         position: relative;
         display: inline-block;
@@ -17,6 +134,104 @@
         height: 150px;
         width: 200px;
         margin: 10px;
+    }
+    @media screen and (max-width: 600px) {
+        .grid .survey-item {
+            display: block;
+            width: auto;
+            height: 150px;
+            margin: 10px auto;
+        }
+    }
+    .grid .survey-name {
+        display: block;
+        max-width: 80%;
+        font-size: 16px;
+        line-height: 20px;
+    }
+    .grid .survey-country {
+        font-size: 11px;
+        line-height: 16px;
+        text-transform: uppercase;
+    }
+    .grid .survey-country,
+    .grid .survey-end-date {
+        color: #A1A1A4;
+    }
+
+    .grid .survey-progress {
+        display: block;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        padding: 20px;
+        border-top: 1px solid #eee;
+        font-size: 13px;
+    }
+
+
+    .grid .survey-progress-labels {
+        position: absolute;
+        right: 20px;
+        top: 0;
+        line-height: 55px;
+    }
+    @media screen and (max-width: 200px) {
+        .grid .survey-progress-labels {
+            right: auto;
+            left: 10px;
+        }
+    }
+    .grid .survey-progress-label {
+        line-height: 21px;
+        font-size: 13px;
+        font-weight: 400;
+    }
+    .grid .survey-completes {
+        line-height: 21px;
+        font-size: 13px;
+        vertical-align: middle;
+    }
+    .grid .survey-stage {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+    }
+    .grid .survey-stage .stage {
+        display: none;
+    }
+    .grid .survey-stage .active {
+        display: block;
+    }
+    .grid .survey-end-date {
+        font-size: 12px;
+        line-height: 20px;
+    }
+
+    .survey-progress-label a{
+        vertical-align: middle;
+        margin: 0 10px;
+        color: #8DC63F !important;
+    }
+
+    .survey-completes a{
+        vertical-align: middle;
+        margin: 0 10px;
+        color: red !important;
+    }
+
+
+    .view_more{
+        color: #8DC63F !important;
+        height: 20px;
+    }
+
+    .survey-progress-view a{
+        vertical-align: middle;
+        margin: 0 10px;
+        color: orange !important;
     }
 </style>
 <div class="col-md-10">
@@ -77,34 +292,6 @@
                             }else{
                                 secondary = secondary + ", " +  part2;
                             }
-                        %>
-                    </select>
-                </span>
-                <br style="clear:both">
-            </div>
-        </div>
-    </div>
-
-
-    <span class="toggler active" data-toggle="grid"><span class="zmdi zmdi-view-dashboard"></span></span>
-    <span class="toggler" data-toggle="list"><span class="zmdi zmdi-view-list"></span></span>
-    <ul class="surveys grid">
-        <%
-            BranchDAO bDAO = new BranchDAO();
-            ArrayList<Branch> branches = bDAO.retrieveAllBranches();
-
-            if (branches.size() > 0) {
-                for (Branch b : branches) {
-                    int branchId = b.getBranchId();
-                    SubjectDAO subs = new SubjectDAO();
-                    ArrayList<Subject> subjects = subs.retrieveSubjectsByBranch(branchId);
-                    for (Subject s : subjects) {
-                        int id = s.getSubjectId();
-                        out.println("<li class='survey-item' id='subid_" + id + "'><span class='survey-country list-only'>");
-                        out.println("<span class='survey-name'><i class='zmdi zmdi-account'>&nbsp;&nbsp;</i><span id='name_" + id + "'>");
-                        out.println(s.getSubjectName() + "</span></span>");
-                        out.println("<span class='survey-country grid-only'><i class='zmdi zmdi-email'>&nbsp;&nbsp;</i><span id='branch_" + id + "'>");
-                        out.println(branchId + "</span></span><br/>");
 
                         }
                     }
