@@ -112,18 +112,6 @@
 
                             <li class="submenu">
                                 <a href="#">
-                                    <i class="zmdi zmdi-male-female"></i> Parent
-                                    <span class="caret pull-right"></span>
-                                </a>
-                                <!-- Sub menu -->
-                                <ul>
-                                    <li><a href="CreateParent.jsp">Create Parent</a></li>
-                                    <li><a href="DisplayParents.jsp">View Parents</a></li>
-                                </ul>
-                            </li>
-
-                            <li class="submenu">
-                                <a href="#">
                                     <i class="zmdi zmdi-book"></i> Subject
                                     <span class="caret pull-right"></span>
                                 </a>

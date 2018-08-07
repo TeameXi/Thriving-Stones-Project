@@ -25,6 +25,12 @@ public class Admin {
         this.branch_id = branch_id;
     }
     
+    public Admin(String admin_username, String email, int branch_id){
+        this(admin_username, branch_id);
+        this.email = email;
+        
+    }
+    
     public Admin(String admin_username, String password, String email, int branch_id){
         this(admin_username, branch_id);
         this.password = password;

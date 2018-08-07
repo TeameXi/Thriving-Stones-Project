@@ -42,12 +42,23 @@
         <div class="col-md-3"></div>
         <div class="col-md-7">
             <form id="createSubjectForm" method="POST" class="form-horizontal" action="CreateSubjectServlet">
+                <input type='hidden' name='branch' value='1'>
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">Subject Name</label>  
+                    <div class="col-lg-7 inputGroupContainer">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="zmdi zmdi-book"></i></span>
+                            <input id="subjectName"  name="subjectName" placeholder="Subject Name" class="form-control"  type="text">
+                        </div>
+                    </div>
+                </div> 
+
                 <div class="form-group">
                     <label class="col-lg-2 control-label">Academic Level</label>  
                     <div class="col-lg-7 inputGroupContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-badge-check"></i></span>
-                            <select name="level" class="form-control" >
+                            <select  multiple name="level" class="form-control" >
                                 <%
                                     LevelDAO lvlDao = new LevelDAO();
                                     ArrayList<Level> lvlLists = lvlDao.retrieveAllLevelLists();
@@ -58,58 +69,11 @@
                                     }
                                 %>
                             </select>
+                            
                         </div>
                     </div>
                 </div>
-
-                <div class="form-group">
-                    <label class="col-lg-2 control-label">Subject Name</label>  
-                    <div class="col-lg-7 inputGroupContainer">
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="zmdi zmdi-book"></i></span>
-                            <input id="subjectName"  name="subjectName" placeholder="Subject Name" class="form-control"  type="text">
-                        </div>
-                    </div>
-                </div> 
                 
-                <%  
-                    BranchDAO branchDao = new BranchDAO();
-                    if(true) {
-                        List<Branch> branch_lists = branchDao.retrieveBranches();          
-                %>
-                            <div class="form-group">
-                                <label class="col-lg-2 control-label">Branch</label>  
-                                <div class="col-lg-7 inputGroupContainer">
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="zmdi zmdi-city"></i></span>
-                                        <select name="branch" class="form-control" >
-                                            <option value="" >Select Center</option>
-                                            <% for(Branch branch: branch_lists){
-                                                    out.println("<option value='"+branch.getBranchId()+"'>"+branch.getName()+"</option>");
-                                               }
-                                            %>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        
-                <% 
-                    }else{
-                        Branch branch = branchDao.retrieveBranchById(2);
-                        String branch_name = branch.getName();
-                %>
-                        <div class="form-group">
-                                <label class="col-lg-2 control-label">Branch</label>  
-                                <div class="col-lg-7 inputGroupContainer">
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="zmdi zmdi-city"></i></span>
-                                        <label class='form-control'><%=branch_name%></label>
-                                    </div>
-                                </div>
-                            </div>
-                <%        
-                    }
-                %>
                 <div class="form-group">
                     <div class="col-lg-2 col-lg-offset-2">
                         <!-- Do NOT use name="submit" or id="submit" for the Submit button -->
