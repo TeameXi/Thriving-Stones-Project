@@ -12,13 +12,8 @@ import javax.mail.internet.*;
  *
  * @author Zang Yu
  */
-public class SendMail {
-    public static void main(String[] args) {
-       
-    }
-    
-    public static void sendingEmail(String email) {
-        String to=email;//change accordingly
+public class SendMail {    
+    public static void sendingEmail(String toEmail, String subject, String text) {
         //Get the session object
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");        
@@ -35,14 +30,14 @@ public class SendMail {
         });
         //compose message
         try {
-        Message message = new MimeMessage(session);
-        message.setFrom(new InternetAddress("teamexi2018@gmail.com"));//change accordingly
-        message.addRecipient(Message.RecipientType.TO,new InternetAddress(to));
-        message.setSubject("Hello");
-        message.setText("Testing.......");
-        //send message
-        Transport.send(message);
-        System.out.println("message sent successfully");
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress("teamexi2018@gmail.com"));//change accordingly
+            message.addRecipient(Message.RecipientType.TO,new InternetAddress(toEmail));
+            message.setSubject(subject);
+            message.setText(text);
+            //send message
+            Transport.send(message);
+            System.out.println("message sent successfully");
         } catch (MessagingException e) {
              System.out.println("message sent not successfully");
              e.printStackTrace(System.out);

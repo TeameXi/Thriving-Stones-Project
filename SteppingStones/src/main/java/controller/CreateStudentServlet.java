@@ -6,6 +6,7 @@
 package controller;
 
 import java.io.IOException;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -13,14 +14,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.ParentChildRelDAO;
 import model.ParentDAO;
+import model.SendMail;
+import model.SendSMS;
 import model.StudentDAO;
 
 /**
  *
  * @author DEYU
  */
-@WebServlet(name = "StudentApplicationServlet", urlPatterns = {"/StudentApplicationServlet"})
-public class StudentApplicationServlet extends HttpServlet {
+@WebServlet(name = "CreateStudentServlet", urlPatterns = {"/CreateStudentServlet"})
+public class CreateStudentServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -34,15 +37,23 @@ public class StudentApplicationServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        
+
         String studentNRIC = request.getParameter("studentNRIC");
         String studentName = request.getParameter("studentName");
         String BOD = request.getParameter("bday");
         String gender = request.getParameter("gender");
         String lvl = request.getParameter("lvl");
         int phone = 0;
-        if(request.getParameter("phone") != ""){
+        if(request.getParameter("phone") != null && !"".equals(request.getParameter("phone"))){
             phone = Integer.parseInt(request.getParameter("phone"));
+        }
+        int branchID = 0;
+        if(request.getParameter("branch") != null && !"".equals(request.getParameter("branch"))){
+            branchID = Integer.parseInt(request.getParameter("branch"));
+        }
+        int levelID = 0;
+        if(lvl != null && !lvl.equals("")){
+            levelID = Integer.parseInt(lvl);
         }
         String stuEmail = request.getParameter("studentEmail");
         String stuPassword = request.getParameter("studentPassword");
@@ -52,20 +63,42 @@ public class StudentApplicationServlet extends HttpServlet {
         String parentDesgination = request.getParameter("parentDesgination");
         int parentPhone = Integer.parseInt(request.getParameter("parentPhone"));
         String parentEmail = request.getParameter("parentEmail");
-        String address = request.getParameter("address");
+        String address = request.getParameter("address");     
 
-        int level_id = Integer.parseInt(lvl);
-
-        //Admin admin = (Admin) request.getSession().getAttribute("admin");
-        //int branch_id = admin.getBranchID();
-        
-        StudentDAO.insertStudent(studentNRIC, studentName, phone, address, BOD, gender, stuEmail, stuPassword, level_id, 1); // replace with branch_id
-        ParentDAO.insertParent(parentName, parentNationality, parentCompany, parentDesgination, parentPhone, parentEmail, parentPhone, 1); //replace with bracnch_id
-        ParentChildRelDAO.insertParentChildRel(parentName, studentName);
-        
-        
-        response.sendRedirect("RegisterForClasses.jsp?studentName="+studentName);
-       
+        if(StudentDAO.retrieveStudentID(studentName) != 0){
+            request.setAttribute("existingStudent", studentName);
+            RequestDispatcher dispatcher = request.getRequestDispatcher("CreateStudent.jsp");
+            dispatcher.forward(request, response);
+        }else{           
+            boolean insertStudent = StudentDAO.insertStudent(studentNRIC, studentName, phone, address, BOD, gender, stuEmail, stuPassword, levelID, branchID);
+            if(insertStudent){
+                String subject = "Stepping Stones Tuition Center Student's Account Creation";
+                String text = "Thanks for choosing us. Your account has been created.\n\nBelow is the username and password to access your account: \nUsername: " + studentName 
+                        + "\nPassword: " + stuPassword + "\n\nYou can update your password via https://www.google.com/ or \n Login via https://www.google.com/";
+                if(stuEmail != null && !stuEmail.equals("")){
+                    SendMail.sendingEmail(stuEmail, subject, text);
+                }else if(phone != 0){
+                    String phoneNum = "+65" + phone;
+                    SendSMS.sendingSMS(phoneNum, text);
+                }
+            }
+            
+            boolean insertParent = ParentDAO.insertParent(parentName, parentNationality, parentCompany, parentDesgination, parentPhone, parentEmail, parentPhone, branchID);
+            if(insertParent){
+                String subject = "Stepping Stones Tuition Center Parent's Account Creation";
+                String text = "Thanks for choosing us. Your account has been created.\n\nBelow is the username and password to access your account: \nUsername: " + parentName 
+                        + "\nPassword: " + parentPhone + "\n\nYou can update your password via https://www.google.com/ or \n Login via https://www.google.com/"; //change password for parent
+                if(parentEmail != null && !parentEmail.equals("")){
+                    SendMail.sendingEmail(parentEmail, subject, text);
+                }else if(parentPhone != 0){
+                    String phoneNum = "+65" + parentPhone;
+                    SendSMS.sendingSMS(phoneNum, text);
+                }
+            }
+            
+            ParentChildRelDAO.insertParentChildRel(parentName, studentName, branchID);
+            response.sendRedirect("RegisterForClasses.jsp?studentName="+studentName);
+        }        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

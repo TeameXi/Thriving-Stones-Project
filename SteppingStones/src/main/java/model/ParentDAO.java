@@ -16,7 +16,8 @@ import java.sql.SQLException;
  * @author DEYU
  */
 public class ParentDAO {
-    public static void insertParent(String name, String nationality, String company, String designation, int phone, String email, int passwordPhone, int branch_id) {
+    public static boolean insertParent(String name, String nationality, String company, String designation, int phone, String email, int passwordPhone, int branchID) {
+        boolean status = false;
         String password = String.valueOf(passwordPhone);
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
@@ -30,12 +31,15 @@ public class ParentDAO {
             stmt.setInt(5, phone);
             stmt.setString(6, email);
             stmt.setString(7, password);
-            stmt.setInt(8, 1); // replace with branch_id
+            stmt.setInt(8, branchID);
             stmt.executeUpdate(); 
+            conn.commit();
+            status = true;
             conn.commit();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+        return status;
     }
     
     public static int retrieveParentID(String parentName){

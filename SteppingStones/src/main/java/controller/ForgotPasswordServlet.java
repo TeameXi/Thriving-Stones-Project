@@ -47,11 +47,12 @@ public class ForgotPasswordServlet extends HttpServlet {
         TutorDAO tutors = new TutorDAO();
         Tutor tutor = tutors.retrieveTutorByEmail(email);
 
-        SendMail sendEmail = new SendMail();
         if (tutor != null) {
             System.out.println(tutor.getEmail());
             out.println(tutor.getEmail());
-            sendEmail.sendingEmail(tutor.getEmail());
+            String subject = "";
+            String text = "";
+            SendMail.sendingEmail(tutor.getEmail(), subject, text);
         } else {
             authObj.put("status", "error");
             String[] msgArray = {"This email doesn't exist"};
