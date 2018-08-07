@@ -258,7 +258,7 @@
                     out.println(admin.getAdmin_username() + "</span></span><br>");
                     out.println("<span class='survey-country'><i class='zmdi zmdi-city'>&nbsp;&nbsp;</i><span id='branch'>");
                     out.println(branchDAO.retrieveBranchById(admin.getBranch_id()).getName() + "</span></span><br>");
-                    out.println("<span class='survey-country grid-only'><i class='zmdi zmdi-mail'>&nbsp;&nbsp;</i><span id='email'>");
+                    out.println("<span class='survey-country grid-only'><i class='zmdi zmdi-email'>&nbsp;&nbsp;</i><span id='email'>");
                     out.println(admin.getEmail() + "</span></span><br/>");    
                 }
         %>

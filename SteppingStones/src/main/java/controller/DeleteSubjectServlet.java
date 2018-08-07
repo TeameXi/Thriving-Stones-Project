@@ -39,7 +39,7 @@ public class DeleteSubjectServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
 
         try(PrintWriter out = response.getWriter()){
-            if(request.getParameter("subjectID") != ""){
+            if(!"".equals(request.getParameter("subjectID"))){
                 int subjectID = Integer.parseInt(request.getParameter("subjectID"));
 
                 SubjectDAO subjectDAO = new SubjectDAO();
