@@ -3,6 +3,15 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@include file="protect_branch_admin.jsp"%>
 <%@include file="header.jsp"%>
+<style>
+    .table_title{
+        background-color: #eee;
+    }
+    
+    .table_content{
+        background-color: #fff;
+    }
+</style>
 <div class="col-md-10">
 
     <div style="text-align: center;margin: 20px;"><span class="tab_active">Register For Classes </span></h5></div>
@@ -23,11 +32,6 @@
                                     if (request.getParameter("studentName") != null) {
                                         redirectStudentName = request.getParameter("studentName").trim();
                                     } 
-
-                                    int branch_id = 0;
-                                    if(user != null){
-                                        branch_id = user.getBranchId();
-                                    }
 
                                 %>
                             <input type="hidden" value="<%=branch_id%>" name="branch_id"/>
@@ -70,35 +74,55 @@
             <%
                 if (enrolledClasses.size() > 0) {
                     out.println("<br><h4>Currently Enrolled Classes:</h4><br>");
+                    out.println("<table class='table table-bordered'>");
+                    out.println("<thead class='table_title'><tr><th>Class</th><th>Class Timing</th><th>Starting Date</th><th>Monthly Fees</th></tr></thead><tbody>");
                     for (Class cls : enrolledClasses) {
-                        out.println(cls.getSubject() + ", " + cls.getClassDay() + " " + cls.getClassTime()
-                                + ", StartDate: " + cls.getStartDate() + ", Monthly Fees: " + cls.getMthlyFees() + "<br>");
+                        out.println("<tr class='table_content'><td>"+cls.getSubject()+"</td>");
+                        out.println("<td>"+cls.getClassTime()+" ( "+cls.getClassDay()+" )"+"</td>");
+                        out.println("<td>"+cls.getStartDate()+"</td>");
+                        out.println("<td>"+cls.getMthlyFees()+"</td>");
+                        out.println("</tr>");
                     }
+                    out.println("</tbody></table>");
                 }
+                if(classes.size() > 0){
             %> 
-            <br><h4>Register for Classes:</h4> <br>                
-            <%
-                for (Class cls : classes) {
-                    request.setAttribute("value", cls.getClassID());
-            %>
-            <form action="RegisterForClassesServlet" method="post">
+                    <br><h4>Register for Classes:</h4> <br>                
+                    <form action="RegisterForClassesServlet" method="post">
+                        <input type="hidden" value="<%=branch_id%>" name="branch_id"/>
+                    <%
+                        out.println("<table class='table table-bordered'>");
+                        out.println("<thead class='table_title'><tr><th></th><th>Class</th><th>Class Timing</th><th>Starting Date</th><th>Monthly Fees</th></tr></thead><tbody>");
+                 
+                        for (Class cls : classes) {
+                            request.setAttribute("value", cls.getClassID());
+                    %>
+                           
 
-                <input type= "checkbox" name ="classValue" value = "${value}">
-                <input type="hidden" name="studentName" value="${studentName}">
-                <%
-                        out.println(cls.getSubject() + ", " + cls.getClassDay() + " " + cls.getClassTime()
-                                + ", StartDate: " + cls.getStartDate() + ", Monthly Fees: " + cls.getMthlyFees() + "<br/>");
+                                <tr class="table_content"><td><input type= "checkbox" name ="classValue" value = "${value}">
+                                        <input type="hidden" name="studentName" value="${studentName}"></td>
+                    <%
+                            out.println("<td>"+cls.getSubject()+"</td>");
+                            out.println("<td>"+cls.getClassTime()+" ( "+cls.getClassDay()+" )"+"</td>");
+                            out.println("<td>"+cls.getStartDate()+"</td>");
+                            out.println("<td>"+cls.getMthlyFees()+"</td>");
+                            out.println("</tr>");   
+                                   
+                        }
+                        out.println("</tbody></table>");
+                    %>
+                                <br/>
+                                <div class="form-group">
+                                    <div>
+                                        <button type="submit" class="btn btn-default" name="select" value="select">Register Class</button>
+                                    </div>
+                                </div>
+
+                            </form>
+            <%
+                    }else{
+                        out.println("<h4>All Available Classes are registered.</h4>");
                     }
-                %>
-                <br/>
-                <div class="form-group">
-                    <div>
-                        <button type="submit" class="btn btn-default" name="select" value="select">Register Class</button>
-                    </div>
-                </div>
-
-            </form>
-            <%
                 }
             %>
         </div>
