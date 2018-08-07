@@ -274,10 +274,13 @@ $(function () {
             },
             phone: {
                 validators: {
+                    integer: {
+                        message: 'Please enter valid phone number'
+                    },
                     between: {
                         min: 80000000,
                         max: 99999999,
-                        message: 'Please enter valid number'
+                        message: 'Please enter valid phone number'
                     }
                 }
             },

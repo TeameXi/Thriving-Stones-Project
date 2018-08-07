@@ -43,8 +43,7 @@ public class UpdateTutorServlet extends HttpServlet {
             if(tutorID != ""){
                 int id = Integer.parseInt(tutorID);
                 String nric = request.getParameter("nric");
-                System.out.println(nric);
-
+ 
                 int phone = 0;
                 if(request.getParameter("phone")!= ""){
                     phone = Integer.parseInt(request.getParameter("phone"));
@@ -55,11 +54,8 @@ public class UpdateTutorServlet extends HttpServlet {
                 String gender = request.getParameter("gender").trim();
                 String email = request.getParameter("email");
 
-                TutorDAO tutors = new TutorDAO();
-                
-                
-
-                boolean status = tutors.updateTutor(id,nric,phone,address,image,dob,gender,email);
+                TutorDAO tutorDao = new TutorDAO();
+                boolean status = tutorDao.updateTutor(id,nric,phone,address,image,dob,gender,email);
                 if(status){
                     out.println(1);
                 }else{

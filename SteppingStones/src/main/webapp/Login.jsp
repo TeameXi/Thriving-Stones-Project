@@ -115,7 +115,7 @@ $(document).ready(function() {
                     }
                 }
             },
-            role:{
+            type:{
                 validators: {
                     notEmpty: {
                         message: 'Select at least one role'

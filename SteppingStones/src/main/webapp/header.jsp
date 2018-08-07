@@ -41,6 +41,8 @@
                                         out.println("<li><a href='ProfileForAdmin.jsp'>Manage Account</a></li>");
                                     }else if(role != null && role == "tutor"){
                                         out.println("<li><a href='ProfileForTutor.jsp'>Manage Account</a></li>");
+                                    }else if(role != null && role == "parent"){
+                                        out.println("<li><a href='ProfileForParent.jsp'>Manage Account</a></li>");
                                     }
                                 %>
                               <li><a href="account_setting.html">Update Password</a></li>
@@ -122,18 +124,6 @@
 
                             <li class="submenu">
                                 <a href="#">
-                                    <i class="zmdi zmdi-male-female"></i> Parent
-                                    <span class="caret pull-right"></span>
-                                </a>
-                                <!-- Sub menu -->
-                                <ul>
-                                    <li><a href="CreateParent.jsp">Create Parent</a></li>
-                                    <li><a href="DisplayParents.jsp">View Parents</a></li>
-                                </ul>
-                            </li>
-
-                            <li class="submenu">
-                                <a href="#">
                                     <i class="zmdi zmdi-book"></i> Subject
                                     <span class="caret pull-right"></span>
                                 </a>
@@ -151,7 +141,7 @@
                     <%
                         }else if(role != null && user != null && role == "tutor" ){
                     %>
-                            <li><a href=""><i class="zmdi zmdi-money-box"></i>Your Payment</a></li>
+                            <li><a href=""><i class="zmdi zmdi-money-box"></i>Your Payslip</a></li>
                             <li><a href=""><i class="zmdi zmdi-money-box"></i>Classes</a></li>
                             <li class="submenu">
                                 <a href="#">
@@ -179,7 +169,25 @@
                             <li><a href="stats.html"><i class="zmdi zmdi-chart"></i>Student's Grades</a></li>
                     <%
                         }else if(role != null && user != null && role == "parent" ){
-
+                    %>
+                            <li><a href=""><i class="zmdi zmdi-money-box"></i>Outstanding Fees</a></li>
+                            <li><a href=""><i class="zmdi zmdi-money-box"></i>Classes</a></li>
+                            <li class="submenu">
+                                <a href="#">
+                                    <i class="zmdi zmdi zmdi-graduation-cap"></i> Student Attendance 
+                                    <span class="caret pull-right"></span>
+                                </a>
+                                <!-- Sub menu -->
+                                <ul>
+                                    <li><a href="CreateBranch.jsp">Mark Attendance</a></li>
+                                    <li><a href="DisplayBranches.jsp">View Attendance</a></li>
+                                </ul>
+                            </li>
+                           
+                            <li><a href="stats.html"><i class="zmdi zmdi-chart"></i>Your Attendance</a></li>
+                            <li><a href="stats.html"><i class="zmdi zmdi-chart"></i>Student's Grades</a></li>
+                            
+                    <%
                         }else if(role != null && user != null && role == "student" ){
 
                         }

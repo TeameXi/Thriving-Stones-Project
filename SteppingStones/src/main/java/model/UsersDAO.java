@@ -34,8 +34,6 @@ public class UsersDAO {
                 return null;
 
             } else if (type.equals("tutor")) {
-                System.out.println(type);
-                System.out.println(name.trim());
                 PreparedStatement stmt = conn.prepareStatement("select tutor_id,tutor_fullname,password from tutor where tutor_fullname = ?");
                 stmt.setString(1,name.trim());
                 ResultSet rs = stmt.executeQuery();
@@ -63,14 +61,16 @@ public class UsersDAO {
                 return userToReturn;
 
             } else if (type.equals("parent")) {//phone.pass
-                PreparedStatement stmt = conn.prepareStatement("select password from parent where phone = ?");
+                PreparedStatement stmt = conn.prepareStatement("select parent_id,name,password from parent where name = ?");
+                stmt.setString(1,name.trim());
                 ResultSet rs = stmt.executeQuery();
-                String pwd = "";
                 while (rs.next()) {
-                    pwd = rs.getString(1);
+                    int parentId = rs.getInt(1);
+                    String username = rs.getString(2);
+                    String pwd = rs.getString(3);
+                    return new Users(parentId,username, pwd);
                 }
-                Users userToReturn = new Users(name, pwd);
-                return userToReturn;
+                return null;
             }
 
         } catch (Exception e) {

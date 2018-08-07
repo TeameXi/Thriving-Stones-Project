@@ -41,7 +41,7 @@ public class LoginServlet extends HttpServlet {
 
         String type = request.getParameter("type");
         String username = request.getParameter("username");
-        String password = request.getParameter("password");
+        String password = request.getParameter("password").trim();
 
         if ((username == null || username.isEmpty()) && (password == null || password.isEmpty())) {
             errors.put("error", "Missing Email & Password");
@@ -60,7 +60,6 @@ public class LoginServlet extends HttpServlet {
             UsersDAO users = new UsersDAO();
             Users user = users.retrieveUserByUsername(type, username);
             if (user != null) {
-                out.println("Not null user");
                 String pwd = user.getPassword();
                 if (password.equals(pwd)) {
                     if (type.equals("admin")) {
@@ -81,14 +80,16 @@ public class LoginServlet extends HttpServlet {
                     } else if (type.equals("parent")) {
                         session.setAttribute("user", user);
                         session.setAttribute("role", "parent");
-                        response.sendRedirect("parentHomepage.jsp");
+                        response.sendRedirect("dashboard.jsp");
 
                     }
                 } else {
-                    response.sendRedirect("Login.jsp?error=true");
+                    out.println("Invalid");
+//                    response.sendRedirect("Login.jsp?error=true");
                 }
             } else {
-                response.sendRedirect("Login.jsp?error=true");
+                out.println("Null");
+//                response.sendRedirect("Login.jsp?error=true");
             }
         } else {
             response.sendRedirect("Login.jsp?error=true");

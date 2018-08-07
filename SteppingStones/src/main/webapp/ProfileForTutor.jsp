@@ -6,23 +6,6 @@
 <%@page import="model.BranchDAO"%>
 <%@include file="protect_tutor.jsp"%>
 <%@include file="header.jsp"%>
-<style>
-    #generate_btn{
-        padding: 5px;
-        margin-left : 50px;
-        background-color:#f7a4a3;
-        color:#fff;
-        border-radius: 5px;
-    }
-
-    #generate_btn:hover{
-        background:transparent;
-        border: 1px solid #f7a4a3;
-        color:#f7a4a3;
-    }
-
-
-</style>
 
 <div class="col-md-10">
     <div id="update_status"></div>
@@ -62,10 +45,10 @@
                     <div class="col-lg-7 inputGroupContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-account-box"></i></span>
-                            <% if (tutor.getNric() != ""){
+                            <% if (tutor.getNric().length() != 0){
                                     out.println("<input id='tutor_nric' class='form-control' value='"+tutor.getNric()+"' readonly  type='text'>");
                                }else{
-                                    out.println("<input id='tutor_nric' class='form-control' value='' type='text'>");
+                                    out.println("<input name='tutor_nric' id='tutor_nric' class='form-control' value='' type='text'>");
                                }
                             %>
                            
@@ -79,7 +62,7 @@
                     <div class="col-lg-7 inputGroupContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-phone"></i></span>
-                            <input id="phone" class="form-control" type="text" value="<%=phone%>">
+                            <input name="phone" id="phone" class="form-control" type="text" value="<%=phone%>">
                         </div>
                     </div>
                 </div>
@@ -165,7 +148,7 @@
                     <div class="col-lg-7 inputGroupContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-email"></i></span>
-                            <input id="email" placeholder="E-Mail Address" class="form-control"  type="text" value="<%=tutor.getEmail() %>">
+                            <input name="email" id="email" placeholder="E-Mail Address" class="form-control"  type="text" value="<%=tutor.getEmail() %>">
                         </div>
                     </div>
                 </div>
@@ -205,7 +188,6 @@ function updateTutorAccount() {
     gender = $("#gender").val();
     email = $("#email").val();
 
-    $('#editTutor').modal('hide');
 
     $.ajax({
         type: 'POST',
@@ -236,7 +218,7 @@ $(function () {
             validating: 'glyphicon glyphicon-refresh'
         },
         fields: {
-            tutorID: {
+            tutor_nric: {
                 validators: {   
                     stringLength: {
                         min: 9,
@@ -247,10 +229,13 @@ $(function () {
             },
             phone: {
                 validators: {
+                    integer: {
+                        message: 'Please enter valid phone number'
+                    },
                     between: {
                         min: 80000000,
                         max: 99999999,
-                        message: 'Please enter valid number'
+                        message: 'Please enter valid phone number'
                     }
                 }
             },

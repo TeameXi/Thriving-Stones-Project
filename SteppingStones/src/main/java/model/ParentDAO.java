@@ -6,6 +6,7 @@
 package model;
 
 import connection.ConnectionManager;
+import entity.Parent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -89,5 +90,56 @@ public class ParentDAO {
         }  
         return parentInfo;
     }
+    
+     public Parent retrieveSpecificParentById(int parentId) {
+        String select_tutor = "SELECT * FROM parent WHERE parent_id = ?";
+        try (Connection conn = ConnectionManager.getConnection();
+                PreparedStatement preparedStatement = conn.prepareStatement(select_tutor)) {
+            preparedStatement.setInt(1, parentId);
+
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                int id = rs.getInt(1);
+                String name = rs.getString(2);
+                String nationality = rs.getString(3);
+                String company = rs.getString(4);
+                String designation = rs.getString(5);
+                int phone = rs.getInt(6);
+                String email = rs.getString(7);
+                String password = rs.getString(8);
+                int branch_id = rs.getInt(9);
+                Parent parent = new Parent(id,name,nationality,company,designation,phone,email,password,branch_id);
+                return parent;
+            }
+
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return null;
+    }
+     
+    
+    public boolean updateParent(int parentID,String nationality,String company,String designation,int phone,String email) {
+        String update_Tutor = "UPDATE parent SET nationality=?,company=?,designation=?,phone=?,email=? WHERE parent_id =? ";
+        try (Connection conn = ConnectionManager.getConnection();
+                PreparedStatement preparedStatement = conn.prepareStatement(update_Tutor)) {
+            preparedStatement.setString(1,nationality);
+            preparedStatement.setString(2, company);
+            preparedStatement.setString(3,designation);
+            preparedStatement.setInt(4,phone);
+            preparedStatement.setString(5, email);
+            preparedStatement.setInt(6,parentID);
+            
+            int num = preparedStatement.executeUpdate();
+            if (num != 0) {
+                return true;
+            }
+
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return false;
+    }
+ 
     
 }
