@@ -65,7 +65,7 @@ public class LoginServlet extends HttpServlet {
                     if (type.equals("admin")) {
                         session.setAttribute("user", user);
                         session.setAttribute("role", "admin");
-                        response.sendRedirect("dashboard.jsp");
+                        response.sendRedirect("DashboardServlet");
 
                     } else if (type.equals("tutor")) {
                         session.setAttribute("user", user);

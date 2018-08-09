@@ -27,4 +27,14 @@
         <servlet-name>ScheduleCreationServlet</servlet-name>
         <url-pattern>/ScheduleCreationServlet</url-pattern>
     </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>DashboardServlet</servlet-name> 
+        <servlet-class>controller.DashboardServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>DashboardServlet</servlet-name>
+        <url-pattern>/DashboardServlet</url-pattern>
+    </servlet-mapping>
 </web-app>

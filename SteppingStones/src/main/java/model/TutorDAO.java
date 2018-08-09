@@ -285,5 +285,19 @@ public class TutorDAO {
         
         return tutor;
     }
-
+    public int retrieveNumberOfTutor(){
+        int tutorCount = 0;
+        String sql = "select COUNT(*) from tutor";
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){
+                tutorCount = rs.getInt(1);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        
+        return tutorCount;
+    }
 }
