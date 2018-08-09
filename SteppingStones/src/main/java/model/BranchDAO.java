@@ -153,5 +153,19 @@ public class BranchDAO {
         }       
         return branches;
     }
-
+    public int retrieveNumberOfBranch(){
+        int branchCount = 0;
+        String sql = "select COUNT(*) from branch";
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){
+                branchCount = rs.getInt(1);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        
+        return branchCount;
+    }
 }
