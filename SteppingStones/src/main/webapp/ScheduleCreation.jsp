@@ -28,6 +28,7 @@
         List<Branch> branchList = (List<Branch>) request.getAttribute("BranchList");
         List<Level> levelList = (List<Level>) request.getAttribute("LevelList");
         List<Subject> subjectList = (List<Subject>) request.getAttribute("SubjectList");
+        System.out.println("subjectList" + subjectList);
         List<Tutor> tutorList = (List<Tutor>) request.getAttribute("TutorList");
         
     %>
@@ -98,7 +99,7 @@
             End Date : 
             <input type="text" name="endDate"/>
             <br/>
-            Subject :
+            Tutor :
             <select name="tutor">
                 <%
                     for(Tutor t:tutorList){
