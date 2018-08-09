@@ -170,6 +170,24 @@ public class SubjectDAO {
         return status;
     }
     
+    public boolean deleteSubjectLevelRel(int subjectID, int levelID, int branchID){
+        boolean deletedStatus = false;
+        try (Connection conn = ConnectionManager.getConnection();) {
+            conn.setAutoCommit(false);
+            String sql = "delete from lvl_sub_rel where level_id = ? and subject_id = ? and branch_id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, levelID);
+            stmt.setInt(2, subjectID);
+            stmt.setInt(3, branchID);
+            stmt.executeUpdate(); 
+            conn.commit();
+            deletedStatus = true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return deletedStatus;
+    }
+    
     public ArrayList<Subject> retrieveSubjectsByBranch(int branchId) {
         ArrayList<Subject> subjects = new ArrayList<>();
         String sql = "select subject_id, subject_name from subject where subject_id in (select subject_id from lvl_sub_rel where branch_id = ?)";
