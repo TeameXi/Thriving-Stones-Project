@@ -55,6 +55,7 @@ public class RetrieveSubjectServlet extends HttpServlet {
                 lvlIds.add(l.getLevel_id());
             }
             if(subjectName != null){
+                obj.put("branch_id", branchID);
                 obj.put("id",subjectID);
                 obj.put("name",subjectName);
                 obj.put("lvl_names",lvlNames);

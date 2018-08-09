@@ -5,11 +5,8 @@
  */
 package controller;
 
-
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -19,10 +16,10 @@ import model.SubjectDAO;
 
 /**
  *
- * @author Hui Xin
+ * @author DEYU
  */
-@WebServlet(name = "UpdateSubjectServlet", urlPatterns = {"/UpdateSubjectServlet"})
-public class UpdateSubjectServlet extends HttpServlet {
+@WebServlet(name = "DeleteLevelServlet", urlPatterns = {"/DeleteLevelServlet"})
+public class DeleteLevelServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,24 +33,23 @@ public class UpdateSubjectServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        Map<String, Object> updates = new HashMap<>();
-
-        try (PrintWriter out = response.getWriter()) {
-            String subjectID = request.getParameter("subjectID");
-            if(!"".equals(subjectID)){
-                int id = Integer.parseInt(subjectID);
-                String name = request.getParameter("name");
-                SubjectDAO subjects = new SubjectDAO();
-                boolean status = subjects.updateSubject(id, name);
-                if(status){
+        
+        try(PrintWriter out = response.getWriter()){
+            if(!"".equals(request.getParameter("subjectID"))){
+                int subjectID = Integer.parseInt(request.getParameter("subjectID"));
+                int levelID = Integer.parseInt(request.getParameter("levelID"));
+                int branchID = Integer.parseInt(request.getParameter("branchID"));
+                System.out.println("levelID " + levelID + " subjectID" + subjectID + "branchID" + branchID);
+                SubjectDAO subjectDAO = new SubjectDAO();
+                boolean status =  subjectDAO.deleteSubjectLevelRel(subjectID, levelID, branchID);
+                if (status == true) {
                     out.println(1);
-                }else{
+                } else {
                     out.println(0);
                 }
             }else{
                 out.println(0);
             }
-
         }
     }
 

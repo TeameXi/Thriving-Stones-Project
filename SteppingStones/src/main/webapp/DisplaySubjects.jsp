@@ -18,6 +18,27 @@
         width: 200px;
         margin: 10px;
     }
+    
+    .lvl_styling{
+        text-align: center;
+        padding: 8px;
+        margin: 8px;
+        border-radius: 5px;
+        background-color: #eee;
+        position:relative;
+    }
+    
+    .lvl_delete_styling{
+        position:absolute;
+        top: -8px;
+        right: -4px;
+        
+
+    }
+    
+    .lvl_delete_styling:hover{
+        color: red !important;
+    }
 </style>
 <div class="col-md-10">
     <div style="margin: 20px;"><h3>Subject Lists</h3></div>
@@ -49,7 +70,7 @@
         if(subjects != null && !subjects.isEmpty()){
             for (Subject s : subjects) {
                 int id = s.getSubjectId();
-                out.println("<li class='survey-item' id='sid_" + id + "'><span class='survey-country list-only'>SG</span>");
+                out.println("<li class='survey-item' id='sid_" + id + "'><span class='survey-country list-only'></span>");
                 out.println("<span class='survey-name'><i class='zmdi zmdi-graduation-cap'>&nbsp;&nbsp;</i><span id='name_"+id+"'>");
                 out.println(s.getSubjectName() + "</span></span>");
                 ArrayList<String> level = LevelDAO.retrieveLevelBySubject(id, branch_id);
@@ -132,6 +153,8 @@
 </div>
 <!-- End of Delete -->
 
+
+
 <!-- Edit Dialog -->
 <div class="modal fade" id="editSubject" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
@@ -144,6 +167,7 @@
                 </button>
             </div>
             <div class="modal-body">
+                <div class="row" id="Msg"></div>
                 <div class="row">
                     <div class = "col-sm-4">
                         <p class = "form-control-label">Subject Name :</p>
@@ -151,17 +175,15 @@
                     <div class = "col-sm-8">
                         <p><input type = "text" class = "form-control" id="subject_name" value =""/></p>
                         <input type="hidden" id="branch_id" value="<%=branch_id%>" />
+                        <input type="hidden" id="subject_id" value="" />
                     </div>
                 </div><br/>
+                <div class="row" id="lvlContainer"></div>
                 
-                <div class="row">
-                    <div class=""><p></p></div>
-                </div>
-
             </div>  
 
             <div class="modal-footer spaced-top-small centered">
-                <button type="button" class="btn btn-success"  onclick="editStudent()">Save Changes</button>
+                <button type="button" class="btn btn-success"  onclick="editSubject()">Save Changes</button>
             </div>
         </div>       
     </div>
@@ -191,14 +213,54 @@
 
                     $("#subject_id").val(data["id"]);
                     $("#subject_name").val(data["name"]);
-                    console.log(data["lvl_names"]);
-                    console.log(data["lvl_ids"]);
+                    //window.alert(data["lvl_names"][1]);
+                    html = "";
+                    for(var i=0; i < data["lvl_names"].length; i++){
+                        html += "<div id='lvl_wrapper_"+data["lvl_ids"][i]+"' class='lvl_styling col-sm-3'>"+data["lvl_names"][i] + "<a href='#level_delete_confirmation' data-toggle='modal' onclick='deleteLevel("+data["id"]+","+data["branch_id"] +","+data["lvl_ids"][i]+")' class='lvl_delete_styling'><i class='zmdi zmdi-close-circle zmdi-hc-2x'></i></a></div>";
+                    }
+                    html += "<br/>";
+                    $("#lvlContainer").html(html);
                     
                 }
             });
 
         });
     });
+    
+    function deleteLevel(subjectId, branchId, levelId){
+        console.log(subjectId);
+        console.log(levelId);
+        console.log(branchId);
+        $("#confirm").prop('onclick', null).off('click');
+        $("#confirm").click(function () {
+            deleteLevelQueryAjax(subjectId,levelId, branchId);
+        });      
+    }
+    
+    function deleteLevelQueryAjax(subject_id,level_id, branch_id){
+        $("#level_delete_confirmation").modal('hide');
+        $.ajax({
+            type: 'POST',
+            url: 'DeleteLevelServlet',
+            dataType: 'JSON',
+            data: {subjectID: subject_id, levelID: level_id, branchID: branch_id},
+            success: function (data) {
+                if (data === 1) {
+                    $("#subid_" + subject_id).remove();
+                    $("#lvl_wrapper_"+level_id).remove();
+                    
+                    html = '<div class="alert alert-success col-md-12"><strong>Success!</strong> Deleted Level from Subject successfully</div>';
+                    setTimeout(location.reload.bind(location), 2000);
+                } else {
+                    html = '<div class="alert alert-danger col-md-12"><strong>Sorry!</strong> Something went wrong</div>';
+                }
+
+                $("#Msg").html(html);
+                $('#Msg').fadeIn().delay(1000).fadeOut();
+            }
+        });
+    
+    }
 
     (function () {
         $(function () {
@@ -223,7 +285,7 @@
 
     function deleteSubjectQueryAjax(subject_id) {
         $('#small').modal('hide');
-        $("#subid_" + subject_id).remove();
+        $("#sid_" + subject_id).remove();
         $.ajax({
             type: 'POST',
             url: 'DeleteSubjectServlet',
@@ -248,7 +310,8 @@
     function editSubject() {
         id = $("#subject_id").val();
         name = $("#subject_name").val();
-        $('#editTutor').modal('hide');
+        branch = $("#branch_id").val();
+        $('#editSubject').modal('hide');
 
         $.ajax({
             type: 'POST',
@@ -273,3 +336,22 @@
 
 </script>
 
+<!-- Delete Dialog -->
+<div class="modal fade bs-modal-sm" id="level_delete_confirmation" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <span class="pc_title centered">Alert</span>
+            </div>
+            <div class="modal-body smaller-fonts centered">Are you sure you want to delete this item?</div>
+            <div class="modal-footer centered">
+                <a id="confirm"><button type="button" class="small_button pw_button del_button autowidth">Yes, Remove</button></a>
+                <button type="button" class="small_button del_button pw_button autowidth" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- End of Delete -->
