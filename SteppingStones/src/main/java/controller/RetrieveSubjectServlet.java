@@ -5,7 +5,6 @@
  */
 package controller;
 
-import entity.Branch;
 import entity.Level;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -15,7 +14,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.BranchDAO;
 import model.LevelDAO;
 import model.SubjectDAO;
 import org.json.JSONObject;
