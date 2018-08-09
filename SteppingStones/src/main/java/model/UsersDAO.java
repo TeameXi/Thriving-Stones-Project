@@ -20,28 +20,30 @@ public class UsersDAO {
     public Users retrieveUserByUsername(String type,String name) {
         try (Connection conn = ConnectionManager.getConnection()) {
             if (type.equals("admin")) {
-                PreparedStatement stmt = conn.prepareStatement("select admin_username,admin_password,branch_id from admin where admin_username = ?");
+                PreparedStatement stmt = conn.prepareStatement("select admin_id,admin_username,admin_password,branch_id from admin where admin_username = ?");
                 stmt.setString(1, name.trim());
                 ResultSet rs = stmt.executeQuery();
                
                 while (rs.next()) {
-                    String username = rs.getString(1);
-                    String pwd = rs.getString(2);
-                    int branch_id = rs.getInt(3);
-                    return new Users(username, pwd,branch_id);
+                    int adminId = rs.getInt(1);
+                    String username = rs.getString(2);
+                    String pwd = rs.getString(3);
+                    int branch_id = rs.getInt(4);
+                    return new Users(adminId, username, pwd, branch_id);
                 }
                
                 return null;
 
             } else if (type.equals("tutor")) {
-                PreparedStatement stmt = conn.prepareStatement("select tutor_id,tutor_fullname,password from tutor where tutor_fullname = ?");
+                PreparedStatement stmt = conn.prepareStatement("select tutor_id,tutor_fullname,password,branch_id from tutor where tutor_fullname = ?");
                 stmt.setString(1,name.trim());
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next()) {
                     int tutorId = rs.getInt(1);
                     String username = rs.getString(2);
                     String pwd = rs.getString(3);
-                    return new Users(tutorId,username, pwd);
+                    int branch_id = rs.getInt(4);
+                    return new Users(tutorId, username, pwd, branch_id);
                 }
                 return null;
 
@@ -61,14 +63,15 @@ public class UsersDAO {
                 return userToReturn;
 
             } else if (type.equals("parent")) {//phone.pass
-                PreparedStatement stmt = conn.prepareStatement("select parent_id,name,password from parent where name = ?");
+                PreparedStatement stmt = conn.prepareStatement("select parent_id,name,password, branch_id from parent where name = ?");
                 stmt.setString(1,name.trim());
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next()) {
                     int parentId = rs.getInt(1);
                     String username = rs.getString(2);
                     String pwd = rs.getString(3);
-                    return new Users(parentId,username, pwd);
+                    int branchId = rs.getInt(4);
+                    return new Users(parentId, username, pwd, branchId);
                 }
                 return null;
             }
