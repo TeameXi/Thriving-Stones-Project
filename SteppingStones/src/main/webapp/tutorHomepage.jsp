@@ -46,9 +46,9 @@
                         </a>
                     </li>
                     <li class="featured-list_item">
-                        <a href="#" class="featured-list_link">
+                        <a href="CreateTuitionGrade.jsp" class="featured-list_link">
                             <img class="featured-list_img" src="${pageContext.request.contextPath}/styling/img/icons/grade.png" alt="Modules Planning">
-                            <h3 class="featured-list_title">Module Planning</h3>
+                            <h3 class="featured-list_title">Grades Managing</h3>
                         </a>
                     </li>
 

@@ -3,15 +3,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@include file="protect_branch_admin.jsp"%>
 <%@include file="header.jsp"%>
-<style>
-    .table_title{
-        background-color: #eee;
-    }
-    
-    .table_content{
-        background-color: #fff;
-    }
-</style>
 <div class="col-md-10">
 
     <div style="text-align: center;margin: 20px;"><span class="tab_active">Register For Classes </span></h5></div>

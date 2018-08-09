@@ -13,10 +13,14 @@
         String role = (String)session.getAttribute("role");
         String account = "";
         int branch_id = 0;
+        int user_id = 0;
         if(user != null){
             account = user.getEmail();
             branch_id = user.getBranchId();
+            user_id = user.getUserId();
         }
+        
+      
     %>
     <!--Header-->
     <div class="header">
@@ -67,9 +71,7 @@
                     <!-- Main menu -->
                     <li><a href="dashboard.jsp"><i class="glyphicon glyphicon-dashboard"></i> Dashboard</a></li>
                     
-                    <% 
-                
-                       
+                    <%  
                         if(user != null && user.getBranchId() == 0 && role=="admin"){
                     %>
                             <li class="submenu">
@@ -166,7 +168,7 @@
                                 </ul>
                             </li>
                             <li><a href="stats.html"><i class="zmdi zmdi-chart"></i>Your Attendance</a></li>
-                            <li><a href="stats.html"><i class="zmdi zmdi-chart"></i>Student's Grades</a></li>
+                            <li><a href="CreateTuitionGrade.jsp"><i class="zmdi zmdi-star-circle"></i>Student's Grades</a></li>
                     <%
                         }else if(role != null && user != null && role == "parent" ){
                     %>
@@ -185,7 +187,7 @@
                             </li>
                            
                             <li><a href="stats.html"><i class="zmdi zmdi-chart"></i>Your Attendance</a></li>
-                            <li><a href="stats.html"><i class="zmdi zmdi-chart"></i>Student's Grades</a></li>
+                            <li><a href="CreateTuitionGrade.jsp"><i class="zmdi zmdi-star-circle"></i>Student's Grades</a></li>
                             
                     <%
                         }else if(role != null && user != null && role == "student" ){

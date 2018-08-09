@@ -1435,3 +1435,13 @@ footer .copy{
     }
     
 
+ /* TABLE STYLING */
+.table_title{
+   background-color: #eee;
+}
+
+.table_content{
+   background-color: #fff;
+}
+    
+

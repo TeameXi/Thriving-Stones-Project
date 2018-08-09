@@ -27,10 +27,11 @@ public class Users {
         this.branch_id = branch_id;
     }
     
-    public Users(int user_id,String email, String password){
+    public Users(int user_id,String email, String password, int branch_id){
         this.user_id = user_id;
         this.email = email;
         this.password = password;
+        this.branch_id = branch_id;
     }
 
     public Users() {
