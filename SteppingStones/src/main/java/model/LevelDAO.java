@@ -106,4 +106,22 @@ public class LevelDAO {
         }  
         return level;
     }
+    
+     public static ArrayList<Level> retrieveLevelBySubject1(int subjectID, int branchID){
+        ArrayList<Level> levelLists = new ArrayList<>();
+        try(Connection conn = ConnectionManager.getConnection()){
+            String sql = "select level.level_id,level_name from lvl_sub_rel, level where subject_id = ? and level.level_id = lvl_sub_rel.level_id and branch_id = ? order by level_name;";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, subjectID);
+            stmt.setInt(2, branchID);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){
+                Level lvl = new Level(rs.getInt("level_id"),rs.getString("level_name"));
+                levelLists.add(lvl);
+            } 
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }  
+        return levelLists;
+    }
 }

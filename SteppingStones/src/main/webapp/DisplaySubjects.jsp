@@ -9,124 +9,7 @@
 <%@page import="java.util.ArrayList"%>
 <%@include file="protect_branch_admin.jsp"%>
 <%@include file="header.jsp"%>
-<style>/* Listing */
-
-    * {
-        box-sizing: border-box;
-    }
-
-    .toggler {
-        color: #A1A1A4;
-        font-size: 1.25em;
-        margin-left: 8px;
-        text-align: center;
-        cursor: pointer;
-    }
-    .toggler.active {
-        color: #000;
-    }
-
-    .surveys {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-    }
-
-    .survey-item {
-        display: block;
-        margin-top: 10px;
-        padding: 20px;
-        border-radius: 2px;
-        background: white;
-        box-shadow: 0 2px 1px rgba(170, 170, 170, 0.25);
-    }
-
-    .survey-name {
-        font-weight: 400;
-    }
-
-    .list .survey-item {
-        position: relative;
-        padding: 0;
-        font-size: 14px;
-        line-height: 40px;
-    }
-    .list .survey-item .pull-right {
-        position: absolute;
-        right: 0;
-        top: 0;
-    }
-    @media screen and (max-width: 800px) {
-        .list .survey-item .stage:not(.active) {
-            display: none;
-        }
-    }
-    @media screen and (max-width: 700px) {
-        .list .survey-item .survey-progress-bg {
-            display: none;
-        }
-    }
-    @media screen and (max-width: 600px) {
-        .list .survey-item .pull-right {
-            position: static;
-            line-height: 20px;
-            padding-bottom: 10px;
-        }
-    }
-    .list .survey-country,
-    .list .survey-progress,
-    .list .survey-completes,
-    .list .survey-end-date {
-        color: #A1A1A4;
-    }
-    .list .survey-country,
-    .list .survey-completes,
-    .list .survey-end-date,
-    .list .survey-name{
-        margin: 0 10px;
-    }
-    .list .survey-country {
-        margin-right: 0;
-    }
-
-    .list .survey-country,
-    .list .survey-name {
-        vertical-align: middle;
-    }
-
-
-    .survey-stage .stage {
-        display: inline-block;
-        vertical-align: middle;
-        width: 14px;
-        height: 14px;
-        overflow: hidden;
-        border-radius: 50%;
-        padding: 0;
-        margin: 0 2px;
-        background: #f2f2f2;
-        text-indent: -9999px;
-        color: transparent;
-        line-height: 14px;
-    }
-    .survey-stage .stage.active {
-        background: #A1A1A4;
-    }
-
-    .list .list-only {
-        display: auto;
-    }
-    .list .grid-only {
-        display: none !important;
-    }
-
-    .grid .grid-only {
-        display: auto;
-    }
-    .grid .list-only {
-        display: none !important;
-    }
-
+<style>
     .grid .survey-item {
         position: relative;
         display: inline-block;
@@ -134,104 +17,6 @@
         height: 150px;
         width: 200px;
         margin: 10px;
-    }
-    @media screen and (max-width: 600px) {
-        .grid .survey-item {
-            display: block;
-            width: auto;
-            height: 150px;
-            margin: 10px auto;
-        }
-    }
-    .grid .survey-name {
-        display: block;
-        max-width: 80%;
-        font-size: 16px;
-        line-height: 20px;
-    }
-    .grid .survey-country {
-        font-size: 11px;
-        line-height: 16px;
-        text-transform: uppercase;
-    }
-    .grid .survey-country,
-    .grid .survey-end-date {
-        color: #A1A1A4;
-    }
-
-    .grid .survey-progress {
-        display: block;
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        width: 100%;
-        padding: 20px;
-        border-top: 1px solid #eee;
-        font-size: 13px;
-    }
-
-
-    .grid .survey-progress-labels {
-        position: absolute;
-        right: 20px;
-        top: 0;
-        line-height: 55px;
-    }
-    @media screen and (max-width: 200px) {
-        .grid .survey-progress-labels {
-            right: auto;
-            left: 10px;
-        }
-    }
-    .grid .survey-progress-label {
-        line-height: 21px;
-        font-size: 13px;
-        font-weight: 400;
-    }
-    .grid .survey-completes {
-        line-height: 21px;
-        font-size: 13px;
-        vertical-align: middle;
-    }
-    .grid .survey-stage {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-    }
-    .grid .survey-stage .stage {
-        display: none;
-    }
-    .grid .survey-stage .active {
-        display: block;
-    }
-    .grid .survey-end-date {
-        font-size: 12px;
-        line-height: 20px;
-    }
-
-    .survey-progress-label a{
-        vertical-align: middle;
-        margin: 0 10px;
-        color: #8DC63F !important;
-    }
-
-    .survey-completes a{
-        vertical-align: middle;
-        margin: 0 10px;
-        color: red !important;
-    }
-
-
-    .view_more{
-        color: #8DC63F !important;
-        height: 20px;
-    }
-
-    .survey-progress-view a{
-        vertical-align: middle;
-        margin: 0 10px;
-        color: orange !important;
     }
 </style>
 <div class="col-md-10">
@@ -257,21 +42,17 @@
                 session.removeAttribute("existingUserLists");
             }
         }
- 
-        int branchID = 0;
-        if (user1 != null) {
-            branchID = user1.getBranchId();
-        }
+
 
         SubjectDAO subs = new SubjectDAO();
-        ArrayList<Subject> subjects = subs.retrieveSubjectsByBranch(branchID);
+        ArrayList<Subject> subjects = subs.retrieveSubjectsByBranch(branch_id);
         if(subjects != null && !subjects.isEmpty()){
             for (Subject s : subjects) {
                 int id = s.getSubjectId();
                 out.println("<li class='survey-item' id='sid_" + id + "'><span class='survey-country list-only'>SG</span>");
                 out.println("<span class='survey-name'><i class='zmdi zmdi-graduation-cap'>&nbsp;&nbsp;</i><span id='name_"+id+"'>");
                 out.println(s.getSubjectName() + "</span></span>");
-                ArrayList<String> level = LevelDAO.retrieveLevelBySubject(id, branchID);
+                ArrayList<String> level = LevelDAO.retrieveLevelBySubject(id, branch_id);
 
                 if(level != null && !level.isEmpty()){
                     String primary = "";
@@ -365,14 +146,17 @@
             <div class="modal-body">
                 <div class="row">
                     <div class = "col-sm-4">
-                        <p class = "form-control-label">Name :</p>
+                        <p class = "form-control-label">Subject Name :</p>
                     </div>
                     <div class = "col-sm-8">
-                        <p><input type = "text" class = "form-control" id="name" value ="<%=branch_id%>"/></p>
-                        <input type="hidden" id="id" value="" />
+                        <p><input type = "text" class = "form-control" id="subject_name" value =""/></p>
                         <input type="hidden" id="branch_id" value="<%=branch_id%>" />
                     </div>
                 </div><br/>
+                
+                <div class="row">
+                    <div class=""><p></p></div>
+                </div>
 
             </div>  
 
@@ -384,9 +168,10 @@
 </div>
 
 <%@include file="footer.jsp"%>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.css" rel="stylesheet">
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.15/css/bootstrap-multiselect.css" rel="stylesheet">
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.15/js/bootstrap-multiselect.min.js"></script>
+
 
 <script>
     $(document).ready(function () {
@@ -395,28 +180,9 @@
             $('#creation_status').fadeIn().delay(2000).fadeOut();
         }
 
-        $("#viewSubject").on("show.bs.modal", function (e) {
-            var subject_id = $(e.relatedTarget).data('target-id');
-
-            $.ajax({
-                url: 'RetrieveSubjectServlet',
-                dataType: 'JSON',
-                data: {subjectID: subject_id},
-                success: function (data) {
-                    $("#view_tutor_name").text(data["name"]);
-
-
-                    /*if (data["branch"] !== "") {
-                     $("#branch").val(data["branch"]);
-                     }*/
-                }
-            });
-
-        });
-
         $("#editSubject").on("show.bs.modal", function (e) {
             var subject_id = $(e.relatedTarget).data('target-id');
-            var branchId = $("#branch_" + subject_id).val();
+            var branchId = $("#branch_id").val();
             $.ajax({
                 url: 'RetrieveSubjectServlet',
                 dataType: 'JSON',
@@ -425,12 +191,9 @@
 
                     $("#subject_id").val(data["id"]);
                     $("#subject_name").val(data["name"]);
-                    $("#subject_name").attr('readonly', true);
-
-                    if (data["branch"] !== "") {
-                     $("#branch").val(data["branch"]);
-                     $("#branch").attr('readonly',true);
-                    }
+                    console.log(data["lvl_names"]);
+                    console.log(data["lvl_ids"]);
+                    
                 }
             });
 

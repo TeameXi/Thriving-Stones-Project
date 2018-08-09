@@ -6,14 +6,17 @@
 package controller;
 
 import entity.Branch;
+import entity.Level;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.BranchDAO;
+import model.LevelDAO;
 import model.SubjectDAO;
 import org.json.JSONObject;
 
@@ -35,21 +38,28 @@ public class RetrieveSubjectServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html; charset=utf-8");
         try (PrintWriter out = response.getWriter()) {
           
             JSONObject obj = new JSONObject();
             int subjectID = Integer.parseInt(request.getParameter("subjectID"));
             int branchID = Integer.parseInt(request.getParameter("branchID"));
             SubjectDAO subjects = new SubjectDAO();
-            String subject = subjects.retrieveSubject(subjectID);
-            BranchDAO bDAO = new BranchDAO();
-            Branch b = bDAO.retrieveBranchById(branchID);
+            String subjectName = subjects.retrieveSubject(subjectID);
 
-            if(subject != null){
+            ArrayList<Level> levelLists = LevelDAO.retrieveLevelBySubject1(subjectID, branchID);
+            
+            ArrayList<String> lvlNames = new ArrayList<>();
+            ArrayList<Integer> lvlIds = new ArrayList<>();
+            for(Level l : levelLists){
+                lvlNames.add(l.getLevelName());
+                lvlIds.add(l.getLevel_id());
+            }
+            if(subjectName != null){
                 obj.put("id",subjectID);
-                obj.put("name",subject);
-                obj.put("branch", b.getBranchId());
+                obj.put("name",subjectName);
+                obj.put("lvl_names",lvlNames);
+                obj.put("lvl_ids",lvlIds);
+
             }
             
             out.println(obj);
