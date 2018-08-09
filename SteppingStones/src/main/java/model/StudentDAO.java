@@ -235,5 +235,20 @@ public class StudentDAO {
             System.out.println(e.getMessage());
         }
         return updatedStatus;
-    } 
+    }
+    public int retrieveNumberOfStudent(){
+        int studentCount = 0;
+        String sql = "select COUNT(*) from student";
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){
+                studentCount = rs.getInt(1);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        
+        return studentCount;
+    }
 }
