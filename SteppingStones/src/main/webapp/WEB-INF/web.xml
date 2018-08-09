@@ -37,4 +37,13 @@
         <servlet-name>DashboardServlet</servlet-name>
         <url-pattern>/DashboardServlet</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>RetrieveScheduleServlet</servlet-name> 
+        <servlet-class>controller.RetrieveScheduleServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>RetrieveScheduleServlet</servlet-name>
+        <url-pattern>/RetrieveScheduleServlet</url-pattern>
+    </servlet-mapping>
 </web-app>
