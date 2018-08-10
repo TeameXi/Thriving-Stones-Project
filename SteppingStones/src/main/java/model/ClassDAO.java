@@ -20,13 +20,13 @@ import java.util.ArrayList;
  */
 public class ClassDAO {
     
-    public static ArrayList<Class> getClassesToEnrolled(int level_id, int student_id){
+    public static ArrayList<Class> getClassesToEnrolled(int level_id, int student_id, int branch_id){
         String level = LevelDAO.retrieveLevel(level_id);
         ArrayList<Class> classList = new ArrayList();
         try(Connection conn = ConnectionManager.getConnection()){
             PreparedStatement stmt = conn.prepareStatement("select * from class where branch_id = ? and level_id = ? and end_date > curdate() and "
                     + "class_id not in (select class_id from class_student_rel where student_id = ?) order by subject_id");
-            stmt.setInt(1, 1); // replace with branch_id
+            stmt.setInt(1, branch_id);
             stmt.setInt(2, level_id);
             stmt.setInt(3, student_id);
             ResultSet rs = stmt.executeQuery();

@@ -48,7 +48,7 @@ public class RegisterForClassesServlet extends HttpServlet {
             if(levelID == 0){
                 request.setAttribute("errorMsg", studentName + " Not Exists in Database, Please Create Student First.");           
             }else{
-                ArrayList<Class> cls = ClassDAO.getClassesToEnrolled(levelID, studentID);
+                ArrayList<Class> cls = ClassDAO.getClassesToEnrolled(levelID, studentID, branchID);
                 ArrayList<Class> enrolledCls = ClassDAO.getStudentEnrolledClass(studentID);
                 request.setAttribute("level", LevelDAO.retrieveLevel(levelID));
                 request.setAttribute("studentName", studentName);
