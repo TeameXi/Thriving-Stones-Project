@@ -208,13 +208,14 @@ public class TutorDAO {
         return tutorLists;
     }
     
-    public ArrayList<Tutor> retrieveAllTutorsByLimit(int startingRow,int endingRow) {
+    public ArrayList<Tutor> retrieveAllTutorsByLimit(int startingRow,int limit, int branchId) {
         ArrayList<Tutor> tutorLists = new ArrayList<>();
-        String select_tutor = "SELECT * FROM tutor Limit ?,?";
+        String select_tutor = "SELECT * FROM tutor where branch_id = ? Limit ?,?";
         try (Connection conn = ConnectionManager.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(select_tutor)) {
-                preparedStatement.setInt(1, startingRow);
-                preparedStatement.setInt(2, endingRow);
+            PreparedStatement preparedStatement = conn.prepareStatement(select_tutor)) {
+            preparedStatement.setInt(1, branchId);
+            preparedStatement.setInt(2, startingRow);
+            preparedStatement.setInt(3, limit);
 
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
@@ -252,8 +253,7 @@ public class TutorDAO {
             System.out.println(ex.getMessage());
         }
         return false;
-    }
-    
+    }    
     
     public Tutor retrieveTutorByEmail(String email){
         Tutor tutor = null;
@@ -285,11 +285,29 @@ public class TutorDAO {
         
         return tutor;
     }
+    
     public int retrieveNumberOfTutor(){
         int tutorCount = 0;
         String sql = "select COUNT(*) from tutor";
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){
+                tutorCount = rs.getInt(1);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        
+        return tutorCount;
+    }
+    
+    public int retrieveNumberOfTutorByBranch(int branchId){
+        int tutorCount = 0;
+        String sql = "select COUNT(*) from tutor where branch_id = ?";
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, branchId);
             ResultSet rs = stmt.executeQuery();
             while(rs.next()){
                 tutorCount = rs.getInt(1);

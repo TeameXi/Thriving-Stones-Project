@@ -213,7 +213,6 @@
 
                     $("#subject_id").val(data["id"]);
                     $("#subject_name").val(data["name"]);
-                    //window.alert(data["lvl_names"][1]);
                     html = "";
                     for(var i=0; i < data["lvl_names"].length; i++){
                         html += "<div id='lvl_wrapper_"+data["lvl_ids"][i]+"' class='lvl_styling col-sm-3'>"+data["lvl_names"][i] + "<a href='#level_delete_confirmation' data-toggle='modal' onclick='deleteLevel("+data["id"]+","+data["branch_id"] +","+data["lvl_ids"][i]+")' class='lvl_delete_styling'><i class='zmdi zmdi-close-circle zmdi-hc-2x'></i></a></div>";

@@ -64,11 +64,14 @@ public class StudentDAO {
         return result;
     }
     
-    public static ArrayList<Student> listAllStudents(int branch_id){
+    public static ArrayList<Student> listAllStudentsByLimit(int branch_id, int level_id, int start,int limit){
         ArrayList<Student> studentList = new ArrayList();
         try(Connection conn = ConnectionManager.getConnection()){
-            PreparedStatement stmt = conn.prepareStatement("select * from student where branch_id = ? order by level_id, student_name");
+            PreparedStatement stmt = conn.prepareStatement("select * from student where branch_id = ? and level_id = ? order by student_name limit ?, ?");
             stmt.setInt(1,branch_id);
+            stmt.setInt(2,level_id);
+            stmt.setInt(3,start);
+            stmt.setInt(4,limit);
             ResultSet rs = stmt.executeQuery();
 
             while(rs.next()){
@@ -236,11 +239,28 @@ public class StudentDAO {
         }
         return updatedStatus;
     }
-    public int retrieveNumberOfStudent(){
+    public static int retrieveNumberOfStudent(){
         int studentCount = 0;
         String sql = "select COUNT(*) from student";
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){
+                studentCount = rs.getInt(1);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        
+        return studentCount;
+    }
+    
+    public static int retrieveNumberOfStudentByLevel(int levelID){
+        int studentCount = 0;
+        String sql = "select COUNT(*) from student where level_id = ?";
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, levelID);
             ResultSet rs = stmt.executeQuery();
             while(rs.next()){
                 studentCount = rs.getInt(1);
