@@ -133,6 +133,11 @@
             %>
     </ul>
 <%
+    String pageId = (String)request.getAttribute("id");
+    int id = 1;
+    if(pageId != null){
+        id = Integer.parseInt(pageId);
+    }
     int totalpage = tutorDAO.retrieveNumberOfTutorByBranch(branch_id);
     double total = totalpage/(toShow*1.0);
     int totalPage = (int)Math.ceil(total);
@@ -141,9 +146,15 @@
   <ul class="pagination">
     <%
         for(int i = 1; i <= totalPage; i++){
+            if(id != 0 && id == i){
+    %>
+    <li class="page-item active"><a class="page-link" href="PaginationTutorServlet?page=<%=i%>&toShow=<%=toShow%>&branch=<%=branch_id%>"><%=i%></a></li>
+    <%
+            }else{
     %>
     <li class="page-item"><a class="page-link" href="PaginationTutorServlet?page=<%=i%>&toShow=<%=toShow%>&branch=<%=branch_id%>"><%=i%></a></li>
     <%
+            }
         }
     %>
 </ul> 

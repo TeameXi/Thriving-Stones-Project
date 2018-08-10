@@ -68,6 +68,7 @@ public class PaginationStudentServlet extends HttpServlet {
         }
 
         request.setAttribute("students", students);
+        request.setAttribute("id", pageIdStr);
         RequestDispatcher view = request.getRequestDispatcher("DisplayStudents.jsp");
         view.forward(request, response);
     }

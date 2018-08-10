@@ -120,21 +120,33 @@
         %>
     </ul>
 <%
+    String pageId = (String)request.getAttribute("id");
+    int id = 1;
+    if(pageId != null){
+        id = Integer.parseInt(pageId);
+    }
     int totalpage = StudentDAO.retrieveNumberOfStudentByLevel(levelID);
     double total = totalpage/(toShow*1.0);
     int totalPage = 0;
     if(total != 0){
         totalPage = (int)Math.ceil(total);
     }
+    
 %> 
     
 <nav aria-label="Page navigation example" class="text-center">
  <ul class="pagination">
     <%
         for(int i = 1; i <= totalPage; i++){
+            if(id != 0 && id == i){
+    %>
+    <li class="page-item active"><a class="page-link" href="PaginationStudentServlet?page=<%=i%>&toShow=<%=toShow%>&level=<%=levelID%>&branch=<%=branch_id%>"><%=i%></a></li>
+    <%
+            }else{
     %>
     <li class="page-item"><a class="page-link" href="PaginationStudentServlet?page=<%=i%>&toShow=<%=toShow%>&level=<%=levelID%>&branch=<%=branch_id%>"><%=i%></a></li>
     <%
+            }
         }
     %>
 </ul>

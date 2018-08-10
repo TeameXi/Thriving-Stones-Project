@@ -64,6 +64,7 @@ public class PaginationTutorServlet extends HttpServlet {
         }
 
         request.setAttribute("tutors", tutors);
+        request.setAttribute("id", pageIdStr);
         RequestDispatcher view = request.getRequestDispatcher("DisplayTutors.jsp");
         view.forward(request, response);
     }
