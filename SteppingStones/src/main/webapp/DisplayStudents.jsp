@@ -1,3 +1,4 @@
+<%@page import="model.LevelDAO"%>
 <%@page import="model.ParentDAO"%>
 <%@page import="model.StudentGradeDAO"%>
 <%@page import="java.util.LinkedHashMap"%>
@@ -21,51 +22,66 @@
     }
 </style>
 <div class="col-md-10">
-    <div style="margin: 20px;"><h3>Student Lists</h3></div>
+    <%
+            String lvlStr = (String) request.getParameter("level");
+            int levelID = 0;
+            if(lvlStr == null){
+                lvlStr = "1"; 
+            }
+            levelID = Integer.parseInt(lvlStr);
+            String level = LevelDAO.retrieveLevel(levelID);
+    %>
+    <div style="margin: 20px;"><h3><strong><%=level%></strong> Students</h3></div>
     <div class="row" id="errorMsg"></div>
+    <div class="row  spaced-top">
+        <div class="col-sm-6">
+            <div class="portlet light portlet-fit smaller-fonts" >
+                <span class="sortby_span">
+                    Sort By
+                    <select class = "form-control" style = "display:inline-block;width:auto;" name= "level" onchange="updateLevel(this)">
+                        <option value='0'>Level</option>
+                        <option value='1'>Primary 1</option>
+                        <option value='2'>Primary 2</option>
+                        <option value='3'>Primary 3</option>
+                        <option value='4'>Primary 4</option>
+                        <option value='5'>Primary 5</option>
+                        <option value='6'>Primary 6</option>
+                        <option value='7'>Secondary 1</option>
+                        <option value='8'>Secondary 2</option>
+                        <option value='9'>Secondary 3</option>
+                        <option value='10'>Secondary 4</option>
+                    </select>
+                </span>
+                <br style="clear:both">
+            </div>
+        </div>
+    </div>
     <span class="toggler active" data-toggle="grid"><span class="zmdi zmdi-view-dashboard"></span></span>
     <span class="toggler" data-toggle="list"><span class="zmdi zmdi-view-list"></span></span>
     <ul class="surveys grid">
         <%
-
-            StudentDAO studentDAO = new StudentDAO();
-            //ArrayList<Student> students = studentDAO.listAllStudents();
-  
-            LinkedHashMap<String, ArrayList<Student>> studentList = studentDAO.listAllStudent(branch_id);
-            if(studentList.size() > 0){
-                Set<String> level = studentList.keySet();
-                for(String lvl: level){
-                    out.println(lvl);
-                    ArrayList<Student> students = studentList.get(lvl);
-                    if (students != null) {
-                        for (int i = 0; i < students.size(); i++) {
-                            Student stu = students.get(i);
-                            int id = stu.getStudentID();
-                            out.println("<li class='survey-item' id='sid_" + id + "'><span class='survey-country list-only'>SG</span>");
-                            out.println("<span class='survey-name'><i class='zmdi zmdi-account'>&nbsp;&nbsp;</i><span id='name_"+id+"'>");
-                            out.println(stu.getName() + "</span></span>");
-                            out.println("<span class='survey-country grid-only'><i class='zmdi zmdi-pin'>&nbsp;&nbsp;</i><span id='address_"+id+"'>");
-                            out.println(stu.getAddress() + "</span></span><br/>");
-                            out.println("<span class='survey-country'><i class='zmdi zmdi-graduation-cap'>&nbsp;&nbsp;</i><span id='lvl_"+id+"'>");
-                            out.println(stu.getLevel() + "</span></span><br>");
-                            out.println("<span class='survey-country'>");
-                            out.println(ParentDAO.retrieveParentByStudentID(id) + "</span></span><br>");
-                           /*
-                           LinkedHashMap<String, ArrayList<String>> gradeLists = StudentGradeDAO.retrieveStudentTuitionGrade(id);
-                            if(gradeLists != null && !gradeLists.isEmpty()){
-                                Set<String> keys = gradeLists.keySet();
-                                out.println("<span class='survey-country'>Tuition Grades<br>" + "</span>");
-                                for(String subject: keys){
-                                    ArrayList<String> grades = gradeLists.get(subject);
-                                    out.println("<span class='survey-country'>" + subject + "</span>");
-                                    if(grades != null){
-                                        for(String grade: grades){
-                                            out.println("<span class='survey-country'>" + grade + "</span>");
-                                        }
-                                    }
-                                    out.println("<br>");
-                                }
-                            }     */
+            ArrayList<Student> students = (ArrayList<Student>)request.getAttribute("students");
+            int toShow = 8; //change according to no. of record shows
+            if(students == null || students.isEmpty()){
+                students = StudentDAO.listAllStudentsByLimit(branch_id, levelID, 0, toShow);
+            }else{
+                students = (ArrayList<Student>) request.getAttribute("students");
+            }
+                    
+            if (students != null && !students.isEmpty()) {
+                for (int i = 0; i < students.size(); i++) {
+                    Student stu = students.get(i);
+                    int id = stu.getStudentID();
+                    out.println("<li class='survey-item' id='sid_" + id + "'><span class='survey-country list-only'>SG</span>");
+                    out.println("<span class='survey-name'><i class='zmdi zmdi-account'>&nbsp;&nbsp;</i><span id='name_"+id+"'>");
+                    out.println(stu.getName() + "</span></span>");
+                    out.println("<span class='survey-country grid-only'><i class='zmdi zmdi-pin'>&nbsp;&nbsp;</i><span id='address_"+id+"'>");
+                    out.println(stu.getAddress() + "</span></span><br/>");
+                    out.println("<span class='survey-country'><i class='zmdi zmdi-graduation-cap'>&nbsp;&nbsp;</i><span id='lvl_"+id+"'>");
+                    out.println(stu.getLevel() + "</span></span><br>");
+                    out.println("<span class='survey-country'>");
+                    out.println(ParentDAO.retrieveParentByStudentID(id) + "</span></span><br>");
+                          
 
         %>
         <div class="pull-right">
@@ -94,20 +110,47 @@
             </span>
 
 
-                <%          out.println("<span class='survey-end-date'><i class='zmdi zmdi-phone'>&nbsp;&nbsp;</i><span id='phone_"+id+"'>");
-                            out.println(stu.getPhone() + "</span></span></div></li>");
-                        }
-
-                    } else {
-                        out.println("No Students!");
-                    }
+        <%          out.println("<span class='survey-end-date'><i class='zmdi zmdi-phone'>&nbsp;&nbsp;</i><span id='phone_"+id+"'>");
+                    out.println(stu.getPhone() + "</span></span></div></li>");
                 }
-            }else{
+
+            } else {
                 out.println("<div class='alert alert-warning col-md-5'>No Student Yet! <strong> <a href='CreateStudent.jsp'>Create One</a></strong> </div>");
-   
             }
         %>
     </ul>
+<%
+    String pageId = (String)request.getAttribute("id");
+    int id = 1;
+    if(pageId != null){
+        id = Integer.parseInt(pageId);
+    }
+    int totalpage = StudentDAO.retrieveNumberOfStudentByLevel(levelID);
+    double total = totalpage/(toShow*1.0);
+    int totalPage = 0;
+    if(total != 0){
+        totalPage = (int)Math.ceil(total);
+    }
+    
+%> 
+    
+<nav aria-label="Page navigation example" class="text-center">
+ <ul class="pagination">
+    <%
+        for(int i = 1; i <= totalPage; i++){
+            if(id != 0 && id == i){
+    %>
+    <li class="page-item active"><a class="page-link" href="PaginationStudentServlet?page=<%=i%>&toShow=<%=toShow%>&level=<%=levelID%>&branch=<%=branch_id%>"><%=i%></a></li>
+    <%
+            }else{
+    %>
+    <li class="page-item"><a class="page-link" href="PaginationStudentServlet?page=<%=i%>&toShow=<%=toShow%>&level=<%=levelID%>&branch=<%=branch_id%>"><%=i%></a></li>
+    <%
+            }
+        }
+    %>
+</ul>
+
 </div>
 </div>
 </div>
@@ -310,5 +353,12 @@
         });
     }
     
+    function updateLevel(level){
+        var lvlID = level.value;  
+        var branch_id = $("#branch_id").val();
+        console.log(lvlID);
+        console.log(branch_id);
+        location.href ="?level="+lvlID;
+    }
     
 </script>

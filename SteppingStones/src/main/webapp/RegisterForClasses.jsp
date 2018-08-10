@@ -112,7 +112,7 @@
                             </form>
             <%
                     }else{
-                        out.println("<h4>All Available Classes are registered.</h4>");
+                        out.println("<h4>All Available Classes are registered.</h4><br><br>");
                     }
                 }
             %>

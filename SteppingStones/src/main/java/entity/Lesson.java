@@ -24,6 +24,14 @@ public class Lesson {
         this.lessonDateTime = lessonDateTime;
     }
 
+    public Lesson(int lessonid, int classid, int tutorid, int tutorAttended, Timestamp lessonDateTime) {
+        this.lessonid = lessonid;
+        this.classid = classid;
+        this.tutorid = tutorid;
+        this.tutorAttended = tutorAttended;
+        this.lessonDateTime = lessonDateTime;
+    }
+    
     public int getLessonid() {
         return lessonid;
     }

@@ -19,7 +19,7 @@
 <div class="col-md-10">
     <div style="margin: 20px;"><h3>Tutor Lists</h3></div>
     <div class="row" id="errorMsg"></div>
-    <%        
+    <%       
         String tutor_creation_status = (String) request.getAttribute("creation_status");
         if (tutor_creation_status != null) {
             if (tutor_creation_status == "true") {
@@ -75,12 +75,16 @@
     <span class="toggler" data-toggle="list"><span class="zmdi zmdi-view-list"></span></span>
     <ul class="surveys grid">
         <%
-
-            TutorDAO tutuorDAO = new TutorDAO();
-            ArrayList<Tutor> tutors = tutuorDAO.retrieveAllTutorsByBranch(branch_id);
+            TutorDAO tutorDAO = new TutorDAO();
+            ArrayList<Tutor> tutors = (ArrayList<Tutor>)request.getAttribute("tutors");;
+            int toShow = 8; //change according to no. of record shows
+            if(tutors == null || tutors.isEmpty()){
+                tutors = tutorDAO.retrieveAllTutorsByLimit(0, toShow, branch_id);
+            }else{
+                tutors = (ArrayList<Tutor>) request.getAttribute("tutors");
+            }
            
-            if (tutors.size() > 0) {
-               
+            if (tutors != null && !tutors.isEmpty()) {              
                 for (Tutor tu : tutors) {
                     String dob = tu.getBirth_date();
                     int id = tu.getTutorId();
@@ -128,6 +132,33 @@
 
             %>
     </ul>
+<%
+    String pageId = (String)request.getAttribute("id");
+    int id = 1;
+    if(pageId != null){
+        id = Integer.parseInt(pageId);
+    }
+    int totalpage = tutorDAO.retrieveNumberOfTutorByBranch(branch_id);
+    double total = totalpage/(toShow*1.0);
+    int totalPage = (int)Math.ceil(total);
+%> 
+    <nav aria-label="Page navigation example" class="text-center">
+  <ul class="pagination">
+    <%
+        for(int i = 1; i <= totalPage; i++){
+            if(id != 0 && id == i){
+    %>
+    <li class="page-item active"><a class="page-link" href="PaginationTutorServlet?page=<%=i%>&toShow=<%=toShow%>&branch=<%=branch_id%>"><%=i%></a></li>
+    <%
+            }else{
+    %>
+    <li class="page-item"><a class="page-link" href="PaginationTutorServlet?page=<%=i%>&toShow=<%=toShow%>&branch=<%=branch_id%>"><%=i%></a></li>
+    <%
+            }
+        }
+    %>
+</ul> 
+</nav>
 </div>
 </div>
 </div>
