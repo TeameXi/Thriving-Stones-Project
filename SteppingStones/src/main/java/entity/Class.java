@@ -93,6 +93,16 @@ public class Class {
         this.startDate = newStartDate;
     }
     
+    
+    public String getEndDate() {
+        return this.endDate;
+    }
+
+    public void setEndDate(String newEndDate) {
+        this.endDate = newEndDate;
+    }
+    
+    
     @Override
     public String toString(){
         return this.classID + "&" + this.level + "&" + this.subject + "&" + this.classTime + "&" + this.classDay + "&" +  this.mthlyFees + "&" + this.startDate + "&" + this.endDate;
