@@ -92,8 +92,6 @@
         int numberOfStudentPerLevel = studentPerLevel.get(level);
         int percentage = (numberOfStudentPerLevel*100)/numberOfStudent;
         %>
-
-        <p><%=level%> : <%=percentage%></p>
         <div class="progress-group">
             <span class="progress-text"><%=level%></span>
             <span class="progress-number"><b><%=studentPerLevel.get(level)%></b></span>
