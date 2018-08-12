@@ -65,7 +65,7 @@ public class DashboardServlet extends HttpServlet {
         }
         
         
-        RequestDispatcher view=request.getRequestDispatcher("dashboard.jsp");
+        RequestDispatcher view=request.getRequestDispatcher("Dashboard.jsp");
         view.forward(request,response);
     }
 

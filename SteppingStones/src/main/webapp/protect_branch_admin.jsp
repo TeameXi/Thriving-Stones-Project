@@ -6,7 +6,7 @@
         response.sendRedirect("Login.jsp");
         return;
     }else if(user1.getBranchId() == 0){
-        response.sendRedirect("dashboard.jsp");
+        response.sendRedirect("Dashboard.jsp");
         return;
     }
 %>

@@ -80,7 +80,7 @@ public class LoginServlet extends HttpServlet {
                     } else if (type.equals("parent")) {
                         session.setAttribute("user", user);
                         session.setAttribute("role", "parent");
-                        response.sendRedirect("dashboard.jsp");
+                        response.sendRedirect("Dashboard.jsp");
 
                     }
                 } else {

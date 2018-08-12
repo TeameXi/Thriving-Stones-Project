@@ -69,7 +69,7 @@
             <div class="sidebar content-box" style="display: block;">
                 <ul class="nav">
                     <!-- Main menu -->
-                    <li><a href="dashboard.jsp"><i class="glyphicon glyphicon-dashboard"></i> Dashboard</a></li>
+                    <li><a href="Dashboard.jsp"><i class="glyphicon glyphicon-dashboard"></i> Dashboard</a></li>
                     
                     <%  
                         if(user != null && user.getBranchId() == 0 && role=="admin"){

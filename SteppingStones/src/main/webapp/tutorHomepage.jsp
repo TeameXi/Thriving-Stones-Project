@@ -16,7 +16,7 @@
             <section class="featured-content">
                 <ul class="featured-list">
                     <li class="featured-list_item">
-                        <a href="dashboard.jsp" class="featured-list_link">
+                        <a href="Dashboard.jsp" class="featured-list_link">
                             <img src="${pageContext.request.contextPath}/styling/img/icons/dashboard.png" class="featured-list_img" alt ="Admin">
                             <h3 class="featured-list_title">Dashboard</h3>
                         </a>
