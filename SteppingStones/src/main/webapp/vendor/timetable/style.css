@@ -7,6 +7,17 @@ Primary style
   box-sizing: border-box;
 }
 
+html {
+  font-size: 62.5%;
+}
+
+body {
+  font-size: 1.6rem;
+  font-family: "Source Sans Pro", sans-serif;
+  color: #222222;
+  background-color: white;
+}
+
 a {
   color: #A2B9B2;
   text-decoration: none;
@@ -268,12 +279,12 @@ Main Components
 }
 
 .cd-schedule .event-name {
-  font-size: 1.8rem;
+  font-size: 2.4rem;
 }
 
 @media only screen and (min-width: 800px) {
   .cd-schedule .event-name {
-    font-size: 1.4rem;
+    font-size: 2rem;
   }
 }
 

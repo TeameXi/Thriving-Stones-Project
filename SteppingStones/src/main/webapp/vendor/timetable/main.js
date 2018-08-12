@@ -1,4 +1,4 @@
-jQuery(document).ready(function($){
+function createSchedule(){
 	var transitionEnd = 'webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend';
 	var transitionsSupported = ( $('.csstransitions').length > 0 );
 	//if browser does not support transitions - use a different event to trigger them
@@ -13,12 +13,14 @@ jQuery(document).ready(function($){
 		this.timelineItemsNumber = this.timelineItems.length;
 		this.timelineStart = getScheduleTimestamp(this.timelineItems.eq(0).text());
 		//need to store delta (in our case half hour) timestamp
-		this.timelineUnitDuration = getScheduleTimestamp(this.timelineItems.eq(1).text()) - getScheduleTimestamp(this.timelineItems.eq(0).text());
-
+//		this.timelineUnitDuration = getScheduleTimestamp(this.timelineItems.eq(1).text()) - getScheduleTimestamp(this.timelineItems.eq(0).text());
+                this.timelineUnitDuration = 60;
+                
 		this.eventsWrapper = this.element.find('.events');
 		this.eventsGroup = this.eventsWrapper.find('.events-group');
 		this.singleEvents = this.eventsGroup.find('.single-event');
 		this.eventSlotHeight = this.eventsGroup.eq(0).children('.top-info').outerHeight();
+                
 
 		this.modal = this.element.find('.event-modal');
 		this.modalHeader = this.modal.find('.header');
@@ -42,7 +44,8 @@ jQuery(document).ready(function($){
 		var mq = this.mq();
 		if( mq == 'desktop' && !this.element.hasClass('js-full') ) {
 			//in this case you are on a desktop version (first load or resize from mobile)
-			this.eventSlotHeight = this.eventsGroup.eq(0).children('.top-info').outerHeight();
+			//this.eventSlotHeight = this.eventsGroup.eq(0).children('.top-info').outerHeight();
+                        this.eventSlotHeight = 73;
 			this.element.addClass('js-full');
 			this.placeEvents();
 			this.element.hasClass('modal-is-open') && this.checkEventModal();
@@ -95,6 +98,8 @@ jQuery(document).ready(function($){
 
 			var eventTop = self.eventSlotHeight*(start - self.timelineStart)/self.timelineUnitDuration,
 				eventHeight = self.eventSlotHeight*duration/self.timelineUnitDuration;
+                                
+                        console.log(eventTop);
 			
 			$(this).css({
 				top: (eventTop -1) +'px',
@@ -106,6 +111,12 @@ jQuery(document).ready(function($){
 	};
 
 	SchedulePlan.prototype.openModal = function(event) {
+                var event_details_arr = event.parent().attr('data-content').split("&");
+                var start = event_details_arr[0];
+                var end = event_details_arr[1];
+                var fees = event_details_arr[2];
+                var tutor = event_details_arr[3];
+                
 		var self = this;
 		var mq = self.mq();
 		this.animating = true;
@@ -115,11 +126,15 @@ jQuery(document).ready(function($){
 		this.modalHeader.find('.event-date').text(event.find('.event-date').text());
 		this.modal.attr('data-event', event.parent().attr('data-event'));
 
-		//update event content
-		this.modalBody.find('.event-info').load(event.parent().attr('data-content')+'.html .event-info > *', function(data){
-			//once the event content has been loaded
-			self.element.addClass('content-loaded');
-		});
+                html = "<p style='margin-top:20px;'><h3>Class Details</h3></p><br/>";
+               
+                html += '<p class = "form-control-label"><i class="zmdi zmdi-calendar">&nbsp;</i> Start Date : <label>'+start+'</label></p>';
+                html += '<p class = "form-control-label"><i class="zmdi zmdi-calendar">&nbsp;</i> End Date : <label>'+end+'</label></p>';
+                html += '<p class = "form-control-label"><i class="zmdi zmdi-money">&nbsp;</i> Tution Fees : <label>'+fees+'</label></p>';
+                html += '<p class = "form-control-label"><i class="zmdi zmdi-account">&nbsp;</i> Assigned To : <label>'+tutor+'</label></p>';
+                
+                $('.event-info').html(html);
+                self.element.addClass('content-loaded');
 
 		this.element.addClass('modal-is-open');
 
@@ -378,4 +393,4 @@ jQuery(document).ready(function($){
 			'transform': value
 		});
 	}
-});
+}

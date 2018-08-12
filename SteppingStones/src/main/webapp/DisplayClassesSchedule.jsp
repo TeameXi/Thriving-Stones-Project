@@ -34,6 +34,10 @@
         background-color: DodgerBlue !important; 
         color: #ffffff; 
     }
+    
+    .event-info{
+        margin-left: 20px;
+    }
 </style>
 <div class="col-md-10">
     <div style="text-align: center;margin: 20px;"><span class="tab_active">Display Schedule</span></h5></div>
@@ -116,7 +120,6 @@
                 <li><span>20:00 PM</span></li>
                 <li><span>21:00 PM</span></li>
                 <li><span>22:00 PM</span></li>
-                <li><span>23:00 AM</span></li>
             </ul>
         </div> <!-- .timeline -->
 
@@ -132,13 +135,7 @@
                 <li class="events-group">
                     <div class="top-info"><span>Tue</span></div>
                     <ul class="Tue">
-                        <li class="single-event" data-start="10:00" data-end="11:30"  data-content="event-rowing-workout" data-event="event-2">
-                            <a href="#0">
-                                <em class="event-name">Rowing Workout</em>
-                            </a>
-                        </li>
-                        
-                       
+                     
                     </ul>
                 </li>
 
@@ -194,7 +191,7 @@
 </div>
 <%@include file="footer.jsp"%>
 <script src="${pageContext.request.contextPath}/styling/js/jquery.autocomplete.js"></script>
-
+<script src="${pageContext.request.contextPath}/vendor/timetable/main.js"></script>
 
 <script>
             var level = ["Primary 1", "Primary 2", "Primary 3", "Primary 4", "Primary 5", "Primary 6", "Secondary 1", "Secondary 2", "Secondary 3", "Secondary 4"];
@@ -219,6 +216,8 @@
                             $("#errorMsg").html(html);
                             $('#errorMsg').fadeIn().delay(2000).fadeOut();
                         } else {
+                            var color_count = 1;
+                            console.log(data);
                             for(var i=0;i< data.length;i++){
                                 var classInfo = data[i];
                                 var day = classInfo["day"];
@@ -226,25 +225,28 @@
                                 var start_time = time_arr[0];
                                 var end_time = time_arr[1];
                                 var subject_name = classInfo["subject"];
-                                console.log(day);
-                                console.log(start_time);
-                                console.log(end_time);
+                                var start_date = classInfo["start_date"];
+                                var end_date = classInfo["end_date"];
+                                var tutor = "Susan";
+                                var fees = classInfo["fees"];
+
                                 
                                 var html = '<li class="single-event" data-start="'+start_time+'" data-end="'+end_time+'"';
-                                html    += 'data-content="event-'+subject_name+'" data-event="event-2"><a href="#0"><em class="event-name">'+subject_name+'</em></a></li>';
-                                
+                                html    += 'data-content="'+start_date+'&'+end_date+'&'+fees+'&'+tutor+'" data-event="event-'+color_count+'"><a href="#0"><em class="event-name">'+subject_name+'</em></a></li>';
+                                color_count = color_count+1;
+                                if(color_count > 4){
+                                    color_count = 1;
+                                }
+                             
                                 $("."+day).append(html);
                             }
+                                createSchedule();
                         }
                     }
                 });
                 return false;
             }
 
-$( document ).ready(function() {
-           
-});
 
 </script>
 <script src="${pageContext.request.contextPath}/vendor/timetable/modernizr.js"></script>
-<script src="${pageContext.request.contextPath}/vendor/timetable/main.js"></script>
