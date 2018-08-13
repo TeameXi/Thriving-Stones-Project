@@ -82,14 +82,12 @@ public class LoginServlet extends HttpServlet {
                         session.setAttribute("role", "parent");
                         response.sendRedirect("Dashboard.jsp");
 
+                    } else {
+                        response.sendRedirect("Login.jsp?error=true");
                     }
-                } else {
-                    out.println("Invalid");
-//                    response.sendRedirect("Login.jsp?error=true");
                 }
             } else {
-                out.println("Null");
-//                response.sendRedirect("Login.jsp?error=true");
+                response.sendRedirect("Login.jsp?error=true");
             }
         } else {
             response.sendRedirect("Login.jsp?error=true");
