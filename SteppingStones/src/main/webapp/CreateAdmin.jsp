@@ -204,6 +204,13 @@ $(function () {
                         message: 'Please enter valid email address'
                     }
                 }
+            },
+            adminPassword: {
+                validators: {
+                    notEmpty: {
+                        message: 'Please enter password'
+                    }
+                }
             }
         }   
     });
