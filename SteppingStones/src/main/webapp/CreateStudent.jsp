@@ -32,7 +32,7 @@
         }
     %>
 
-    <div style="text-align: center;margin: 20px;"><span class="tab_active">Add Student </span> / <a href="UploadStudents.jsp">Upload Students</a></h5></div>
+    <div style="text-align: center;margin: 20px;"><span class="tab_active">Add Student </span> / <a href="UploadStudent.jsp">Upload Students</a></h5></div>
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-7">
