@@ -6,15 +6,8 @@
 <%@page import="model.StudentDAO"%>
 <%@page import="model.TutorDAO"%>
 <%@include file="header.jsp"%>
-<head>	
-        <!-- Bootstrap 3.3.7 -->
-        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styling/css/bootstrap.min.css">
-        <!-- Font Awesome -->
-        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styling/fonts/font-awesome.min.css">
-        <!-- Ionicons -->
-        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styling/css//Ionicons/css/ionicons.min.css">
-        <!-- Theme style -->
-        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styling/css/AdminLTE.min.css">
+<head>	 
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styling/css/AdminLTE.min.css">
 </head>
 <body>
 <div style="margin: 20px;"><h3>Dashboard</h3></div>
@@ -45,7 +38,7 @@
         <div class="rowDashboard">
             <div class="col-md">
               <div class="info-boxs">
-                <span class="info-box-icon bg-red"><i class="ion ion-ios-home"></i></span>
+                <span class="info-box-icon bg-red"><i class="zmdi zmdi-home"></i></span>
 
                 <div class="info-box-contents">
                   <span class="info-box-texts">Number of branch</span>
@@ -57,7 +50,7 @@
             </div>
             <div class="col-md">
               <div class="info-boxs">
-                <span class="info-box-icon bg-green"><i class="ion ion-ios-people"></i></span>
+                <span class="info-box-icon bg-green"><i class="zmdi zmdi-accounts"></i></span>
 
                 <div class="info-box-contents">
                   <span class="info-box-texts">Number of tutor</span>
@@ -70,7 +63,7 @@
         
             <div class="col-md">
              <div class="info-boxs">
-               <span class="info-box-icon bg-yellows"><i class="ion ion-ios-people-outline"></i></span>
+               <span class="info-box-icon bg-yellows"><i class="zmdi zmdi-accounts-alt"></i></span>
 
                <div class="info-box-contents">
                  <span class="info-box-texts">NUMBER OF STUDENT</span>
