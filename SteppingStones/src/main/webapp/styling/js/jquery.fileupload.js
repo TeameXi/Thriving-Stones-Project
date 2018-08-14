@@ -60,10 +60,7 @@ function checkCSVExtension(file_upload_id,error_lbl_id,append_container,option,b
 
 
 function processCSVTutorData(csv_data,append_container,error_el,branch_id) {
-    
-//    if(branchId === 0){
-//        
-//    }
+    console.log(branch_id);
     var html = "";
     if(csv_data.length > 0){
         html += "<div class='row'>" + 
@@ -126,9 +123,7 @@ function processCSVTutorData(csv_data,append_container,error_el,branch_id) {
                         "</button>"+
                     "</div>"+
                 "</div>";
-    if(branch_id === 0){
-        $('#branchContainer').show();
-    }
+   
     $("#"+append_container).append(html);
     $("#upload_container").remove();
     $("#upload_container").empty();

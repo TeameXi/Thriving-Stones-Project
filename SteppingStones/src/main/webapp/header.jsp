@@ -156,17 +156,6 @@
                                     <li><a href="DisplayBranches.jsp">View Attendance</a></li>
                                 </ul>
                             </li>
-                            <li class="submenu">
-                                <a href="#">
-                                    <i class="zmdi zmdi-account-o"></i> Admin
-                                    <span class="caret pull-right"></span>
-                                </a>
-                                <!-- Sub menu -->
-                                <ul>
-                                    <li><a href="CreateAdmin.jsp">Add Admin account</a></li>
-                                    <li><a href="DisplayAdmins.jsp">View Admin</a></li>
-                                </ul>
-                            </li>
                             <li><a href="stats.html"><i class="zmdi zmdi-chart"></i>Your Attendance</a></li>
                             <li><a href="CreateTuitionGrade.jsp"><i class="zmdi zmdi-star-circle"></i>Student's Grades</a></li>
                     <%

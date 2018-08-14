@@ -303,6 +303,13 @@ $(function () {
                     }
                 }
             },
+            birthDate:{
+                validators:{
+                    notEmpty: {
+                        message: 'BirthDate cannot be empty'
+                    }
+                }
+            },
             tutorPassword:{
                 validators:{
                     notEmpty: {
@@ -312,6 +319,16 @@ $(function () {
             }
            
         }
+    });
+    
+    
+//    $('#birthDate').on('dp.change dp.show', function(e) {
+//        $('#createTutorForm').bootstrapValidator('revalidateField', 'birthDate');
+//    
+//    });
+
+    $( "#tutorPassword" ).change(function() {
+        $('#createTutorForm').bootstrapValidator('revalidateField', $(this).prop('name'));
     });
     
     

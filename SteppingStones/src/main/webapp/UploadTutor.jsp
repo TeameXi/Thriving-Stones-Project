@@ -1,7 +1,9 @@
 <%@page import="entity.Branch"%>
 <%@page import="model.BranchDAO"%>
 <%@page import="java.util.ArrayList"%>
+<%@include file="protect_branch_admin.jsp"%>
 <%@include file="header.jsp"%>
+
 <style>
 
 
@@ -36,7 +38,7 @@
                     <i class="zmdi zmdi-file-text"></i> Download Template </span></a>
             <p class="worth spaced-top">Upload the Completed Tutor Template</p>
             <div class="row">    
-                <input type="file" name="upload_tutor_file" id="upload_tutor_file_id" class="form-control" onchange="checkCSVExtension('upload_tutor_file_id', 'tutor_upload_error', 'tutor_container', 'tutor',<%=0%>)" />
+                <input type="file" name="upload_tutor_file" id="upload_tutor_file_id" class="form-control" onchange="checkCSVExtension('upload_tutor_file_id', 'tutor_upload_error', 'tutor_container', 'tutor',<%=branch_id%>)" />
                 <div class="row centered spaced-top-small" id = "tutor_upload_error" name="tutor_error_txt"></div>
             </div>
         </div>
@@ -44,29 +46,7 @@
 
     <div class="row">
         <form  action="UploadTutorServlet" method="Post">
-            <%  
-                
-                
-               
-                if (user != null && user.getBranchId() != 0) {
-                  
-                    BranchDAO branchDao = new BranchDAO();
-                    Branch branch = branchDao.retrieveBranchById(user.getBranchId());
-            %>
-            <div class="form-group" id="branchContainer">
-                <div class="col-lg-3"></div>  
-                <div class="col-lg-5 inputGroupContainer">
-                    <div class="input-group">
-                        <label><span><i class="zmdi zmdi-city">Branch : </i></span></label>
-                        <label><%=branch.getName()%></label>
-                    </div>
-                </div>
-            </div>
-
-            <%
-                }
-            %>
-            <br/>
+            <input type="hidden" name="branch" value="<%=branch_id%>" />
             <div id="tutor_container"></div>
         </form>
     </div>
@@ -122,9 +102,5 @@
         var pwd = Password.generate(len);
         return pwd;
     }
-
-    $(function () {
-        $('#branchContainer').hide();
-    });
 </script>
 
