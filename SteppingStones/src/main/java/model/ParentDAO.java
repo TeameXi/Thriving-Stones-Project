@@ -141,5 +141,21 @@ public class ParentDAO {
         return false;
     }
  
+    public static boolean updateParentPassword(int parentID, String password) {
+        boolean updatedStatus = false;
+        try (Connection conn = ConnectionManager.getConnection();) {
+            conn.setAutoCommit(false);
+            String sql = "update parent set password = ? where parent_id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, password);
+            stmt.setInt(2, parentID);
+            stmt.executeUpdate(); 
+            conn.commit();
+            updatedStatus = true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return updatedStatus;
+    }
     
 }

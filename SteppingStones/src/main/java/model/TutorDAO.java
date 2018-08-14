@@ -318,4 +318,22 @@ public class TutorDAO {
         
         return tutorCount;
     }
+    
+    public boolean updateTutorPassword(int tutorID, String password) {
+        String updateTutorPassword = "UPDATE tutor SET password=? WHERE tutor_id =?";
+        try (Connection conn = ConnectionManager.getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(updateTutorPassword)) {
+            preparedStatement.setString(1, password);
+            preparedStatement.setInt(2,tutorID);
+            
+            int num = preparedStatement.executeUpdate();
+            if (num != 0) {
+                return true;
+            }
+
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return false;
+    }
 }

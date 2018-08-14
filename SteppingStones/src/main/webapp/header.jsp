@@ -49,7 +49,7 @@
                                         out.println("<li><a href='ProfileForParent.jsp'>Manage Account</a></li>");
                                     }
                                 %>
-                              <li><a href="account_setting.html">Update Password</a></li>
+                              <li><a href="ResetPassword.jsp">Update Password</a></li>
                               <li><a href="Logout.jsp">Logout</a></li>
                             </ul>
                           </li>

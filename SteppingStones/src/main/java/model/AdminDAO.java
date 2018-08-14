@@ -141,4 +141,22 @@ public class AdminDAO {
         }
         return null;
     }
+    
+    public boolean updateAdminPassword(int adminID, String password) {
+        String updateTutorPassword = "UPDATE admin SET admin_password=? WHERE admin_id =?";
+        try (Connection conn = ConnectionManager.getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(updateTutorPassword)) {
+            preparedStatement.setString(1, password);
+            preparedStatement.setInt(2,adminID);
+            
+            int num = preparedStatement.executeUpdate();
+            if (num != 0) {
+                return true;
+            }
+
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return false;
+    }
 }

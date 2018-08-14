@@ -271,4 +271,21 @@ public class StudentDAO {
         
         return studentCount;
     }
+    
+    public static boolean updateStudentPassword(int studentID, String password) {
+        boolean updatedStatus = false;
+        try (Connection conn = ConnectionManager.getConnection();) {
+            conn.setAutoCommit(false);
+            String sql = "update student set password = ? where student_id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, password);
+            stmt.setInt(2, studentID);
+            stmt.executeUpdate(); 
+            conn.commit();
+            updatedStatus = true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return updatedStatus;
+    }
 }
