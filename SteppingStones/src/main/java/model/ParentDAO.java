@@ -17,9 +17,8 @@ import java.sql.SQLException;
  * @author DEYU
  */
 public class ParentDAO {
-    public static boolean insertParent(String name, String nationality, String company, String designation, int phone, String email, int passwordPhone, int branchID) {
+    public static boolean insertParent(String name, String nationality, String company, String designation, int phone, String email, String password, int branchID) {
         boolean status = false;
-        String password = String.valueOf(passwordPhone);
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
             String sql = "insert into parent(name, nationality, company, designation, phone, email, password, branch_id)"

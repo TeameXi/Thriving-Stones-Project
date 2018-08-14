@@ -7,7 +7,6 @@ package controller;
 
 import entity.Admin;
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,8 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.AdminDAO;
 import model.BranchDAO;
+import model.GeneratePassword;
 import model.SendMail;
-import model.SendSMS;
 
 @WebServlet(name = "CreateAdminServlet", urlPatterns = {"/CreateAdminServlet"})
 public class CreateAdminServlet extends HttpServlet {
@@ -35,9 +34,10 @@ public class CreateAdminServlet extends HttpServlet {
             throws ServletException, IOException {
   
         String admin_username = request.getParameter("admin_name");
-        String password = request.getParameter("adminPassword");
         int branch_id = Integer.parseInt(request.getParameter("branch"));
         String adminEmail = request.getParameter("adminEmail");
+        String password = GeneratePassword.random(16);
+        
         BranchDAO branchDao = new BranchDAO();
         AdminDAO adminDao = new AdminDAO();
         Admin existingAdmin = adminDao.retrieveAdminByName(admin_username);
