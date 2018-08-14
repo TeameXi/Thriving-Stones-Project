@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  *
@@ -157,4 +158,30 @@ public class ParentDAO {
         return updatedStatus;
     }
     
+    public ArrayList<String> uploadParent(ArrayList<String> parentLists, ArrayList<String> parentNameLists) {
+        ArrayList<String> duplicatedParents = new ArrayList<>();
+        if (parentNameLists.size() > 0) {
+            String nameList = "'" + String.join("','", parentNameLists) + "'";
+
+            ArrayList<String> existingParents = new ArrayList();
+            try (Connection conn = ConnectionManager.getConnection();
+                    PreparedStatement preparedStatement = conn.prepareStatement("SELECT parent_id,name FROM parent WHERE = name IN (" + nameList + ")")) {
+
+                ResultSet rs = preparedStatement.executeQuery();
+                while (rs.next()) {
+                    String student_name = rs.getString(2);
+                    existingParents.add(student_name);
+                }
+
+                String parentList = String.join(",", parentLists);
+                PreparedStatement insertStatement = conn.prepareStatement("INSERT IGNORE INTO parent(name,nationality,company,designation,phone,email,password,branch_id) VALUES " + parentList);
+                int num = insertStatement.executeUpdate();
+                duplicatedParents = existingParents;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return duplicatedParents;
+    }
 }
