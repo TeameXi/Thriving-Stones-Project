@@ -273,6 +273,23 @@ public class StudentDAO {
         return studentCount;
     }
 
+    
+     public static int retrieveNumberOfStudentByBranch(int branchID){
+        int studentCount = 0;
+        String sql = "select COUNT(*) from student where branch_id = ?";
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, branchID);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){
+                studentCount = rs.getInt(1);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        
+        return studentCount;
+    }
     public static boolean updateStudentPassword(int studentID, String password) {
         boolean updatedStatus = false;
         try (Connection conn = ConnectionManager.getConnection();) {

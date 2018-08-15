@@ -1,109 +1,227 @@
+<%@page import="java.util.ArrayList"%>
 <%@page import="java.util.Set"%>
 <%@page import="java.util.TreeMap"%>
 <%@page import="java.util.Map"%>
+<%@page import="entity.Class"%>
 <%@page import="model.BranchDAO"%>
 <%@page import="model.LevelDAO"%>
 <%@page import="model.StudentDAO"%>
 <%@page import="model.TutorDAO"%>
+<%@page import="model.ClassDAO"%>
+<%@page import="model.StudentClassDAO"%>
 <%@include file="header.jsp"%>
 <head>	 
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styling/css/AdminLTE.min.css">
 </head>
 <body>
-<div style="margin: 20px;"><h3>Dashboard</h3></div>
+    <div style="margin: 20px;"><h3>Dashboard</h3></div>
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-7">       
-           
-            <%
-            if(role != null && role == "admin"){
-                BranchDAO branchDAO = new BranchDAO();
-                int numberOfBranch = branchDAO.retrieveNumberOfBranch();
-
-                //retrieve number of tutor
+            <%                BranchDAO branchDAO = new BranchDAO();
                 TutorDAO tutorDAO = new TutorDAO();
-                int numberOfTutor = tutorDAO.retrieveNumberOfTutor();
-
-                //retrieve number of student
                 StudentDAO studentDAO = new StudentDAO();
-                int numberOfStudent = studentDAO.retrieveNumberOfStudent();
-
-                //retrieve number of student per level
                 LevelDAO levelDAO = new LevelDAO();
-                Map<String, Integer> studentPerLevel = levelDAO.retrieveStudentPerLevel();
-                %>                
-               
-        
-        <!-- Info boxes -->
-        <div class="rowDashboard">
-            <div class="col-md">
-              <div class="info-boxs">
-                <span class="info-box-icon bg-red"><i class="zmdi zmdi-home"></i></span>
+                ClassDAO classDAO = new ClassDAO();
+                StudentClassDAO studentClassDAO = new StudentClassDAO();
+                if (role != null && role == "admin" && user.getBranchId() == 0) {
 
-                <div class="info-box-contents">
-                  <span class="info-box-texts">Number of branch</span>
-                  <span class="info-box-numbers"><%=numberOfBranch%></span>
+                    int numberOfBranch = branchDAO.retrieveNumberOfBranch();
+
+                    //retrieve number of tutor                
+                    int numberOfTutor = tutorDAO.retrieveNumberOfTutor();
+
+                    //retrieve number of student                
+                    int numberOfStudent = studentDAO.retrieveNumberOfStudent();
+
+                    //retrieve number of student per level                
+                    Map<String, Integer> studentPerLevel = levelDAO.retrieveStudentPerLevel();
+            %>                
+            <!-- Info boxes -->
+            <div class="row">
+                <div class="col-md">
+                    <div class="info-boxs">
+                        <span class="info-box-icon bg-red"><i class="zmdi zmdi-home"></i></span>
+
+                        <div class="info-box-contents">
+                            <span class="info-box-texts">Number of branch</span>
+                            <span class="info-box-numbers"><%=numberOfBranch%></span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
                 </div>
-                <!-- /.info-box-content -->
-              </div>
-              <!-- /.info-box -->
-            </div>
-            <div class="col-md">
-              <div class="info-boxs">
-                <span class="info-box-icon bg-green"><i class="zmdi zmdi-accounts"></i></span>
+                <div class="col-md">
+                    <div class="info-boxs">
+                        <span class="info-box-icon bg-green"><i class="zmdi zmdi-accounts"></i></span>
 
-                <div class="info-box-contents">
-                  <span class="info-box-texts">Number of tutor</span>
-                  <span class="info-box-numbers"><%=numberOfTutor%></span>
+                        <div class="info-box-contents">
+                            <span class="info-box-texts">Number of tutor</span>
+                            <span class="info-box-numbers"><%=numberOfTutor%></span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
                 </div>
-                <!-- /.info-box-content -->
-              </div>
-              <!-- /.info-box -->
-            </div>
-        
-            <div class="col-md">
-             <div class="info-boxs">
-               <span class="info-box-icon bg-yellows"><i class="zmdi zmdi-accounts-alt"></i></span>
 
-               <div class="info-box-contents">
-                 <span class="info-box-texts">NUMBER OF STUDENT</span>
-                 <span class="info-box-numbers"><%=numberOfStudent%></span>
-               </div>
-               <!-- /.info-box-content -->
-             </div>
-             <!-- /.info-box -->
-            </div>
-        </div>
-        <div class="col-md-4">
-        <p class="text-center">
-          <strong>NUMBER OF STUDENT PER LEVEL</strong>
-        </p>
+                <div class="col-md">
+                    <div class="info-boxs">
+                        <span class="info-box-icon bg-yellows"><i class="zmdi zmdi-accounts-alt"></i></span>
 
-        <%
-        Set<String> levels = studentPerLevel.keySet();
-        for(String level: levels){
-        int numberOfStudentPerLevel = studentPerLevel.get(level);
-        int percentage = (numberOfStudentPerLevel*100)/numberOfStudent;
-        %>
-        <div class="progress-group">
-            <span class="progress-text"><%=level%></span>
-            <span class="progress-number"><b><%=studentPerLevel.get(level)%></b></span>
-
-            <div class="progress sm">
-              <div class="progress-bar progress-bar-yellow" style="width: <%=percentage%>%"></div>
+                        <div class="info-box-contents">
+                            <span class="info-box-texts">NUMBER OF STUDENT</span>
+                            <span class="info-box-numbers"><%=numberOfStudent%></span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                </div>
             </div>
-        </div>
+            <div class="col-md-4">
+                <p class="text-center">
+                    <strong>NUMBER OF STUDENT PER LEVEL</strong>
+                </p>
+
                 <%
-            }
+                    Set<String> levels = studentPerLevel.keySet();
+                    for (String level : levels) {
+                        int numberOfStudentPerLevel = studentPerLevel.get(level);
+                        int percentage = (numberOfStudentPerLevel * 100) / numberOfStudent;
+                %>
+                <div class="progress-group">
+                    <span class="progress-text"><%=level%></span>
+                    <span class="progress-number"><b><%=studentPerLevel.get(level)%></b></span>
+
+                    <div class="progress sm">
+                        <div class="progress-bar progress-bar-yellow" style="width: <%=percentage%>%"></div>
+                    </div>
+                </div>
+                <%
+                    }
+
+                %>
+            </div>       
+            <% } else if (role != null && role == "admin" && user.getBranchId() != 0) {
+                //retrieve number of tutor                
+                int numberOfTutorByBranch = tutorDAO.retrieveNumberOfTutorByBranch(user.getBranchId());
+
+                //retrieve number of student                
+                int numberOfStudentByBranch = studentDAO.retrieveNumberOfStudentByBranch(user.getBranchId());
+
+                //retrieve number of student per level                
+                Map<String, Integer> studentPerLevelByBranch = levelDAO.retrieveStudentPerLevelByBranch(user.getBranchId());
 
             %>
-        </div>       
-             <%
-            }
+            <div class="row">
+                <div class="col-md">
+                    <div class="info-boxs">
+                        <span class="info-box-icon bg-green"><i class="zmdi zmdi-accounts"></i></span>
+
+                        <div class="info-box-contents">
+                            <span class="info-box-texts">Number of tutor</span>
+                            <span class="info-box-numbers"><%=numberOfTutorByBranch%></span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                </div>
+
+                <div class="col-md">
+                    <div class="info-boxs">
+                        <span class="info-box-icon bg-yellows"><i class="zmdi zmdi-accounts-alt"></i></span>
+
+                        <div class="info-box-contents">
+                            <span class="info-box-texts">NUMBER OF STUDENT</span>
+                            <span class="info-box-numbers"><%=numberOfStudentByBranch%></span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                </div>
+            </div>
+            <div class="col-md-4">
+                <p class="text-center">
+                    <strong>NUMBER OF STUDENT PER LEVEL</strong>
+                </p>
+
+                <%
+                    Set<String> levels = studentPerLevelByBranch.keySet();
+                    for (String level : levels) {
+                        int numberOfStudentPerLevel = studentPerLevelByBranch.get(level);
+                        int percentage = (numberOfStudentPerLevel * 100) / numberOfStudentByBranch;
+                %>
+                <div class="progress-group">
+                    <span class="progress-text"><%=level%></span>
+                    <span class="progress-number"><b><%=studentPerLevelByBranch.get(level)%></b></span>
+
+                    <div class="progress sm">
+                        <div class="progress-bar progress-bar-yellow" style="width: <%=percentage%>%"></div>
+                    </div>
+                </div>
+                <%
+                    }
+
+                %>
+            </div> 
+            <% } else if (role != null && role == "tutor") {
+                ArrayList<Class> classes = ClassDAO.listAllClassesByTutorID(user.getUserId(), user.getBranchId());
+                int numberOfStudents = 0;
+                for(Class cls: classes){
+                    numberOfStudents += studentClassDAO.retrieveNumberOfStudentByClass(cls.getClassID());
+                }
             %>
-       
+            <div class="row">
+                <div class="col-md">
+                    <div class="info-boxs">
+                        <span class="info-box-icon bg-green"><i class="zmdi zmdi-accounts"></i></span>
+
+                        <div class="info-box-contents">
+                            <span class="info-box-texts">Number of classes</span>
+                            <span class="info-box-numbers"><%=classes.size()%></span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                </div>
+
+                <div class="col-md">
+                    <div class="info-boxs">
+                        <span class="info-box-icon bg-yellows"><i class="zmdi zmdi-accounts-alt"></i></span>
+
+                        <div class="info-box-contents">
+                            <span class="info-box-texts">NUMBER OF STUDENT</span>
+                            <span class="info-box-numbers"><%=numberOfStudents%></span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                </div>
+            </div>
+            <div class="col-md-4">
+                <p class="text-center">
+                    <strong>NUMBER OF STUDENT PER CLASS</strong>
+                </p>
+
+                <%
+                    for(Class clss: classes){
+                %>
+                <div class="progress-group">
+                    <span class="progress-text"><%=clss.getClassDay()%>  <%=clss.getClassTime()%></span>
+                    <span class="progress-number"><b><%=studentClassDAO.retrieveNumberOfStudentByClass(clss.getClassID())%></b></span>
+
+                    <div class="progress sm">
+                        <div class="progress-bar progress-bar-yellow" style="width: <%=100%>%"></div>
+                    </div>
+                </div>
+                <%
+                    }
+
+                %>
+            </div> 
+            <%}
+            %>
+        </div>
     </div>
-</div>
 </body>
 
 <%@include file="footer.jsp"%>
