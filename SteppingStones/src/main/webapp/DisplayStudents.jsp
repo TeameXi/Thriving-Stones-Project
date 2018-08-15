@@ -370,7 +370,6 @@
                     $("#address_" + id).text(address);
                     $("#lvl_" + id).text(lvl);
                     $("#phone_" + id).text(phone);
-                    $("#age_" + id).text(age);
                     html = '<div class="alert alert-success col-md-5"><strong>Success!</strong> Update Student record successfully</div>';
                 } else {
                     html = '<div class="alert alert-danger col-md-5"><strong>Sorry!</strong> Something went wrong</div>';

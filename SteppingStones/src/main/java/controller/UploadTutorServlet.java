@@ -8,12 +8,15 @@ package controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Set;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import model.SendMail;
 import model.TutorDAO;
 
 /**
@@ -53,6 +56,7 @@ public class UploadTutorServlet extends HttpServlet {
   
             ArrayList<String> tutorLists = new ArrayList();
             ArrayList<String> tutorNameLists = new ArrayList();
+            HashMap<String, String> emailList = new HashMap<>();
             for(int i = 0; i < tutorNames.length; i++){
                 if("".equals(tutorNames[i].trim())) continue;
               
@@ -67,18 +71,34 @@ public class UploadTutorServlet extends HttpServlet {
                        +birth_dates[i]+"','"+genders[i]+"','"+emails[i]+"',MD5('"+passwords[i]+"'),"+branch_id+")");
 
                 tutorNameLists.add(tutorNames[i].trim());
-                
+                String value = emails[i] + "&" + passwords[i];
+                emailList.put(tutorNames[i].trim(), value);
             }
-
             
             ArrayList<String>existingUsers = new ArrayList<>();
             if(tutorLists.size() > 0){
                 TutorDAO tutorDao = new TutorDAO();
                 existingUsers = tutorDao.uploadTutor(tutorLists, tutorNameLists);
-               HttpSession session = request.getSession();
-               session.setAttribute("existingUserLists",existingUsers);
+                HttpSession session = request.getSession();
+                session.setAttribute("existingUserLists",existingUsers);
+            }
+            for(String existingUser: existingUsers){
+                emailList.remove(existingUser);
             }
             
+            Set<String> usernames = emailList.keySet();
+            for(String username: usernames){
+                String[] value = emailList.get(username).split("&");
+                String email = value[0];
+                String password = value[1];
+                String subject = "Stepping Stones Tuition Center Tutor's Account Creation";
+                String text = "Your account has been created.\n\nBelow is the username and password to access your account: \nUsername: " + username
+                        + "\nPassword: " + password + "\n\nYou can update your password via https://www.google.com/ or \n Login via https://www.google.com/";
+                if(email != null && !email.equals("")){
+                    SendMail.sendingEmail(email, subject, text);
+                } 
+            }
+                    
             response.sendRedirect("DisplayTutors.jsp");
         }
     }
