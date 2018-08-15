@@ -36,61 +36,39 @@ public class LoginServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        HashMap<String, String> errors = new HashMap<>();
         HttpSession session = request.getSession();
 
         String type = request.getParameter("type");
         String username = request.getParameter("username");
         String password = request.getParameter("password").trim();
+        UsersDAO users = new UsersDAO();
+        Users user = users.retrieveUserByUsername(type, username, password);
+        
+        if (user != null) {
+            if (type.equals("admin")) {
+                session.setAttribute("user", user);
+                session.setAttribute("role", "admin");
+                response.sendRedirect("Dashboard.jsp");
 
-        if ((username == null || username.isEmpty()) && (password == null || password.isEmpty())) {
-            errors.put("error", "Missing Email & Password");
-        }
+            } else if (type.equals("tutor")) {
+                session.setAttribute("user", user);
+                session.setAttribute("role", "tutor");
+                response.sendRedirect("tutorHomepage.jsp");
 
-        if (username == null || username.isEmpty()) {
-            errors.put("error", "Missing Email & Password");
-        }
+            } else if (type.equals("student")) {
+                session.setAttribute("user", user);
+                session.setAttribute("role", "student");
+                response.sendRedirect("studentHomepage.jsp");
 
-        if (password == null || password.isEmpty()) {
-            errors.put("error", "Missing Password");
-        }
+            } else if (type.equals("parent")) {
+                session.setAttribute("user", user);
+                session.setAttribute("role", "parent");
+                response.sendRedirect("Dashboard.jsp");
 
-        PrintWriter out = response.getWriter();
-        if (errors.isEmpty()) {
-            UsersDAO users = new UsersDAO();
-            Users user = users.retrieveUserByUsername(type, username);
-            if (user != null) {
-                String pwd = user.getPassword();
-                if (password.equals(pwd)) {
-                    if (type.equals("admin")) {
-                        session.setAttribute("user", user);
-                        session.setAttribute("role", "admin");
-                        response.sendRedirect("DashboardServlet");
-
-                    } else if (type.equals("tutor")) {
-                        session.setAttribute("user", user);
-                        session.setAttribute("role", "tutor");
-                        response.sendRedirect("tutorHomepage.jsp");
-
-                    } else if (type.equals("student")) {
-                        session.setAttribute("user", user);
-                        session.setAttribute("role", "student");
-                        response.sendRedirect("studentHomepage.jsp");
-
-                    } else if (type.equals("parent")) {
-                        session.setAttribute("user", user);
-                        session.setAttribute("role", "parent");
-                        response.sendRedirect("Dashboard.jsp");
-
-                    } else {
-                        response.sendRedirect("Login.jsp?error=true");
-                    }
-                } else {
-                    response.sendRedirect("Login.jsp?error=true");
-                }
             } else {
                 response.sendRedirect("Login.jsp?error=true");
             }
+            
         } else {
             response.sendRedirect("Login.jsp?error=true");
         }

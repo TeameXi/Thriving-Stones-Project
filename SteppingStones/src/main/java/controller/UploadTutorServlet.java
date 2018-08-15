@@ -64,7 +64,7 @@ public class UploadTutorServlet extends HttpServlet {
 //                Tutor tempTutor = new Tutor(tutorNrics[i],tutorNames[i],phone,addresses[i],images[i],birth_dates[i],genders[i],emails[i],passwords[i],branch_id);
 
                 tutorLists.add("('"+tutorNrics[i]+"','"+tutorNames[i].trim()+"',"+phone+",'"+addresses[i]+"','"+images[i]+"','"
-                       +birth_dates[i]+"','"+genders[i]+"','"+emails[i]+"','"+passwords[i]+"',"+branch_id+")");
+                       +birth_dates[i]+"','"+genders[i]+"','"+emails[i]+"',MD5('"+passwords[i]+"'),"+branch_id+")");
 
                 tutorNameLists.add(tutorNames[i].trim());
                 

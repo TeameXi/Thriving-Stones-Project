@@ -1,9 +1,3 @@
-<%-- 
-    Document   : RetrieveStudentByID
-    Created on : 11 Jul, 2018, 8:29:52 PM
-    Author     : DEYU
---%>
-
 <%@page import="java.util.LinkedHashMap"%>
 <%@page import="model.StudentDAO"%>
 <%@page import="java.util.Iterator"%>

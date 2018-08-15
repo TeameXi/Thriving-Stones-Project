@@ -144,7 +144,7 @@
                         }else if(role != null && user != null && role == "tutor" ){
                     %>
                             <li><a href=""><i class="zmdi zmdi-money-box"></i>Your Payslip</a></li>
-                            <li><a href=""><i class="zmdi zmdi-money-box"></i>Classes</a></li>
+                            <li><a href="DisplayClassesBelongToTutor.jsp"><i class="zmdi zmdi-local-library"></i>Classes</a></li>
                             <li class="submenu">
                                 <a href="#">
                                     <i class="zmdi zmdi zmdi-graduation-cap"></i> Student Attendance 
@@ -162,7 +162,7 @@
                         }else if(role != null && user != null && role == "parent" ){
                     %>
                             <li><a href=""><i class="zmdi zmdi-money-box"></i>Outstanding Fees</a></li>
-                            <li><a href=""><i class="zmdi zmdi-money-box"></i>Classes</a></li>
+                            <li><a href="DisplayClassesBelongToTutor.jsp"><i class="zmdi zmdi-local-library"></i>Classes</a></li>
                             <li class="submenu">
                                 <a href="#">
                                     <i class="zmdi zmdi zmdi-graduation-cap"></i> Student Attendance 

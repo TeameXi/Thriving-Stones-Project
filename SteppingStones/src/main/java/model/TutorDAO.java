@@ -69,7 +69,7 @@ public class TutorDAO {
     }
 
     public boolean addTutor(Tutor tutor) {
-        String insert_Tutor = "INSERT INTO tutor(tutor_nric,tutor_fullname,phone,address,image_url,birth_date,gender,email,password,branch_id) VALUES(?,?,?,?,?,?,?,?,?,?)";
+        String insert_Tutor = "INSERT INTO tutor(tutor_nric,tutor_fullname,phone,address,image_url,birth_date,gender,email,password,branch_id) VALUES(?,?,?,?,?,?,?,?,MD5(?),?)";
         try (Connection conn = ConnectionManager.getConnection();
                 PreparedStatement preparedStatement = conn.prepareStatement(insert_Tutor)) {
             preparedStatement.setString(1, tutor.getNric());
@@ -320,7 +320,7 @@ public class TutorDAO {
     }
     
     public boolean updateTutorPassword(int tutorID, String password) {
-        String updateTutorPassword = "UPDATE tutor SET password=? WHERE tutor_id =?";
+        String updateTutorPassword = "UPDATE tutor SET password=MD5(?) WHERE tutor_id =?";
         try (Connection conn = ConnectionManager.getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(updateTutorPassword)) {
             preparedStatement.setString(1, password);

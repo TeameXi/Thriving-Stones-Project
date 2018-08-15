@@ -150,7 +150,7 @@
                 <h3>Parents Details</h3><br/>
 
                  <div class="form-group">
-                    <label class="col-lg-2 control-label">Full Name</label>  
+                    <label class="col-lg-2 control-label">Fullname**</label>  
                     <div class="col-lg-7 inputGroupContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-account"></i></span>
@@ -184,7 +184,7 @@
                     <div class="col-lg-7 inputGroupContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-case"></i></span>
-                            <input id="parentDesgination"  name="parentDesgination" placeholder="Company" class="form-control"  type="text">
+                            <input id="parentDesgination"  name="parentDesgination" placeholder="Designation" class="form-control"  type="text">
                         </div>
                     </div>
                 </div>
@@ -312,6 +312,13 @@ $(function () {
                         min: 80000000,
                         max: 99999999,
                         message: 'Please enter valid phone number'
+                    }
+                }
+            },
+            parentName:{
+                validators:{
+                    notEmpty: {
+                        message: 'Name cannot be empty'
                     }
                 }
             },

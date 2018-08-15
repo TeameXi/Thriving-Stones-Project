@@ -17,7 +17,7 @@ public class AdminDAO {
 
     public boolean addAdmin(Admin admin) {
         try (Connection conn = ConnectionManager.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO admin(admin_id,admin_username,admin_password,email,branch_id) VALUES(?,?,?,?,?)")) {
+            PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO admin(admin_id,admin_username,admin_password,email,branch_id) VALUES(?,?,MD5(?),?,?)")) {
             preparedStatement.setInt(1, retrieveNoOfAdmin() + 1);
             preparedStatement.setString(2, admin.getAdmin_username());
             preparedStatement.setString(3, admin.getPassword());
@@ -37,7 +37,7 @@ public class AdminDAO {
 
     public boolean updateAdmin(int admin_id, String admin_username, String password, int branch_id) {
         try (Connection conn = ConnectionManager.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement("UPDATE admin SET admin_username=?,password=?,branch_id=? WHERE admin_id =? ")) {
+            PreparedStatement preparedStatement = conn.prepareStatement("UPDATE admin SET admin_username=?,password=MD5(?),branch_id=? WHERE admin_id =? ")) {
             preparedStatement.setString(1, admin_username);
             preparedStatement.setString(2, password);
             preparedStatement.setInt(3, branch_id);
@@ -143,7 +143,7 @@ public class AdminDAO {
     }
     
     public boolean updateAdminPassword(int adminID, String password) {
-        String updateTutorPassword = "UPDATE admin SET admin_password=? WHERE admin_id =?";
+        String updateTutorPassword = "UPDATE admin SET admin_password=MD5(?) WHERE admin_id =?";
         try (Connection conn = ConnectionManager.getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(updateTutorPassword)) {
             preparedStatement.setString(1, password);
