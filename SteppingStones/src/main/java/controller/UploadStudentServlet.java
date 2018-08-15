@@ -8,12 +8,14 @@ package controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import model.ParentChildRelDAO;
 import model.ParentDAO;
 import model.StudentDAO;
 
@@ -86,10 +88,27 @@ public class UploadStudentServlet extends HttpServlet {
                     mobile = Integer.parseInt(mobiles[i]);
                 }
 
-                parentLists.add("('" + parentNames[i].trim() + "','" + nationality + "'," + company[i] + ",'" + designation[i] + "','" + mobile + 
-                        "','" + parentEmail[i] + "','" + mobile + "'," + branch_id + ")");
+                System.out.println("******* CHECK HERE *********");
+                System.out.println(parentNames[i].trim());
+                System.out.println(nationality[i]);
+                System.out.println(company[i]);
+                System.out.println(designation[i]);
+                System.out.println(mobile);
+                System.out.println(parentEmail[i]);
+                System.out.println(branch_id);
+                System.out.println("****************************");
+                
+                
+                parentLists.add("('" + parentNames[i].trim() + "','" + nationality[i] + "','" + company[i] + "','" + designation[i] + "'," + mobile + 
+                        ",'" + parentEmail[i] + "'," + mobile + ",'" + branch_id + ")");
 
                 parentNameLists.add(parentNames[i].trim());
+            }
+            
+            HashMap<String, String> studParRel = new HashMap<>();
+            
+            for (int i = 0; i < studentNameLists.size()-1 ; i++){
+                studParRel.put(studentNameLists.get(i),parentNameLists.get(i));
             }
             
             ArrayList<String> existingUsers = new ArrayList<>();
@@ -98,8 +117,20 @@ public class UploadStudentServlet extends HttpServlet {
                 StudentDAO studentDAO = new StudentDAO();
                 existingUsers = studentDAO.uploadStudent(studentLists, studentNameLists);
                 ParentDAO parentDAO = new ParentDAO();
-                HttpSession session = request.getSession();
                 existingParents = parentDAO.uploadParent(parentLists, parentNameLists);
+                
+                for (String dupStudName: existingUsers){
+                    if (studParRel.containsKey(dupStudName)){
+                        studParRel.remove(dupStudName);
+                    }
+                }
+                
+                ParentChildRelDAO pcrDAO = new ParentChildRelDAO();
+                for (String key: studParRel.keySet()){
+                    String value = studParRel.get(key);
+                    pcrDAO.insertParentChildRel(key, value, branch_id);
+                }
+                HttpSession session = request.getSession();
                 session.setAttribute("existingUserLists", existingUsers);
                 session.setAttribute("existingParentLists", existingParents);
             }
