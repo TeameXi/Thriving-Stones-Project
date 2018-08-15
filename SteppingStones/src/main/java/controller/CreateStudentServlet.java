@@ -98,6 +98,7 @@ public class CreateStudentServlet extends HttpServlet {
                 }
             }
             
+            request.setAttribute("creation_status",""+insertStudent);
             ParentChildRelDAO.insertParentChildRel(parentName, studentName, branchID);
             response.sendRedirect("RegisterForClasses.jsp?studentName="+studentName);
         }        

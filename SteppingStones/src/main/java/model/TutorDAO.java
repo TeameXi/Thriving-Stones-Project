@@ -126,7 +126,7 @@ public class TutorDAO {
 
             ArrayList<String> existingTutors = new ArrayList();
             try (Connection conn = ConnectionManager.getConnection();
-                    PreparedStatement preparedStatement = conn.prepareStatement(select_tutor)) {
+                PreparedStatement preparedStatement = conn.prepareStatement(select_tutor)) {
 
                 ResultSet rs = preparedStatement.executeQuery();
                 while (rs.next()) {

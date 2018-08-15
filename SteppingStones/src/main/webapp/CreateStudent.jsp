@@ -244,6 +244,10 @@
 
 <script>
 $(function () {
+    if($('#creation_status').length){
+       $('#creation_status').fadeIn().delay(3000).fadeOut();
+    }
+    
     $('#bday').datetimepicker({
         format: 'DD-MM-YYYY'
     });

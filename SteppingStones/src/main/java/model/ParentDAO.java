@@ -165,8 +165,8 @@ public class ParentDAO {
 
             ArrayList<String> existingParents = new ArrayList();
             try (Connection conn = ConnectionManager.getConnection();
-                    PreparedStatement preparedStatement = conn.prepareStatement("SELECT parent_id,name FROM parent WHERE = name IN (" + nameList + ")")) {
-
+                    PreparedStatement preparedStatement = conn.prepareStatement("SELECT parent_id,name FROM parent WHERE name in (" + nameList + ")")) {
+                
                 ResultSet rs = preparedStatement.executeQuery();
                 while (rs.next()) {
                     String parent_name = rs.getString(2);

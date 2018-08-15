@@ -21,137 +21,166 @@
         margin: 10px;
     }
 </style>
+
 <div class="col-md-10">
-    <%
+    <div style="margin: 20px;"><h3>Tutor Lists</h3></div>
+    <div class="row" id="errorMsg"></div>
+    <%        String student_creation_status = (String) request.getAttribute("creation_status");
+        if (student_creation_status != null) {
+            if (student_creation_status == "true") {
+                out.println("<div id='creation_status' class='row alert alert-danger col-md-12'><strong>Something Went wrong!</strong> </div>");
+            } else {
+                out.println("<div id='creation_status' class='row alert alert-success col-md-12'><strong>Student record is inserted !</strong> </div>");
+            }
+        }
+
+        ArrayList<String> duplicatedUsers = (ArrayList) session.getAttribute("existingUserLists");
+        if (duplicatedUsers != null) {
+            if (duplicatedUsers.size() > 0) {
+                out.println("<div id='creation_status' class='row alert alert-danger col-md-12'>The following students already <strong>( " + String.join(",", duplicatedUsers) + " )</strong> exist;</div>");
+                session.removeAttribute("existingUserLists");
+            }
+        }
+
+        ArrayList<String> duplicatedParents = (ArrayList) session.getAttribute("existingParentLists");
+        if (duplicatedParents != null) {
+            if (duplicatedParents.size() > 0) {
+                out.println("<div id='creation_status' class='row alert alert-danger col-md-12'>The following parents already <strong>( " + String.join(",", duplicatedParents) + " )</strong> exist;</div>");
+                session.removeAttribute("existingParentLists");
+            }
+        }
+    %> 
+
+    <div class="col-md-10">
+        <%
             String lvlStr = (String) request.getParameter("level");
             int levelID = 0;
-            if(lvlStr == null){
-                lvlStr = "1"; 
+            if (lvlStr == null) {
+                lvlStr = "1";
             }
             levelID = Integer.parseInt(lvlStr);
             String level = LevelDAO.retrieveLevel(levelID);
-    %>
-    <div style="margin: 20px;"><h3><strong><%=level%></strong> Students</h3></div>
-    <div class="row" id="errorMsg"></div>
-    <div class="row  spaced-top">
-        <div class="col-sm-6">
-            <div class="portlet light portlet-fit smaller-fonts" >
-                <span class="sortby_span">
-                    Sort By
-                    <select class = "form-control" style = "display:inline-block;width:auto;" name= "level" onchange="updateLevel(this)">
-                        <option value='0'>Level</option>
-                        <option value='1'>Primary 1</option>
-                        <option value='2'>Primary 2</option>
-                        <option value='3'>Primary 3</option>
-                        <option value='4'>Primary 4</option>
-                        <option value='5'>Primary 5</option>
-                        <option value='6'>Primary 6</option>
-                        <option value='7'>Secondary 1</option>
-                        <option value='8'>Secondary 2</option>
-                        <option value='9'>Secondary 3</option>
-                        <option value='10'>Secondary 4</option>
-                    </select>
-                </span>
-                <br style="clear:both">
+        %>
+        <div style="margin: 20px;"><h3><strong><%=level%></strong> Students</h3></div>
+        <div class="row" id="errorMsg"></div>
+        <div class="row  spaced-top">
+            <div class="col-sm-6">
+                <div class="portlet light portlet-fit smaller-fonts" >
+                    <span class="sortby_span">
+                        Sort By
+                        <select class = "form-control" style = "display:inline-block;width:auto;" name= "level" onchange="updateLevel(this)">
+                            <option value='0'>Level</option>
+                            <option value='1'>Primary 1</option>
+                            <option value='2'>Primary 2</option>
+                            <option value='3'>Primary 3</option>
+                            <option value='4'>Primary 4</option>
+                            <option value='5'>Primary 5</option>
+                            <option value='6'>Primary 6</option>
+                            <option value='7'>Secondary 1</option>
+                            <option value='8'>Secondary 2</option>
+                            <option value='9'>Secondary 3</option>
+                            <option value='10'>Secondary 4</option>
+                        </select>
+                    </span>
+                    <br style="clear:both">
+                </div>
             </div>
         </div>
-    </div>
-    <span class="toggler active" data-toggle="grid"><span class="zmdi zmdi-view-dashboard"></span></span>
-    <span class="toggler" data-toggle="list"><span class="zmdi zmdi-view-list"></span></span>
-    <ul class="surveys grid">
-        <%
-            ArrayList<Student> students = (ArrayList<Student>)request.getAttribute("students");
-            int toShow = 8; //change according to no. of record shows
-            if(students == null || students.isEmpty()){
-                students = StudentDAO.listAllStudentsByLimit(branch_id, levelID, 0, toShow);
-            }else{
-                students = (ArrayList<Student>) request.getAttribute("students");
-            }
-                    
-            if (students != null && !students.isEmpty()) {
-                for (int i = 0; i < students.size(); i++) {
-                    Student stu = students.get(i);
-                    int id = stu.getStudentID();
-                    out.println("<li class='survey-item' id='sid_" + id + "'><span class='survey-country list-only'>SG</span>");
-                    out.println("<span class='survey-name'><i class='zmdi zmdi-account'>&nbsp;&nbsp;</i><span id='name_"+id+"'>");
-                    out.println(stu.getName() + "</span></span>");
-                    out.println("<span class='survey-country grid-only'><i class='zmdi zmdi-pin'>&nbsp;&nbsp;</i><span id='address_"+id+"'>");
-                    out.println(stu.getAddress() + "</span></span><br/>");
-                    out.println("<span class='survey-country'><i class='zmdi zmdi-graduation-cap'>&nbsp;&nbsp;</i><span id='lvl_"+id+"'>");
-                    out.println(stu.getLevel() + "</span></span><br>");
-                    out.println("<span class='survey-country'>");
-                    out.println(ParentDAO.retrieveParentByStudentID(id) + "</span></span><br>");
-                          
-
-        %>
-        <div class="pull-right">
-
-            <span class="survey-progress">
-                <span class="grid-only">
-                    <a href="#" class="view_more">View detail</a>
-                </span>
-
-
-
-                <span class="survey-progress-labels">
-                    <span class="survey-progress-view list-only">
-                        <a href="#"><i class="zmdi zmdi-eye"></i></a>
-                    </span>
-
-
-                    <span class="survey-progress-label">
-                        <a href="#editStudent" data-toggle="modal" data-target-id="<%=stu.getStudentID()%>"><i class="zmdi zmdi-edit"></i></a>
-                    </span>
-
-                    <span class="survey-completes">
-                        <a href="#small" onclick="deleteStudent('<%=stu.getStudentID()%>')" data-toggle="modal"><i class="zmdi zmdi-delete"></i></a>
-                    </span>
-                </span>
-            </span>
-
-
-        <%          out.println("<span class='survey-end-date'><i class='zmdi zmdi-phone'>&nbsp;&nbsp;</i><span id='phone_"+id+"'>");
-                    out.println(stu.getPhone() + "</span></span></div></li>");
+        <span class="toggler active" data-toggle="grid"><span class="zmdi zmdi-view-dashboard"></span></span>
+        <span class="toggler" data-toggle="list"><span class="zmdi zmdi-view-list"></span></span>
+        <ul class="surveys grid">
+            <%
+                ArrayList<Student> students = (ArrayList<Student>) request.getAttribute("students");
+                int toShow = 8; //change according to no. of record shows
+                if (students == null || students.isEmpty()) {
+                    students = StudentDAO.listAllStudentsByLimit(branch_id, levelID, 0, toShow);
+                } else {
+                    students = (ArrayList<Student>) request.getAttribute("students");
                 }
 
-            } else {
-                out.println("<div class='alert alert-warning col-md-5'>No Student Yet! <strong> <a href='CreateStudent.jsp'>Create One</a></strong> </div>");
-            }
-        %>
-    </ul>
-<%
-    String pageId = (String)request.getAttribute("id");
-    int id = 1;
-    if(pageId != null){
-        id = Integer.parseInt(pageId);
-    }
-    int totalpage = StudentDAO.retrieveNumberOfStudentByLevel(levelID);
-    double total = totalpage/(toShow*1.0);
-    int totalPage = 0;
-    if(total != 0){
-        totalPage = (int)Math.ceil(total);
-    }
-    
-%> 
-    
-<nav aria-label="Page navigation example" class="text-center">
- <ul class="pagination">
-    <%
-        for(int i = 1; i <= totalPage; i++){
-            if(id != 0 && id == i){
-    %>
-    <li class="page-item active"><a class="page-link" href="PaginationStudentServlet?page=<%=i%>&toShow=<%=toShow%>&level=<%=levelID%>&branch=<%=branch_id%>"><%=i%></a></li>
-    <%
-            }else{
-    %>
-    <li class="page-item"><a class="page-link" href="PaginationStudentServlet?page=<%=i%>&toShow=<%=toShow%>&level=<%=levelID%>&branch=<%=branch_id%>"><%=i%></a></li>
-    <%
-            }
-        }
-    %>
-</ul>
+                if (students != null && !students.isEmpty()) {
+                    for (int i = 0; i < students.size(); i++) {
+                        Student stu = students.get(i);
+                        int id = stu.getStudentID();
+                        out.println("<li class='survey-item' id='sid_" + id + "'><span class='survey-country list-only'>SG</span>");
+                        out.println("<span class='survey-name'><i class='zmdi zmdi-account'>&nbsp;&nbsp;</i><span id='name_" + id + "'>");
+                        out.println(stu.getName() + "</span></span>");
+                        out.println("<span class='survey-country grid-only'><i class='zmdi zmdi-pin'>&nbsp;&nbsp;</i><span id='address_" + id + "'>");
+                        out.println(stu.getAddress() + "</span></span><br/>");
+                        out.println("<span class='survey-country'><i class='zmdi zmdi-graduation-cap'>&nbsp;&nbsp;</i><span id='lvl_" + id + "'>");
+                        out.println(stu.getLevel() + "</span></span><br>");
+                        out.println("<span class='survey-country'>");
+                        out.println(ParentDAO.retrieveParentByStudentID(id) + "</span></span><br>");
 
-</div>
+
+            %>
+            <div class="pull-right">
+
+                <span class="survey-progress">
+                    <span class="grid-only">
+                        <a href="#" class="view_more">View detail</a>
+                    </span>
+
+
+
+                    <span class="survey-progress-labels">
+                        <span class="survey-progress-view list-only">
+                            <a href="#"><i class="zmdi zmdi-eye"></i></a>
+                        </span>
+
+
+                        <span class="survey-progress-label">
+                            <a href="#editStudent" data-toggle="modal" data-target-id="<%=stu.getStudentID()%>"><i class="zmdi zmdi-edit"></i></a>
+                        </span>
+
+                        <span class="survey-completes">
+                            <a href="#small" onclick="deleteStudent('<%=stu.getStudentID()%>')" data-toggle="modal"><i class="zmdi zmdi-delete"></i></a>
+                        </span>
+                    </span>
+                </span>
+
+
+                <%          out.println("<span class='survey-end-date'><i class='zmdi zmdi-phone'>&nbsp;&nbsp;</i><span id='phone_" + id + "'>");
+                            out.println(stu.getPhone() + "</span></span></div></li>");
+                        }
+
+                    } else {
+                        out.println("<div class='alert alert-warning col-md-5'>No Student Yet! <strong> <a href='CreateStudent.jsp'>Create One</a></strong> </div>");
+                    }
+                %>
+        </ul>
+        <%
+            String pageId = (String) request.getAttribute("id");
+            int id = 1;
+            if (pageId != null) {
+                id = Integer.parseInt(pageId);
+            }
+            int totalpage = StudentDAO.retrieveNumberOfStudentByLevel(levelID);
+            double total = totalpage / (toShow * 1.0);
+            int totalPage = 0;
+            if (total != 0) {
+                totalPage = (int) Math.ceil(total);
+            }
+
+        %> 
+
+        <nav aria-label="Page navigation example" class="text-center">
+            <ul class="pagination">
+                <%        for (int i = 1; i <= totalPage; i++) {
+                        if (id != 0 && id == i) {
+                %>
+                <li class="page-item active"><a class="page-link" href="PaginationStudentServlet?page=<%=i%>&toShow=<%=toShow%>&level=<%=levelID%>&branch=<%=branch_id%>"><%=i%></a></li>
+                    <%
+                    } else {
+                    %>
+                <li class="page-item"><a class="page-link" href="PaginationStudentServlet?page=<%=i%>&toShow=<%=toShow%>&level=<%=levelID%>&branch=<%=branch_id%>"><%=i%></a></li>
+                    <%
+                            }
+                        }
+                    %>
+            </ul>
+
+    </div>
 </div>
 </div>
 <div class="modal fade bs-modal-sm" id="small" tabindex="-1" role="dialog" aria-hidden="true">
@@ -194,7 +223,7 @@
                         <input type="hidden" id="branch_id" value="<%=branch_id%>" />
                     </div>
                 </div><br/>
-                
+
                 <div class="row">
                     <div class = "col-sm-4">
                         <p class = "form-control-label">Level :</p>
@@ -203,7 +232,7 @@
                         <p><input type ="text" class = "form-control" id="lvl" value =""/></p>
                     </div>
                 </div><br/>
-                
+
                 <div class="row">
                     <div class = "col-sm-4">
                         <p class = "form-control-label">Address :</p>
@@ -212,7 +241,7 @@
                         <p><input type ="text" class = "form-control" id="address"/></p>
                     </div>
                 </div><br/>
-                
+
                 <div class="row">
                     <div class = "col-sm-4">
                         <p class = "form-control-label">Contact No :</p>
@@ -221,7 +250,7 @@
                         <p><input type ="text" class = "form-control" id="phone" value =""/></p>
                     </div>
                 </div><br/>
-                
+
                 <div class="row">
                     <div class = "col-sm-4">
                         <p class = "form-control-label">Required Amount :</p>
@@ -230,8 +259,8 @@
                         <p><input type ="text" class = "form-control" id="r_amount" value =""/></p>
                     </div>
                 </div><br/>
-                
-                
+
+
                 <div class="row">
                     <div class = "col-sm-4">
                         <p class = "form-control-label">Outstanding Amount :</p>
@@ -253,29 +282,29 @@
 <%@include file="footer.jsp"%>
 
 <script>
-    $(document).ready(function(){
-        $("#editStudent").on("show.bs.modal", function(e) {
-            var student_id = $(e.relatedTarget).data('target-id');   
+    $(document).ready(function () {
+        $("#editStudent").on("show.bs.modal", function (e) {
+            var student_id = $(e.relatedTarget).data('target-id');
             var branch_id = $("#branch_id").val();
             $.ajax({
-               url: 'Retrieve_Update_StudentServlet',
-               dataType: 'JSON',
-               data: {studentID: student_id,branch_id:branch_id},
-               success: function (data) {
-                  $("#id").val(student_id);
-                  $("#name").val(data["name"]);
-                  $("#lvl").val(data["lvl"]);
-                  $("#phone").val(data["phone"]);
-                  $("#address").val(data["address"]);
-                  $("#r_amount").val(data["r_amount"]);
-                  $("#o_amount").val(data["o_amount"]);
-               }
+                url: 'Retrieve_Update_StudentServlet',
+                dataType: 'JSON',
+                data: {studentID: student_id, branch_id: branch_id},
+                success: function (data) {
+                    $("#id").val(student_id);
+                    $("#name").val(data["name"]);
+                    $("#lvl").val(data["lvl"]);
+                    $("#phone").val(data["phone"]);
+                    $("#address").val(data["address"]);
+                    $("#r_amount").val(data["r_amount"]);
+                    $("#o_amount").val(data["o_amount"]);
+                }
             });
 
         });
     });
-                    
-                    
+
+
     (function () {
         $(function () {
             return $('[data-toggle]').on('click', function () {
@@ -288,15 +317,15 @@
             });
         });
     }).call(this);
-        
+
     function deleteStudent(student_id) {
         $("#confirm_btn").prop('onclick', null).off('click');
         $("#confirm_btn").click(function () {
             deleteStudentQueryAjax(student_id);
         });
     }
-        
-        
+
+
     function deleteStudentQueryAjax(student_id) {
         $('#small').modal('hide');
         $.ajax({
@@ -317,31 +346,30 @@
             }
         });
     }
-    
-    
-    function editStudent(){
+
+
+    function editStudent() {
         id = $("#id").val();
         name = $("#name").val();
         lvl = $("#lvl").val();
         address = $("#address").val();
-        phone  = $("#phone").val();
-        r_amount =  $("#r_amount").val(); 
-        o_amount =  $("#o_amount").val(); 
-        
-        
+        phone = $("#phone").val();
+        r_amount = $("#r_amount").val();
+        o_amount = $("#o_amount").val();
+
+
         $('#editStudent').modal('hide');
         $.ajax({
             type: 'POST',
             url: 'UpdateStudentServlet',
             dataType: 'JSON',
-            data: {studentID: id,name:name,lvl:lvl,address:address,phone:phone,r_amount:r_amount,o_amount:o_amount},
+            data: {studentID: id, name: name, lvl: lvl, address: address, phone: phone, r_amount: r_amount, o_amount: o_amount},
             success: function (data) {
                 if (data === 1) {
-                    $("#name_"+id).text(name);
-                    $("#address_"+id).text(address);
-                    $("#lvl_"+id).text(lvl);
-                    $("#phone_"+id).text(phone);
-                    $("#age_"+id).text(age);
+                    $("#name_" + id).text(name);
+                    $("#address_" + id).text(address);
+                    $("#lvl_" + id).text(lvl);
+                    $("#phone_" + id).text(phone);
                     html = '<div class="alert alert-success col-md-5"><strong>Success!</strong> Update Student record successfully</div>';
                 } else {
                     html = '<div class="alert alert-danger col-md-5"><strong>Sorry!</strong> Something went wrong</div>';
@@ -352,13 +380,13 @@
             }
         });
     }
-    
-    function updateLevel(level){
-        var lvlID = level.value;  
+
+    function updateLevel(level) {
+        var lvlID = level.value;
         var branch_id = $("#branch_id").val();
         console.log(lvlID);
         console.log(branch_id);
-        location.href ="?level="+lvlID;
+        location.href = "?level=" + lvlID;
     }
-    
+
 </script>
