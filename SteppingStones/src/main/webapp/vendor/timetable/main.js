@@ -99,7 +99,6 @@ function createSchedule(){
 			var eventTop = self.eventSlotHeight*(start - self.timelineStart)/self.timelineUnitDuration,
 				eventHeight = self.eventSlotHeight*duration/self.timelineUnitDuration;
                                 
-                        console.log(eventTop);
 			
 			$(this).css({
 				top: (eventTop -1) +'px',

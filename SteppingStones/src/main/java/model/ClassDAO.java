@@ -13,6 +13,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -239,7 +241,7 @@ public class ClassDAO {
     public static ArrayList<Class> getClassesByTermAndLevel(int level_id, int term,int branch_id,String level){
         ArrayList<Class> classList = new ArrayList();
         try(Connection conn = ConnectionManager.getConnection()){
-            String select_class_sql = "select * from class where branch_id = ? and level_id = ? and term = ? order by subject_id";
+            String select_class_sql = "select * from class where branch_id = ? and level_id = ? and term = ? and end_date > curdate() order by subject_id";
             PreparedStatement stmt = conn.prepareStatement(select_class_sql);
             stmt.setInt(1, branch_id); 
             stmt.setInt(2, level_id);
@@ -262,6 +264,42 @@ public class ClassDAO {
             System.out.print(e.getMessage());
         }
         return classList;
+    }
+    
+    
+    public static Map<String,ArrayList<Class>> groupClassesByTimingAndDay(int level_id, int term,int branch_id,String level){
+        Map<String, ArrayList<Class>> classMap = new HashMap();
+        try(Connection conn = ConnectionManager.getConnection()){
+            String select_class_sql = "select * from class where branch_id = ? and level_id = ? and term = ? and end_date > curdate() order by subject_id";
+            PreparedStatement stmt = conn.prepareStatement(select_class_sql);
+            stmt.setInt(1, branch_id); 
+            stmt.setInt(2, level_id);
+            stmt.setInt(3, term);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){
+                int classID = rs.getInt("class_id");
+                int subjectID = rs.getInt("subject_id");
+                String classTime = rs.getString("timing");
+                String classDay = rs.getString("class_day");
+                String startDate = rs.getString("start_date");
+                String endDate = rs.getString("end_date");
+                int mthlyFees = rs.getInt("fees");
+                String subject = SubjectDAO.retrieveSubject(subjectID);
+                Class cls = new Class(classID, level, subject, classTime, classDay, mthlyFees, startDate, endDate);
+                
+                String key = classTime+"-"+classDay;
+                ArrayList<Class> tempClassLists = classMap.get(key);
+                if(tempClassLists == null){
+                    tempClassLists = new ArrayList<>();
+                    classMap.put(key,tempClassLists);
+                }
+                tempClassLists.add(cls);
+                
+            }
+        }catch(SQLException e){
+            System.out.print(e.getMessage());
+        }
+        return classMap;
     }
     
     

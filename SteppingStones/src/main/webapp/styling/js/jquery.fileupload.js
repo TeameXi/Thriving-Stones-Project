@@ -164,7 +164,10 @@ function processCSVStudentData(csv_data, append_container, error_el, branch_id) 
         Academic_level = csv_data[i][7];
         Parent_name = csv_data[i][8];
         Parent_nationality = csv_data[i][9];
-        Parent_company = csv_data[i][10];
+        var Parent_company = "";
+        if(csv_data[i][10] != ""){
+            Parent_company = csv_data[i][10];
+        }
         Parent_designation = csv_data[i][11];
         Parent_mobile = csv_data[i][12];
         Parent_email = csv_data[i][13];

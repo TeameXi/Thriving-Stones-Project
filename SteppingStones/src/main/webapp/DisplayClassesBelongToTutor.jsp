@@ -232,3 +232,4 @@ $(document).ready(function(){
     createSchedule();
 });
 </script>
+<script src="${pageContext.request.contextPath}/vendor/timetable/modernizr.js"></script>
