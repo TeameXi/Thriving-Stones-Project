@@ -227,9 +227,10 @@
 </div>
 <%@include file="footer.jsp"%>
 <script src="${pageContext.request.contextPath}/vendor/timetable/main.js"></script>
+<script src="${pageContext.request.contextPath}/vendor/timetable/modernizr.js"></script>
+
 <script>
 $(document).ready(function(){
     createSchedule();
 });
 </script>
-<script src="${pageContext.request.contextPath}/vendor/timetable/modernizr.js"></script>

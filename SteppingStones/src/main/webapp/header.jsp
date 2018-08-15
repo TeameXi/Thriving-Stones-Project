@@ -136,7 +136,18 @@
                                 </ul>
                             </li>
                             <li><a href="RegisterForClasses.jsp"><i class="zmdi zmdi-library"></i>Register For Classes</a></li>
-                            <li><a href="${pageContext.request.contextPath}/RetrieveScheduleCreationDetails"><i class="zmdi zmdi-calendar-note"></i> Scheduling Classes</a></li>
+                            
+                            <li class="submenu">
+                                <a href="#">
+                                    <i class="zmdi zmdi-calendar-note"></i> Scheduling classes
+                                    <span class="caret pull-right"></span>
+                                </a>
+                                <!-- Sub menu -->
+                                <ul>
+                                    <li><a href="${pageContext.request.contextPath}/RetrieveScheduleCreationDetails">Create Schedule</a></li>
+                                    <li><a href="DisplayClassesSchedule.jsp">View Schedules</a></li>
+                                </ul>
+                            </li>
                             <li><a href="stats.html"><i class="zmdi zmdi-chart"></i> Financial Reports</a></li>
                             <li><a href="tables.html"><i class="zmdi zmdi-money-box"></i> Payment Handling</a></li>
                     
@@ -157,7 +168,17 @@
                                 </ul>
                             </li>
                             <li><a href="stats.html"><i class="zmdi zmdi-chart"></i>Your Attendance</a></li>
-                            <li><a href="CreateTuitionGrade.jsp"><i class="zmdi zmdi-star-circle"></i>Student's Grades</a></li>
+                            <li class="submenu">
+                                <a href="#">
+                                    <i class="zmdi zmdi-star-circle"></i> Student's Grades
+                                    <span class="caret pull-right"></span>
+                                </a>
+                                <!-- Sub menu -->
+                                <ul>
+                                    <li><a href="${pageContext.request.contextPath}/DisplayClassesBelongToTutor">Add Grades</a></li>
+                                    <li><a href="RetrieveUpdateStudentGrade.jsp">Update Grades</a></li>
+                                </ul>
+                            </li>
                     <%
                         }else if(role != null && user != null && role == "parent" ){
                     %>
