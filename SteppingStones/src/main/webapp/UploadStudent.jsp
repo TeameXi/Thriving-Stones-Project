@@ -6,7 +6,7 @@
 <style>
 
 
-    #tutor_upload_error{
+    #student_upload_error{
         padding: 20px;
     }
 

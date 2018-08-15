@@ -33,7 +33,7 @@
         ArrayList<String>duplicatedUsers= (ArrayList)session.getAttribute("existingUserLists");
         if(duplicatedUsers != null){
             if(duplicatedUsers.size() > 0){
-                out.println("<div id='creation_status' class='row alert alert-danger col-md-12'>The following users are already <strong>( "+ String.join(",", duplicatedUsers)+" )</strong> existed;</div>");
+                out.println("<div id='creation_status' class='row alert alert-danger col-md-12'>The following tutors already<strong>( "+ String.join(",", duplicatedUsers)+" )</strong> exist;</div>");
                 session.removeAttribute("existingUserLists");
             }
         }

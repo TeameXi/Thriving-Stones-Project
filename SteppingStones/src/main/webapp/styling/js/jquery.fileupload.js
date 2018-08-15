@@ -206,7 +206,7 @@ function processCSVStudentData(csv_data, append_container, error_el, branch_id) 
             "<div class='wrap-login100-form-btn'>" +
             "<div class='login100-form-bgbtn'></div>" +
             "<button class='login100-form-btn' type='submit'>" +
-            "Upload Tutor" +
+            "Upload Student" +
             "</button>" +
             "</div>" +
             "</div>";
