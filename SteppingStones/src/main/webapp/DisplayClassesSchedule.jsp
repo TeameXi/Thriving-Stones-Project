@@ -161,6 +161,21 @@
 
                     </ul>
                 </li>
+                
+                <li class="events-group">
+                    <div class="top-info"><span>Sat</span></div>
+                    <ul class="Sat">
+
+                    </ul>
+                </li>
+                
+                <li class="events-group">
+                    <div class="top-info"><span>Sun</span></div>
+                    <ul class="Sun">
+
+                    </ul>
+                </li>
+
 
             </ul>
         </div>
@@ -198,6 +213,12 @@
             autocomplete(document.getElementById("level"), level);
 
  function searchClasses() {
+                $(".Mon").html("");
+                $(".Tue").html("");
+                $(".Wed").html("");
+                $(".Thur").html("");
+                $(".Fri").html("");
+                          
                 term = $("#term").val();
                 level = $("#level").val();
                 branch_id = $("#branch_id").val();

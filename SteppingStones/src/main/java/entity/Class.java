@@ -18,6 +18,8 @@ public class Class {
     private String startDate;
     private String endDate;
     private String branch;
+    private int year;
+    
     public Class(){
         
     }
@@ -33,6 +35,18 @@ public class Class {
         this.endDate = endDate;
     }
 
+     public Class(int classID, String level, String subject, String classTime, String classDay, double mthlyFees, String startDate, String endDate,int year) {
+        this.classID = classID;
+        this.level = level;
+        this.subject = subject;
+        this.classTime = classTime;
+        this.classDay = classDay;
+        this.mthlyFees = mthlyFees;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.year = year;
+    }
+    
     public Class(int classID, int level, int subject, String classTime, String classDay, int mthlyFees, String startDate) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -103,9 +117,24 @@ public class Class {
     }
     
     
+    
     @Override
     public String toString(){
         return this.classID + "&" + this.level + "&" + this.subject + "&" + this.classTime + "&" + this.classDay + "&" +  this.mthlyFees + "&" + this.startDate + "&" + this.endDate;
+    }
+
+    /**
+     * @return the year
+     */
+    public int getYear() {
+        return year;
+    }
+
+    /**
+     * @param year the year to set
+     */
+    public void setYear(int year) {
+        this.year = year;
     }
 }
 

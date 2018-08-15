@@ -155,6 +155,38 @@ public class ClassDAO {
         }       
         return classList;
     }
+    
+    
+    public static ArrayList<Class> listAllClassesBelongToTutorByDay(int tutorID, int branchID,String day){
+        ArrayList<Class> classList = new ArrayList();
+        try(Connection conn = ConnectionManager.getConnection()){
+            String sql = "select * from class where branch_id = ? and tutor_id = ? and class_day = ? and end_date > curdate()";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, branchID);
+            stmt.setInt(2, tutorID);
+            stmt.setString(3, day);
+            ResultSet rs = stmt.executeQuery();
+          
+            while(rs.next()){
+                int classID = rs.getInt("class_id");
+                int subjectID = rs.getInt("subject_id");
+                int levelID = rs.getInt("level_id");
+                String classTime = rs.getString("timing");
+                String classDay = rs.getString("class_day");
+                String startDate = rs.getString("start_date");
+                String endDate = rs.getString("end_date");
+                int mthlyFees = rs.getInt("fees");
+                String subject = SubjectDAO.retrieveSubject(subjectID);
+                String level = LevelDAO.retrieveLevel(levelID);
+                Class cls = new Class(classID, level, subject, classTime, classDay, mthlyFees, startDate, endDate);
+                classList.add(cls);
+            }
+        }catch(SQLException e){
+            System.out.print(e.getMessage());
+        }       
+        return classList;
+    }
+    
 
     public int insertClass(int level, int subject, int term, int hasReminderForFees, int branch, String classTime, String classDay, double mthlyFees, String startDate, String endDate) {
         try (Connection conn = ConnectionManager.getConnection();) {
