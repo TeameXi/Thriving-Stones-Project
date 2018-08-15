@@ -77,13 +77,16 @@
                     <!-- /.info-box -->
                 </div>
             </div>
+            <%
+                Set<String> levels = studentPerLevel.keySet();
+                if (levels.size() != 0) {
+            %>
             <div class="col-md-4">
                 <p class="text-center">
                     <strong>NUMBER OF STUDENT PER LEVEL</strong>
                 </p>
 
                 <%
-                    Set<String> levels = studentPerLevel.keySet();
                     for (String level : levels) {
                         int numberOfStudentPerLevel = studentPerLevel.get(level);
                         int percentage = (numberOfStudentPerLevel * 100) / numberOfStudent;
@@ -98,16 +101,14 @@
                 </div>
                 <%
                     }
-
                 %>
             </div>       
-            <% } else if (role != null && role == "admin" && user.getBranchId() != 0) {
+            <%}
+            } else if (role != null && role == "admin" && user.getBranchId() != 0) {
                 //retrieve number of tutor                
                 int numberOfTutorByBranch = tutorDAO.retrieveNumberOfTutorByBranch(user.getBranchId());
-
                 //retrieve number of student                
                 int numberOfStudentByBranch = studentDAO.retrieveNumberOfStudentByBranch(user.getBranchId());
-
                 //retrieve number of student per level                
                 Map<String, Integer> studentPerLevelByBranch = levelDAO.retrieveStudentPerLevelByBranch(user.getBranchId());
 
@@ -139,13 +140,16 @@
                     <!-- /.info-box -->
                 </div>
             </div>
+            <%
+                Set<String> levels = studentPerLevelByBranch.keySet();
+                if (levels.size() != 0) {
+            %>
             <div class="col-md-4">
                 <p class="text-center">
                     <strong>NUMBER OF STUDENT PER LEVEL</strong>
                 </p>
 
                 <%
-                    Set<String> levels = studentPerLevelByBranch.keySet();
                     for (String level : levels) {
                         int numberOfStudentPerLevel = studentPerLevelByBranch.get(level);
                         int percentage = (numberOfStudentPerLevel * 100) / numberOfStudentByBranch;
@@ -160,13 +164,13 @@
                 </div>
                 <%
                     }
-
                 %>
             </div> 
-            <% } else if (role != null && role == "tutor") {
+            <% }
+            } else if (role != null && role == "tutor") {
                 ArrayList<Class> classes = ClassDAO.listAllClassesByTutorID(user.getUserId(), user.getBranchId());
                 int numberOfStudents = 0;
-                for(Class cls: classes){
+                for (Class cls : classes) {
                     numberOfStudents += studentClassDAO.retrieveNumberOfStudentByClass(cls.getClassID());
                 }
             %>
@@ -197,20 +201,22 @@
                     <!-- /.info-box -->
                 </div>
             </div>
+            <% if (classes.size() != 0) { %>
             <div class="col-md-4">
                 <p class="text-center">
                     <strong>NUMBER OF STUDENT PER CLASS</strong>
                 </p>
 
                 <%
-                    for(Class clss: classes){
+                    for (Class clss : classes) {
+                        int percentage = (studentClassDAO.retrieveNumberOfStudentByClass(clss.getClassID()) * 100) / numberOfStudents;
                 %>
                 <div class="progress-group">
                     <span class="progress-text"><%=clss.getClassDay()%>  <%=clss.getClassTime()%></span>
                     <span class="progress-number"><b><%=studentClassDAO.retrieveNumberOfStudentByClass(clss.getClassID())%></b></span>
 
                     <div class="progress sm">
-                        <div class="progress-bar progress-bar-yellow" style="width: <%=100%>%"></div>
+                        <div class="progress-bar progress-bar-yellow" style="width: <%=percentage%>%"></div>
                     </div>
                 </div>
                 <%
@@ -219,6 +225,7 @@
                 %>
             </div> 
             <%}
+                }
             %>
         </div>
     </div>
