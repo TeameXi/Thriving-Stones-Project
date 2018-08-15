@@ -109,6 +109,14 @@ $(function () {
        $('#creation_status').fadeIn().delay(3000).fadeOut();
     }
     
+    if($('#errorMsg').length){
+       $('#errorMsg').fadeIn().delay(3000).fadeOut();
+    }
+    
+    if($('#status').length){
+       $('#status').fadeIn().delay(3000).fadeOut();
+    }
+    
     $('#createAdminForm').bootstrapValidator({
         // To use feedback icons, ensure that you use Bootstrap v3.1.0 or later
         feedbackIcons: {

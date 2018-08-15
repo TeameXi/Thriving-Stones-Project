@@ -25,7 +25,7 @@ public class StudentDAO {
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
             String sql = "insert ignore into student(student_name, phone, address, birth_date, gender, email, password, required_amount, outstanding_amount, level_id, branch_id, student_nric)"
-                    + " value(?, ?, ?, ?, ?, ?, ?, ?, ? ,?, ?, ? )";
+                    + " value(?, ?, ?, ?, ?, ?, MD5(?), ?, ? ,?, ?, ? )";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, studentName);
             stmt.setInt(2, phone);
@@ -294,7 +294,7 @@ public class StudentDAO {
         boolean updatedStatus = false;
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            String sql = "update student set password = ? where student_id = ?";
+            String sql = "update student set password = MD5(?) where student_id = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, password);
             stmt.setInt(2, studentID);
@@ -311,7 +311,7 @@ public class StudentDAO {
         ArrayList<String> duplicatedStudents = new ArrayList<>();
         if (studentNameLists.size() > 0) {
             String nameList = "'" + String.join("','", studentNameLists) + "'";
-
+            
             ArrayList<String> existingStudents = new ArrayList();
             try (Connection conn = ConnectionManager.getConnection();
                     PreparedStatement preparedStatement = conn.prepareStatement("SELECT student_id,student_name FROM student WHERE student_name IN (" + nameList + ")")) {

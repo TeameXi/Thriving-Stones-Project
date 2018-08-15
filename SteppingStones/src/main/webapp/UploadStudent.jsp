@@ -44,6 +44,7 @@
     </div>
     <div class="row">
         <form  action="UploadStudentServlet" method="Post">
+            <input type="hidden" name="branch" value="<%=branch_id%>" />
             <div id="student_container"></div>
         </form>
     </div>

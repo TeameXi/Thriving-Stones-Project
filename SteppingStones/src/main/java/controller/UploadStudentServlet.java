@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import model.LevelDAO;
 import model.ParentChildRelDAO;
 import model.ParentDAO;
 import model.StudentDAO;
@@ -71,7 +72,7 @@ public class UploadStudentServlet extends HttpServlet {
                 }
 
                 studentLists.add("('" + studNrics[i] + "','" + studNames[i].trim() + "'," + phone + ",'" + addresses[i] + "','" + birth_dates[i] + 
-                        "','" + genders[i] + "','" + emails[i] + "','" + passwords[i] + "'," + acad_level[i] + "'," + branch_id + ")");
+                        "','" + genders[i] + "','" + emails[i] + "',MD5('" + passwords[i] + "')," + LevelDAO.retrieveLevelID(acad_level[i]) + "'," + branch_id + ")");
 
                 studentNameLists.add(studNames[i].trim());
             }
@@ -88,19 +89,8 @@ public class UploadStudentServlet extends HttpServlet {
                     mobile = Integer.parseInt(mobiles[i]);
                 }
 
-                System.out.println("******* CHECK HERE *********");
-                System.out.println(parentNames[i].trim());
-                System.out.println(nationality[i]);
-                System.out.println(company[i]);
-                System.out.println(designation[i]);
-                System.out.println(mobile);
-                System.out.println(parentEmail[i]);
-                System.out.println(branch_id);
-                System.out.println("****************************");
-                
-                
                 parentLists.add("('" + parentNames[i].trim() + "','" + nationality[i] + "','" + company[i] + "','" + designation[i] + "'," + mobile + 
-                        ",'" + parentEmail[i] + "'," + mobile + ",'" + branch_id + ")");
+                        ",'" + parentEmail[i] + "',MD5(" + mobile + "),'" + branch_id + ")");
 
                 parentNameLists.add(parentNames[i].trim());
             }
