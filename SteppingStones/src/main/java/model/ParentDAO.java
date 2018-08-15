@@ -23,7 +23,7 @@ public class ParentDAO {
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
             String sql = "insert into parent(name, nationality, company, designation, phone, email, password, branch_id)"
-                    + " value(?, ?, ?, ?, ?, ?, ?, ?)";
+                    + " value(?, ?, ?, ?, ?, ?, MD5(?), ?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, name);
             stmt.setString(2, nationality);
@@ -145,7 +145,7 @@ public class ParentDAO {
         boolean updatedStatus = false;
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            String sql = "update parent set password = ? where parent_id = ?";
+            String sql = "update parent set password = MD5(?) where parent_id = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, password);
             stmt.setInt(2, parentID);

@@ -89,7 +89,7 @@ public class CreateStudentServlet extends HttpServlet {
             if(insertParent){
                 String subject = "Stepping Stones Tuition Center Parent's Account Creation";
                 String text = "Thanks for choosing us. Your account has been created.\n\nBelow is the username and password to access your account: \nUsername: " + parentName 
-                        + "\nPassword: " + parentPhone + "\n\nYou can update your password via https://www.google.com/ or \n Login via https://www.google.com/"; //change password for parent
+                        + "\nPassword: " + parentPassword + "\n\nYou can update your password via https://www.google.com/ or \n Login via https://www.google.com/"; //change password for parent
                 if(parentEmail != null && !parentEmail.equals("")){
                     SendMail.sendingEmail(parentEmail, subject, text);
                 }else if(parentPhone != 0){
