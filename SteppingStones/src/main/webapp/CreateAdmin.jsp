@@ -85,28 +85,6 @@
                         </div>
                     </div>
                 </div>
-				
-				<div class="form-group">
-                    <label class="col-lg-1 control-label">Password</label>  
-                    <div class="col-lg-2">
-                        <input id="generate_btn" type="button" value="Generate" onClick="generatePassword(16);"/>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="col-lg-2 control-label"></label>  
-                    <div class="col-lg-7 inputGroupContainer">
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="zmdi zmdi-key"></i></span>
-
-                            <input name="adminPassword" placeholder="Password" id="adminPassword" class="form-control"  type="text">
-                        </div>
-                    </div>
-                </div>
-
-              
-             
-          
 
                 <div class="form-group">
                     <div class="col-lg-2 col-lg-offset-2">
@@ -126,55 +104,6 @@
 <script src='http://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.4.5/js/bootstrapvalidator.min.js'></script>
 
 <script>
-var Password = {
-
-    _pattern: /[a-zA-Z0-9_\-\+\.]/,
-
-    _getRandomByte: function ()
-    {
-        if (window.crypto && window.crypto.getRandomValues)
-        {
-            var result = new Uint8Array(1);
-            window.crypto.getRandomValues(result);
-            return result[0];
-        } else if (window.msCrypto && window.msCrypto.getRandomValues)
-        {
-            var result = new Uint8Array(1);
-            window.msCrypto.getRandomValues(result);
-            return result[0];
-        } else
-        {
-            return Math.floor(Math.random() * 256);
-        }
-    },
-
-    generate: function (length)
-    {
-        return Array.apply(null, {'length': length})
-                .map(function ()
-                {
-                    var result;
-                    while (true)
-                    {
-                        result = String.fromCharCode(this._getRandomByte());
-                        if (this._pattern.test(result))
-                        {
-                            return result;
-                        }
-                    }
-                }, this)
-                .join('');
-    }
-};
-
-
-function generatePassword(len) {
-    var pwd = Password.generate(len);
-    $("#adminPassword").val(pwd);
-}
-
-
-
 $(function () {   
     if($('#creation_status').length){
        $('#creation_status').fadeIn().delay(3000).fadeOut();

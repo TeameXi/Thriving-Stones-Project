@@ -24,6 +24,10 @@
                     if(request.getParameter("error") != null){
                         out.println("<div id='error' class='row' style='text-align:center;color:red;padding:10px;'><strong>Invalid username or password</strong>. Try again</div>");
                     }
+                    String status = (String) request.getAttribute("status");
+                    if (status != null) {
+                        out.println("<div id='error' class='row' style='text-align:center;color:green;padding:10px;'><strong>" + status + "</strong></div>");
+                    }
                 %>
                 <div class="col-lg-10 col-lg-offset-2">
                     <!-- Change the "action" attribute to your back-end URL -->

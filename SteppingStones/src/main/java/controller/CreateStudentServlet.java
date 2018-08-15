@@ -12,6 +12,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.GeneratePassword;
 import model.ParentChildRelDAO;
 import model.ParentDAO;
 import model.SendMail;
@@ -56,11 +57,12 @@ public class CreateStudentServlet extends HttpServlet {
             levelID = Integer.parseInt(lvl);
         }
         String stuEmail = request.getParameter("studentEmail");
-        String stuPassword = request.getParameter("studentPassword");
+        String stuPassword = GeneratePassword.random(16);
         String parentName = request.getParameter("parentName");
         String parentNationality = request.getParameter("parentNationality");
         String parentCompany = request.getParameter("parentCompany");
         String parentDesgination = request.getParameter("parentDesgination");
+        String parentPassword = GeneratePassword.random(16);
         int parentPhone = Integer.parseInt(request.getParameter("parentPhone"));
         String parentEmail = request.getParameter("parentEmail");
         String address = request.getParameter("address");     
@@ -83,7 +85,7 @@ public class CreateStudentServlet extends HttpServlet {
                 }
             }
             
-            boolean insertParent = ParentDAO.insertParent(parentName, parentNationality, parentCompany, parentDesgination, parentPhone, parentEmail, parentPhone, branchID);
+            boolean insertParent = ParentDAO.insertParent(parentName, parentNationality, parentCompany, parentDesgination, parentPhone, parentEmail, parentPassword, branchID);
             if(insertParent){
                 String subject = "Stepping Stones Tuition Center Parent's Account Creation";
                 String text = "Thanks for choosing us. Your account has been created.\n\nBelow is the username and password to access your account: \nUsername: " + parentName 

@@ -11,15 +11,15 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  *
  * @author DEYU
  */
 public class ParentDAO {
-    public static boolean insertParent(String name, String nationality, String company, String designation, int phone, String email, int passwordPhone, int branchID) {
+    public static boolean insertParent(String name, String nationality, String company, String designation, int phone, String email, String password, int branchID) {
         boolean status = false;
-        String password = String.valueOf(passwordPhone);
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
             String sql = "insert into parent(name, nationality, company, designation, phone, email, password, branch_id)"
@@ -141,5 +141,47 @@ public class ParentDAO {
         return false;
     }
  
+    public static boolean updateParentPassword(int parentID, String password) {
+        boolean updatedStatus = false;
+        try (Connection conn = ConnectionManager.getConnection();) {
+            conn.setAutoCommit(false);
+            String sql = "update parent set password = ? where parent_id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, password);
+            stmt.setInt(2, parentID);
+            stmt.executeUpdate(); 
+            conn.commit();
+            updatedStatus = true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return updatedStatus;
+    }
     
+    public ArrayList<String> uploadParent(ArrayList<String> parentLists, ArrayList<String> parentNameLists) {
+        ArrayList<String> duplicatedParents = new ArrayList<>();
+        if (parentNameLists.size() > 0) {
+            String nameList = "'" + String.join("','", parentNameLists) + "'";
+
+            ArrayList<String> existingParents = new ArrayList();
+            try (Connection conn = ConnectionManager.getConnection();
+                    PreparedStatement preparedStatement = conn.prepareStatement("SELECT parent_id,name FROM parent WHERE = name IN (" + nameList + ")")) {
+
+                ResultSet rs = preparedStatement.executeQuery();
+                while (rs.next()) {
+                    String student_name = rs.getString(2);
+                    existingParents.add(student_name);
+                }
+
+                String parentList = String.join(",", parentLists);
+                PreparedStatement insertStatement = conn.prepareStatement("INSERT IGNORE INTO parent(name,nationality,company,designation,phone,email,password,branch_id) VALUES " + parentList);
+                int num = insertStatement.executeUpdate();
+                duplicatedParents = existingParents;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return duplicatedParents;
+    }
 }

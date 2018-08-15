@@ -13,6 +13,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.GeneratePassword;
 import model.SendMail;
 import model.TutorDAO;
 
@@ -43,11 +44,8 @@ public class CreateTutorServlet extends HttpServlet {
         String birth_date = request.getParameter("birthDate");
         String gender = request.getParameter("gender");
         String email = request.getParameter("email"); 
-        String password = "";
-        if(request.getParameter("tutorPassword") != null){
-            password = request.getParameter("tutorPassword").trim();
-        }
-        
+        String password = GeneratePassword.random(16);
+        System.out.println(password);
         int branch = 0;
 
         if(request.getParameter("branch") != null && request.getParameter("branch") != ""){

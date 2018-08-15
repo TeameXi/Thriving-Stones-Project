@@ -132,4 +132,21 @@ public class StudentClassDAO {
         */
         return students;
     }
+    
+    public int retrieveNumberOfStudentByClass(int classID){
+        int studentCount = 0;
+        String sql = "select COUNT(*) from class_student_rel where class_id = ?";
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, classID);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){
+                studentCount = rs.getInt(1);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        
+        return studentCount;
+    }
 }
