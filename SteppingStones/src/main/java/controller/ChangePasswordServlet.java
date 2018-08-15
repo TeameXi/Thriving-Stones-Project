@@ -5,14 +5,11 @@
  */
 package controller;
 
-import model.TutorDAO;
-import entity.Tutor;
 import entity.Users;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.crypto.Cipher;
@@ -23,15 +20,14 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.SendMail;
 import model.UsersDAO;
 
 /**
  *
  * @author Riana
  */
-@WebServlet(name = "ForgotPasswordServlet", urlPatterns = {"/ForgotPasswordServlet"})
-public class ForgotPasswordServlet extends HttpServlet {
+@WebServlet(name = "ChangePasswordServlet", urlPatterns = {"/ChangePasswordServlet"})
+public class ChangePasswordServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -44,66 +40,79 @@ public class ForgotPasswordServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-       
-        String email = request.getParameter("email");
-        String role = request.getParameter("type");
-        
         ArrayList<String> errorList = new ArrayList<>();
-        
-        if(email == null || email.equals("")){
-            errorList.add("email is required");
+        /*String encrypt = request.getParameter("e");
+        if(encrypt == null || encrypt.equals("")){
+            errorList.add("invalid link");
         }
         
-        if(role == null || role.equals("")){
-            errorList.add("please select role");
-        }
         
-        if(errorList.isEmpty()){
-            UsersDAO users = new UsersDAO();
-            Users user = users.retrieveUserByUsernameRole(role, email);
-            
-            if(user == null){
-                errorList.add("user does not exist");
-                request.setAttribute("error", errorList);
-            }else{
+        try {
+            if(errorList.isEmpty()){
+                String decrypt = decrypt(encrypt, "a");
+                String[] paramList = decrypt.split("&");
+                String password = paramList[0];
+                String username = paramList[1];
+                String role = paramList[2];
                 
-                try {
-                    String subject = "Stepping Stones Tuition Center Account Password Reset";
-                    //String encrypt = encrypt(user.getPassword()+"&"+user.getEmail()+"&"+role, "a");
-                    String msg = "p="+user.getPassword()+"&u="+user.getEmail()+"&r="+role;
-                    String text = "Dear " + user.getEmail() + ", "
-                        + "\n\nWe have received a request to reset your Stepping Stones Tuition Center Account password."
-                        + "\nSimply click the link below to reset your password."
-                        + "\nhttp://localhost:8084/SteppingStones/ChangePassword?"+msg;
-                    SendMail.sendingEmail(user.getMailingAddress(), subject, text);
-                    request.setAttribute("status", "Email sent. please check your email for instruction to reset your password.");
-                } catch (Exception ex) {
-                    Logger.getLogger(ForgotPasswordServlet.class.getName()).log(Level.SEVERE, null, ex);
+                UsersDAO userDAO = new UsersDAO();
+                Users user = userDAO.retrieveUserByUsername(role, username, password);
+                
+                if(user != null){
+                    RequestDispatcher dispatcher = request.getRequestDispatcher("ChangePassword.jsp");
+                    dispatcher.forward(request, response);
                 }
             }
-        }else{
-            request.setAttribute("error", errorList);
+        } catch (Exception ex) {
+            Logger.getLogger(ChangePasswordServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }*/
+        
+        String password = request.getParameter("p");
+        String username = request.getParameter("u");
+        String role = request.getParameter("r");
+        
+        if(password == null || password.equals("") || username == null || username.equals("") || role == null || role.equals("")){
+            errorList.add("link is invalid");
         }
-        RequestDispatcher dispatcher = request.getRequestDispatcher("ForgotPassword.jsp");
+        if(errorList.isEmpty()){
+            UsersDAO userDAO = new UsersDAO();
+            Users user = userDAO.retrieveUserByUsernameRole(role, username);
+            if(user != null){
+                boolean match = user.authenticateUser(user, password);
+                if(match){
+                    request.setAttribute("user", user);
+                    request.setAttribute("role", role);
+                    RequestDispatcher dispatcher = request.getRequestDispatcher("ChangePassword.jsp");
+                    dispatcher.forward(request, response);
+                }else{
+                    errorList.add("invalid link");
+                }
+            }else{
+                errorList.add("invalid link");
+            }
+        }else{
+            errorList.add("invalid link");
+        }
+        RequestDispatcher dispatcher = request.getRequestDispatcher("PageNotFound.jsp");
         dispatcher.forward(request, response);
+        
     }
-    public static String encrypt(String strClearText,String strKey) throws Exception{
+    public static String decrypt(String strEncrypted,String strKey) throws Exception{
 	String strData="";
 	
 	try {
 		SecretKeySpec skeyspec=new SecretKeySpec(strKey.getBytes(),"Blowfish");
 		Cipher cipher=Cipher.getInstance("Blowfish");
-		cipher.init(Cipher.ENCRYPT_MODE, skeyspec);
-		byte[] encrypted=cipher.doFinal(strClearText.getBytes());
-		strData=new String(encrypted);
+		cipher.init(Cipher.DECRYPT_MODE, skeyspec);
+		byte[] decrypted=cipher.doFinal(strEncrypted.getBytes());
+		strData=new String(decrypted);
 		
 	} catch (Exception e) {
 		e.printStackTrace();
 		throw new Exception(e);
 	}
 	return strData;
-}
+    }
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.

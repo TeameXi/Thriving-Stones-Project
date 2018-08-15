@@ -14,6 +14,7 @@ public class Users {
     private String email;
     private String password;
     private int branch_id;
+    private String mailingAddress;
     
 
     public Users(String email, String password){
@@ -32,6 +33,14 @@ public class Users {
         this.email = email;
         this.password = password;
         this.branch_id = branch_id;
+    }
+
+    public Users(int user_id, String email, String password, int branch_id, String mailingAddress) {
+        this.user_id = user_id;
+        this.email = email;
+        this.password = password;
+        this.branch_id = branch_id;
+        this.mailingAddress = mailingAddress;
     }
 
     public Users() {
@@ -67,6 +76,14 @@ public class Users {
 
     public void setUserId(int user_id) {
         this.user_id = user_id;
+    }
+
+    public String getMailingAddress() {
+        return mailingAddress;
+    }
+
+    public void setMailingAddress(String mailingAddress) {
+        this.mailingAddress = mailingAddress;
     }
     
     public boolean authenticateUser(Users user, String password){
