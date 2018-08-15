@@ -18,6 +18,7 @@ import java.util.ArrayList;
  * @author DEYU
  */
 public class ParentDAO {
+
     public static boolean insertParent(String name, String nationality, String company, String designation, int phone, String email, String password, int branchID) {
         boolean status = false;
         try (Connection conn = ConnectionManager.getConnection();) {
@@ -33,7 +34,7 @@ public class ParentDAO {
             stmt.setString(6, email);
             stmt.setString(7, password);
             stmt.setInt(8, branchID);
-            stmt.executeUpdate(); 
+            stmt.executeUpdate();
             conn.commit();
             status = true;
             conn.commit();
@@ -42,31 +43,31 @@ public class ParentDAO {
         }
         return status;
     }
-    
-    public static int retrieveParentID(String parentName){
+
+    public static int retrieveParentID(String parentName) {
         int result = 0;
-        try(Connection conn = ConnectionManager.getConnection()){
+        try (Connection conn = ConnectionManager.getConnection()) {
             String sql = "select parent_id from parent where name = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, parentName);
             ResultSet rs = stmt.executeQuery();
-            while(rs.next()){
+            while (rs.next()) {
                 result = rs.getInt("parent_id");
-            } 
+            }
         } catch (SQLException ex) {
             System.out.println("error in retrieveParentID sql");
-        }  
+        }
         return result;
     }
-    
-    public static boolean deleteParent(int parentID){
+
+    public static boolean deleteParent(int parentID) {
         boolean deletedStatus = false;
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
             String sql = "delete from parent where parent_id = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, parentID);
-            stmt.executeUpdate(); 
+            stmt.executeUpdate();
             conn.commit();
             deletedStatus = true;
         } catch (Exception e) {
@@ -74,24 +75,24 @@ public class ParentDAO {
         }
         return deletedStatus;
     }
-    
-    public static String retrieveParentByStudentID(int studentID){
+
+    public static String retrieveParentByStudentID(int studentID) {
         String parentInfo = "";
-        try(Connection conn = ConnectionManager.getConnection()){
+        try (Connection conn = ConnectionManager.getConnection()) {
             String sql = "select name, phone from parent_child_rel pc, parent p where pc.parent_id = p.parent_id and child_id = ?;";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, studentID);
             ResultSet rs = stmt.executeQuery();
-            while(rs.next()){
-                parentInfo = parentInfo + "Guadiance<br>" + rs.getString("name") + " " + rs.getString("phone") ;
-            } 
+            while (rs.next()) {
+                parentInfo = parentInfo + "Guadiance<br>" + rs.getString("name") + " " + rs.getString("phone");
+            }
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
-        }  
+        }
         return parentInfo;
     }
-    
-     public Parent retrieveSpecificParentById(int parentId) {
+
+    public Parent retrieveSpecificParentById(int parentId) {
         String select_tutor = "SELECT * FROM parent WHERE parent_id = ?";
         try (Connection conn = ConnectionManager.getConnection();
                 PreparedStatement preparedStatement = conn.prepareStatement(select_tutor)) {
@@ -108,7 +109,7 @@ public class ParentDAO {
                 String email = rs.getString(7);
                 String password = rs.getString(8);
                 int branch_id = rs.getInt(9);
-                Parent parent = new Parent(id,name,nationality,company,designation,phone,email,password,branch_id);
+                Parent parent = new Parent(id, name, nationality, company, designation, phone, email, password, branch_id);
                 return parent;
             }
 
@@ -117,19 +118,18 @@ public class ParentDAO {
         }
         return null;
     }
-     
-    
-    public boolean updateParent(int parentID,String nationality,String company,String designation,int phone,String email) {
+
+    public boolean updateParent(int parentID, String nationality, String company, String designation, int phone, String email) {
         String update_Tutor = "UPDATE parent SET nationality=?,company=?,designation=?,phone=?,email=? WHERE parent_id =? ";
         try (Connection conn = ConnectionManager.getConnection();
                 PreparedStatement preparedStatement = conn.prepareStatement(update_Tutor)) {
-            preparedStatement.setString(1,nationality);
+            preparedStatement.setString(1, nationality);
             preparedStatement.setString(2, company);
-            preparedStatement.setString(3,designation);
-            preparedStatement.setInt(4,phone);
+            preparedStatement.setString(3, designation);
+            preparedStatement.setInt(4, phone);
             preparedStatement.setString(5, email);
-            preparedStatement.setInt(6,parentID);
-            
+            preparedStatement.setInt(6, parentID);
+
             int num = preparedStatement.executeUpdate();
             if (num != 0) {
                 return true;
@@ -140,7 +140,7 @@ public class ParentDAO {
         }
         return false;
     }
- 
+
     public static boolean updateParentPassword(int parentID, String password) {
         boolean updatedStatus = false;
         try (Connection conn = ConnectionManager.getConnection();) {
@@ -149,7 +149,7 @@ public class ParentDAO {
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, password);
             stmt.setInt(2, parentID);
-            stmt.executeUpdate(); 
+            stmt.executeUpdate();
             conn.commit();
             updatedStatus = true;
         } catch (Exception e) {
@@ -157,7 +157,7 @@ public class ParentDAO {
         }
         return updatedStatus;
     }
-    
+
     public ArrayList<String> uploadParent(ArrayList<String> parentLists, ArrayList<String> parentNameLists) {
         ArrayList<String> duplicatedParents = new ArrayList<>();
         if (parentNameLists.size() > 0) {
@@ -169,8 +169,8 @@ public class ParentDAO {
 
                 ResultSet rs = preparedStatement.executeQuery();
                 while (rs.next()) {
-                    String student_name = rs.getString(2);
-                    existingParents.add(student_name);
+                    String parent_name = rs.getString(2);
+                    existingParents.add(parent_name);
                 }
 
                 String parentList = String.join(",", parentLists);
@@ -184,4 +184,5 @@ public class ParentDAO {
 
         return duplicatedParents;
     }
+
 }

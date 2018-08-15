@@ -311,7 +311,7 @@ public class StudentDAO {
         ArrayList<String> duplicatedStudents = new ArrayList<>();
         if (studentNameLists.size() > 0) {
             String nameList = "'" + String.join("','", studentNameLists) + "'";
-
+            
             ArrayList<String> existingStudents = new ArrayList();
             try (Connection conn = ConnectionManager.getConnection();
                     PreparedStatement preparedStatement = conn.prepareStatement("SELECT student_id,student_name FROM student WHERE student_name IN (" + nameList + ")")) {
