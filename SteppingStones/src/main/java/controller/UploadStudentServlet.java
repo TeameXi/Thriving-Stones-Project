@@ -97,7 +97,7 @@ public class UploadStudentServlet extends HttpServlet {
             
             HashMap<String, String> studParRel = new HashMap<>();
             
-            for (int i = 0; i < studentNameLists.size()-1 ; i++){
+            for (int i = 0; i < studentNameLists.size() ; i++){
                 studParRel.put(studentNameLists.get(i),parentNameLists.get(i));
             }
             
