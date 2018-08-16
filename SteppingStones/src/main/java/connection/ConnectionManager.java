@@ -55,8 +55,8 @@ public class ConnectionManager {
                 dbURL = "jdbc:mysql://" + host + ":" + port + "/" + dbName;
             } else {
                 // in production environment, use jelastic password
-                dbPassword = props.getProperty("password");
-                dbURL = props.getProperty("host");
+                dbPassword = "GRPesv72616";
+                dbURL = "jdbc:mysql://node34999-steppingstones.njs.jelastic.vps-host.net/stepping_stones";
             }
         } catch (Exception ex) {
             // unable to load properties file
