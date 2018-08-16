@@ -310,7 +310,7 @@ $(function () {
             parentPhone: {
                 validators: {
                     integer: {
-                        message: 'Please enter valid phone number'
+                        message: 'Integer only'
                     },
                     between: {
                         min: 80000000,
