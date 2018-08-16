@@ -28,7 +28,7 @@
             %>  
         </form>
         
-        <form action="CreateTuitionGradeServlet" method="post">
+        <form id="createTuitionGradeForm" action="CreateTuitionGradeServlet" method="post">
            
             
             <%
@@ -62,7 +62,7 @@
                         out.println("<div class='form-group'><label class='col-lg-2 control-label'>"+studentName + "</label><div class='col-lg-3 inputGroupContainer'><div class='input-group'><span class='input-group-addon'><i class='zmdi zmdi-font'></i></span>");
                         request.setAttribute("studentName", studentName);
             %>    
-            <input type ="number" name ="${studentName}" class="form-control"></div></div></div><br>            
+            <input type ="number" name ="grade[]" class="form-control"></div></div></div><br><br><br>    
             <%
                     }
             %>
@@ -83,10 +83,50 @@
         <%
             String status = (String) request.getAttribute("status");
             if (status != null) {
-                out.println(status);
+                out.println("<div id='errorMsg' class='alert alert-success col-md-12'><strong>"+status+"</strong></div>");
+            }
+            
+            String errorMsg = (String) request.getAttribute("errorMsg");
+            if (errorMsg != null) {
+                out.println("<div id='errorMsg' class='alert alert-danger col-md-12'><strong>"+errorMsg+"</strong></div>");
             }
         %>
 </div>
 </div>
 </div>
 <%@include file="footer.jsp"%>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.css" rel="stylesheet">
+
+<link rel='stylesheet prefetch' href='http://cdnjs.cloudflare.com/ajax/libs/jquery.bootstrapvalidator/0.5.0/css/bootstrapValidator.min.css'>
+<script src='http://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.4.5/js/bootstrapvalidator.min.js'></script>
+
+<script>
+$(function () { 
+    if ($('#errorMsg').length) {
+        $('#errorMsg').fadeIn().delay(2000).fadeOut();
+    }
+    $('#createTuitionGradeForm').bootstrapValidator({
+        // To use feedback icons, ensure that you use Bootstrap v3.1.0 or later
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        fields: {
+            'grade[]': {
+                validators: {
+                    between: {
+                        min: 0,
+                        max: 100,
+                        message: 'The grade must be between 0 and 100'
+                    }
+                }
+            }
+        }
+    });
+    
+});
+</script>
