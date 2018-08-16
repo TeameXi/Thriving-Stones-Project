@@ -72,11 +72,13 @@ public class CreateStudentServlet extends HttpServlet {
             RequestDispatcher dispatcher = request.getRequestDispatcher("CreateStudent.jsp");
             dispatcher.forward(request, response);
         }else{           
+            String href =  request.getHeader("origin")+request.getContextPath()+"/Login.jsp";
             boolean insertStudent = StudentDAO.insertStudent(studentNRIC, studentName, phone, address, BOD, gender, stuEmail, stuPassword, levelID, branchID);
             if(insertStudent){
+               
                 String subject = "Stepping Stones Tuition Center Student's Account Creation";
                 String text = "Thanks for choosing us. Your account has been created.\n\nBelow is the username and password to access your account: \nUsername: " + studentName 
-                        + "\nPassword: " + stuPassword + "\n\nYou can update your password via https://www.google.com/ or \n Login via https://www.google.com/";
+                        + "\nPassword: " + stuPassword + "\n\nYou can Login via "+href; 
                 if(stuEmail != null && !stuEmail.equals("")){
                     SendMail.sendingEmail(stuEmail, subject, text);
                 }else if(phone != 0){
@@ -89,7 +91,7 @@ public class CreateStudentServlet extends HttpServlet {
             if(insertParent){
                 String subject = "Stepping Stones Tuition Center Parent's Account Creation";
                 String text = "Thanks for choosing us. Your account has been created.\n\nBelow is the username and password to access your account: \nUsername: " + parentName 
-                        + "\nPassword: " + parentPassword + "\n\nYou can update your password via https://www.google.com/ or \n Login via https://www.google.com/"; //change password for parent
+                        + "\nPassword: " + parentPassword + "\n\nYou can Login via "+href; 
                 if(parentEmail != null && !parentEmail.equals("")){
                     SendMail.sendingEmail(parentEmail, subject, text);
                 }else if(parentPhone != 0){

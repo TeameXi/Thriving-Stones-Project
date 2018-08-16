@@ -71,11 +71,12 @@ public class ForgotPasswordServlet extends HttpServlet {
                 try {
                     String subject = "Stepping Stones Tuition Center Account Password Reset";
                     //String encrypt = encrypt(user.getPassword()+"&"+user.getEmail()+"&"+role, "a");
+                    String href = request.getHeader("origin")+request.getContextPath()+"/ChangePassword?";
                     String msg = "p="+user.getPassword()+"&u="+user.getEmail()+"&r="+role;
                     String text = "Dear " + user.getEmail() + ", "
                         + "\n\nWe have received a request to reset your Stepping Stones Tuition Center Account password."
                         + "\nSimply click the link below to reset your password."
-                        + "\nhttp://localhost:8084/SteppingStones/ChangePassword?"+msg;
+                        + "\n"+href+msg;
                     SendMail.sendingEmail(user.getMailingAddress(), subject, text);
                     request.setAttribute("status", "Email sent. please check your email for instruction to reset your password.");
                 } catch (Exception ex) {

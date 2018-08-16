@@ -49,9 +49,10 @@ public class CreateAdminServlet extends HttpServlet {
             Admin tempAdmin = new Admin(admin_username, password, adminEmail, branch_id);
             boolean status = adminDao.addAdmin(tempAdmin);
             if(status){
+                String href = request.getHeader("origin")+request.getContextPath()+"/Login.jsp";
                 String subject = "Stepping Stones Tuition Center Branch Admin's Account Creation";
                 String text = "Your account has been created.(Admin Account for " + branchDao.retrieveBranchById(branch_id).getName() + ")\n\nBelow is the username and password to access your account: \nUsername: " + admin_username
-                        + "\nPassword: " + password + "\n\nYou can update your password via https://www.google.com/ or \n Login via https://www.google.com/"; 
+                        + "\nPassword: " + password + "\n\nYou can Login via "+href; 
                 if(adminEmail != null && !adminEmail.equals("")){
                     SendMail.sendingEmail(adminEmail, subject, text);
                 }

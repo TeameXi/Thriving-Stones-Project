@@ -62,9 +62,10 @@ public class CreateTutorServlet extends HttpServlet {
             Tutor tempTutor = new Tutor(nric,name,phone,address,image_url,birth_date,gender,email,password,branch);
             boolean status = tutordao.addTutor(tempTutor);
             if(status){
+                String href = request.getHeader("origin")+request.getContextPath()+"/Login.jsp";
                 String subject = "Stepping Stones Tuition Center Tutor's Account Creation";
                 String text = "Your account has been created.\n\nBelow is the username and password to access your account: \nUsername: " + name
-                        + "\nPassword: " + password + "\n\nYou can update your password via https://www.google.com/ or \n Login via https://www.google.com/";
+                        + "\nPassword: " + password + "\n\nYou can Login via "+href; 
                 if(email != null && !email.equals("")){
                     SendMail.sendingEmail(email, subject, text);
                 }    

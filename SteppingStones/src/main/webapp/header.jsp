@@ -41,7 +41,7 @@
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%=account %><b class="caret"></b></a>
                             <ul class="dropdown-menu animated fadeInUp">
                                 <%
-                                    if(role != null && role == "admin"){
+                                    if(role != null && role == "admin" && branch_id != 0){
                                         out.println("<li><a href='ProfileForAdmin.jsp'>Manage Account</a></li>");
                                     }else if(role != null && role == "tutor"){
                                         out.println("<li><a href='ProfileForTutor.jsp'>Manage Account</a></li>");
