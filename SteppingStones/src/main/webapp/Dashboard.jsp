@@ -9,6 +9,14 @@
 <%@page import="model.TutorDAO"%>
 <%@page import="model.ClassDAO"%>
 <%@page import="model.StudentClassDAO"%>
+<%
+    Users user1 = (Users)session.getAttribute("user");
+
+    if(user1 == null){
+        response.sendRedirect("Login.jsp");
+        return;
+    }
+%>
 <%@include file="header.jsp"%>
 <head>	 
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styling/css/AdminLTE.min.css">

@@ -23,7 +23,6 @@
 </style>
 
 <div class="col-md-10">
-    <div style="margin: 20px;"><h3>Tutor Lists</h3></div>
     <div class="row" id="errorMsg"></div>
     <%        String student_creation_status = (String) request.getAttribute("creation_status");
         if (student_creation_status != null) {
@@ -61,7 +60,7 @@
             levelID = Integer.parseInt(lvlStr);
             String level = LevelDAO.retrieveLevel(levelID);
         %>
-        <div style="margin: 20px;"><h3><strong><%=level%></strong> Students</h3></div>
+        <div><h4>Student Lists from <strong><%=level%></strong></h4></div>
         <div class="row" id="errorMsg"></div>
         <div class="row  spaced-top">
             <div class="col-sm-6">

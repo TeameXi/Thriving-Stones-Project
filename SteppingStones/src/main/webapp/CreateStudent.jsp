@@ -288,7 +288,7 @@ $(function () {
             phone: {
                 validators: {
                     integer: {
-                        message: 'Please enter valid phone number'
+                        message: 'Integer Only'
                     },
                     between: {
                         min: 80000000,
@@ -316,6 +316,9 @@ $(function () {
                         min: 80000000,
                         max: 99999999,
                         message: 'Please enter valid phone number'
+                    },
+                    notEmpty: {
+                        message: 'Please enter phone number'
                     }
                 }
             },
@@ -327,9 +330,12 @@ $(function () {
                 }
             },
             parentEmail:{
-                validators:{
+                validators: {
+                    notEmpty: {
+                        message: 'Enter Email Address'
+                    },
                     emailAddress: {
-                        message: 'Email cannot be empty'
+                        message: 'Please enter valid email address'
                     }
                 }
             }

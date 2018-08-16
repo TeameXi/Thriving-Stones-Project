@@ -102,18 +102,6 @@
                     
                             <li class="submenu">
                                 <a href="#">
-                                    <i class="zmdi zmdi-accounts-alt"></i> Tutor
-                                    <span class="caret pull-right"></span>
-                                </a>
-                                <!-- Sub menu -->
-                                <ul>
-                                    <li><a href="CreateTutor.jsp">Create Tutor</a></li>
-                                    <li><a href="DisplayTutors.jsp">View Tutors</a></li>
-                                </ul>
-                            </li>
-
-                            <li class="submenu">
-                                <a href="#">
                                     <i class="zmdi zmdi-graduation-cap"></i> Student
                                     <span class="caret pull-right"></span>
                                 </a>
@@ -123,6 +111,18 @@
                                     <li><a href="DisplayStudents.jsp">View Students</a></li>
                                 </ul>
                             </li>
+                            
+                            <li class="submenu">
+                                <a href="#">
+                                    <i class="zmdi zmdi-accounts-alt"></i> Tutor
+                                    <span class="caret pull-right"></span>
+                                </a>
+                                <!-- Sub menu -->
+                                <ul>
+                                    <li><a href="CreateTutor.jsp">Create Tutor</a></li>
+                                    <li><a href="DisplayTutors.jsp">View Tutors</a></li>
+                                </ul>
+                            </li> 
 
                             <li class="submenu">
                                 <a href="#">

@@ -33,11 +33,6 @@
         if (errorMsg != null) {
             out.println("<div id='errorMsg' class='alert alert-danger col-md-12'><strong>"+errorMsg+"</strong></div>");
         }
-        
-        String status = (String) request.getAttribute("status");
-        if (status != null) {
-            out.println("<div id='errorMsg' class='alert alert-success col-md-12'><strong>"+status+"</strong></div>");
-        }
     %> 
     <div style="text-align: center;margin: 20px;"><span class="tab_active">Add Branch Admin</span></h5></div>
     <div class="row">
@@ -111,10 +106,6 @@ $(function () {
     
     if($('#errorMsg').length){
        $('#errorMsg').fadeIn().delay(3000).fadeOut();
-    }
-    
-    if($('#status').length){
-       $('#status').fadeIn().delay(3000).fadeOut();
     }
     
     $('#createAdminForm').bootstrapValidator({

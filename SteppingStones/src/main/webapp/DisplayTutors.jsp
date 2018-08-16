@@ -17,7 +17,7 @@
     }
 </style>
 <div class="col-md-10">
-    <div style="margin: 20px;"><h3>Tutor Lists</h3></div>
+    <div style="margin: 20px;"><h4>Tutor Lists</h4></div>
     <div class="row" id="errorMsg"></div>
     <%       
         String tutor_creation_status = (String) request.getAttribute("creation_status");
