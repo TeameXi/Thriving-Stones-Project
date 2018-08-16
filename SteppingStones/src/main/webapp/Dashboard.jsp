@@ -12,6 +12,22 @@
 <%@include file="header.jsp"%>
 <head>	 
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styling/css/AdminLTE.min.css">
+    <style>
+        .grid .survey-item {
+            position: relative;
+            display: inline-block;
+            vertical-align: top;
+            height: 90px;
+            width: 230px;
+            margin: 10px;
+        }
+        .survey-item {    
+            padding: 0px;
+            border-radius: 2px;
+            background: white;
+            box-shadow: 0 2px 1px rgba(170, 170, 170, 0.25);
+        }
+    </style>
 </head>
 <body>
     <div style="margin: 20px;"><h3>Dashboard</h3></div>
@@ -39,42 +55,32 @@
             %>                
             <!-- Info boxes -->
             <div class="row">
-                <div class="col-md">
-                    <div class="info-boxs">
+                <div class="surveys grid">                    
+                    <div class="survey-item">                    
                         <span class="info-box-icon bg-red"><i class="zmdi zmdi-home"></i></span>
 
                         <div class="info-box-contents">
                             <span class="info-box-texts">Number of branch</span>
                             <span class="info-box-numbers"><%=numberOfBranch%></span>
                         </div>
-                        <!-- /.info-box-content -->
                     </div>
-                    <!-- /.info-box -->
-                </div>
-                <div class="col-md">
-                    <div class="info-boxs">
+                    <div class="survey-item">                    
                         <span class="info-box-icon bg-green"><i class="zmdi zmdi-accounts"></i></span>
 
                         <div class="info-box-contents">
                             <span class="info-box-texts">Number of tutor</span>
                             <span class="info-box-numbers"><%=numberOfTutor%></span>
-                        </div>
-                        <!-- /.info-box-content -->
+                        </div>                       
                     </div>
-                    <!-- /.info-box -->
-                </div>
+                    <div class="survey-item">
 
-                <div class="col-md">
-                    <div class="info-boxs">
                         <span class="info-box-icon bg-yellows"><i class="zmdi zmdi-accounts-alt"></i></span>
 
                         <div class="info-box-contents">
                             <span class="info-box-texts">NUMBER OF STUDENT</span>
                             <span class="info-box-numbers"><%=numberOfStudent%></span>
-                        </div>
-                        <!-- /.info-box-content -->
+                        </div>                        
                     </div>
-                    <!-- /.info-box -->
                 </div>
             </div>
             <%
@@ -114,8 +120,8 @@
 
             %>
             <div class="row">
-                <div class="col-md">
-                    <div class="info-boxs">
+                <div class="surveys grid">                    
+                    <div class="survey-item"> 
                         <span class="info-box-icon bg-green"><i class="zmdi zmdi-accounts"></i></span>
 
                         <div class="info-box-contents">
@@ -124,11 +130,7 @@
                         </div>
                         <!-- /.info-box-content -->
                     </div>
-                    <!-- /.info-box -->
-                </div>
-
-                <div class="col-md">
-                    <div class="info-boxs">
+                    <div class="survey-item">
                         <span class="info-box-icon bg-yellows"><i class="zmdi zmdi-accounts-alt"></i></span>
 
                         <div class="info-box-contents">
@@ -175,8 +177,8 @@
                 }
             %>
             <div class="row">
-                <div class="col-md">
-                    <div class="info-boxs">
+                <div class="surveys grid">                    
+                    <div class="survey-item">
                         <span class="info-box-icon bg-green"><i class="zmdi zmdi-accounts"></i></span>
 
                         <div class="info-box-contents">
@@ -184,12 +186,9 @@
                             <span class="info-box-numbers"><%=classes.size()%></span>
                         </div>
                         <!-- /.info-box-content -->
-                    </div>
-                    <!-- /.info-box -->
-                </div>
+                    </div>                   
 
-                <div class="col-md">
-                    <div class="info-boxs">
+                    <div class="survey-item">                  
                         <span class="info-box-icon bg-yellows"><i class="zmdi zmdi-accounts-alt"></i></span>
 
                         <div class="info-box-contents">
