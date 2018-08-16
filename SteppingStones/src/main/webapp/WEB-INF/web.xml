@@ -29,4 +29,12 @@
         <servlet-name>RetrieveScheduleServlet</servlet-name>
         <url-pattern>/RetrieveScheduleServlet</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>ChangePasswordServlet</servlet-name>
+        <servlet-class>controller.ChangePasswordServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ChangePasswordServlet</servlet-name>
+        <url-pattern>/ChangePassword</url-pattern>
+    </servlet-mapping>
 </web-app>

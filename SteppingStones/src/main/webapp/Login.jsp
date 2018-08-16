@@ -74,7 +74,7 @@
                         <div class="form-group">
                             <div class="col-lg-9 col-lg-offset-3">
                                 <!-- Do NOT use name="submit" or id="submit" for the Submit button -->
-                                <button type="submit" class="btn btn-default">Login</button>
+                                <button type="submit" class="btn btn-default">Login</button> <a href="ForgotPassword.jsp">Forgot password</a>
                             </div>
                         </div>
                     </form>
