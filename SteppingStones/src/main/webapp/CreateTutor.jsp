@@ -185,7 +185,7 @@ $(function () {
             validating: 'glyphicon glyphicon-refresh'
         },
         fields: {
-            tutorID: {
+            tutorNric: {
                 validators: {   
                     stringLength: {
                         min: 9,
@@ -204,7 +204,7 @@ $(function () {
             phone: {
                 validators: {
                     integer: {
-                        message: 'Please enter valid phone number'
+                        message: 'Integer Only'
                     },
                     between: {
                         min: 80000000,
