@@ -6,17 +6,12 @@
     <%  
         String existingBranch = (String) request.getAttribute("existingBranch");
         if (existingBranch != null) {
-            out.println("<div class='alert alert-danger col-md-12'>Branch : <strong>"+existingBranch+"</strong> is already added. Try another branch again. </div>");
+            out.println("<div id='errorMsg' class='alert alert-danger col-md-12'>Branch : <strong>"+existingBranch+"</strong> is already added. Try another branch again. </div>");
         }
         
         String errorMsg = (String) request.getAttribute("errorMsg");
         if (errorMsg != null) {
             out.println("<div id='errorMsg' class='alert alert-danger col-md-12'><strong>"+errorMsg+"</strong></div>");
-        }
-        
-        String status = (String) request.getAttribute("status");
-        if (status != null) {
-            out.println("<div id='errorMsg' class='alert alert-success col-md-12'><strong>"+status+"</strong></div>");
         }
     %> 
     <div style="text-align: center;margin: 20px;"><a class="tab_active" href="CreateBranch.jsp">Add Branch </a></h5></div>
@@ -94,6 +89,10 @@
 <script>
 
 $(function () {
+    if($('#errorMsg').length){
+       $('#errorMsg').fadeIn().delay(3000).fadeOut();
+    }
+    
     $('#startingDate').datetimepicker({
         format: 'DD-MM-YYYY'
     });

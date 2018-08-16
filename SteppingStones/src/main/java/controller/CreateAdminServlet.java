@@ -48,6 +48,7 @@ public class CreateAdminServlet extends HttpServlet {
         } else {
             Admin tempAdmin = new Admin(admin_username, password, adminEmail, branch_id);
             boolean status = adminDao.addAdmin(tempAdmin);
+            RequestDispatcher dispatcher;
             if(status){
                 String href = request.getHeader("origin")+request.getContextPath()+"/Login.jsp";
                 String subject = "Stepping Stones Tuition Center Branch Admin's Account Creation";
@@ -57,10 +58,11 @@ public class CreateAdminServlet extends HttpServlet {
                     SendMail.sendingEmail(adminEmail, subject, text);
                 }
                 request.setAttribute("status", "Admin created successfully!");
+                dispatcher = request.getRequestDispatcher("DisplayAdmins.jsp");
             }else{
                 request.setAttribute("errorMsg", "Error creating admin!");
+                dispatcher = request.getRequestDispatcher("CreateAdmin.jsp");
             }
-            RequestDispatcher dispatcher = request.getRequestDispatcher("CreateAdmin.jsp");
             dispatcher.forward(request, response);
         }
 
