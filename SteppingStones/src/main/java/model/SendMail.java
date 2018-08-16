@@ -5,42 +5,57 @@
  */
 package model;
 
-import java.util.Properties;
-import javax.mail.*;
-import javax.mail.internet.*;
-/**
- *
- * @author Zang Yu
- */
-public class SendMail {    
+import com.sendgrid.*;
+import java.io.IOException;
+public class SendMail {
     public static void sendingEmail(String toEmail, String subject, String text) {
-        //Get the session object
-        Properties props = new Properties();
-        props.put("mail.smtp.auth", "true");        
-        props.put("mail.smtp.host", "smtp.gmail.com");
-        props.put("mail.smtp.socketFactory.port", "465");
-        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");        
-        props.put("mail.smtp.port", "465");
-        props.put("mail.smtp.socketFactory.fallback", "false");
-        
-        Session session = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication("teamexi2018@gmail.com","TeameXiSteppingStones");//Put your email id and password here
-            }
-        });
-        //compose message
+        Email from = new Email("teamexi2018@gmail.com");
+        Email to = new Email(toEmail);
+        Content content = new Content("text/plain", text);
+        Mail mail = new Mail(from, subject, to, content);
+
+        SendGrid sg = new SendGrid("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");
+
+        Request request = new Request();
         try {
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("teamexi2018@gmail.com"));//change accordingly
-            message.addRecipient(Message.RecipientType.TO,new InternetAddress(toEmail));
-            message.setSubject(subject);
-            message.setText(text);
-            //send message
-            Transport.send(message);
-            System.out.println("message sent successfully");
-        } catch (MessagingException e) {
-             System.out.println("message sent not successfully");
-             e.printStackTrace(System.out);
+            request.setMethod(Method.POST);
+            request.setEndpoint("mail/send");
+            request.setBody(mail.build());
+            Response response = sg.api(request);
+            System.out.println(response.getStatusCode());
+            System.out.println(response.getBody());
+            System.out.println(response.getHeaders());
+        } catch (IOException ex) {
+
         }
+
+//        //Get the session object
+//        Properties props = new Properties();
+//        props.put("mail.smtp.auth", "true");        
+//        props.put("mail.smtp.host", "smtp.gmail.com");
+//        props.put("mail.smtp.socketFactory.port", "465");
+//        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");        
+//        props.put("mail.smtp.port", "465");
+//        props.put("mail.smtp.socketFactory.fallback", "false");
+//        
+//        Session session = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
+//            protected PasswordAuthentication getPasswordAuthentication() {
+//                return new PasswordAuthentication("teamexi2018@gmail.com","TeameXiSteppingStones");//Put your email id and password here
+//            }
+//        });
+//        //compose message
+//        try {
+//            Message message = new MimeMessage(session);
+//            message.setFrom(new InternetAddress("teamexi2018@gmail.com"));//change accordingly
+//            message.addRecipient(Message.RecipientType.TO,new InternetAddress(toEmail));
+//            message.setSubject(subject);
+//            message.setText(text);
+//            //send message
+//            Transport.send(message);
+//            System.out.println("message sent successfully");
+//        } catch (MessagingException e) {
+//             System.out.println("message sent not successfully");
+//             e.printStackTrace(System.out);
+//        }
     }
 }
