@@ -12,7 +12,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <link rel='stylesheet prefetch' href='http://cdnjs.cloudflare.com/ajax/libs/jquery.bootstrapvalidator/0.5.0/css/bootstrapValidator.min.css'>
-
+        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styling/fonts/iconic/css/material-design-iconic-font.min.css">
 
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styling/css/main.css">
         <title>JSP Page</title>
@@ -28,11 +28,12 @@
             out.println("<div id='errorMsg' class='alert alert-danger col-md-12'><strong>"+errorMsg+"</strong></div>");
         }
     %> 
-    <div style="text-align: center;margin: 20px;"><a class="tab_active" href="CreateBranch.jsp">Reset Password </a></h5></div>
+    <div class="col-lg-10 col-lg-offset-2">
+    <div style="text-align: center;margin: 20px;">Change Password </a></h5></div>
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-7">
-            <form id="resetPasswordForm" method="POST" class="form-horizontal" action="ResetPasswordServlet">
+            <form id="resetPasswordForm" method="POST" class="form-horizontal" action="UpdatePasswordServlet">
 
                 <div class="form-group">
                     <label class="col-lg-2 control-label">New Password</label>  
@@ -70,17 +71,19 @@
         </div>
     </div>
 </div>
-</div>
-</div>
+        </div>
 
-<%@include file="footer.jsp"%>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.css" rel="stylesheet">
 
+
+
+
+
+    </body>
+    <script src="https://code.jquery.com/jquery.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="${pageContext.request.contextPath}/styling/js/main.js"></script>
 <link rel='stylesheet prefetch' href='http://cdnjs.cloudflare.com/ajax/libs/jquery.bootstrapvalidator/0.5.0/css/bootstrapValidator.min.css'>
 <script src='http://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.4.5/js/bootstrapvalidator.min.js'></script>
-
 <script>
 
 $(function () {    
@@ -114,5 +117,4 @@ $(function () {
     });
 });
 </script>
-    </body>
 </html>

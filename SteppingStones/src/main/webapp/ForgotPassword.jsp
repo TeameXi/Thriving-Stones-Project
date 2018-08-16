@@ -10,10 +10,15 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Forgot Password Page</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link rel='stylesheet prefetch' href='http://cdnjs.cloudflare.com/ajax/libs/jquery.bootstrapvalidator/0.5.0/css/bootstrapValidator.min.css'>
+
+
+        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styling/css/main.css">
+        <title>Forgot Password</title>
     </head>
     <body>
-        <h1>Forgot Password</h1>
+       
         <%
             List<String> errorList = (List<String>)request.getAttribute("error");
             String success = (String) request.getAttribute("status");
@@ -34,10 +39,18 @@
             
                 %>
                 
-        
-        <form id="register-form" role="form" class="form" method="post" action="ForgotPasswordServlet">
-            <h3>Enter Your Email Below</h3>
-            <input id="email" name="email" placeholder="Email address" class="form-control"  type="text" required autofocus>
+        <div class="col-lg-10 col-lg-offset-2">
+            <div style="text-align: center;margin: 20px;">Forgot Password </a></h5></div>
+        <form class="form-horizontal" method="post" action="ForgotPasswordServlet">
+            <div class="form-group">
+                            <label class="col-lg-3 control-label">Username</label>  
+                            <div class="col-lg-5 inputGroupContainer">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                                    <input id="username"  name="email" placeholder="Username" class="form-control"  type="text">
+                                </div>
+                            </div>
+                        </div>
             <div class="form-group">
                 <label class="col-lg-3 control-label">Your Role</label>  
                 <div class="col-lg-5 inputGroupContainer">
@@ -53,7 +66,14 @@
                     </div>
                 </div>
             </div>
-            <input name="recover-submit" class="btn btn-lg btn-primary btn-block" value="Get Password" type="submit">
+            <div class="form-group">
+                            <div class="col-lg-9 col-lg-offset-3">
+                                <!-- Do NOT use name="submit" or id="submit" for the Submit button -->
+                                <button type="submit" class="btn btn-default">Get Password</button> 
+                            </div>
+                        </div>
+            
         </form>
+        </div>
     </body>
 </html>

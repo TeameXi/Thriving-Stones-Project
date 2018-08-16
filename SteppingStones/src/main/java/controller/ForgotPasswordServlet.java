@@ -52,7 +52,7 @@ public class ForgotPasswordServlet extends HttpServlet {
         ArrayList<String> errorList = new ArrayList<>();
         
         if(email == null || email.equals("")){
-            errorList.add("email is required");
+            errorList.add("username is required");
         }
         
         if(role == null || role.equals("")){
