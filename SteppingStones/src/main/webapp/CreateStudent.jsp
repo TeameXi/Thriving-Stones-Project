@@ -115,7 +115,7 @@
                 
 
                 <div class="form-group">
-                    <label class="col-lg-2 control-label">Phone </label>  
+                    <label class="col-lg-2 control-label">Phone** </label>  
                     <div class="col-lg-7 inputGroupContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-phone"></i></span>
@@ -136,7 +136,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="col-lg-2 control-label">Email**</label>  
+                    <label class="col-lg-2 control-label">Email</label>  
                     <div class="col-lg-7 inputGroupContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-email"></i></span>
@@ -299,9 +299,6 @@ $(function () {
             },
             studentEmail: {
                 validators: {
-                    notEmpty: {
-                        message: 'Enter Email Address'
-                    },
                     emailAddress: {
                         message: 'Please enter valid email address'
                     }
