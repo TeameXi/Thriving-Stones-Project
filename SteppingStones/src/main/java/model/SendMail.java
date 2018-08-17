@@ -7,14 +7,25 @@ package model;
 
 import com.sendgrid.*;
 import java.io.IOException;
+
+/**
+ *
+ * @author Zang Yu
+ */
 public class SendMail {
+
+//    public static void main(String args[]) {
+//        sendingEmail("violalwin@gmail.com", "TESTING", "https://google.xom");
+//    }
+
     public static void sendingEmail(String toEmail, String subject, String text) {
+        System.out.println("Coming here");
         Email from = new Email("teamexi2018@gmail.com");
         Email to = new Email(toEmail);
         Content content = new Content("text/plain", text);
         Mail mail = new Mail(from, subject, to, content);
 
-        SendGrid sg = new SendGrid("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");
+        SendGrid sg = new SendGrid("");
 
         Request request = new Request();
         try {
@@ -26,7 +37,7 @@ public class SendMail {
             System.out.println(response.getBody());
             System.out.println(response.getHeaders());
         } catch (IOException ex) {
-
+            System.out.println(ex);
         }
 
 //        //Get the session object
