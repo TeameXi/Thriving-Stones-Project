@@ -8,10 +8,6 @@ package model;
 import com.sendgrid.*;
 import java.io.IOException;
 
-/**
- *
- * @author Zang Yu
- */
 public class SendMail {
 
 //    public static void main(String args[]) {
