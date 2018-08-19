@@ -5,25 +5,6 @@
 <%@page import="java.util.ArrayList"%>
 <%@include file="protect_branch_admin.jsp"%>
 <%@include file="header.jsp"%>
-<style>
-    #generate_btn{
-        padding: 5px;
-        margin-left : 50px;
-        background-color:#f7a4a3;
-        color:#fff;
-        border-radius: 5px;
-    }
-
-    #generate_btn:hover{
-        background:transparent;
-        border: 1px solid #f7a4a3;
-        color:#f7a4a3;
-    }
-
-
-</style>
-
-
 <div class="col-md-10">
     <%  
         String existingStudent = (String) request.getAttribute("existingStudent");
