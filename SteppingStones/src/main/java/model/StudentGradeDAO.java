@@ -46,6 +46,23 @@ public class StudentGradeDAO {
         return deletedStatus;
     }
     
+    public static String retrieveStudentGrade(String studentName){
+        String grade = "";
+        try(Connection conn = ConnectionManager.getConnection()){
+            int studentId = StudentDAO.retrieveStudentID(studentName);
+            PreparedStatement stmt = conn.prepareStatement("select grade from tuition_grade where student_id = ?;");
+            stmt.setInt(1, studentId);
+            ResultSet rs = stmt.executeQuery();
+
+            while(rs.next()){
+                grade = rs.getString("grade");
+            }
+        }catch(SQLException e){
+            System.out.print(e.getMessage());
+        }
+        return grade;
+    }
+    
     public static LinkedHashMap<String, ArrayList<String>> retrieveStudentTuitionGrade(String studentName){
         LinkedHashMap<String, ArrayList<String>> gradeLists = new LinkedHashMap<>();
         try(Connection conn = ConnectionManager.getConnection()){
