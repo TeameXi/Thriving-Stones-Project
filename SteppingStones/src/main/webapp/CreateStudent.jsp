@@ -115,15 +115,24 @@
                 
 
                 <div class="form-group">
-                    <label class="col-lg-2 control-label">Phone** </label>  
+                    <label class="col-lg-2 control-label">Phone* </label>  
                     <div class="col-lg-7 inputGroupContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-phone"></i></span>
-                            <input name="phone" class="form-control" type="text">
+                            <input name="phone" id="phone" class="form-control" type="text">
                         </div>
                     </div>
                 </div>
-
+                            
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">Email*</label>  
+                    <div class="col-lg-7 inputGroupContainer">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="zmdi zmdi-email"></i></span>
+                            <input name="studentEmail" id="studentEmail" placeholder="E-Mail Address" class="form-control" type="text">
+                        </div>
+                    </div>
+                </div>
 
                 <div class="form-group">
                     <label class="col-lg-2 control-label">Address</label>  
@@ -131,16 +140,6 @@
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-home"></i></span>
                             <textarea name="address" placeholder="Address" class="form-control"></textarea>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="col-lg-2 control-label">Email</label>  
-                    <div class="col-lg-7 inputGroupContainer">
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="zmdi zmdi-email"></i></span>
-                            <input name="studentEmail" placeholder="E-Mail Address" class="form-control"  type="text">
                         </div>
                     </div>
                 </div>
@@ -251,9 +250,7 @@ $(function () {
     $('#bday').datetimepicker({
         format: 'DD-MM-YYYY'
     });
-    
-    
-    
+       
     $('#createTutorForm').bootstrapValidator({
         // To use feedback icons, ensure that you use Bootstrap v3.1.0 or later
         feedbackIcons: {
@@ -287,6 +284,14 @@ $(function () {
             },
             phone: {
                 validators: {
+                    callback:{
+                        message: 'Enter phone or email',
+                        callback: function(value, validator){
+                            if(validator.getFieldElements('studentEmail').val().length > 0 || value.length > 0){
+                                return true;
+                            }
+                        }
+                    },
                     integer: {
                         message: 'Integer Only'
                     },
@@ -299,6 +304,14 @@ $(function () {
             },
             studentEmail: {
                 validators: {
+                    callback:{
+                        message: 'Enter phone or email',
+                        callback: function(value, validator){
+                            if(validator.getFieldElements('phone').val().length > 0 || value.length > 0){
+                                return true;
+                            }
+                        }
+                    },
                     emailAddress: {
                         message: 'Please enter valid email address'
                     }
@@ -339,7 +352,11 @@ $(function () {
            
         }
     });
-    
-    
+    $('#phone').on('change', function(){
+        $('#createTutorForm').data('bootstrapValidator').updateStatus('studentEmail', 'NOT_VALIDATED').validateField('studentEmail');
+    });
+    $('#studentEmail').on('change', function(){
+        $('#createTutorForm').data('bootstrapValidator').updateStatus('phone', 'NOT_VALIDATED').validateField('phone');
+    });
 });
 </script>

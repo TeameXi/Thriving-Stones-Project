@@ -40,7 +40,35 @@
     %> 
 
 
- 
+     <div class="row  spaced-top">
+        <div class="col-sm-6">
+            <form id="searchTutor"> 
+        	<input class="form-control advanced_targeting_class" type="text" id="filter" placeholder="Tutor Name" style="width:237px; display:inline-block; margin-right:10px">
+                <input type = "submit" class="btn btn-default" value = "Search"/>
+            </form>
+	    </div>
+        <div class="col-sm-6">
+            <div class="portlet light portlet-fit smaller-fonts" >
+                <span class="sortby_span">
+                    Sort By
+                    <select class = "form-control" style = "display:inline-block;width:auto;" onchange="updateSort(this)">
+                    <%
+                    if(request.getParameter("sortby") != null){
+                            
+                    }else{ %>
+                        <option value = "name" selected>Tutor Name</option>
+                        <option value = "gender">Gender</option>
+                        <% if(true){ %><option value = "branch">Branch</option><% } %>
+                        <option value="latest">Latest</option>
+                    <%
+                    }
+                    %>
+                    </select>
+                </span>
+                <br style="clear:both">
+            </div>
+        </div>
+    </div>
 
 
     <span class="toggler active" data-toggle="grid"><span class="zmdi zmdi-view-dashboard"></span></span>

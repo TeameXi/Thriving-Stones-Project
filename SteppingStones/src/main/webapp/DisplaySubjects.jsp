@@ -47,23 +47,10 @@
     <span class="toggler" data-toggle="list"><span class="zmdi zmdi-view-list"></span></span>
     <ul class="surveys grid">
     <%        
-        String tutor_creation_status = (String) request.getAttribute("creation_status");
-        if (tutor_creation_status != null) {
-            if (tutor_creation_status == "true") {
-                out.println("<div id='creation_status' class='row alert alert-danger col-md-12'><strong>Something Went wrong!</strong> </div>");
-            } else {
-                out.println("<div id='creation_status' class='row alert alert-success col-md-12'><strong>Tutor record is inserted !</strong> </div>");
-            }
+        String status = (String) request.getAttribute("status");
+        if (status != null) {
+                out.println("<div id='creation_status' class='row alert alert-success col-md-12'><strong>" + status + "</strong> </div>");
         }
-
-        ArrayList<String> duplicatedUsers = (ArrayList) session.getAttribute("existingUserLists");
-        if (duplicatedUsers != null) {
-            if (duplicatedUsers.size() > 0) {
-                out.println("<div id='creation_status' class='row alert alert-danger col-md-12'>The following users are already <strong>( " + String.join(",", duplicatedUsers) + " )</strong> existed;</div>");
-                session.removeAttribute("existingUserLists");
-            }
-        }
-
 
         SubjectDAO subs = new SubjectDAO();
         ArrayList<Subject> subjects = subs.retrieveSubjectsByBranch(branch_id);
@@ -249,7 +236,7 @@
                     $("#lvl_wrapper_"+level_id).remove();
                     
                     html = '<div class="alert alert-success col-md-12"><strong>Success!</strong> Deleted Level from Subject successfully</div>';
-                    setTimeout(location.reload.bind(location), 2000);
+                    setTimeout(function(){location.href="DisplaySubjects.jsp"} , 1000);  
                 } else {
                     html = '<div class="alert alert-danger col-md-12"><strong>Sorry!</strong> Something went wrong</div>';
                 }
@@ -321,7 +308,7 @@
                 if (data === 1) {
                     $("#name_" + id).text(name);
 
-                    html = '<div class="alert alert-success col-md-12"><strong>Success!</strong> Update Tutor record successfully</div>';
+                    html = '<div class="alert alert-success col-md-12"><strong>Success!</strong> Update Subject record successfully</div>';
                 } else {
                     html = '<div class="alert alert-danger col-md-12"><strong>Sorry!</strong> Something went wrong</div>';
                 }
