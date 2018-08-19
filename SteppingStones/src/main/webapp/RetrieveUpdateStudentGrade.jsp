@@ -11,7 +11,7 @@
 <%@include file="header.jsp"%>
 <%@include file="protect_tutor.jsp"%>
 <div class="col-md-10">
-    <div style="text-align: center;margin: 20px;"><span class="tab_active">Retrieve or Update Student's Grade</span></h5></div>
+    <div style="text-align: center;margin: 20px;"><span class="tab_active">Retrieve Grade</span></h5></div>
     <div class="row" id="errorMsg"></div>
     <div class="row">
         <form action="RetrieveUpdateGradesServlet" method="post">
@@ -29,8 +29,7 @@
             
             <div class="form-group">
                 <div class="col-lg-5 col-lg-offset-2">
-                    <button type="submit" value = "retrieve" name = "retrieve" class='btn btn-default'>Retrieve</button> 
-                    <button type="submit" value = "update" name = "update" class="btn btn-success">Update</button>
+                    <button type="submit" value = "retrieve" name = "retrieve" class='btn btn-success'>Retrieve</button> 
                 </div>
             </div>
             <br/><br/>
@@ -47,31 +46,28 @@
                 LinkedHashMap<String, ArrayList<String>> gradeLists = (LinkedHashMap<String, ArrayList<String>>) request.getAttribute("gradeLists");
                 
                 if(gradeLists != null && !gradeLists.isEmpty()){
-        %>
-                
-                    
-                    <h4>Tuition Grades Of Student - <strong><%=studentName%></strong></h4><br/>
-                 
-        <%
-                    
+        %>      
+        <h4>Tuition Grades Of Student - <strong><%=studentName%></strong></h4><br/>         
+        <% 
                     Set<String> keys = gradeLists.keySet();
                     if(keys != null){
                         out.println("<div class='col-md-5'><table class='table table-bordered'>");
                         out.println("<thead class='table_title'><tr><th>Subject</th><th>Marks</th></tr></thead><tbody>");
                         for(String subject: keys){
                             ArrayList<String> grades = gradeLists.get(subject);
-                            out.println("<td>"+subject+"</td>");
+                            out.println("<tr><td>"+subject+"</td>");
                             if(grades != null){
                                 for(String grade: grades){
-                                    out.println("<td>"+grade+"</td>");
+                                    out.println("<td>"+grade+"</td></tr>");
                                 }
                             }
                         }
                         out.println("</tbody></table></div>");
                     
                     }
-                    
-                  
+                }
+                if(gradeLists != null && gradeLists.isEmpty()){
+                    out.println("<br/><div class='alert alert-danger col-md-5' id='errorMsg'><strong>"+studentName+" has no grade yet.</strong></div>");
                 }
             }
         %>

@@ -55,34 +55,34 @@ public class RetrieveUpdateGradesServlet extends HttpServlet {
             view.forward(request, response);
         }
         
-        if(request.getParameter("update") != null){
-            int studentID = StudentDAO.retrieveStudentID(studentName);
-            if(studentID != 0){
-                Map<Integer, String> classSub = StudentClassDAO.retrieveStudentClassSub(studentID);
-                request.setAttribute("classSub", classSub);
-                request.setAttribute("studentID", studentID);
-                request.setAttribute("studentName", studentName);
-            }else{
-                request.setAttribute("status", studentName + " not found in database.");
-            }
-            RequestDispatcher view = request.getRequestDispatcher("UpdateStudentGrades.jsp");
-            view.forward(request, response);
-        }
+//        if(request.getParameter("update") != null){
+//            int studentID = StudentDAO.retrieveStudentID(studentName);
+//            if(studentID != 0){
+//                Map<Integer, String> classSub = StudentClassDAO.retrieveStudentClassSub(studentID);
+//                request.setAttribute("classSub", classSub);
+//                request.setAttribute("studentID", studentID);
+//                request.setAttribute("studentName", studentName);
+//            }else{
+//                request.setAttribute("status", studentName + " not found in database.");
+//            }
+//            RequestDispatcher view = request.getRequestDispatcher("UpdateStudentGrades.jsp");
+//            view.forward(request, response);
+//        }
             
-        if(request.getParameter("insert") != null){
-            int studentID = Integer.parseInt(request.getParameter("studentID"));
-            int classID = Integer.parseInt(request.getParameter("subjects"));
-            String assessmentType = request.getParameter("assessmentType");
-            String grade = request.getParameter("grade");
-            boolean status = StudentGradeDAO.updateTuitionGrade(studentID, classID, assessmentType, grade);
-            if(status){
-                request.setAttribute("status", "Grade Updated Successfully.");
-            }else{
-                request.setAttribute("status", "Error while Updating Grade.");
-            }
-            RequestDispatcher view = request.getRequestDispatcher("RetrieveUpdateStudentGrade.jsp");
-            view.forward(request, response);
-        }
+//        if(request.getParameter("insert") != null){
+//            int studentID = Integer.parseInt(request.getParameter("studentID"));
+//            int classID = Integer.parseInt(request.getParameter("subjects"));
+//            String assessmentType = request.getParameter("assessmentType");
+//            String grade = request.getParameter("grade");
+//            boolean status = StudentGradeDAO.updateTuitionGrade(studentID, classID, assessmentType, grade);
+//            if(status){
+//                request.setAttribute("status", "Grade Updated Successfully.");
+//            }else{
+//                request.setAttribute("status", "Error while Updating Grade.");
+//            }
+//            RequestDispatcher view = request.getRequestDispatcher("RetrieveUpdateStudentGrade.jsp");
+//            view.forward(request, response);
+//        }
         
     }
 

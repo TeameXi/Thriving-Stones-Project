@@ -5,7 +5,7 @@ public class Class {
     private int classID;
     private String level;
     private String subject;
-    private String term;
+    private int term;
     private String classTime;
     private String classDay;   
     private double mthlyFees;
@@ -19,10 +19,11 @@ public class Class {
         
     }
 
-    public Class(int classID, String level, String subject, String classTime, String classDay, double mthlyFees, String startDate, String endDate) {
+    public Class(int classID, String level, String subject, int term, String classTime, String classDay, double mthlyFees, String startDate, String endDate) {
         this.classID = classID;
         this.level = level;
         this.subject = subject;
+        this.term = term;
         this.classTime = classTime;
         this.classDay = classDay;
         this.mthlyFees = mthlyFees;
@@ -44,6 +45,14 @@ public class Class {
     
     public Class(int classID, int level, int subject, String classTime, String classDay, int mthlyFees, String startDate) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    public int getTerm() {
+        return this.term;
+    }
+
+    public void setTerm(int term) {
+        this.term = term;
     }
     
     public int getClassID() {

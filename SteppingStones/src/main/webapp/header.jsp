@@ -175,8 +175,8 @@
                                 </a>
                                 <!-- Sub menu -->
                                 <ul>
-                                    <li><a href="${pageContext.request.contextPath}/CreateTuitionGrade.jsp">Add Grades</a></li>
-                                    <li><a href="RetrieveUpdateStudentGrade.jsp">Update Grades</a></li>
+                                    <li><a href="${pageContext.request.contextPath}/CreateTuitionGrade.jsp">Add or Update Grades</a></li>
+                                    <li><a href="RetrieveUpdateStudentGrade.jsp">Retrieve Grades</a></li>
                                 </ul>
                             </li>
                     <%

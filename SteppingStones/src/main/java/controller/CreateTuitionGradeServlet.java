@@ -49,6 +49,16 @@ public class CreateTuitionGradeServlet extends HttpServlet {
             request.setAttribute("class", cls);  
         }
         
+        if(request.getParameter("edit") != null){
+            String classIDStr = request.getParameter("edit");
+            int classID = Integer.parseInt(classIDStr);
+            ArrayList<String> students = StudentClassDAO.listStudentsinSpecificClass(classID);
+            Class cls = ClassDAO.getClassByID(classID);
+            
+            request.setAttribute("EditStudents", students);
+            request.setAttribute("EditClass", cls);  
+        }
+        
         if(request.getParameter("insert") != null){
             String assessmentType = request.getParameter("assessmentType");
             String classIDStr = request.getParameter("classID");
@@ -58,14 +68,31 @@ public class CreateTuitionGradeServlet extends HttpServlet {
             String[] grades = request.getParameterValues("grade[]");
             for(int i = 0; i < grades.length; i++){
                 String grade = grades[i];
-                //System.out.println(students.get(i) + " " +  grade);
                 int studentID = StudentDAO.retrieveStudentID(students.get(i));
-                //System.out.println("studentID " + studentID + "Grade " + grade + "Assess " + assessmentType +"class:" +  classID);
                 boolean status = StudentGradeDAO.saveTuitionGrades(studentID, classID, assessmentType, grade);
                 if(status){
-                    request.setAttribute("status", "Successfully added");
+                    request.setAttribute("status", "Successfully added!");
                 }else{
-                    request.setAttribute("errorMsg", "Error while adding grade.");
+                    request.setAttribute("errorMsg", "Error while adding grade!");
+                }
+            }      
+        }
+        
+        if(request.getParameter("update") != null){
+            String assessmentType = request.getParameter("assessmentType");
+            String classIDStr = request.getParameter("classID");
+            int classID = Integer.parseInt(classIDStr);
+            ArrayList<String> students = StudentClassDAO.listStudentsinSpecificClass(classID);
+
+            String[] grades = request.getParameterValues("grade[]");
+            for(int i = 0; i < grades.length; i++){
+                String grade = grades[i];
+                int studentID = StudentDAO.retrieveStudentID(students.get(i));
+                boolean status = StudentGradeDAO.updateTuitionGrade(studentID, classID, assessmentType, grade);
+                if(status){
+                    request.setAttribute("status", "Successfully updated!");
+                }else{
+                    request.setAttribute("errorMsg", "Error while updating grade!");
                 }
             }      
         }
