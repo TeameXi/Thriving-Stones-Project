@@ -42,7 +42,8 @@
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-7">       
-            <%                BranchDAO branchDAO = new BranchDAO();
+            <%                
+                BranchDAO branchDAO = new BranchDAO();
                 TutorDAO tutorDAO = new TutorDAO();
                 StudentDAO studentDAO = new StudentDAO();
                 LevelDAO levelDAO = new LevelDAO();
@@ -103,7 +104,10 @@
                 <%
                     for (String level : levels) {
                         int numberOfStudentPerLevel = studentPerLevel.get(level);
-                        int percentage = (numberOfStudentPerLevel * 100) / numberOfStudent;
+                        int percentage = 0;
+                        if(numberOfStudent != 0){
+                            percentage = (numberOfStudentPerLevel * 100) / numberOfStudent;
+                        }
                 %>
                 <div class="progress-group">
                     <span class="progress-text"><%=level%></span>
@@ -162,7 +166,10 @@
                 <%
                     for (String level : levels) {
                         int numberOfStudentPerLevel = studentPerLevelByBranch.get(level);
-                        int percentage = (numberOfStudentPerLevel * 100) / numberOfStudentByBranch;
+                        int percentage = 0;
+                        if(numberOfStudentByBranch != 0){
+                            percentage = (numberOfStudentPerLevel * 100) / numberOfStudentByBranch;
+                        }
                 %>
                 <div class="progress-group">
                     <span class="progress-text"><%=level%></span>

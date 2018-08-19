@@ -1,17 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package entity;
 
-import com.google.api.client.util.DateTime;
 import java.sql.Timestamp;
-
-/**
- *
- * @author Riana
- */
 public class Lesson {
     private int lessonid;
     private int classid;
