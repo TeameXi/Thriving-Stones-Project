@@ -1,25 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package model;
-
-import com.google.gson.Gson;
 import connection.ConnectionManager;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-import org.json.JSONObject;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-/**
- *
- * @author DEYU
- */
 public class StudentClassDAO {
     public static boolean saveStudentToRegisterClass(int classID, int studentID){
         boolean status = false;
@@ -91,48 +78,8 @@ public class StudentClassDAO {
     }
     
     
-     public static ArrayList<String> retrieveStudentClassesID(String studentID){
-        final ArrayList<String> classIDs = new ArrayList<>();
-        try{
-            String url = "https://team-exi-thriving-stones.firebaseio.com/StudentClass.json";
-            JSONObject result = FirebaseRESTHTTPRequest.get(url);
-            if (result != null) {
-                Set<String> keys = result.keySet();
-                for(String key: keys){
-                    Map<String, String> stuClass = new HashMap<>();
-                    stuClass = new Gson().fromJson(result.getJSONObject(key).toString(), stuClass.getClass());
-                    if(stuClass.keySet().contains(studentID)){
-                        classIDs.add(key);
-                    } 
-                } 
-            } 
-        }catch(Exception e){
-            System.out.println("Retrieve Student by ID Error");
-        } 
-        return classIDs;
-    }
-    
-    public static ArrayList<entity.Student> getStudentsByClassID(String classID) {
-        
-        ArrayList<entity.Student> students = new ArrayList<>();
-        /*
-        try {
-            String url = "https://team-exi-thriving-stones.firebaseio.com/StudentClass/" + classID + ".json";
-            JSONObject result = FirebaseRESTHTTPRequest.get(url);
-            if (result != null) {
-                Set<String> keys = result.keySet();
-                for (String key : keys) {
-                    Student stu = StudentDAO.retrieveStudentbyID(key);
-                    students.add(stu);
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("List all students Error");
-        }
-        */
-        return students;
-    }
-    
+  
+  
     public int retrieveNumberOfStudentByClass(int classID){
         int studentCount = 0;
         String sql = "select COUNT(*) from class_student_rel where class_id = ?";
