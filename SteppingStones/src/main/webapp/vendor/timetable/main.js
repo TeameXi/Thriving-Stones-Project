@@ -1,4 +1,4 @@
-function createSchedule(){
+function createSchedule(option){
 	var transitionEnd = 'webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend';
 	var transitionsSupported = ( $('.csstransitions').length > 0 );
 	//if browser does not support transitions - use a different event to trigger them
@@ -110,31 +110,57 @@ function createSchedule(){
 	};
 
 	SchedulePlan.prototype.openModal = function(event) {
-                var event_details_arr = event.parent().attr('data-content').split("&");
-                var start = event_details_arr[0];
-                var end = event_details_arr[1];
-                var fees = event_details_arr[2];
-                var tutor = event_details_arr[3];
-                
-		var self = this;
-		var mq = self.mq();
-		this.animating = true;
+            console.log(option);
+                var self = this;
+                var mq = self.mq();
+                this.animating = true;
 
-		//update event name and time
-		this.modalHeader.find('.event-name').text(event.find('.event-name').text());
-		this.modalHeader.find('.event-date').text(event.find('.event-date').text());
-		this.modal.attr('data-event', event.parent().attr('data-event'));
+                //update event name and time
+                this.modalHeader.find('.event-name').text(event.find('.event-name').text());
+                this.modalHeader.find('.event-date').text(event.find('.event-date').text());
+                this.modal.attr('data-event', event.parent().attr('data-event'));
 
-                html = "<p style='margin-top:20px;'><h3>Class Details</h3></p><br/>";
-               
-                html += '<p class = "form-control-label"><i class="zmdi zmdi-calendar">&nbsp;</i> Start Date : <label>'+start+'</label></p>';
-                html += '<p class = "form-control-label"><i class="zmdi zmdi-calendar">&nbsp;</i> End Date : <label>'+end+'</label></p>';
-                html += '<p class = "form-control-label"><i class="zmdi zmdi-money">&nbsp;</i> Tution Fees : <label>'+fees+'</label></p>';
-                html += '<p class = "form-control-label"><i class="zmdi zmdi-account">&nbsp;</i> Assigned To : <label>'+tutor+'</label></p>';
-                
-                $('.event-info').html(html);
+                if(option === "main_display" ){
+                    var subject = event.find('.event-name').text().split(",");
+                    var event_details_arr = event.parent().attr('data-content').split("&");
+                    var start_arr = event_details_arr[0].split(",");
+                    console.log(start_arr[0]);
+                    var end_arr = event_details_arr[1].split(",");
+                    var fees_arr = event_details_arr[2].split(",");
+                    var tutor_arr = event_details_arr[3].split(",");
+                    
+                    var html = "";
+                    for(var x=0; x<subject.length; x++){
+                        html += "<p style='margin-top:20px;'><h4>Class Details For <strong>"+subject[x]+"</strong></h4></p><br/>";
+
+                        html += '<p class = "form-control-label"><i class="zmdi zmdi-calendar">&nbsp;</i> Start Date : <label>'+start_arr[x]+'</label></p>';
+                        html += '<p class = "form-control-label"><i class="zmdi zmdi-calendar">&nbsp;</i> End Date : <label>'+end_arr[x]+'</label></p>';
+                        html += '<p class = "form-control-label"><i class="zmdi zmdi-money">&nbsp;</i> Tution Fees : <label>'+fees_arr[x]+'</label></p>';
+                        html += '<p class = "form-control-label"><i class="zmdi zmdi-account">&nbsp;</i> Assigned To : <label>'+tutor_arr[x]+'</label></p>';
+                        html + "<hr/>";
+                    }
+                    $('.event-info').html(html);
+                }else{
+                    var event_details_arr = event.parent().attr('data-content').split("&");
+                    var start = event_details_arr[0];
+                    var end = event_details_arr[1];
+                    var fees = event_details_arr[2];
+                    var tutor = event_details_arr[3];
+
+   
+                    html = "<p style='margin-top:20px;'><h3>Class Details</h3></p><br/>";
+
+                    html += '<p class = "form-control-label"><i class="zmdi zmdi-calendar">&nbsp;</i> Start Date : <label>'+start+'</label></p>';
+                    html += '<p class = "form-control-label"><i class="zmdi zmdi-calendar">&nbsp;</i> End Date : <label>'+end+'</label></p>';
+                    html += '<p class = "form-control-label"><i class="zmdi zmdi-money">&nbsp;</i> Tution Fees : <label>'+fees+'</label></p>';
+                    html += '<p class = "form-control-label"><i class="zmdi zmdi-account">&nbsp;</i> Assigned To : <label>'+tutor+'</label></p>';
+
+                    $('.event-info').html(html);
+                    
+                   
+
+                }
                 self.element.addClass('content-loaded');
-
 		this.element.addClass('modal-is-open');
 
 		setTimeout(function(){

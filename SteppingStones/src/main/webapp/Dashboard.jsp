@@ -215,7 +215,7 @@
                     <!-- /.info-box -->
                 </div>
             </div>
-            <% if (classes.size() != 0) { %>
+            <% if (classes.size() != 0 && numberOfStudents != 0) { %>
             <div class="col-md-4">
                 <p class="text-center">
                     <strong>NUMBER OF STUDENT PER CLASS</strong>

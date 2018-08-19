@@ -238,30 +238,66 @@
                             $('#errorMsg').fadeIn().delay(2000).fadeOut();
                         } else {
                             var color_count = 1;
-                            console.log(data);
-                            for(var i=0;i< data.length;i++){
-                                var classInfo = data[i];
-                                var day = classInfo["day"];
-                                var time_arr = classInfo["timing"].split("-");       
+                            
+                            for(var i= 0; i < data.length; i++){
+                                dataKey = Object.keys(data[i]);
+                                var time_arr = dataKey[0].split("-");       
                                 var start_time = time_arr[0];
                                 var end_time = time_arr[1];
-                                var subject_name = classInfo["subject"];
-                                var start_date = classInfo["start_date"];
-                                var end_date = classInfo["end_date"];
-                                var tutor = "Susan";
-                                var fees = classInfo["fees"];
-
+                                var day = time_arr[2];
+                               
+                                var valuesArr = data[i][dataKey];
+                                var subject_name = "";
+                                var start_date = "";
+                                var end_date = "";
+                                var tutor = "";
+                                var fees = "";
+                                for(var j=0; j < valuesArr.length; j++){
+                                    subject_name += valuesArr[j]["subject"]+",";
+                                    start_date += valuesArr[j]["startDate"]+",";
+                                    end_date += valuesArr[j]["endDate"]+",";
+                                    tutor += "Susan"+",";
+                                    fees += valuesArr[j]["mthlyFees"]+",";
+                                }
                                 
+                                subject_name = subject_name.slice(0, -1);
                                 var html = '<li class="single-event" data-start="'+start_time+'" data-end="'+end_time+'"';
                                 html    += 'data-content="'+start_date+'&'+end_date+'&'+fees+'&'+tutor+'" data-event="event-'+color_count+'"><a href="#0"><em class="event-name">'+subject_name+'</em></a></li>';
+                                
                                 color_count = color_count+1;
                                 if(color_count > 4){
                                     color_count = 1;
                                 }
-                             
+
                                 $("."+day).append(html);
                             }
-                                createSchedule();
+                            
+                            createSchedule("main_display");
+//                            for(var i=0;i< data.length;i++){
+//                                  var same_class_arr = data[i];
+//                                  console.log(same_class_arr)
+////                                var classInfo = data[i];
+////                                var day = classInfo["day"];
+////                                var time_arr = classInfo["timing"].split("-");       
+////                                var start_time = time_arr[0];
+////                                var end_time = time_arr[1];
+////                                var subject_name = classInfo["subject"];
+////                                var start_date = classInfo["start_date"];
+////                                var end_date = classInfo["end_date"];
+////                                var tutor = "Susan";
+////                                var fees = classInfo["fees"];
+////
+////                                
+////                                var html = '<li class="single-event" data-start="'+start_time+'" data-end="'+end_time+'"';
+////                                html    += 'data-content="'+start_date+'&'+end_date+'&'+fees+'&'+tutor+'" data-event="event-'+color_count+'"><a href="#0"><em class="event-name">'+subject_name+'</em></a></li>';
+////                                color_count = color_count+1;
+////                                if(color_count > 4){
+////                                    color_count = 1;
+////                                }
+////                             
+////                                $("."+day).append(html);
+//                            }
+//                                createSchedule();
                         }
                     }
                 });

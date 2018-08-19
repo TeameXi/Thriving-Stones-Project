@@ -144,7 +144,7 @@
                                 </a>
                                 <!-- Sub menu -->
                                 <ul>
-                                    <li><a href="${pageContext.request.contextPath}/RetrieveScheduleCreationDetails">Create Schedule</a></li>
+                                    <li><a href="CreateClassesSchedule.jsp">Create Schedule</a></li>
                                     <li><a href="DisplayClassesSchedule.jsp">View Schedules</a></li>
                                 </ul>
                             </li>
