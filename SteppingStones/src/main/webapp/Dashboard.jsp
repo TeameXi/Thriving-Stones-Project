@@ -27,7 +27,7 @@
             vertical-align: top;
             height: 90px;
             width: 230px;
-            margin: 10px;
+            margin: 5px;
         }
         .survey-item {    
             padding: 0px;

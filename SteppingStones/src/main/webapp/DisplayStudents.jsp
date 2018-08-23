@@ -117,14 +117,14 @@
 
                 <span class="survey-progress">
                     <span class="grid-only">
-                        <a href="#" class="view_more">View detail</a>
+                        <a href="#viewStudent" data-toggle="modal" data-target-id="<%=stu.getStudentID()%>" class="view_more">View detail</a>
                     </span>
 
 
 
                     <span class="survey-progress-labels">
                         <span class="survey-progress-view list-only">
-                            <a href="#"><i class="zmdi zmdi-eye"></i></a>
+                            <a href="#viewStudent" data-toggle="modal" data-target-id="<%=stu.getStudentID()%>"><i class="zmdi zmdi-eye"></i></a>
                         </span>
 
 
@@ -200,6 +200,120 @@
     <!-- /.modal-dialog -->
 </div>
 
+<!-- Detail Dialog -->
+<div class="modal fade" id="viewStudent" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <span class="pc_title centered">Student Details</span>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class = "col-sm-4">
+                        <p class = "form-control-label">NRIC :</p>
+                    </div>
+                    <div class = "col-sm-8">
+                        <p><label id="view_student_nric">-</label></p>
+                    </div>
+                </div><br/>
+
+                <div class="row">
+                    <div class = "col-sm-4">
+                        <p class = "form-control-label">Name :</p>
+                    </div>
+                    <div class = "col-sm-8">
+                        <p><label id="view_student_name"></label></p>
+                    </div>
+                </div><br/>
+                
+                <div class="row">
+                    <div class = "col-sm-4">
+                        <p class = "form-control-label">Level :</p>
+                    </div>
+                    <div class = "col-sm-8">
+                        <p><label id="view_level"></label></p>
+                    </div>
+                </div><br/>
+
+                <div class="row">
+                    <div class = "col-sm-4">
+                        <p class = "form-control-label">Contact No :</p>
+                    </div>
+                    <div class = "col-sm-8">
+                        <p><label id="view_phone">-</label></p>
+                    </div>
+                </div><br/>
+
+                <div class="row">
+                    <div class = "col-sm-4">
+                        <p class = "form-control-label">Address :</p>
+                    </div>
+                    <div class = "col-sm-8">
+                        <p><label id="view_address">-</label></p>
+                    </div>
+                </div><br/>
+
+                <div class="row">
+                    <div class = "col-sm-4">
+                        <p class = "form-control-label">Birth Date :</p>
+                    </div>
+                    <div class = "col-sm-8">
+                        <p><label id="view_birthDate">-</label></p>
+                    </div>
+                </div><br/>
+
+                <div class="row">
+                    <div class = "col-sm-4">
+                        <p class = "form-control-label">Gender :</p>
+                    </div>
+                    <div class = "col-sm-8">
+                        <p><label id="view_gender">-</label></p>
+                    </div>
+                </div><br/>
+
+                <div class="row">
+                    <div class = "col-sm-4">
+                        <p class = "form-control-label">Email :</p>
+                    </div>
+                    <div class = "col-sm-8">
+                        <p><label id="view_email">-</label></p>
+                    </div>
+                </div><br/>
+                
+                <div class="row">
+                    <div class = "col-sm-4">
+                        <p class = "form-control-label">Required Amount :</p>
+                    </div>
+                    <div class = "col-sm-8">
+                        <p><label id="view_reqAmt">-</label></p>
+                    </div>
+                </div><br/>
+
+
+                <div class="row">
+                    <div class = "col-sm-4">
+                        <p class = "form-control-label">Outstanding Amount :</p>
+                    </div>
+                    <div class = "col-sm-8">
+                        <p><label id="view_outstandingAmt">-</label></p>
+                    </div>
+                </div><br/>
+
+
+
+            </div>  
+
+            <div class="modal-footer spaced-top-small centered">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>       
+    </div>
+</div>
+<!-- End of Detail Dialog -->
 
 <div class="modal fade" id="editStudent" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
@@ -301,9 +415,48 @@
             });
 
         });
+        $("#viewStudent").on("show.bs.modal", function (e) {       
+            var student_id = $(e.relatedTarget).data('target-id');
+            var branch_id = $("#branch_id").val();
+            $.ajax({
+                url: 'RetrieveStudentServlet',
+                dataType: 'JSON',
+                data: {studentID: student_id, branch_id: branch_id},
+                success: function (data) {
+                    if(data["nric"] != ""){
+                        $("#view_student_nric").text(data["nric"]);
+                    }
+                    $("#view_student_name").text(data["fullname"]);
+                    if (data["birth_date"] !== "") {
+                        $("#view_birthDate").text(data["birth_date"]);
+                    }
+                    if (data["gender"] === "F") {
+                        $("#view_gender").text("Female");
+                    } else if (data["gender"] === "M") {
+                        $("#view_gender").text("Male");
+                    }
+                    $("#view_level").text(data["level"]);
+                    if (data["branch"] !== "") {
+                        $("#branch").val(data["branch"]);
+                    }
+                    if (data["address"] !== "") {
+                        $("#view_address").text(data["address"]);
+                    }
+                    if (data["phone"] !== "") {
+                        $("#view_phone").text(data["phone"]);
+                    }
+                    $("#view_email").text(data["email"]);
+                    if (data["reqAmt"] !== "") {
+                        $("#view_reqAmt").text(data["reqAmt"]);
+                    }
+                    if (data["outstandingAmt"] !== "") {
+                        $("#view_outstandingAmt").text(data["outstandingAmt"]);
+                    }
+                }
+            });
+        });
     });
-
-
+    
     (function () {
         $(function () {
             return $('[data-toggle]').on('click', function () {
@@ -379,6 +532,8 @@
             }
         });
     }
+    
+
 
     function updateLevel(level) {
         var lvlID = level.value;
