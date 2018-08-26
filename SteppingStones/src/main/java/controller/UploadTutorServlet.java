@@ -48,6 +48,7 @@ public class UploadTutorServlet extends HttpServlet {
             String genders[] = request.getParameterValues("con_genders[]");
             String emails[] = request.getParameterValues("con_emails[]");
             String passwords[] = request.getParameterValues("con_pwd[]");
+            String pays[] = request.getParameterValues("con_pay[]");
             int branch_id = 0; 
             if(request.getParameter("branch") != null && request.getParameter("branch") != ""){
                 branch_id = Integer.parseInt(request.getParameter("branch"));
@@ -64,11 +65,15 @@ public class UploadTutorServlet extends HttpServlet {
                 if(!"".equals(phones[i])){
                     phone = Integer.parseInt(phones[i]);
                 }
+                double pay = 0.0;
+                if(!"".equals(pays[i])){
+                    pay = Integer.parseInt(pays[i]);
+                }
                 
 //                Tutor tempTutor = new Tutor(tutorNrics[i],tutorNames[i],phone,addresses[i],images[i],birth_dates[i],genders[i],emails[i],passwords[i],branch_id);
 
                 tutorLists.add("('"+tutorNrics[i]+"','"+tutorNames[i].trim()+"',"+phone+",'"+addresses[i]+"','"+images[i]+"','"
-                       +birth_dates[i]+"','"+genders[i]+"','"+emails[i]+"',MD5('"+passwords[i]+"'),"+branch_id+")");
+                       +birth_dates[i]+"','"+genders[i]+"','"+emails[i]+"',MD5('"+passwords[i]+"'),"+branch_id+"," + pay+")");
 
                 tutorNameLists.add(tutorNames[i].trim());
                 String value = emails[i] + "&" + passwords[i];

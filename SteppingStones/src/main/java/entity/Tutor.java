@@ -17,12 +17,13 @@ public class Tutor {
     private String email;
     private String password;
     private int branch_id;
-
+    private double pay;
+    
     public Tutor() {
     }
     
     
-    public Tutor(String nric,String name,int phone,String address,String image_url,String birth_date,String gender,String email,String password,int branch_id) {
+    public Tutor(String nric,String name,int phone,String address,String image_url,String birth_date,String gender,String email,String password,int branch_id, double pay) {
         this.nric = nric;
         this.name = name;
         this.phone = phone;
@@ -33,9 +34,10 @@ public class Tutor {
         this.email = email;
         this.password = password;
         this.branch_id = branch_id;
+        this.pay = pay;
     }
     
-    public Tutor(int tutorId,String nric,String name,int phone,String address,String image_url,String birth_date,String gender,String email,String password,int branch_id) {
+    public Tutor(int tutorId,String nric,String name,int phone,String address,String image_url,String birth_date,String gender,String email,String password,int branch_id, double pay) {
         this.tutorId = tutorId;
         this.nric = nric;
         this.name = name;
@@ -47,6 +49,7 @@ public class Tutor {
         this.email = email;
         this.password = password;
         this.branch_id = branch_id;
+        this.pay = pay;
     }
 
     /**
@@ -203,6 +206,19 @@ public class Tutor {
         this.tutorId = tutorId;
     }
     
+    /**
+     * @return the tutor's pay
+     */
+    public double getPay() {
+        return pay;
+    }
+
+    /**
+     * @param tutorId the tutorId to set
+     */
+    public void setPay(double pay) {
+        this.pay = pay;
+    }
     
     @Override
     public String toString(){

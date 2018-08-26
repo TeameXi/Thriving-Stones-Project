@@ -32,45 +32,48 @@ public class CreateTutorServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        
+
         String nric = request.getParameter("tutorNric");
         String name = request.getParameter("tutorName").trim().toLowerCase();
         int phone = 0;
-        if(request.getParameter("phone") != null && request.getParameter("phone") != ""){
-            phone =  Integer.parseInt(request.getParameter("phone"));
+        if (request.getParameter("phone") != null && request.getParameter("phone") != "") {
+            phone = Integer.parseInt(request.getParameter("phone"));
         }
         String address = request.getParameter("address");
         String image_url = request.getParameter("tutorImage");
         String birth_date = request.getParameter("birthDate");
         String gender = request.getParameter("gender");
-        String email = request.getParameter("email"); 
+        String email = request.getParameter("email");
         String password = GeneratePassword.random(16);
-        System.out.println(password);
+        double pay = 0;
+        if (request.getParameter("pay") != null && request.getParameter("pay") != "") {
+            pay = Double.parseDouble(request.getParameter("pay"));
+        }
         int branch = 0;
 
-        if(request.getParameter("branch") != null && request.getParameter("branch") != ""){
+        if (request.getParameter("branch") != null && request.getParameter("branch") != "") {
             branch = Integer.parseInt(request.getParameter("branch"));
         }
 
         TutorDAO tutordao = new TutorDAO();
         Tutor existingTutor = tutordao.retrieveSpecificTutor(name);
-        if(existingTutor != null){
+        if (existingTutor != null) {
             request.setAttribute("existingTutor", existingTutor.getName());
             RequestDispatcher dispatcher = request.getRequestDispatcher("CreateTutor.jsp");
             dispatcher.forward(request, response);
-        }else{
-            Tutor tempTutor = new Tutor(nric,name,phone,address,image_url,birth_date,gender,email,password,branch);
+        } else {
+            Tutor tempTutor = new Tutor(nric, name, phone, address, image_url, birth_date, gender, email, password, branch, pay);
             boolean status = tutordao.addTutor(tempTutor);
-            if(status){
-                String href = request.getHeader("origin")+request.getContextPath()+"/Login.jsp";
+            if (status) {
+                String href = request.getHeader("origin") + request.getContextPath() + "/Login.jsp";
                 String subject = "Stepping Stones Tuition Center Tutor's Account Creation";
                 String text = "Your account has been created.\n\nBelow is the username and password to access your account: \nUsername: " + name
-                        + "\nPassword: " + password + "\n\nYou can Login via "+href; 
-                if(email != null && !email.equals("")){
+                        + "\nPassword: " + password + "\n\nYou can Login via " + href;
+                if (email != null && !email.equals("")) {
                     SendMail.sendingEmail(email, subject, text);
-                }    
+                }
             }
-            request.setAttribute("creation_status",""+status);
+            request.setAttribute("creation_status", "" + status);
             RequestDispatcher dispatcher = request.getRequestDispatcher("DisplayTutors.jsp");
             dispatcher.forward(request, response);
         }
