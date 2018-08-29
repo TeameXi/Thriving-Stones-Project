@@ -20,7 +20,7 @@ import java.util.logging.Logger;
  */
 public class PaymentDAO {
     public void insertPaymentDate(String date, int classID) {
-        String sql = "insert into payment(payment_date,class_id) values(?,?)";
+        String sql = "insert into payment_date(payment_date,class_id) values(?,?)";
         try(Connection conn = ConnectionManager.getConnection()){
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, date);
