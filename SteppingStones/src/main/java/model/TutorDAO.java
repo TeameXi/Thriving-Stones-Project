@@ -29,8 +29,7 @@ public class TutorDAO {
                 String email = rs.getString(9);
                 String password = rs.getString(10);
                 int branch_id = rs.getInt(11);
-                double pay = rs.getDouble(12);
-                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email, password, branch_id, pay);
+                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email, password, branch_id);
                 return t;
             }
 
@@ -59,8 +58,7 @@ public class TutorDAO {
                 String email = rs.getString(9);
                 String password = rs.getString(10);
                 int branch_id = rs.getInt(11);
-                double pay = rs.getDouble(12);
-                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email, password, branch_id, pay);
+                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email, password, branch_id);
                 return t;
             }
 
@@ -71,7 +69,7 @@ public class TutorDAO {
     }
 
     public boolean addTutor(Tutor tutor) {
-        String insert_Tutor = "INSERT INTO tutor(tutor_nric,tutor_fullname,phone,address,image_url,birth_date,gender,email,password,branch_id) VALUES(?,?,?,?,?,?,?,?,MD5(?),?,?)";
+        String insert_Tutor = "INSERT INTO tutor(tutor_nric,tutor_fullname,phone,address,image_url,birth_date,gender,email,password,branch_id) VALUES(?,?,?,?,?,?,?,?,MD5(?),?)";
         try (Connection conn = ConnectionManager.getConnection();
                 PreparedStatement preparedStatement = conn.prepareStatement(insert_Tutor)) {
             preparedStatement.setString(1, tutor.getNric());
@@ -84,7 +82,6 @@ public class TutorDAO {
             preparedStatement.setString(8, tutor.getEmail());
             preparedStatement.setString(9, tutor.getPassword());
             preparedStatement.setInt(10, tutor.getBranch_id());
-            preparedStatement.setDouble(11, tutor.getPay());
 
             int num = preparedStatement.executeUpdate();
             if (num != 0) {
@@ -97,8 +94,8 @@ public class TutorDAO {
         return false;
     }
     
-    public boolean updateTutor(int tutorID,String nric,int phone,String address,String image,String dob,String gender,String email, double pay) {
-        String update_Tutor = "UPDATE tutor SET tutor_nric=?,phone=?,address=?,image_url=?,birth_date=?,gender=?,email=?,pay=? WHERE tutor_id =? ";
+    public boolean updateTutor(int tutorID,String nric,int phone,String address,String image,String dob,String gender,String email) {
+        String update_Tutor = "UPDATE tutor SET tutor_nric=?,phone=?,address=?,image_url=?,birth_date=?,gender=?,email=? WHERE tutor_id =? ";
         try (Connection conn = ConnectionManager.getConnection();
                 PreparedStatement preparedStatement = conn.prepareStatement(update_Tutor)) {
             preparedStatement.setString(1,nric);
@@ -108,8 +105,7 @@ public class TutorDAO {
             preparedStatement.setString(5,dob);
             preparedStatement.setString(6,gender);
             preparedStatement.setString(7, email);
-            preparedStatement.setDouble(8, pay);
-            preparedStatement.setInt(9,tutorID);
+            preparedStatement.setInt(8,tutorID);
             
             int num = preparedStatement.executeUpdate();
             if (num != 0) {
@@ -173,8 +169,7 @@ public class TutorDAO {
                 String email = rs.getString(9);
                 String password = rs.getString(10);
                 int branch_id = rs.getInt(11);
-                double pay = rs.getDouble(12);
-                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email, password, branch_id,pay);
+                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email, password, branch_id);
                 tutorLists.add(t);
             }
 
@@ -203,8 +198,7 @@ public class TutorDAO {
                 String email = rs.getString(9);
                 String password = rs.getString(10);
                 int branch_id = rs.getInt(11);
-                double pay = rs.getDouble(12);
-                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email, password, branch_id, pay);
+                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email, password, branch_id);
                 tutorLists.add(t);
             }
 
@@ -236,8 +230,7 @@ public class TutorDAO {
                 String email = rs.getString(9);
                 String password = rs.getString(10);
                 int branch_id = rs.getInt(11);
-                double pay = rs.getDouble(12);
-                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email, password, branch_id, pay);
+                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email, password, branch_id);
                 tutorLists.add(t);
             }
 
@@ -284,8 +277,7 @@ public class TutorDAO {
                 String email1 = rs.getString(9);
                 String password = rs.getString(10);
                 int branch_id = rs.getInt(11);
-                double pay = rs.getDouble(12);
-                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email1, password, branch_id, pay);
+                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email1, password, branch_id);
             }
         } catch (Exception e) {
             System.out.println(e);

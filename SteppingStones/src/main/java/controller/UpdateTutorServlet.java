@@ -53,13 +53,9 @@ public class UpdateTutorServlet extends HttpServlet {
                 String dob = request.getParameter("dob");
                 String gender = request.getParameter("gender").trim();
                 String email = request.getParameter("email");
-                double pay = 0;
-                if (request.getParameter("pay") != ""){
-                    pay = Double.parseDouble(request.getParameter("pay"));
-                }
 
                 TutorDAO tutorDao = new TutorDAO();
-                boolean status = tutorDao.updateTutor(id,nric,phone,address,image,dob,gender,email,pay);
+                boolean status = tutorDao.updateTutor(id,nric,phone,address,image,dob,gender,email);
                 if(status){
                     out.println(1);
                 }else{
