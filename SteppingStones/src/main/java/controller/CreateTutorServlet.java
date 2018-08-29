@@ -45,10 +45,6 @@ public class CreateTutorServlet extends HttpServlet {
         String gender = request.getParameter("gender");
         String email = request.getParameter("email");
         String password = GeneratePassword.random(16);
-        double pay = 0;
-        if (request.getParameter("pay") != null && request.getParameter("pay") != "") {
-            pay = Double.parseDouble(request.getParameter("pay"));
-        }
         int branch = 0;
 
         if (request.getParameter("branch") != null && request.getParameter("branch") != "") {
@@ -62,7 +58,7 @@ public class CreateTutorServlet extends HttpServlet {
             RequestDispatcher dispatcher = request.getRequestDispatcher("CreateTutor.jsp");
             dispatcher.forward(request, response);
         } else {
-            Tutor tempTutor = new Tutor(nric, name, phone, address, image_url, birth_date, gender, email, password, branch, pay);
+            Tutor tempTutor = new Tutor(nric, name, phone, address, image_url, birth_date, gender, email, password, branch);
             boolean status = tutordao.addTutor(tempTutor);
             if (status) {
                 String href = request.getHeader("origin") + request.getContextPath() + "/Login.jsp";

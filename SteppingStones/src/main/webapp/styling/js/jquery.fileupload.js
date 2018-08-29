@@ -34,10 +34,10 @@ function checkCSVExtension(file_upload_id, error_lbl_id, append_container, optio
             var header = data[1];
 
             if (option === 'tutor') {
-                if (header.length === 9 && header[0] === "Tutor NRIC" && header[1] === "Full Name"
+                if (header.length === 8 && header[0] === "Tutor NRIC" && header[1] === "Full Name"
                         && header[2] === "Phone" && header[3] === "Address"
                         && header[4] === "Image" && header[5] === "Birth Date (DD-MM-YYYY)"
-                        && header[6] === "Gender (F/M)" && header[7] === "Email" && header[8] === "Pay") {
+                        && header[6] === "Gender (F/M)" && header[7] === "Email") {
                     $("#" + append_container).html("");
                     processCSVTutorData(data, append_container, error_el, branch_id);
                 } else {
@@ -90,7 +90,6 @@ function processCSVTutorData(csv_data, append_container, error_el, branch_id) {
         Birth_date = csv_data[i][5];
         Gender = csv_data[i][6];
         Email = csv_data[i][7];
-        Pay = csv_data[i][8];
 
         html += "<div class='row' rel='" + i + "' id='row_con_" + i + "'>" +
                 "<div class='col-sm-1 bold'></div>" +
@@ -110,7 +109,6 @@ function processCSVTutorData(csv_data, append_container, error_el, branch_id) {
                 "</div>" +
                 "<div class='col-sm-2'>" +
                 "<input type='text' name='con_pwd[]' id='con_pwd_num_" + i + "' class='form-control' value='" + generatePassword(16) + "' readonly='readonly'>" +
-                "<input type='hidden' name='con_pay[]' id='con_pay_" + i + "' class='form-control' value = '" + Pay + "'>" +
                 "</div>" +
                 "<div class='col-sm-1'></div></div><br/>";
 
