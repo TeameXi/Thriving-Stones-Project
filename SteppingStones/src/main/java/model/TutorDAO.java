@@ -1,8 +1,8 @@
 package model;
 
-
 import connection.ConnectionManager;
-import entity.Tutor;import java.sql.Connection;
+import entity.Tutor;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -68,7 +68,7 @@ public class TutorDAO {
         return null;
     }
 
-    public int addTutor(Tutor tutor) {
+    public boolean addTutor(Tutor tutor) {
         String insert_Tutor = "INSERT INTO tutor(tutor_nric,tutor_fullname,phone,address,image_url,birth_date,gender,email,password,branch_id) VALUES(?,?,?,?,?,?,?,?,MD5(?),?)";
         try (Connection conn = ConnectionManager.getConnection();
                 PreparedStatement preparedStatement = conn.prepareStatement(insert_Tutor)) {
@@ -84,18 +84,14 @@ public class TutorDAO {
             preparedStatement.setInt(10, tutor.getBranch_id());
 
             int num = preparedStatement.executeUpdate();
-            ResultSet rs = preparedStatement.getGeneratedKeys();
-            int generatedKey = 0;
-            if (rs.next()) {
-                generatedKey = rs.getInt(1);
+            if (num != 0) {
+                return true;
             }
-            return generatedKey;
-            
 
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
-        return 0;
+        return false;
     }
     
     public boolean updateTutor(int tutorID,String nric,int phone,String address,String image,String dob,String gender,String email) {
@@ -174,6 +170,27 @@ public class TutorDAO {
                 String password = rs.getString(10);
                 int branch_id = rs.getInt(11);
                 Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email, password, branch_id);
+                tutorLists.add(t);
+            }
+
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return tutorLists;
+    }
+    
+     public static ArrayList<Tutor> retrieveTutorsShortInfoByBranch(int branchId) {
+        ArrayList<Tutor> tutorLists = new ArrayList<>();
+        String select_tutor = "SELECT tutor_id,tutor_fullname FROM tutor WHERE branch_id = ?";
+        try (Connection conn = ConnectionManager.getConnection();
+                PreparedStatement preparedStatement = conn.prepareStatement(select_tutor)) {
+            preparedStatement.setInt(1, branchId);
+
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt(1);
+                String fullname = rs.getString(2);
+                Tutor t = new Tutor(id, fullname);
                 tutorLists.add(t);
             }
 
@@ -337,39 +354,6 @@ public class TutorDAO {
 
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
-        }
-        return false;
-    }
-    
-    public int calculateLessonCount(int tutorID){
-        int count = 0;
-        try (Connection conn = ConnectionManager.getConnection();
-            PreparedStatement stmt = conn.prepareStatement("select count(*) from lesson where tutor_id = ? and paid = 0")) {
-            stmt.setInt(1,tutorID);
-            
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                count = rs.getInt(1);
-            }            
-        } catch (SQLException ex) {
-            ex.printStackTrace();;
-        }
-        return count;
-    }
-    
-    public boolean updatePay(int tutorID, double tutorPay,double pay){
-        int count = (int) (pay / tutorPay);
-        
-        try (Connection conn = ConnectionManager.getConnection();
-            PreparedStatement stmt = conn.prepareStatement("UPDATE lesson SET paid = 1 where tutor_id = ? AND paid = 0 limit 0,?;")) {
-            stmt.setInt(1,tutorID);
-            stmt.setInt(2,count);
-            
-            stmt.executeQuery();
-            return true;
-            
-        } catch (SQLException ex) {
-            ex.printStackTrace();
         }
         return false;
     }

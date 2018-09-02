@@ -17,11 +17,15 @@ public class Tutor {
     private String email;
     private String password;
     private int branch_id;
-    private double pay;
-    
+
     public Tutor() {
     }
     
+    
+    public Tutor(int tutorId,String name){
+        this.tutorId = tutorId;
+        this.name = name;
+    }
     
     public Tutor(String nric,String name,int phone,String address,String image_url,String birth_date,String gender,String email,String password,int branch_id) {
         this.nric = nric;
@@ -203,6 +207,7 @@ public class Tutor {
     public void setTutorId(int tutorId) {
         this.tutorId = tutorId;
     }
+    
     
     @Override
     public String toString(){
