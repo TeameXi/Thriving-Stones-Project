@@ -216,6 +216,42 @@ public class ClassDAO {
             return 0;
         }
     }
+    
+    
+    public static int createClass(int level, int subject, int term,int year,double mthlyFees,int hasReminderForFees,String classTime,String classDay,String startDate, String endDate,int lessonNo,int branch,int tutorId) {
+        try (Connection conn = ConnectionManager.getConnection();) {
+            conn.setAutoCommit(false);
+            String sql = "INSERT into CLASS (level_id, subject_id,term,year,fees,has_reminder_for_fees,timing, class_day, start_date, end_date,lesson_number,branch_id,tutor_id)"
+                + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+
+            stmt.setInt(1, level);
+            stmt.setInt(2, subject);
+            stmt.setInt(3, term);
+            stmt.setInt(4,year);
+            stmt.setDouble(5, mthlyFees);
+            stmt.setInt(6, hasReminderForFees);
+            stmt.setString(7, classTime);
+            stmt.setString(8, classDay);
+            stmt.setString(9, startDate);
+            stmt.setString(10, endDate);
+            stmt.setInt(11,lessonNo);
+            stmt.setInt(12, branch);
+            stmt.setInt(13,tutorId);
+            stmt.executeUpdate(); 
+            conn.commit();
+            ResultSet rs = stmt.getGeneratedKeys();
+            int generatedKey = 0;
+            if (rs.next()) {
+                generatedKey = rs.getInt(1);
+            }
+            return generatedKey;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return 0;
+        }
+    }
+    
     public boolean updateClass(String level, String subject, String timing) {
         String sql = "update class set timing = ? where level_id = ? and subject_id = ?";
         System.out.println(sql);
@@ -244,7 +280,6 @@ public class ClassDAO {
             stmt.setInt(2, level_id);
             stmt.setInt(3, term);
             ResultSet rs = stmt.executeQuery();
-            System.out.println(select_class_sql);
             while(rs.next()){
                 int classID = rs.getInt("class_id");
                 int subjectID = rs.getInt("subject_id");
@@ -263,11 +298,39 @@ public class ClassDAO {
         return classList;
     }
     
+    public static ArrayList<Class> getClassesByTermAndLevelAndYear(int level_id, int term,int branch_id,String level,int year){
+        ArrayList<Class> classList = new ArrayList();
+        try(Connection conn = ConnectionManager.getConnection()){
+            String select_class_sql = "select * from class where branch_id = ? and level_id = ? and term = ? and year = ? and end_date > curdate() order by subject_id";
+            PreparedStatement stmt = conn.prepareStatement(select_class_sql);
+            stmt.setInt(1, branch_id); 
+            stmt.setInt(2, level_id);
+            stmt.setInt(3, term);
+            stmt.setInt(4, year);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){
+                int classID = rs.getInt("class_id");
+                int subjectID = rs.getInt("subject_id");
+                String classTime = rs.getString("timing");
+                String classDay = rs.getString("class_day");
+                String startDate = rs.getString("start_date");
+                String endDate = rs.getString("end_date");
+                int mthlyFees = rs.getInt("fees");
+                int tutorID = rs.getInt("tutor_id");
+                Class cls = new Class(classID,subjectID,classTime, classDay, mthlyFees, startDate, endDate,tutorID);
+                classList.add(cls);
+            }
+        }catch(SQLException e){
+            System.out.print(e.getMessage());
+        }
+        return classList;
+    }
+    
     
     public static Map<String,ArrayList<Class>> groupClassesByTimingAndDay(int level_id, int term,int branch_id,String level){
         Map<String, ArrayList<Class>> classMap = new HashMap();
         try(Connection conn = ConnectionManager.getConnection()){
-            String select_class_sql = "select * from class where branch_id = ? and level_id = ? and term = ? and end_date > curdate() order by subject_id";
+            String select_class_sql = "select * from class where branch_id = ? and level_id = ? and term = ? and end_date > curdate() order by timing desc";
             PreparedStatement stmt = conn.prepareStatement(select_class_sql);
             stmt.setInt(1, branch_id); 
             stmt.setInt(2, level_id);

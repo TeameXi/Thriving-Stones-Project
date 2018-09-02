@@ -12,8 +12,11 @@ public class Class {
     private int hasReminderForFees;
     private String startDate;
     private String endDate;
-    private String branch;
+    private int branchID;
     private int year;
+    private int subjectID;
+    private int tutorID;
+    private String paymentDate;
     
     public Class(){
         
@@ -29,6 +32,18 @@ public class Class {
         this.mthlyFees = mthlyFees;
         this.startDate = startDate;
         this.endDate = endDate;
+    }
+    
+    
+    public Class(int classID,int subjectID,String classTime, String classDay,double mthlyFees,String startDate, String endDate,int tutorID) {
+        this.classID = classID;
+        this.subjectID = subjectID;
+        this.classTime = classTime;
+        this.classDay = classDay;
+        this.mthlyFees = mthlyFees;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.tutorID = tutorID;
     }
 
      public Class(int classID, String level, String subject, String classTime, String classDay, double mthlyFees, String startDate, String endDate,int year) {
@@ -139,6 +154,62 @@ public class Class {
      */
     public void setYear(int year) {
         this.year = year;
+    }
+
+    /**
+     * @return the branchID
+     */
+    public int getBranchID() {
+        return branchID;
+    }
+
+    /**
+     * @param branchID the branchID to set
+     */
+    public void setBranchID(int branchID) {
+        this.branchID = branchID;
+    }
+
+    /**
+     * @return the subjectID
+     */
+    public int getSubjectID() {
+        return subjectID;
+    }
+
+    /**
+     * @param subjectID the subjectID to set
+     */
+    public void setSubjectID(int subjectID) {
+        this.subjectID = subjectID;
+    }
+
+    /**
+     * @return the tutorID
+     */
+    public int getTutorID() {
+        return tutorID;
+    }
+
+    /**
+     * @param tutorID the tutorID to set
+     */
+    public void setTutorID(int tutorID) {
+        this.tutorID = tutorID;
+    }
+
+    /**
+     * @return the paymentDate
+     */
+    public String getPaymentDate() {
+        return paymentDate;
+    }
+
+    /**
+     * @param paymentDate the paymentDate to set
+     */
+    public void setPaymentDate(String paymentDate) {
+        this.paymentDate = paymentDate;
     }
 }
 

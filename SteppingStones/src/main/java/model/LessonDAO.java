@@ -36,6 +36,25 @@ public class LessonDAO {
             System.out.println(e);
         }
     }
+    
+    public static boolean updateTutor(int tutorId,int classId,Timestamp lessonDateTime){
+        try (Connection conn = ConnectionManager.getConnection();) {
+            conn.setAutoCommit(false);
+            String sql = "update lesson set tutor_id = ? where class_id = ? and lesson_date_time = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, tutorId);
+            stmt.setInt(2, classId);
+            stmt.setTimestamp(3, lessonDateTime);
+
+            stmt.executeUpdate(); 
+            conn.commit();
+            return true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
+    }
+    
     public boolean createLesson(int classid, int tutorid, Timestamp lessonDateTime) {
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);

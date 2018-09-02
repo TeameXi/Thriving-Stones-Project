@@ -2,6 +2,7 @@ package model;
 
 import connection.ConnectionManager;
 import entity.Level;
+import entity.Subject;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -100,7 +101,7 @@ public class LevelDAO {
         return level;
     }
     
-     public static ArrayList<Level> retrieveLevelBySubject1(int subjectID, int branchID){
+    public static ArrayList<Level> retrieveLevelBySubject1(int subjectID, int branchID){
         ArrayList<Level> levelLists = new ArrayList<>();
         try(Connection conn = ConnectionManager.getConnection()){
             String sql = "select level.level_id,level_name from lvl_sub_rel, level where subject_id = ? and level.level_id = lvl_sub_rel.level_id and branch_id = ? order by level_name;";
@@ -146,5 +147,23 @@ public class LevelDAO {
         }
         
         return returnList;
+    }
+    
+    public static ArrayList<Subject> retrieveAllSubjectsBelongToLevelAndBranch(int levelID, int branchID){
+        ArrayList<Subject> subjectLists = new ArrayList<>();
+        try(Connection conn = ConnectionManager.getConnection()){
+            String sql = "SELECT s.subject_id,subject_name FROM subject as s, lvl_sub_rel as l WHERE s.subject_id = l.subject_id and branch_id = ? and level_id = ?;";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, branchID);
+            stmt.setInt(2, levelID);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){
+                Subject s = new Subject(rs.getInt(1), rs.getString(2));
+                subjectLists.add(s);
+            } 
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }  
+        return subjectLists;
     }
 }
