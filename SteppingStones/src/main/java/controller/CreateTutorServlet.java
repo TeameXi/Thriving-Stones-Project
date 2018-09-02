@@ -6,7 +6,9 @@
 package controller;
 
 import entity.Tutor;
+import entity.Users;
 import java.io.IOException;
+import java.util.Calendar;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import model.GeneratePassword;
 import model.SendMail;
 import model.TutorDAO;
+import model.UsersDAO;
 
 @WebServlet(name = "CreateTutorServlet", urlPatterns = {"/CreateTutorServlet"})
 public class CreateTutorServlet extends HttpServlet {
@@ -32,7 +35,7 @@ public class CreateTutorServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-
+        boolean status = true;
         String nric = request.getParameter("tutorNric");
         String name = request.getParameter("tutorName").trim().toLowerCase();
         int phone = 0;
@@ -52,27 +55,54 @@ public class CreateTutorServlet extends HttpServlet {
         }
 
         TutorDAO tutordao = new TutorDAO();
-        Tutor existingTutor = tutordao.retrieveSpecificTutor(name);
+        /*Tutor existingTutor = tutordao.retrieveSpecificTutor(name);
         if (existingTutor != null) {
             request.setAttribute("existingTutor", existingTutor.getName());
             RequestDispatcher dispatcher = request.getRequestDispatcher("CreateTutor.jsp");
             dispatcher.forward(request, response);
-        } else {
-            Tutor tempTutor = new Tutor(nric, name, phone, address, image_url, birth_date, gender, email, password, branch);
-            boolean status = tutordao.addTutor(tempTutor);
-            if (status) {
+        } else {*/
+        Tutor tempTutor = new Tutor(nric, name, phone, address, image_url, birth_date, gender, email, password, branch);
+        int tutorId = tutordao.addTutor(tempTutor);
+        status = tutorId>0;
+        if (status) {
+            UsersDAO userDAO = new UsersDAO();
+            String username = name.replace(' ', '.');
+            int i = -1;
+            int temp = 0;
+            while(i<0){
+                if(temp == 0){
+                    temp++;
+                    username = name.replace(' ', '.') + "." + (Calendar.getInstance().get(Calendar.YEAR));
+                    if(userDAO.retrieveUserByUsername(username) < 1){
+                        i = 0;
+                    }
+                }else{
+                    username = name.replace(' ', '.') + temp + "." + (Calendar.getInstance().get(Calendar.YEAR));
+                    temp++;
+                    if(userDAO.retrieveUserByUsername(username) < 1){
+                        i = 0;
+                    }
+                }
+            }
+            Users tempUser = new Users(username, password, "tutor", tutorId, branch);
+            boolean userStatus = userDAO.addUser(tempUser);
+            status = userStatus;
+            if(userStatus){
                 String href = request.getHeader("origin") + request.getContextPath() + "/Login.jsp";
                 String subject = "Stepping Stones Tuition Center Tutor's Account Creation";
-                String text = "Your account has been created.\n\nBelow is the username and password to access your account: \nUsername: " + name
+                String text = "Your account has been created.\n\nBelow is the username and password to access your account: \nUsername: " + username
                         + "\nPassword: " + password + "\n\nYou can Login via " + href;
                 if (email != null && !email.equals("")) {
                     SendMail.sendingEmail(email, subject, text);
                 }
             }
-            request.setAttribute("creation_status", "" + status);
-            RequestDispatcher dispatcher = request.getRequestDispatcher("DisplayTutors.jsp");
-            dispatcher.forward(request, response);
+            
         }
+        request.setAttribute("creation_status", "" + status);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("DisplayTutors.jsp");
+        dispatcher.forward(request, response);
+        //}
+    
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

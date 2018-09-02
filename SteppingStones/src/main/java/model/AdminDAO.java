@@ -10,24 +10,26 @@ import java.util.ArrayList;
 
 public class AdminDAO {
 
-    public boolean addAdmin(Admin admin) {
+    public int addAdmin(Admin admin) {
         try (Connection conn = ConnectionManager.getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO admin(admin_id,admin_username,admin_password,email,branch_id) VALUES(?,?,MD5(?),?,?)")) {
-            preparedStatement.setInt(1, retrieveNoOfAdmin() + 1);
+            int id = retrieveNoOfAdmin() + 1;
+            preparedStatement.setInt(1, id);
             preparedStatement.setString(2, admin.getAdmin_username());
             preparedStatement.setString(3, admin.getPassword());
             preparedStatement.setString(4, admin.getEmail());
             preparedStatement.setInt(5, admin.getBranch_id());
 
             int num = preparedStatement.executeUpdate();
+            
             if (num != 0) {
-                return true;
+                return id;
             }
 
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        return false;
+        return 0;
     }
 
     public boolean updateAdmin(int admin_id, String admin_username, String password, int branch_id) {

@@ -67,7 +67,7 @@ public class ChangePasswordServlet extends HttpServlet {
             Logger.getLogger(ChangePasswordServlet.class.getName()).log(Level.SEVERE, null, ex);
         }*/
         
-        String password = request.getParameter("p");
+        /*String password = request.getParameter("p");
         String username = request.getParameter("u");
         String role = request.getParameter("r");
         
@@ -111,7 +111,7 @@ public class ChangePasswordServlet extends HttpServlet {
 		e.printStackTrace();
 		throw new Exception(e);
 	}
-	return strData;
+	return strData;*/
     }
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**

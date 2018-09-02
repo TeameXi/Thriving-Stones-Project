@@ -1,4 +1,4 @@
-/*
+ /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -6,7 +6,9 @@
 package controller;
 
 import entity.Admin;
+import entity.Users;
 import java.io.IOException;
+import java.util.Calendar;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,6 +19,7 @@ import model.AdminDAO;
 import model.BranchDAO;
 import model.GeneratePassword;
 import model.SendMail;
+import model.UsersDAO;
 
 @WebServlet(name = "CreateAdminServlet", urlPatterns = {"/CreateAdminServlet"})
 public class CreateAdminServlet extends HttpServlet {
@@ -41,30 +44,58 @@ public class CreateAdminServlet extends HttpServlet {
         BranchDAO branchDao = new BranchDAO();
         AdminDAO adminDao = new AdminDAO();
         Admin existingAdmin = adminDao.retrieveAdminByName(admin_username);
-        if (existingAdmin != null) {
+        /*if (existingAdmin != null) {
             request.setAttribute("existingAdmin", existingAdmin.getAdmin_username());
             RequestDispatcher dispatcher = request.getRequestDispatcher("CreateAdmin.jsp");
             dispatcher.forward(request, response);
-        } else {
+        } else {*/
             Admin tempAdmin = new Admin(admin_username, password, adminEmail, branch_id);
-            boolean status = adminDao.addAdmin(tempAdmin);
+            int status = adminDao.addAdmin(tempAdmin);
+            
             RequestDispatcher dispatcher;
-            if(status){
-                String href = request.getHeader("origin")+request.getContextPath()+"/Login.jsp";
-                String subject = "Stepping Stones Tuition Center Branch Admin's Account Creation";
-                String text = "Your account has been created.(Admin Account for " + branchDao.retrieveBranchById(branch_id).getName() + ")\n\nBelow is the username and password to access your account: \nUsername: " + admin_username
-                        + "\nPassword: " + password + "\n\nYou can Login via "+href; 
-                if(adminEmail != null && !adminEmail.equals("")){
-                    SendMail.sendingEmail(adminEmail, subject, text);
+            if(status>0){
+                UsersDAO userDAO = new UsersDAO();
+                String username = admin_username;
+                int i = -1;
+                int temp = 0;
+                while(i<0){
+                    if(temp == 0){
+                        temp++;
+                        username = admin_username + "." + (Calendar.getInstance().get(Calendar.YEAR));
+                        if(userDAO.retrieveUserByUsername(username) < 1){
+                            i = 0;
+                        }
+                    }else{
+                        username = admin_username + temp + "." + (Calendar.getInstance().get(Calendar.YEAR));
+                        temp++;
+                        if(userDAO.retrieveUserByUsername(username) < 1){
+                            i = 0;
+                        }
+                    }
                 }
-                request.setAttribute("status", "Admin created successfully!");
-                dispatcher = request.getRequestDispatcher("DisplayAdmins.jsp");
+
+                Users tempUser = new Users(username, password, "admin", status, branch_id);
+                boolean userStatus = userDAO.addUser(tempUser);
+                if(userStatus){
+                    String href = request.getHeader("origin")+request.getContextPath()+"/Login.jsp";
+                    String subject = "Stepping Stones Tuition Center Branch Admin's Account Creation";
+                    String text = "Your account has been created.(Admin Account for " + branchDao.retrieveBranchById(branch_id).getName() + ")\n\nBelow is the username and password to access your account: \nUsername: " + username
+                            + "\nPassword: " + password + "\n\nYou can Login via "+href; 
+                    if(adminEmail != null && !adminEmail.equals("")){
+                        SendMail.sendingEmail(adminEmail, subject, text);
+                    }
+                    request.setAttribute("status", "Admin created successfully!");
+                    dispatcher = request.getRequestDispatcher("DisplayAdmins.jsp");
+                }else{
+                    request.setAttribute("errorMsg", "Error creating admin!");
+                    dispatcher = request.getRequestDispatcher("CreateAdmin.jsp");
+                }
             }else{
                 request.setAttribute("errorMsg", "Error creating admin!");
                 dispatcher = request.getRequestDispatcher("CreateAdmin.jsp");
             }
             dispatcher.forward(request, response);
-        }
+        //}
 
     }
 

@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import model.TutorDAO;
+import model.UsersDAO;
 
 
 /**
@@ -42,8 +43,10 @@ public class DeleteTutorServlet extends HttpServlet {
                 int tutorID = Integer.parseInt(request.getParameter("tutorID"));
 
                 TutorDAO tutorDao = new TutorDAO();
-                boolean status =  tutorDao.deleteTutor(tutorID);
-
+                boolean status = UsersDAO.deleteUserByIdAndRole(tutorID, "tutor");
+                if(status){
+                    status =  tutorDao.deleteTutor(tutorID);
+                }
                 if (status == true) {
                     out.println(1);
                 } else {

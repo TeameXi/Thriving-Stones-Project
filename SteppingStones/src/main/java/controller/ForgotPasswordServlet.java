@@ -46,7 +46,7 @@ public class ForgotPasswordServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
        
-        String email = request.getParameter("email");
+        /*String email = request.getParameter("email");
         String role = request.getParameter("type");
         
         ArrayList<String> errorList = new ArrayList<>();
@@ -87,7 +87,7 @@ public class ForgotPasswordServlet extends HttpServlet {
             request.setAttribute("error", errorList);
         }
         RequestDispatcher dispatcher = request.getRequestDispatcher("ForgotPassword.jsp");
-        dispatcher.forward(request, response);
+        dispatcher.forward(request, response);*/
     }
     public static String encrypt(String strClearText,String strKey) throws Exception{
 	String strData="";
