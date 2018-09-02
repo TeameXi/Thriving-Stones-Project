@@ -17,6 +17,7 @@ import model.ParentDAO;
 import model.StudentClassDAO;
 import model.StudentDAO;
 import model.StudentGradeDAO;
+import model.UsersDAO;
 
 
 /**
@@ -42,10 +43,12 @@ public class DeleteStudentServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         int studentID = Integer.parseInt(request.getParameter("studentID"));
         int parentID = ParentChildRelDAO.getParentID(studentID);
+        boolean deleteUser = UsersDAO.deleteUserByIdAndRole(studentID, "student");
         boolean deleteStudent = StudentDAO.deleteStudentbyID(studentID);
         boolean deleteParentChildRel = ParentChildRelDAO.deleteParentChildRel(studentID);
         boolean deleteParent;
         if(ParentChildRelDAO.getNumOfChild(parentID) == 1){
+            deleteUser = UsersDAO.deleteUserByIdAndRole(parentID, "parent");
             deleteParent = ParentDAO.deleteParent(parentID);
         }else{
             deleteParent = true;
@@ -53,7 +56,7 @@ public class DeleteStudentServlet extends HttpServlet {
         boolean deleteTuitionGrade = StudentGradeDAO.deleteStudentTuitionGrade(studentID);
         boolean deleteStudentClassRel = StudentClassDAO.deleteStudentClassRel(studentID);
         
-        if(deleteStudent && deleteParentChildRel && deleteParent && deleteTuitionGrade && deleteStudentClassRel){
+        if(deleteStudent && deleteParentChildRel && deleteParent && deleteTuitionGrade && deleteStudentClassRel && deleteUser){
             out.println(1);
         }else{
             out.println(0);

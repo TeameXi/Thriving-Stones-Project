@@ -15,7 +15,7 @@
         int branch_id = 0;
         int user_id = 0;
         if(user != null){
-            account = user.getEmail();
+            account = user.getUsername();
             branch_id = user.getBranchId();
             user_id = user.getUserId();
         }

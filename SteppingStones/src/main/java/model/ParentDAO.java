@@ -10,8 +10,8 @@ import java.util.ArrayList;
 
 public class ParentDAO {
 
-    public static boolean insertParent(String name, String nationality, String company, String designation, int phone, String email, String password, int branchID) {
-        boolean status = false;
+    public static int insertParent(String name, String nationality, String company, String designation, int phone, String email, String password, int branchID) {
+        
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
             String sql = "insert into parent(name, nationality, company, designation, phone, email, password, branch_id)"
@@ -27,12 +27,17 @@ public class ParentDAO {
             stmt.setInt(8, branchID);
             stmt.executeUpdate();
             conn.commit();
-            status = true;
-            conn.commit();
+            ResultSet rs = stmt.getGeneratedKeys();
+            int generatedKey = 0;
+            if (rs.next()) {
+                generatedKey = rs.getInt(1);
+            }
+            return generatedKey;
+            
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        return status;
+        return 0;
     }
 
     public static int retrieveParentID(String parentName) {

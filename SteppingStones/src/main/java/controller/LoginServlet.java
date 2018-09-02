@@ -16,6 +16,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import model.AdminDAO;
+import model.ParentDAO;
+import model.StudentDAO;
+import model.TutorDAO;
 
 /**
  *
@@ -46,21 +50,33 @@ public class LoginServlet extends HttpServlet {
         
         if (user != null) {
             if (type.equals("admin")) {
+                AdminDAO adminDAO = new AdminDAO();
+                user.setBranchId(adminDAO.retrieveAdminById(user.getRespective_id()).getBranch_id());
+                
                 session.setAttribute("user", user);
                 session.setAttribute("role", "admin");
                 response.sendRedirect("Dashboard.jsp");
 
             } else if (type.equals("tutor")) {
+                TutorDAO tutorDAO = new TutorDAO();
+                user.setBranchId(tutorDAO.retrieveSpecificTutorById(user.getRespective_id()).getBranch_id());
+                
                 session.setAttribute("user", user);
                 session.setAttribute("role", "tutor");
                 response.sendRedirect("tutorHomepage.jsp");
 
             } else if (type.equals("student")) {
+                StudentDAO studentDAO = new StudentDAO();
+                user.setBranchId(StudentDAO.retrieveStudentbyID(user.getRespective_id()).getBranchlID());
+                
                 session.setAttribute("user", user);
                 session.setAttribute("role", "student");
                 response.sendRedirect("studentHomepage.jsp");
 
             } else if (type.equals("parent")) {
+                ParentDAO parentDAO = new ParentDAO();
+                user.setBranchId(parentDAO.retrieveSpecificParentById(user.getRespective_id()).getBranch_id());
+                
                 session.setAttribute("user", user);
                 session.setAttribute("role", "parent");
                 response.sendRedirect("Dashboard.jsp");

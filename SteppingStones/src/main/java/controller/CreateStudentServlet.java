@@ -5,7 +5,9 @@
  */
 package controller;
 
+import entity.Users;
 import java.io.IOException;
+import java.util.Calendar;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,6 +20,7 @@ import model.ParentDAO;
 import model.SendMail;
 import model.SendSMS;
 import model.StudentDAO;
+import model.UsersDAO;
 
 /**
  *
@@ -67,17 +70,38 @@ public class CreateStudentServlet extends HttpServlet {
         String parentEmail = request.getParameter("parentEmail");
         String address = request.getParameter("address");     
 
-        if(StudentDAO.retrieveStudentID(studentName) != 0){
+        /*if(StudentDAO.retrieveStudentID(studentName) != 0){
             request.setAttribute("existingStudent", studentName);
             RequestDispatcher dispatcher = request.getRequestDispatcher("CreateStudent.jsp");
             dispatcher.forward(request, response);
-        }else{           
-            String href =  request.getHeader("origin")+request.getContextPath()+"/Login.jsp";
-            boolean insertStudent = StudentDAO.insertStudent(studentNRIC, studentName, phone, address, BOD, gender, stuEmail, stuPassword, levelID, branchID);
-            if(insertStudent){
-               
+        }else{*/           
+        String href =  request.getHeader("origin")+request.getContextPath()+"/Login.jsp";
+        int insertStudent = StudentDAO.insertStudent(studentNRIC, studentName, phone, address, BOD, gender, stuEmail, stuPassword, levelID, branchID);
+        if(insertStudent>0){
+            UsersDAO userDAO = new UsersDAO();
+            String username = studentName.replace(' ', '.');
+            int i = -1;
+            int temp = 0;
+            while(i<0){
+                if(temp == 0){
+                    temp++;
+                    username = studentName.replace(' ', '.') + "." + (Calendar.getInstance().get(Calendar.YEAR));
+                    if(userDAO.retrieveUserByUsername(username) < 1){
+                        i = 0;
+                    }
+                }else{
+                    username = studentName.replace(' ', '.') + temp + "." + (Calendar.getInstance().get(Calendar.YEAR));
+                    temp++;
+                    if(userDAO.retrieveUserByUsername(username) < 1){
+                        i = 0;
+                    }
+                }
+            }
+            Users tempUser = new Users(username, stuPassword, "student", insertStudent, branchID);
+            boolean userStatus = userDAO.addUser(tempUser);
+            if(userStatus){
                 String subject = "Stepping Stones Tuition Center Student's Account Creation";
-                String text = "Thanks for choosing us. Your account has been created.\n\nBelow is the username and password to access your account: \nUsername: " + studentName 
+                String text = "Thanks for choosing us. Your account has been created.\n\nBelow is the username and password to access your account: \nUsername: " + username 
                         + "\nPassword: " + stuPassword + "\n\nYou can Login via "+href; 
                 if(stuEmail != null && !stuEmail.equals("")){
                     SendMail.sendingEmail(stuEmail, subject, text);
@@ -86,9 +110,33 @@ public class CreateStudentServlet extends HttpServlet {
                     SendSMS.sendingSMS(phoneNum, text);
                 }
             }
-            
-            boolean insertParent = ParentDAO.insertParent(parentName, parentNationality, parentCompany, parentDesgination, parentPhone, parentEmail, parentPassword, branchID);
-            if(insertParent){
+        }
+
+        int insertParent = ParentDAO.insertParent(parentName, parentNationality, parentCompany, parentDesgination, parentPhone, parentEmail, parentPassword, branchID);
+        if(insertParent>0){
+            UsersDAO userDAO = new UsersDAO();
+            String username = parentName.replace(' ', '.');
+            int i = -1;
+            int temp = 0;
+            while(i<0){
+                if(temp == 0){
+                    temp++;
+                    username = parentName.replace(' ', '.') + "." + (Calendar.getInstance().get(Calendar.YEAR));
+                    if(userDAO.retrieveUserByUsername(username) < 1){
+                        i = 0;
+                    }
+                }else{
+                    username = parentName.replace(' ', '.') + temp + "." + (Calendar.getInstance().get(Calendar.YEAR));
+                    temp++;
+                    if(userDAO.retrieveUserByUsername(username) < 1){
+                        i = 0;
+                    }
+                }
+            }
+
+            Users tempUser = new Users(username, parentPassword, "parent", insertParent, branchID);
+            boolean userStatus = userDAO.addUser(tempUser);
+            if(userStatus){
                 String subject = "Stepping Stones Tuition Center Parent's Account Creation";
                 String text = "Thanks for choosing us. Your account has been created.\n\nBelow is the username and password to access your account: \nUsername: " + parentName 
                         + "\nPassword: " + parentPassword + "\n\nYou can Login via "+href; 
@@ -100,10 +148,12 @@ public class CreateStudentServlet extends HttpServlet {
                 }
             }
             
-            request.setAttribute("creation_status",""+insertStudent);
-            ParentChildRelDAO.insertParentChildRel(parentName, studentName, branchID);
-            response.sendRedirect("RegisterForClasses.jsp?studentName="+studentName);
-        }        
+        }
+
+        request.setAttribute("creation_status",""+(insertStudent>0 && insertParent>0));
+        ParentChildRelDAO.insertParentChildRel(parentName, studentName, branchID);
+        response.sendRedirect("RegisterForClasses.jsp?studentName="+studentName);
+        //}        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

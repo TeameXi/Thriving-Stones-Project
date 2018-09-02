@@ -11,8 +11,8 @@ import java.util.LinkedHashMap;
 
 public class StudentDAO {
 
-    public static boolean insertStudent(String studentNRIC, String studentName, int phone, String address, String BOD, String gender, String stuEmail, String stuPassword, int level_id, int branch_id) {
-        boolean status = false;
+    public static int insertStudent(String studentNRIC, String studentName, int phone, String address, String BOD, String gender, String stuEmail, String stuPassword, int level_id, int branch_id) {
+
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
             String sql = "insert ignore into student(student_name, phone, address, birth_date, gender, email, password, required_amount, outstanding_amount, level_id, branch_id, student_nric)"
@@ -32,11 +32,16 @@ public class StudentDAO {
             stmt.setString(12, studentNRIC);
             stmt.executeUpdate();
             conn.commit();
-            status = true;
+            ResultSet rs = stmt.getGeneratedKeys();
+            int generatedKey = 0;
+            if (rs.next()) {
+                generatedKey = rs.getInt(1);
+            }
+            return generatedKey;
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        return status;
+        return 0;
     }
 
     public static int retrieveStudentID(String studentName) {
@@ -135,6 +140,34 @@ public class StudentDAO {
             PreparedStatement stmt = conn.prepareStatement("select * from student where student_id = ? and branch_id = ?");
             stmt.setInt(1, studentID);
             stmt.setInt(2, branch_id);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                String studentNRIC = rs.getString("student_nric");
+                String name = rs.getString("student_name");
+                String BOD = rs.getString("birth_date");
+                String gender = rs.getString("gender");
+                int levelID = rs.getInt("level_id");
+                int branchID = rs.getInt("branch_id");
+                int phone = rs.getInt("phone");
+                String address = rs.getString("address");
+                String email = rs.getString("email");
+                String password = rs.getString("password");
+                double reqAmt = rs.getDouble("required_amount");
+                double outstandingAmt = rs.getDouble("outstanding_amount");
+                String level = LevelDAO.retrieveLevel(levelID);
+                stu = new Student(studentID, studentNRIC, name, BOD, gender, level, branchID, phone, address, email, password, reqAmt, outstandingAmt);
+            }
+        } catch (SQLException e) {
+            System.out.print(e.getMessage());
+        }
+        return stu;
+    }
+    public static Student retrieveStudentbyID(int studentID) {
+        Student stu = null;
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("select * from student where student_id = ?");
+            stmt.setInt(1, studentID);
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {

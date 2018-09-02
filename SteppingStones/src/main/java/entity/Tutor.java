@@ -17,7 +17,8 @@ public class Tutor {
     private String email;
     private String password;
     private int branch_id;
-
+    private double pay;
+    
     public Tutor() {
     }
     
@@ -202,7 +203,6 @@ public class Tutor {
     public void setTutorId(int tutorId) {
         this.tutorId = tutorId;
     }
-    
     
     @Override
     public String toString(){
