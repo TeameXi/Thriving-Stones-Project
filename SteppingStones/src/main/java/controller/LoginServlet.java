@@ -42,13 +42,14 @@ public class LoginServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         HttpSession session = request.getSession();
 
-        String type = request.getParameter("type");
+        //String type = request.getParameter("type");
         String username = request.getParameter("username");
         String password = request.getParameter("password").trim();
         UsersDAO users = new UsersDAO();
-        Users user = users.retrieveUserByUsername(type, username, password);
+        Users user = users.retrieveUserByUsername(username, password);
         
         if (user != null) {
+            String type = user.getRole();
             if (type.equals("admin")) {
                 AdminDAO adminDAO = new AdminDAO();
                 user.setBranchId(adminDAO.retrieveAdminById(user.getRespective_id()).getBranch_id());

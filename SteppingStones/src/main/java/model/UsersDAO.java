@@ -9,7 +9,7 @@ import java.sql.SQLException;
 
 public class UsersDAO {
 
-    public Users retrieveUserByUsername(String type, String name, String password) {
+    public Users retrieveUserByUsername(String name, String password) {
         try (Connection conn = ConnectionManager.getConnection()) {
             
             PreparedStatement stmt = conn.prepareStatement("select user_id,username,password,role,respective_id from users where username = ? and password = MD5(?)");
