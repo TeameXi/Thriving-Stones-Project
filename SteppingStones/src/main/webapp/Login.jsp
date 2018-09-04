@@ -55,7 +55,7 @@
                         </div>
                         
                         
-                        <div class="form-group">
+<!--                        <div class="form-group">
                             <label class="col-lg-3 control-label">Your Role</label>  
                             <div class="col-lg-5 inputGroupContainer">
                                 <div class="input-group">
@@ -69,7 +69,7 @@
                                     </select>
                                 </div>
                             </div>
-                        </div>
+                        </div>-->
 
                         <div class="form-group">
                             <div class="col-lg-9 col-lg-offset-3">
@@ -118,15 +118,7 @@ $(document).ready(function() {
                         message: 'The password is required and cannot be empty'
                     }
                 }
-            },
-            type:{
-                validators: {
-                    notEmpty: {
-                        message: 'Select at least one role'
-                    }
-                } 
             }
-           
         }
     });
 });
