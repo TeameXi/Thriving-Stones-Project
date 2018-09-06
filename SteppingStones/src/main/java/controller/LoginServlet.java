@@ -52,7 +52,7 @@ public class LoginServlet extends HttpServlet {
             String type = user.getRole();
             if (type.equals("admin")) {
                 AdminDAO adminDAO = new AdminDAO();
-                user.setBranchId(adminDAO.retrieveAdminById(user.getRespective_id()).getBranch_id());
+                user.setBranchId(adminDAO.retrieveAdminById(user.getRespectiveID()).getBranch_id());
                 
                 session.setAttribute("user", user);
                 session.setAttribute("role", "admin");
@@ -60,23 +60,23 @@ public class LoginServlet extends HttpServlet {
 
             } else if (type.equals("tutor")) {
                 TutorDAO tutorDAO = new TutorDAO();
-                user.setBranchId(tutorDAO.retrieveSpecificTutorById(user.getRespective_id()).getBranch_id());
+                user.setBranchId(tutorDAO.retrieveSpecificTutorById(user.getRespectiveID()).getBranch_id());
                 
                 session.setAttribute("user", user);
                 session.setAttribute("role", "tutor");
-                response.sendRedirect("tutorHomepage.jsp");
+                response.sendRedirect("Dashboard.jsp");
 
             } else if (type.equals("student")) {
                 StudentDAO studentDAO = new StudentDAO();
-                user.setBranchId(StudentDAO.retrieveStudentbyID(user.getRespective_id()).getBranchlID());
+                user.setBranchId(StudentDAO.retrieveStudentbyID(user.getRespectiveID()).getBranchlID());
                 
                 session.setAttribute("user", user);
                 session.setAttribute("role", "student");
-                response.sendRedirect("studentHomepage.jsp");
+                response.sendRedirect("Dashboard.jsp");
 
             } else if (type.equals("parent")) {
                 ParentDAO parentDAO = new ParentDAO();
-                user.setBranchId(parentDAO.retrieveSpecificParentById(user.getRespective_id()).getBranch_id());
+                user.setBranchId(parentDAO.retrieveSpecificParentById(user.getRespectiveID()).getBranch_id());
                 
                 session.setAttribute("user", user);
                 session.setAttribute("role", "parent");
