@@ -124,17 +124,7 @@
                                 </ul>
                             </li>
                             
-                            <li class="submenu">
-                                <a href="#">
-                                    <i class="zmdi zmdi zmdi-graduation-cap"></i> Tutor Attendance 
-                                    <span class="caret pull-right"></span>
-                                </a>
-                                <!-- Sub menu -->
-                                <ul>
-                                    <li><a href="MarkTutorAttendance.jsp">Mark Attendance</a></li>
-                                    <li><a href="MarkTutorAttendance.jsp">View Attendance</a></li>
-                                </ul>
-                            </li>
+                            <li><a href="MarkTutorAttendance.jsp"><i class="zmdi zmdi-accounts-alt"></i>Tutor Attendance</a></li>
                             
                             <li class="submenu">
                                 <a href="#">

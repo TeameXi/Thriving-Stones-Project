@@ -1,10 +1,9 @@
 package controller;
 
-
 import entity.Lesson;
-import entity.Student;
 import entity.Tutor;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -12,11 +11,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.ClassDAO;
 import model.LessonDAO;
-import model.LevelDAO;
-import model.StudentClassDAO;
-import model.StudentDAO;
 import model.TutorDAO;
 
 /*
@@ -44,7 +39,7 @@ public class TutorAttendanceServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        
+        PrintWriter out = response.getWriter();
         if(request.getParameter("search") != null){
             String tutorName = (String) request.getParameter("tutorName");
             Tutor tutor = TutorDAO.retrieveSpecificTutor(tutorName);
@@ -59,18 +54,20 @@ public class TutorAttendanceServlet extends HttpServlet {
             RequestDispatcher view = request.getRequestDispatcher("MarkTutorAttendance.jsp");
             view.forward(request, response);
         }
+        
         if(request.getParameter("select") != null){
             String[] lessonValues = request.getParameterValues("lessonValue");
             String tutorName = request.getParameter("tutorName");            
-            Tutor tutor = TutorDAO.retrieveSpecificTutor(tutorName);            
-           
+            Tutor tutor = TutorDAO.retrieveSpecificTutor(tutorName);    
             if(lessonValues != null){
-                for(String lessonValue: lessonValues){
-                    int lessonID = Integer.parseInt(lessonValue);
+                out.println("testing 2 ");
+                for(String lessonVal: lessonValues){
+                    out.println("lessonValue : " + lessonValues);
+                    int lessonID = Integer.parseInt(lessonVal);
                     boolean status = LessonDAO.updateTutorAttendance(lessonID, 1);                    
                     if(status){                       
-                            request.setAttribute("status", "Successfully Registered.");
-                        
+                        request.setAttribute("status", "Successfully Registered.");
+                        request.setAttribute("tutorName", tutorName);
                     }
                 }
             }

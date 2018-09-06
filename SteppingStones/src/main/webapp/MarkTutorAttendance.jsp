@@ -59,6 +59,13 @@
                 if (errorMsg != null) {
                     out.println("<div id='errorMsg' class='alert alert-danger col-md-12'><strong>"+errorMsg+"</strong></div>");
                 }
+                
+                String status = (String) request.getAttribute("status");
+                if (status != null) {
+                    out.println("<div id='errorMsg' class='alert alert-success col-md-12'><strong>"+status+"</strong></div>");
+                    response.sendRedirect("MarkTutorAttendance.jsp");
+                }
+                
                 ArrayList<Lesson> lessons = (ArrayList<Lesson>) request.getAttribute("lessons");
                 String tutorName = (String) request.getAttribute("tutorName");
                 if (lessons != null) {
@@ -72,6 +79,7 @@
                     out.println("<table class='table table-bordered'>");
                     out.println("<thead class='table_title'><tr><th>Subject</th><th>Lesson Timing</th><th>Level</th><th>Present</th></tr></thead><tbody>");
                     for (Lesson lesson : lessons) {
+                        request.setAttribute("value", lesson.getLessonid());
                         Class cls = ClassDAO.getClassByID(lesson.getClassid());
                         out.println("<tr class='table_content'><td>"+cls.getSubject()+"</td>");
                         out.println("<td>"+lesson.getLessonDateTime()+"</td>");
@@ -83,8 +91,8 @@
                                 out.println("<td>Absent</td>");
                             }else{
                         %>
-                        <td><input type= "checkbox" name ="lessonValues" value = "${value}">
-                        <input type="hidden" name="tutorName" value="${tutorName}"></td>
+                        <td><input type= "checkbox" name ="lessonValue" value = "${value}">
+                                        <input type="hidden" name="tutorName" value="${tutorName}"></td>
                         <%
                             }
                         }else if (lesson.getTutorAttended()==1){
