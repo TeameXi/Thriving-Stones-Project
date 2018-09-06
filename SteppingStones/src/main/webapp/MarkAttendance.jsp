@@ -98,7 +98,7 @@
         studentID = selectObject.value;
         classID = $("#classID").val();
         lessonID = $("#lesson").val();
-        alert(studentID);
+
         $.ajax({
             type: 'POST',
             url: 'MarkStudentAttendanceServlet',
@@ -121,10 +121,6 @@
     function retrieveStudents(selectObject){
         lessonID = selectObject.value;
         classID = $("#classID").val();
-        
-        var lessonInfo = lessonID + ' ' + classID;
-        
-        alert(lessonInfo);
         
         $.ajax({
             type: 'POST',
@@ -155,7 +151,6 @@
     
     function retrieveLessons(selectObject) {
         classID = selectObject.value;
-        alert(classID);
         $.ajax({
             type: 'POST',
             url: 'RetrieveLessonsServlet',
