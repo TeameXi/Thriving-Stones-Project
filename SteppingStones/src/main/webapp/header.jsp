@@ -17,7 +17,7 @@
         if(user != null){
             account = user.getUsername();
             branch_id = user.getBranchId();
-            user_id = user.getUserId();
+            user_id = user.getRespectiveID();
         }
         
       

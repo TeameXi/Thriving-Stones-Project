@@ -185,7 +185,7 @@
             </div> 
             <% }
             } else if (role != null && role == "tutor") {
-                ArrayList<Class> classes = ClassDAO.listAllClassesByTutorID(user.getUserId(), user.getBranchId());
+                ArrayList<Class> classes = ClassDAO.listAllClassesByTutorID(user.getRespectiveID(), user.getBranchId());
                 int numberOfStudents = 0;
                 for (Class cls : classes) {
                     numberOfStudents += studentClassDAO.retrieveNumberOfStudentByClass(cls.getClassID());

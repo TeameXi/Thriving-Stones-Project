@@ -1,3 +1,5 @@
+<%@page import="entity.Tutor"%>
+<%@page import="model.TutorDAO"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="model.ClassDAO"%>
 <%@page import="java.util.Calendar"%>
@@ -13,8 +15,11 @@
     <div class="row">
         <%            
             int year = Calendar.getInstance().get(Calendar.YEAR);
-            int tutor_id = user.getUserId();
-            String tutorName   = user.getEmail();
+            int tutor_id = user.getRespectiveID();
+            
+            TutorDAO tutors = new TutorDAO();
+            Tutor tutor = tutors.retrieveSpecificTutorById(tutor_id);
+            String tutorName   = tutor.getName();
         %>
         
         <br/>

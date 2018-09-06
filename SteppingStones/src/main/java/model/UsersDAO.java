@@ -178,7 +178,7 @@ public class UsersDAO {
             preparedStatement.setString(1, user.getUsername());
             preparedStatement.setString(2, user.getPassword());
             preparedStatement.setString(3, user.getRole());
-            preparedStatement.setInt(4, user.getRespective_id());
+            preparedStatement.setInt(4, user.getRespectiveID());
 
             int num = preparedStatement.executeUpdate();
             if (num != 0) {
