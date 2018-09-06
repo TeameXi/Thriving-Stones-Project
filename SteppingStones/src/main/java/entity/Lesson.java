@@ -7,6 +7,7 @@ public class Lesson {
     private int tutorid;
     private int tutorAttended;
     private Timestamp lessonDateTime;
+    private Timestamp updated;
 
     public Lesson(int classid, Timestamp lessonDateTime) {
         this.classid = classid;
@@ -59,6 +60,10 @@ public class Lesson {
 
     public void setLessonDateTime(Timestamp lessonDateTime) {
         this.lessonDateTime = lessonDateTime;
+    }
+    
+    public Timestamp getUpdated() {
+        return updated;
     }
     
 }

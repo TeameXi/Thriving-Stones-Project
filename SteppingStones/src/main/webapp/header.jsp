@@ -122,8 +122,20 @@
                                     <li><a href="CreateTutor.jsp">Create Tutor</a></li>
                                     <li><a href="DisplayTutors.jsp">View Tutors</a></li>
                                 </ul>
-                            </li> 
-
+                            </li>
+                            
+                            <li class="submenu">
+                                <a href="#">
+                                    <i class="zmdi zmdi zmdi-graduation-cap"></i> Tutor Attendance 
+                                    <span class="caret pull-right"></span>
+                                </a>
+                                <!-- Sub menu -->
+                                <ul>
+                                    <li><a href="MarkTutorAttendance.jsp">Mark Attendance</a></li>
+                                    <li><a href="MarkTutorAttendance.jsp">View Attendance</a></li>
+                                </ul>
+                            </li>
+                            
                             <li class="submenu">
                                 <a href="#">
                                     <i class="zmdi zmdi-book"></i> Subject

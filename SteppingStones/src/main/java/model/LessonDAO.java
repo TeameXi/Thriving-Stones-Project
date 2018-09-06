@@ -112,6 +112,26 @@ public class LessonDAO {
         
         return lessons;
     }
+    
+    public static ArrayList<Lesson> retrieveLessonsByTutor(int tutorid) {
+        ArrayList<Lesson> lessons = new ArrayList<>();
+        String sql = "select lesson_id, class_id, tutor_id, tutor_attended, lesson_date_time from lesson where tutor_id = ?";
+        System.out.println(sql);
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, tutorid);            
+            ResultSet rs = stmt.executeQuery();
+           
+            while(rs.next()){
+                Lesson lesson = new Lesson(rs.getInt(1),rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getTimestamp(5));
+                lessons.add(lesson);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        
+        return lessons;
+    }
     public ArrayList<Lesson> retrieveAllLessonListsDateRange(Timestamp startDate, Timestamp endDate) {
         ArrayList<Lesson> lessons = new ArrayList<>();
         String sql = "select lesson_id, class_id, tutor_id, tutor_attended, lesson_date_time from lesson where lesson_date_time between ? and ?";
@@ -154,5 +174,22 @@ public class LessonDAO {
             System.out.println(e);
         }       
         return les;
+    }
+     
+    public static boolean updateTutorAttendance(int lessonid, int attended) {        
+        try (Connection conn = ConnectionManager.getConnection();) {
+            conn.setAutoCommit(false);
+            String sql = "update lesson set tutor_attended = ? where lesson_id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, attended);
+            stmt.setInt(2, lessonid);          
+
+            stmt.executeUpdate(); 
+            conn.commit();
+            return true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
     }
 }

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class TutorDAO {
 
-    public Tutor retrieveSpecificTutor(String tutorName) {
+    public static Tutor retrieveSpecificTutor(String tutorName) {
         String select_tutor = "SELECT * FROM tutor WHERE tutor_fullname = ?";
         try (Connection conn = ConnectionManager.getConnection();
                 PreparedStatement preparedStatement = conn.prepareStatement(select_tutor)) {
