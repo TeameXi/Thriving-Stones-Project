@@ -99,7 +99,7 @@ public class StudentClassDAO {
         return studentCount;
     }
     
-    public static ArrayList<Student> listAllStudentByClass(int classID){
+    public static ArrayList<Student> listAllStudentsByClass(int classID){
         ArrayList<Student> studentList = new ArrayList<Student>();
         try (Connection conn = ConnectionManager.getConnection();) {
             String sql = "select * from student s, class_student_rel cs where s.student_id = cs.student_id and class_id = ?;";
