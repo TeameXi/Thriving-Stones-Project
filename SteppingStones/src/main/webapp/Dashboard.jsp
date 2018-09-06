@@ -215,18 +215,18 @@
                     <!-- /.info-box -->
                 </div>
             </div>
+            </br>
             <% if (classes.size() != 0 && numberOfStudents != 0) { %>
             <div class="col-md-4">
                 <p class="text-center">
                     <strong>NUMBER OF STUDENT PER CLASS</strong>
-                </p>
-
+                </p>                
                 <%
                     for (Class clss : classes) {
                         int percentage = (studentClassDAO.retrieveNumberOfStudentByClass(clss.getClassID()) * 100) / numberOfStudents;
                 %>
                 <div class="progress-group">
-                    <span class="progress-text"><%=clss.getClassDay()%>  <%=clss.getClassTime()%></span>
+                    <span class="progress-text"><%=clss.getSubject()%>  (<%=clss.getClassDay()%>  <%=clss.getClassTime()%>)</span>
                     <span class="progress-number"><b><%=studentClassDAO.retrieveNumberOfStudentByClass(clss.getClassID())%></b></span>
 
                     <div class="progress sm">

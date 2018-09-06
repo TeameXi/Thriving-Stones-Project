@@ -73,13 +73,33 @@ public class LessonDAO {
             return false;
         }
     }
-    public ArrayList<Lesson> retrieveAllLessonLists(int classid) {
+    public static ArrayList<Lesson> retrieveAllLessonLists(int classid) {
         ArrayList<Lesson> lessons = new ArrayList<>();
         String sql = "select lesson_id, class_id, tutor_id, tutor_attended, lesson_date_time from lesson where class_id = ?";
         System.out.println(sql);
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, classid);
+            ResultSet rs = stmt.executeQuery();
+           
+            while(rs.next()){
+                Lesson lesson = new Lesson(rs.getInt(1),rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getTimestamp(5));
+                lessons.add(lesson);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        
+        return lessons;
+    }
+    public static ArrayList<Lesson> retrieveAllLessonListsByTutor(int classid, int tutorid) {
+        ArrayList<Lesson> lessons = new ArrayList<>();
+        String sql = "select lesson_id, class_id, tutor_id, tutor_attended, lesson_date_time from lesson where class_id = ? and tutor_id = ?";
+        System.out.println(sql);
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, classid);
+            stmt.setInt(2, tutorid);
             ResultSet rs = stmt.executeQuery();
            
             while(rs.next()){
@@ -112,5 +132,27 @@ public class LessonDAO {
         }
         
         return lessons;
+    }
+    
+     public static Lesson getLessonByID(int lessonID){
+        Lesson les = null;
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement("select * from lesson where lesson_id = ?");
+            stmt.setInt(1, lessonID);
+            ResultSet rs = stmt.executeQuery();
+
+            while(rs.next()){
+                int lessonid = rs.getInt("lesson_id");
+                int classid = rs.getInt("class_id");
+                int tutorid = rs.getInt("tutor_id");
+                int tutorAttended = rs.getInt("tutor_attended");
+                Timestamp lessonDateTime = rs.getTimestamp("lesson_date_time");
+               
+                les = new Lesson(lessonid, classid, tutorid, tutorAttended, lessonDateTime);
+            }
+        }catch(Exception  e){
+            System.out.println(e);
+        }       
+        return les;
     }
 }

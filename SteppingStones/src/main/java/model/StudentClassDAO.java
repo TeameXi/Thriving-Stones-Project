@@ -1,5 +1,7 @@
 package model;
 import connection.ConnectionManager;
+import entity.Lesson;
+import entity.Student;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -95,5 +97,36 @@ public class StudentClassDAO {
         }
         
         return studentCount;
+    }
+    
+    public static ArrayList<Student> listAllStudentByClass(int classID){
+        ArrayList<Student> studentList = new ArrayList<Student>();
+        try (Connection conn = ConnectionManager.getConnection();) {
+            String sql = "select * from student s, class_student_rel cs where s.student_id = cs.student_id and class_id = ?;";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, classID);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){               
+                int studentID = rs.getInt("student_id");
+                String studentNRIC = rs.getString("student_nric");
+                String name = rs.getString("student_name");
+                String BOD = rs.getString("birth_date");
+                String gender = rs.getString("gender");
+                int levelID = rs.getInt("level_id");
+                int branchID = rs.getInt("branch_id");
+                int phone = rs.getInt("phone");
+                String address = rs.getString("address");
+                String email = rs.getString("email");
+                String password = rs.getString("password");
+                double reqAmt = rs.getDouble("required_amount");
+                double outstandingAmt = rs.getDouble("outstanding_amount");
+                String level = LevelDAO.retrieveLevel(levelID);
+                Student student = new Student(studentID, studentNRIC, name, BOD, gender, level, branchID, phone, address, email, password, reqAmt, outstandingAmt);
+                studentList.add(student);
+            } 
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return studentList;
     }
 }

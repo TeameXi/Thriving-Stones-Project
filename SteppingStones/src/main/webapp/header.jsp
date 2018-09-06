@@ -163,8 +163,8 @@
                                 </a>
                                 <!-- Sub menu -->
                                 <ul>
-                                    <li><a href="CreateBranch.jsp">Mark Attendance</a></li>
-                                    <li><a href="DisplayBranches.jsp">View Attendance</a></li>
+                                    <li><a href="MarkAttendance.jsp">Mark Attendance</a></li>
+                                    <li><a href="DisplayAttendance.jsp">View Attendance</a></li>
                                 </ul>
                             </li>
                             <li><a href="stats.html"><i class="zmdi zmdi-chart"></i>Your Attendance</a></li>
