@@ -11,8 +11,12 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.ClassDAO;
 import model.LessonDAO;
+import model.SubjectDAO;
 import model.TutorDAO;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -39,40 +43,58 @@ public class TutorAttendanceServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        if(request.getParameter("search") != null){
-            String tutorName = (String) request.getParameter("tutorName");
-            Tutor tutor = TutorDAO.retrieveSpecificTutor(tutorName);
-            if(tutor == null){
-                request.setAttribute("errorMsg", tutorName + " Not Exists in Database, Please Create Tutor First.");           
-            }else{
-                ArrayList<Lesson> lessons = LessonDAO.retrieveLessonsByTutor(tutor.getTutorId());
-                request.setAttribute("lessons", lessons);                
-                request.setAttribute("tutorName", tutorName);
-            }
+        try (PrintWriter out = response.getWriter()) {
+            System.out.println("HEREEEEE");
+            JSONArray array = new JSONArray();
             
-            RequestDispatcher view = request.getRequestDispatcher("MarkTutorAttendance.jsp");
-            view.forward(request, response);
-        }
-        
-        if(request.getParameter("select") != null){
-            String[] lessonValues = request.getParameterValues("lessonValue");
-            String tutorName = request.getParameter("tutorName");            
-            Tutor tutor = TutorDAO.retrieveSpecificTutor(tutorName);    
-            if(lessonValues != null){
-                out.println("testing 2 ");
-                for(String lessonVal: lessonValues){
-                    out.println("lessonValue : " + lessonValues);
-                    int lessonID = Integer.parseInt(lessonVal);
-                    boolean status = LessonDAO.updateTutorAttendance(lessonID, 1);                    
-                    if(status){                       
-                        request.setAttribute("status", "Successfully Registered.");
-                        request.setAttribute("tutorName", tutorName);
+            String action = request.getParameter("action");
+            System.out.println(action);
+            if(action.equals("retrieve")){
+                int tutorID = Integer.parseInt(request.getParameter("tutorID"));
+                LessonDAO lessons = new LessonDAO();
+                ArrayList<Lesson> lessonList = lessons.retrieveLessonsByTutor(tutorID);
+
+                ClassDAO classes = new ClassDAO();
+
+                if(lessonList != null || !lessonList.isEmpty()){
+                    for(Lesson l: lessonList){
+                        int lessonID = l.getLessonid();
+                        if(l.getTutorAttended() == 0){
+                            String subject = classes.getClassByID(l.getClassid()).getSubject();
+                            String date = l.getLessonDateTime().toString();
+                            String level = classes.getClassByID(l.getClassid()).getLevel();
+
+
+                            JSONObject obj = new JSONObject();
+                            obj.put("lessonID", lessonID);
+                            obj.put("date", date);
+                            obj.put("subject", subject);
+                            obj.put("level", level);
+
+                            array.put(obj);
+                        }
                     }
+                    String json = array.toString();
+                    System.out.println(json);
+                    out.println(json);
                 }
+            }else{
+                int lessonID = Integer.parseInt(request.getParameter("lessonID"));
+                LessonDAO lessons = new LessonDAO();
+                boolean attendance = lessons.retrieveAttendanceForLesson(lessonID);
+                boolean present = false;
+                if(attendance){
+                    lessons.updateTutorAttendance(lessonID, 0);
+                } else{
+                    lessons.updateTutorAttendance(lessonID, 1);
+                    present = true;
+                }
+                
+                JSONObject json = new JSONObject();
+                json.put("present", present);
+                String jsonString = json.toString();
+                out.println(jsonString);
             }
-            RequestDispatcher view = request.getRequestDispatcher("MarkTutorAttendance.jsp");
-            view.forward(request, response);
         }
     }
 

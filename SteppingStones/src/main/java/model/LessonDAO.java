@@ -5,8 +5,11 @@ import entity.Lesson;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class LessonDAO {
     public void updateLesson(String tutorID, String level, String subject) {
@@ -191,5 +194,23 @@ public class LessonDAO {
             System.out.println(e.getMessage());
             return false;
         }
+    }
+    
+    public boolean retrieveAttendanceForLesson(int lessonID){
+        String sql = "select tutor_attended from lesson where lesson_id = ?";
+        
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1,lessonID);
+            
+            ResultSet rs = stmt.executeQuery();
+            
+            while(rs.next()){
+                return rs.getBoolean(1);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(LessonDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
     }
 }
