@@ -12,7 +12,7 @@
     <%               
         int tutorId = 0;
         if(user != null){
-            tutorId = user.getUserId();
+            tutorId = user.getRespectiveID();
         }
         
         TutorDAO tutorDao = new TutorDAO();
