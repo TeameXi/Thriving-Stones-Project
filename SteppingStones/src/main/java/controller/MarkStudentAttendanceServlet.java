@@ -40,10 +40,15 @@ public class MarkStudentAttendanceServlet extends HttpServlet {
                 int classID = Integer.parseInt(request.getParameter("classID"));
                 int tutorID = Integer.parseInt(request.getParameter("tutorID"));
 
-                System.out.println(studentID + " " + lessonID + " " + classID + " " + tutorID);
-
                 AttendanceDAO attendance = new AttendanceDAO();
-                boolean status = attendance.updateStudentAttendance(studentID, lessonID, classID, tutorID);
+                boolean attendanceTaken = attendance.retrieveStudentAttendance(studentID, lessonID);
+                boolean status = false;
+                
+                if(attendanceTaken){
+                    status = attendance.updateStudentAttendance(studentID, lessonID, classID, tutorID, false);
+                } else{
+                    status = attendance.updateStudentAttendance(studentID, lessonID, classID, tutorID, true);
+                }
 
                 JSONObject obj = new JSONObject();
                 obj.put("status", status);

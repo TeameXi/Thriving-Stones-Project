@@ -18,14 +18,14 @@ import java.util.logging.Logger;
  * @author Xin
  */
 public class AttendanceDAO {
-    public boolean updateStudentAttendance(int studentID, int lessonID, int classID, int tutorID){
+    public boolean updateStudentAttendance(int studentID, int lessonID, int classID, int tutorID, boolean attended){
         String sql = "insert into student_attendance(lesson_id, student_id, student_attended, tutor_marked) values(?, ?, ?, ?)";
         
         try(Connection conn = ConnectionManager.getConnection()){
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, lessonID);
             stmt.setInt(2, studentID);
-            stmt.setBoolean(3, true);
+            stmt.setBoolean(3, attended);
             stmt.setInt(4, tutorID);
             
             int rows = stmt.executeUpdate();
