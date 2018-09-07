@@ -11,7 +11,7 @@
 
 <div class="col-md-10">
     <div class="row" id="errorMsg"></div>
-    <div style="text-align: center;margin: 20px;"><span class="tab_active">Mark Attendance </span> / <a href="DisplayTutorAttendance.jsp">View Attendance</a></div>
+    <div style="text-align: center;margin: 20px;"><a href="MarkTutorAttendance.jsp">Mark Attendance </a> / <span class="tab_active">View Attendance</span></h5></div>
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-7">
@@ -21,7 +21,7 @@
                     <div class="col-lg-7 inputGroupContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-badge-check"></i></span>
-                            <select name="tutorID" class="form-control" onchange="retrieveTutorLessons()" id="tutorID">
+                            <select name="tutorID" class="form-control" onchange="retrieveTutorAttendance()" id="tutorID">
                                 <option value="">Select Tutor</option>
                                 <%                                    
                                     TutorDAO tutors = new TutorDAO();
@@ -54,7 +54,7 @@
 
 <script>
     $(function () {
-        $('#studentAttendanceForm').bootstrapValidator({
+        $('#tutorAttendanceForm').bootstrapValidator({
             // To use feedback icons, ensure that you use Bootstrap v3.1.0 or later
             feedbackIcons: {
                 valid: 'glyphicon glyphicon-ok',
@@ -75,32 +75,9 @@
 </script>
 
 <script>
-    function markAttendance(selectObject){
-        lessonID = selectObject.value;
-        action = 'update';
-        
-        $.ajax({
-            type: 'POST',
-            url: 'TutorAttendanceServlet',
-            dataType: 'JSON',
-            data: {lessonID: lessonID, action: action},
-            success: function (data) {
-                if(data.length !== 0){
-                    if(data.status){
-                        html = '<div class="alert alert-success col-md-12"><strong>Success!</strong> Attendance recorded successfully!</div>';
-                    }else{
-                        html = '<div class="alert alert-success col-md-12"><strong>Failure!</strong> Fail to record attendance!</div>';
-                    }
-                    $("#errorMsg").html(html);
-                    $('#errorMsg').fadeIn().delay(1000).fadeOut();
-                }
-            }
-        });
-    }
-    
-    function retrieveTutorLessons(){
+    function retrieveTutorAttendance(){
         tutorID = $("#tutorID").val();
-        action = 'retrieve';
+        action = 'retrieveForDisplay';
         
         $.ajax({
             type: 'POST',
@@ -114,7 +91,12 @@
 
                     var i;
                     for(i = 0; i < data.length; i++){
-                        html += '<tr class="table_content"><td>' + data[i].subject + '</td><td>' + data[i].date + '</td><td>' + data[i].level + '</td><td><input type="checkbox" onchange="markAttendance(this)" name="studentID" value=' + data[i].lessonID + '></td></tr>';
+                        html += '<tr class="table_content"><td>' + data[i].subject + '</td><td>' + data[i].date + '</td><td>' + data[i].level + '</td>';
+                        if(data[i].status){
+                            html += '<td>Present</td></tr>';
+                        }else{
+                            html += '<td>Absent</td></tr>';
+                        }
                     }
 
                     html +='</tbody></table><br/></form><br>';
