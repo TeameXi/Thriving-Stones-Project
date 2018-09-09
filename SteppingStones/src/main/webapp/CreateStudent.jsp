@@ -17,17 +17,8 @@
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-7">
-            <h3>Students Details</h3><br/>
+            <h4>Students Details</h4><br/>
             <form id="createTutorForm" method="POST" class="form-horizontal" action="CreateStudentServlet">
-                <div class="form-group">
-                    <label class="col-lg-2 control-label">NRIC</label>  
-                    <div class="col-lg-7 inputGroupContainer">
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="zmdi zmdi-account-box"></i></span>
-                            <input id="studentNRIC"  name="studentNRIC" placeholder="NRIC" class="form-control"  type="text">
-                        </div>
-                    </div>
-                </div>
                 
                 <% if(user != null){
                         out.println("<input type='hidden' name='branch' value='"+user.getBranchId()+"'/>");
@@ -35,7 +26,7 @@
                 %>
 
                 <div class="form-group">
-                    <label class="col-lg-2 control-label">Name**</label>  
+                    <label class="col-lg-2 control-label">Name</label>  
                     <div class="col-lg-7 inputGroupContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-account"></i></span>
@@ -44,38 +35,8 @@
                     </div>
                 </div>
                 
-                
                 <div class="form-group">
-                    <label class="col-lg-2 control-label">Birth Date</label>  
-                    <div class="col-lg-7 inputGroupContainer">
-                  
-                            <div class='input-group'>
-                                <span class="input-group-addon">
-                                    <i class="glyphicon glyphicon-calendar"></i>
-                                </span>
-                                <input name="bday" type='text' class="form-control" id="bday" />
-                                
-                            </div>
-                       
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label class="col-lg-2 control-label">Gender</label>  
-                    <div class="col-lg-7 inputGroupContainer">
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="zmdi zmdi-male-female"></i></span>
-                            <select name="gender" class="form-control" >
-                                <option value="-1" >Select Gender</option>
-                                <option value="M">Male</option>
-                                <option value="F">Female</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label class="col-lg-2 control-label">Academic Level**</label>  
+                    <label class="col-lg-2 control-label">Academic Level</label>  
                     <div class="col-lg-7 inputGroupContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-badge-check"></i></span>
@@ -96,7 +57,7 @@
                 
 
                 <div class="form-group">
-                    <label class="col-lg-2 control-label">Phone* </label>  
+                    <label class="col-lg-2 control-label">Mobile</label>  
                     <div class="col-lg-7 inputGroupContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-phone"></i></span>
@@ -106,7 +67,7 @@
                 </div>
                             
                 <div class="form-group">
-                    <label class="col-lg-2 control-label">Email*</label>  
+                    <label class="col-lg-2 control-label">Email</label>  
                     <div class="col-lg-7 inputGroupContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-email"></i></span>
@@ -114,23 +75,21 @@
                         </div>
                     </div>
                 </div>
-
+                            
                 <div class="form-group">
-                    <label class="col-lg-2 control-label">Address</label>  
+                    <label class="col-lg-2 control-label">Registration Fees</label>  
                     <div class="col-lg-7 inputGroupContainer">
                         <div class="input-group">
-                            <span class="input-group-addon"><i class="zmdi zmdi-home"></i></span>
-                            <textarea name="address" placeholder="Address" class="form-control"></textarea>
+                            <span class="input-group-addon"><i class="zmdi zmdi-money"></i></span>
+                            <input name="regFees" id="phone" class="form-control" type="text">
                         </div>
                     </div>
                 </div>
 
-                <hr/>
-
-                <h3>Parents Details</h3><br/>
+                <h4>Parents Details</h4><br/>
 
                  <div class="form-group">
-                    <label class="col-lg-2 control-label">Fullname**</label>  
+                    <label class="col-lg-2 control-label">Fullname</label>  
                     <div class="col-lg-7 inputGroupContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-account"></i></span>
@@ -138,39 +97,9 @@
                         </div>
                     </div>
                 </div>
-                
-                       <div class="form-group">
-                    <label class="col-lg-2 control-label">Nationality </label>  
-                    <div class="col-lg-7 inputGroupContainer">
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="zmdi zmdi-flag"></i></span>
-                            <input id="parentName"  name="parentNationality" placeholder="Nationality" class="form-control"  type="text">
-                        </div>
-                    </div>
-                </div>
-                
-                      <div class="form-group">
-                    <label class="col-lg-2 control-label">Company </label>  
-                    <div class="col-lg-7 inputGroupContainer">
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="zmdi zmdi-city"></i></span>
-                            <input id="parentCompany"  name="parentCompany" placeholder="Company" class="form-control"  type="text">
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label class="col-lg-2 control-label">Designation </label>  
-                    <div class="col-lg-7 inputGroupContainer">
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="zmdi zmdi-case"></i></span>
-                            <input id="parentDesgination"  name="parentDesgination" placeholder="Designation" class="form-control"  type="text">
-                        </div>
-                    </div>
-                </div>
 
                <div class="form-group">
-                    <label class="col-lg-2 control-label">Mobile** </label>  
+                    <label class="col-lg-2 control-label">Mobile</label>  
                     <div class="col-lg-7 inputGroupContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-phone"></i></span>
@@ -181,7 +110,7 @@
                 
                 
                 <div class="form-group">
-                    <label class="col-lg-2 control-label">Email**</label>  
+                    <label class="col-lg-2 control-label">Email</label>  
                     <div class="col-lg-7 inputGroupContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-email"></i></span>
@@ -298,6 +227,16 @@ $(function () {
                     }
                 }
             },
+            regFees: {
+                validators: {
+                    numeric: {
+                        message: 'Please enter valid amount'
+                    },
+                    notEmpty: {
+                        message: 'Please enter registration amount'
+                    }
+                }
+            },
             parentPhone: {
                 validators: {
                     integer: {
@@ -322,9 +261,6 @@ $(function () {
             },
             parentEmail:{
                 validators: {
-                    notEmpty: {
-                        message: 'Enter Email Address'
-                    },
                     emailAddress: {
                         message: 'Please enter valid email address'
                     }

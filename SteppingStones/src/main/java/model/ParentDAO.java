@@ -10,21 +10,18 @@ import java.util.ArrayList;
 
 public class ParentDAO {
 
-    public static int insertParent(String name, String nationality, String company, String designation, int phone, String email, String password, int branchID) {
+    public static int insertParent(String name, int phone, String email, String password, int branchID) {
         
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            String sql = "insert into parent(name, nationality, company, designation, phone, email, password, branch_id)"
-                    + " value(?, ?, ?, ?, ?, ?, MD5(?), ?)";
+            String sql = "insert ignore into parent(name, phone, email, password, branch_id)"
+                    + " value(?, ?, ?, MD5(?), ?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, name);
-            stmt.setString(2, nationality);
-            stmt.setString(3, company);
-            stmt.setString(4, designation);
-            stmt.setInt(5, phone);
-            stmt.setString(6, email);
-            stmt.setString(7, password);
-            stmt.setInt(8, branchID);
+            stmt.setInt(2, phone);
+            stmt.setString(3, email);
+            stmt.setString(4, password);
+            stmt.setInt(5, branchID);
             stmt.executeUpdate();
             conn.commit();
             ResultSet rs = stmt.getGeneratedKeys();
@@ -71,7 +68,7 @@ public class ParentDAO {
         }
         return deletedStatus;
     }
-
+     
     public static String retrieveParentByStudentID(int studentID) {
         String parentInfo = "";
         try (Connection conn = ConnectionManager.getConnection()) {

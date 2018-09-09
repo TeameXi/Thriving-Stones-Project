@@ -11,25 +11,21 @@ import java.util.LinkedHashMap;
 
 public class StudentDAO {
 
-    public static int insertStudent(String studentNRIC, String studentName, int phone, String address, String BOD, String gender, String stuEmail, String stuPassword, int level_id, int branch_id) {
+    public static int insertStudent(String studentName, int phone, String stuEmail, String stuPassword, int level_id, int branch_id) {
 
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            String sql = "insert ignore into student(student_name, phone, address, birth_date, gender, email, password, required_amount, outstanding_amount, level_id, branch_id, student_nric)"
-                    + " value(?, ?, ?, ?, ?, ?, MD5(?), ?, ? ,?, ?, ? )";
+            String sql = "insert ignore into student(student_name, phone, email, password, required_amount, outstanding_amount, level_id, branch_id)"
+                    + " value(?, ?, ?, MD5(?), ?, ? ,?, ?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, studentName);
             stmt.setInt(2, phone);
-            stmt.setString(3, address);
-            stmt.setString(4, BOD);
-            stmt.setString(5, gender);
-            stmt.setString(6, stuEmail);
-            stmt.setString(7, stuPassword);
-            stmt.setDouble(8, 0);
-            stmt.setDouble(9, 0);
-            stmt.setInt(10, level_id);
-            stmt.setInt(11, branch_id);
-            stmt.setString(12, studentNRIC);
+            stmt.setString(3, stuEmail);
+            stmt.setString(4, stuPassword);
+            stmt.setDouble(5, 0);
+            stmt.setDouble(6, 0);
+            stmt.setInt(7, level_id);
+            stmt.setInt(8, branch_id);
             stmt.executeUpdate();
             conn.commit();
             ResultSet rs = stmt.getGeneratedKeys();
