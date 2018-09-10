@@ -79,29 +79,33 @@
                 if(classes.size() > 0){
             %> 
                     <br><h4>Register for Classes:</h4> <br>                
-                    <form action="RegisterForClassesServlet" method="post">
+                    <form action="RegisterForClassesServlet" method="post" id="registrationform">
                         <input type="hidden" value="<%=branch_id%>" name="branch_id"/>
                     <%
                         out.println("<table class='table table-bordered'>");
-                        out.println("<thead class='table_title'><tr><th></th><th>Class</th><th>Class Timing</th><th>Starting Date</th><th>Monthly Fees</th></tr></thead><tbody>");
+                        out.println("<thead class='table_title'><tr><th></th><th>Class</th><th>Class Timing</th><th>Starting Date</th><th>Monthly Fees</th><th>Join Date</th></tr></thead><tbody>");
                  
                         for (Class cls : classes) {
                             request.setAttribute("value", cls.getClassID());
+                            String clsStartDate = cls.getStartDate();
                     %>
                            
 
                                 <tr class="table_content"><td><input type= "checkbox" name ="classValue" value = "${value}">
+                                        <input type='hidden' name='clsStartDate' value="<%=clsStartDate%>">
                                         <input type="hidden" name="studentName" value="${studentName}"></td>
                     <%
                             out.println("<td>"+cls.getSubject()+"</td>");
                             out.println("<td>"+cls.getClassTime()+" ( "+cls.getClassDay()+" )"+"</td>");
                             out.println("<td>"+cls.getStartDate()+"</td>");
                             out.println("<td>"+cls.getMthlyFees()+"</td>");
-                            out.println("</tr>");   
+                            out.println("<td><input name='joinDate' type='text' class='form-control' id ='joinDate' placeholder='YYYY-MM-DD'></td>");
+                            out.println("</tr>");    
                                    
                         }
                         out.println("</tbody></table>");
                     %>
+                    
                                 <br/>
                                 <div class="form-group">
                                     <div>
@@ -123,10 +127,19 @@
 </div>
 </div>
 <%@include file="footer.jsp"%>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.css" rel="stylesheet">
+
 <script>
     $(function () {
         if($('#errorMsg').length){
            $('#errorMsg').fadeIn().delay(3000).fadeOut();
         }
+        
+        $('#joinDate').datetimepicker({
+            format: 'YYYY-MM-DD'
+        });
     });
+    
 </script>

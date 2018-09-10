@@ -10,14 +10,19 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class StudentClassDAO {
-    public static boolean saveStudentToRegisterClass(int classID, int studentID){
+    public static boolean saveStudentToRegisterClass(int classID, int studentID, double deposit, double outstandingDeposit, double tuitionFee, double outstandingTuitionFee, String joinDate){
         boolean status = false;
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            String sql = "insert into class_student_rel(class_id, student_id) value(?, ?)";
+            String sql = "insert into class_student_rel(class_id, student_id, deposit_fees, outstanding_deposit, tuition_fees, outstanding_tuition_fee, join_date) value(?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, classID);
             stmt.setInt(2, studentID);
+            stmt.setDouble(3, deposit);
+            stmt.setDouble(4, outstandingDeposit);
+            stmt.setDouble(5, tuitionFee);
+            stmt.setDouble(6, outstandingTuitionFee);
+            stmt.setString(7, joinDate);
             stmt.executeUpdate(); 
             conn.commit();
             status = true;
@@ -78,9 +83,6 @@ public class StudentClassDAO {
         }
         return classSub;
     }
-    
-    
-  
   
     public int retrieveNumberOfStudentByClass(int classID){
         int studentCount = 0;

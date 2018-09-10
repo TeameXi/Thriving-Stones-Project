@@ -114,6 +114,18 @@
                             
                             <li class="submenu">
                                 <a href="#">
+                                    <i class="zmdi zmdi-book"></i> Register For Classes
+                                    <span class="caret pull-right"></span>
+                                </a>
+                                <!-- Sub menu -->
+                                <ul>
+                                    <li><a href="RegisterForClasses.jsp">Individual Class Registration</a></li>
+                                    <li><a href="BulkClassRegistration.jsp">Bulk Class Registration</a></li>
+                                </ul>
+                            </li>
+                            
+                            <li class="submenu">
+                                <a href="#">
                                     <i class="zmdi zmdi-accounts-alt"></i> Tutor
                                     <span class="caret pull-right"></span>
                                 </a>
@@ -137,7 +149,8 @@
                                     <li><a href="DisplaySubjects.jsp">View Subjects</a></li>
                                 </ul>
                             </li>
-                            <li><a href="RegisterForClasses.jsp"><i class="zmdi zmdi-library"></i>Register For Classes</a></li>
+                            
+                            <!-- <li><a href="RegisterForClasses.jsp"><i class="zmdi zmdi-library"></i>Register For Classes</a></li> -->
                             
                             <li class="submenu">
                                 <a href="#">

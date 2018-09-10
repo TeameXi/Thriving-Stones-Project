@@ -129,6 +129,36 @@ public class StudentDAO {
 
         return students;
     }
+    
+    public static ArrayList<Student> listAllStudentsByLevel(int levelID){
+        ArrayList<Student> studentList = new ArrayList<Student>();
+        try (Connection conn = ConnectionManager.getConnection();) {
+            String sql = "select * from student where level_id = ?;";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, levelID);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){               
+                int studentID = rs.getInt("student_id");
+                String studentNRIC = rs.getString("student_nric");
+                String name = rs.getString("student_name");
+                String BOD = rs.getString("birth_date");
+                String gender = rs.getString("gender");
+                int branchID = rs.getInt("branch_id");
+                int phone = rs.getInt("phone");
+                String address = rs.getString("address");
+                String email = rs.getString("email");
+                String password = rs.getString("password");
+                double reqAmt = rs.getDouble("required_amount");
+                double outstandingAmt = rs.getDouble("outstanding_amount");
+                String level = LevelDAO.retrieveLevel(levelID);
+                Student student = new Student(studentID, studentNRIC, name, BOD, gender, level, branchID, phone, address, email, password, reqAmt, outstandingAmt);
+                studentList.add(student);
+            } 
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return studentList;
+    }
 
     public static Student retrieveStudentbyID(int studentID, int branch_id) {
         Student stu = null;
@@ -159,6 +189,7 @@ public class StudentDAO {
         }
         return stu;
     }
+    
     public static Student retrieveStudentbyID(int studentID) {
         Student stu = null;
         try (Connection conn = ConnectionManager.getConnection()) {

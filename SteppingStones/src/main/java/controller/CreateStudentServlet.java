@@ -106,8 +106,6 @@ public class CreateStudentServlet extends HttpServlet {
         }
 
         int insertParent = ParentDAO.insertParent(parentName, parentPhone, parentEmail, parentPassword, branchID);
-        System.out.println(insertStudent);
-        System.out.println(insertParent);
         if(insertParent>0){
             UsersDAO userDAO = new UsersDAO();
             String username = parentName.replace(' ', '.');

@@ -89,8 +89,8 @@
                 <h4>Parents Details</h4><br/>
 
                  <div class="form-group">
-                    <label class="col-lg-2 control-label">Fullname</label>  
-                    <div class="col-lg-7 inputGroupContainer">
+                    <label class="col-lg-2 control-label">Full name</label>  
+                    <div class="col-lg-7 inputGroupContainer"> 
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-account"></i></span>
                             <input id="parentName"  name="parentName" placeholder="Parent Name" class="form-control"  type="text">

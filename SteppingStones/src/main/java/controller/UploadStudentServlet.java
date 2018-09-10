@@ -118,7 +118,8 @@ public class UploadStudentServlet extends HttpServlet {
                 ParentChildRelDAO pcrDAO = new ParentChildRelDAO();
                 for (String key: studParRel.keySet()){
                     String value = studParRel.get(key);
-                    pcrDAO.insertParentChildRel(key, value, branch_id);
+                    int studentID = StudentDAO.retrieveStudentID(key);
+                    pcrDAO.insertParentChildRel(value, studentID, branch_id);
                 }
                 HttpSession session = request.getSession();
                 session.setAttribute("existingUserLists", existingUsers);
