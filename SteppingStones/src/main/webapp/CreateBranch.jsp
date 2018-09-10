@@ -110,9 +110,8 @@ $(function () {
                     integer: {
                         message: 'Please enter valid phone number'
                     },
-                    between: {
-                        min: 80000000,
-                        max: 99999999,
+                    regexp: {
+                        regexp: /^(6|8|9)[0-9]{7}$/,
                         message: 'Please enter valid phone number'
                     }
                 }

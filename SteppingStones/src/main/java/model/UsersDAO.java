@@ -207,13 +207,13 @@ public class UsersDAO {
         }
         return -1;
     }
-    public static boolean deleteUserByIdAndRole(int relative_id, String role) {
+    public static boolean deleteUserByIdAndRole(int respective_id, String role) {
         boolean deletedStatus = false;
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            String sql = "delete from users where relative_id = ? and role = ?";
+            String sql = "delete from users where respective_id = ? and role = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setInt(1, relative_id);
+            stmt.setInt(1, respective_id);
             stmt.setString(2, role);
             stmt.executeUpdate();
             conn.commit();
