@@ -19,7 +19,7 @@
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-7">
-            <form id="studentAttendanceForm" method="POST" class="form-horizontal" action="MarkStudentAttendanceServlet">
+            <form id="bulkRegistrationForm" method="POST" class="form-horizontal" action="BulkClassRegistrationServlet">
                 <div class="form-group">
                     <label class="col-lg-2 control-label">Class</label>  
                     <div class="col-lg-7 inputGroupContainer">
@@ -27,7 +27,8 @@
                             <span class="input-group-addon"><i class="zmdi zmdi-badge-check"></i></span>
                             <select name="classID" class="form-control" onchange="retrieveStudents(this)" id="classID">
                                 <option value="">Select Class</option>
-                                <%                                    ClassDAO classes = new ClassDAO();
+                                <%                                    
+                                    ClassDAO classes = new ClassDAO();
                                     ArrayList<Class> classList = classes.listAllClasses(branch_id);
 
                                     for (Class c : classList) {
@@ -58,7 +59,7 @@
 
 <script>
     $(function () {
-        $('#studentAttendanceForm').bootstrapValidator({
+        $('#bulkRegistrationForm').bootstrapValidator({
             // To use feedback icons, ensure that you use Bootstrap v3.1.0 or later
             feedbackIcons: {
                 valid: 'glyphicon glyphicon-ok',
@@ -70,20 +71,6 @@
                     validators: {
                         notEmpty: {
                             message: 'Please select a class'
-                        }
-                    }
-                },
-                'outstandingDeposit[]':{
-                    validators: {
-                        numeric: {
-                            message: 'Please enter valid amount'
-                        }
-                    }
-                },
-                outstandingTuitionFees:{
-                    validators: {
-                        numeric: {
-                            message: 'Please enter valid amount'
                         }
                     }
                 }
@@ -106,15 +93,17 @@
                 var studentTable = document.getElementById('studentTable');
                 if(data.length !== 0){
                     var html = '<br><h4>Tick students to enroll</h4><br>';
+                    
                     html += '<table class="table table-bordered"><thead class="table_title"><tr><th>Ticker</th><th>Student Name</th><th>Outstanding Deposit</th><th>Outstanding Tuition Fees</th></tr><tbody>';
                     var i;
                     for(i = 0; i < data.length; i++){
                         html += '<tr class="table_content"><td><input type="checkbox" onchange="markAttendance(this)" name="studentID" value=' + data[i].student + '></td><td>' + data[i].name + '</td>\n\
-                                    <td><input type ="number" name ="outstandingDeposit[]" class="form-control"></td>\n\
-                                    <td><input type ="number" name ="outstandingTuitionFees[]" class="form-control"></td></tr>';
+                                    <td><input type ="number" name ='+ data[i].student + "deposit" +' class="form-control"></td>\n\
+                                    <td><input type ="number" name ='+ data[i].student + "tuitionFees" +' class="form-control"></td>\n\
+                                    <td><input type="hidden" name="studentName" value="${classID}"></td></tr>';
                     }
                     html += '</tbody></table><br/>';
-                    html += "<div class='form-group'><div class='col-lg-2 col-lg-offset-2'><button type='submit' class='btn btn-default' name='insert'>Register Student</button></div></div>"
+                    html += "<div class='form-group'><div class='col-lg-2 col-lg-offset-2'><button type='submit' class='btn btn-default' name='enroll'>Register Student</button></div></div>"
                     studentTable.innerHTML = html;
                 }else{
                     studentTable.innerHTML = '<h4>No students available!</h4>';

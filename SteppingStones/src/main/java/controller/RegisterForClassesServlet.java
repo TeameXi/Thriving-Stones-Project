@@ -17,6 +17,7 @@ import model.StudentDAO;
 import entity.Class;
 import entity.Student;
 import javax.servlet.RequestDispatcher;
+import model.LessonDAO;
 import model.LevelDAO;
 import model.StudentClassDAO;
 
@@ -61,19 +62,24 @@ public class RegisterForClassesServlet extends HttpServlet {
         if(request.getParameter("select") != null){
             String[] classValues = request.getParameterValues("classValue");
             String studentName = request.getParameter("studentName");
-            String joinDate = request.getParameter("joinDate");
-            String clsStartDate = request.getParameter("clsStartDate");
-            
-            System.out.println(joinDate);
-            System.out.println(clsStartDate);
+
             int studentID = StudentDAO.retrieveStudentID(studentName);
-            System.out.println(studentName);
+
             if(classValues != null){
                 for(String classValue: classValues){
                     int classID = Integer.parseInt(classValue);
+                    String joinDate = request.getParameter(classValue);
+                    if(joinDate == null || joinDate.isEmpty()){
+                        joinDate = LessonDAO.getNearestLessonDate(classID);
+                    }
                     Class cls = ClassDAO.getClassByID(classID);
                     double monthlyFees = cls.getMthlyFees();
-                    boolean status = StudentClassDAO.saveStudentToRegisterClass(classID, studentID, monthlyFees, monthlyFees -0, monthlyFees, monthlyFees -0, joinDate); //calculate outstanding fees
+                    double outstandingDeposit = 0;  //need to update
+                    double outstandingTuitionFees = 0; //need to update
+                    double firstInstallment = 0; //need to update
+                    double outstandingFirstInstallment = 0; //need to update
+                    boolean status = StudentClassDAO.saveStudentToRegisterClass(classID, studentID, monthlyFees, outstandingDeposit, monthlyFees, 
+                            outstandingTuitionFees, joinDate, firstInstallment, outstandingFirstInstallment); //calculate outstanding fees
                     System.out.println(status);
                     if(status){
                         Student stu = StudentDAO.retrieveStudentbyID(studentID,branchID);

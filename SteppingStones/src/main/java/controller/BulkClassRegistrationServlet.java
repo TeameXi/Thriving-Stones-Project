@@ -5,15 +5,17 @@
  */
 package controller;
 
+import entity.Class;
 import java.io.IOException;
-import java.io.PrintWriter;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.AttendanceDAO;
-import org.json.JSONObject;
+import model.ClassDAO;
+import model.LessonDAO;
+import model.StudentClassDAO;
 
 /**
  *
@@ -34,27 +36,42 @@ public class BulkClassRegistrationServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            int studentID = Integer.parseInt(request.getParameter("studentID"));
-            int lessonID = Integer.parseInt(request.getParameter("lessonID"));
-            int classID = Integer.parseInt(request.getParameter("classID"));
-            int tutorID = Integer.parseInt(request.getParameter("tutorID"));
 
-            AttendanceDAO attendance = new AttendanceDAO();
-            boolean attendanceTaken = attendance.retrieveStudentAttendance(studentID, lessonID);
-            boolean status = false;
+        String[] studentValues = request.getParameterValues("studentID");
+        String classIDStr = request.getParameter("classID");
+        int classID = Integer.parseInt(classIDStr);
 
-            if(attendanceTaken){
-                status = attendance.updateStudentAttendance(studentID, lessonID, classID, tutorID, false);
-            } else{
-                status = attendance.updateStudentAttendance(studentID, lessonID, classID, tutorID, true);
+        if(studentValues != null){
+            for(String studentIDStr: studentValues){
+                int studentID = Integer.parseInt(studentIDStr);
+                String outDep = request.getParameter(studentIDStr + "deposit");
+                String outTuition = request.getParameter(studentIDStr + "tuitionFees");
+                
+                double outstandingDeposit = 0;
+                if(outDep != null && !"".equals(outDep)){
+                    outstandingDeposit = Double.parseDouble(outDep);
+                }
+                 
+                double outstandingTuitionFees = 0;
+                if(outTuition != null && !"".equals(outTuition)){
+                    outstandingTuitionFees = Double.parseDouble(outTuition);
+                }
+                Class cls = ClassDAO.getClassByID(classID);
+                double monthlyFees = cls.getMthlyFees();
+                String joinDate = LessonDAO.getNearestLessonDate(classID);
+                double firstInstallment = 0; 
+                double outstandingFirstInstallment = 0; 
+                boolean status = StudentClassDAO.saveStudentToRegisterClass(classID, studentID, monthlyFees, outstandingDeposit, monthlyFees, 
+                            outstandingTuitionFees, joinDate, firstInstallment, outstandingFirstInstallment);
+                if(status){
+                    request.setAttribute("status", "Successfully Registered.");
+                }
+                System.out.println("Student 1" + " classID " + classID + " StuID " + studentID + " dep " + outstandingDeposit + " tut " + outstandingTuitionFees);
             }
-
-            JSONObject obj = new JSONObject();
-            obj.put("status", status);
-            String json = obj.toString();
-            out.println(json);
         }
+        
+        RequestDispatcher view = request.getRequestDispatcher("BulkClassRegistration.jsp");
+        view.forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

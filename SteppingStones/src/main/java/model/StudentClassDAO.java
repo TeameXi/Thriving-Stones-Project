@@ -1,6 +1,5 @@
 package model;
 import connection.ConnectionManager;
-import entity.Lesson;
 import entity.Student;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,11 +9,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class StudentClassDAO {
-    public static boolean saveStudentToRegisterClass(int classID, int studentID, double deposit, double outstandingDeposit, double tuitionFee, double outstandingTuitionFee, String joinDate){
+    public static boolean saveStudentToRegisterClass(int classID, int studentID, double deposit, double outstandingDeposit, double tuitionFee, 
+            double outstandingTuitionFee, String joinDate, double firstInstallment, double outstandingFirstInstallment){
         boolean status = false;
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            String sql = "insert into class_student_rel(class_id, student_id, deposit_fees, outstanding_deposit, tuition_fees, outstanding_tuition_fee, join_date) value(?, ?, ?, ?, ?, ?, ?)";
+            String sql = "insert into class_student_rel(class_id, student_id, deposit_fees, outstanding_deposit, tuition_fees, "
+                    + "outstanding_tuition_fee, join_date, first_installment, outstanding_first_installment) value(?, ?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, classID);
             stmt.setInt(2, studentID);
@@ -23,6 +24,8 @@ public class StudentClassDAO {
             stmt.setDouble(5, tuitionFee);
             stmt.setDouble(6, outstandingTuitionFee);
             stmt.setString(7, joinDate);
+            stmt.setDouble(8, firstInstallment);
+            stmt.setDouble(9, outstandingFirstInstallment);
             stmt.executeUpdate(); 
             conn.commit();
             status = true;

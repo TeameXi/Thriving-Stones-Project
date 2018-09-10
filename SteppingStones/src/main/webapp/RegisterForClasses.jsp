@@ -99,7 +99,11 @@
                             out.println("<td>"+cls.getClassTime()+" ( "+cls.getClassDay()+" )"+"</td>");
                             out.println("<td>"+cls.getStartDate()+"</td>");
                             out.println("<td>"+cls.getMthlyFees()+"</td>");
-                            out.println("<td><input name='joinDate' type='text' class='form-control' id ='joinDate' placeholder='YYYY-MM-DD'></td>");
+                            out.println("<td>");
+                            %>
+                            <input name="<%=cls.getClassID()%>" type='text' class='form-control' id ='joinDate' placeholder='YYYY-MM-DD'> 
+                            <%
+                            out.println("</td>");
                             out.println("</tr>");    
                                    
                         }

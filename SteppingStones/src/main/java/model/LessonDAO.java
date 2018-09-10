@@ -213,4 +213,20 @@ public class LessonDAO {
         }
         return false;
     }
+    
+    public static String getNearestLessonDate(int classID){
+        String joinDate = "";
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("select * from lesson where class_id = ? and lesson_date_time >= curdate() order by lesson_date_time limit 1;");
+            stmt.setInt(1, classID);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                joinDate += rs.getString("lesson_date_time");
+            }
+        } catch (SQLException e) {
+            System.out.print(e.getMessage());
+        }
+        return joinDate;
+    }
 }

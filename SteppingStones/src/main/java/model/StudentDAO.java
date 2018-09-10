@@ -130,12 +130,14 @@ public class StudentDAO {
         return students;
     }
     
-    public static ArrayList<Student> listAllStudentsByLevel(int levelID){
+    public static ArrayList<Student> listStudentsByLevelNotEnrolledInSpecificClassYet(int levelID, int classID){
         ArrayList<Student> studentList = new ArrayList<Student>();
         try (Connection conn = ConnectionManager.getConnection();) {
-            String sql = "select * from student where level_id = ?;";
+            String sql = "select * from student where student_id not in"
+                    + "(select distinct s.student_id from student s, class_student_rel cs where s.student_id = cs.student_id and class_id = ?) and level_id = ?;";
             PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setInt(1, levelID);
+            stmt.setInt(1, classID);
+            stmt.setInt(2, levelID);
             ResultSet rs = stmt.executeQuery();
             while(rs.next()){               
                 int studentID = rs.getInt("student_id");
