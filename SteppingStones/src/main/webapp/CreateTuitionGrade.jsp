@@ -160,6 +160,9 @@ $(function () {
                         min: 0,
                         max: 100,
                         message: 'The grade must be between 0 and 100'
+                    },
+                    notEmpty: {
+                        message: 'Please enter a grade'
                     }
                 }
             }
