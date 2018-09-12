@@ -5,6 +5,7 @@
  */
 package controller;
 
+import entity.Users;
 import java.io.IOException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -16,6 +17,7 @@ import model.AdminDAO;
 import model.ParentDAO;
 import model.StudentDAO;
 import model.TutorDAO;
+import model.UsersDAO;
 
 /**
  *
@@ -39,23 +41,17 @@ public class ResetPasswordServlet extends HttpServlet {
         
         String newPassword = request.getParameter("newPassword");
         String idStr = request.getParameter("id");
-        String role = request.getParameter("role");
         int id = 0;
         if(idStr != null){
             id = Integer.parseInt(idStr);
         }
+        UsersDAO users = new UsersDAO();
+        Users user = users.retrieveUserByID(id);
         
         boolean status = false;
-        if(role.equals("tutor")){
-            TutorDAO tutorDao = new TutorDAO();
-            status = tutorDao.updateTutorPassword(id, newPassword);
-        }else if(role.equals("admin")){
-            AdminDAO adminDao = new AdminDAO();
-            status = adminDao.updateAdminPassword(id, newPassword);
-        }else if(role.equals("student")){
-            status = StudentDAO.updateStudentPassword(id, newPassword);
-        }else if(role.equals("parent")){
-            status = ParentDAO.updateParentPassword(id, newPassword);
+        if (user != null) {
+            user.setPassword(newPassword);
+            status = true;
         }
         
         RequestDispatcher dispatcher;
