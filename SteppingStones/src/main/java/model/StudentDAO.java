@@ -384,6 +384,22 @@ public class StudentDAO {
         }
         return updatedStatus;
     }
+    public static boolean promoteStudentLevel(int studentID, int updatedLevel) {
+       boolean updatedStatus = false;
+        try (Connection conn = ConnectionManager.getConnection();) {
+            conn.setAutoCommit(false);
+            String sql = "update student set level_id = ? where student_id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, updatedLevel);
+            stmt.setInt(2, studentID);
+            stmt.executeUpdate();
+            conn.commit();
+            updatedStatus = true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return updatedStatus;
+    }
 
     public ArrayList<Object> uploadStudent(ArrayList<String> studentLists, ArrayList<String> studentNameLists, ArrayList<String> studentEmailLists) {
         ArrayList<Object> returnList = new ArrayList<>();
