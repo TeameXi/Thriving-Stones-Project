@@ -31,7 +31,7 @@ function checkCSVExtension(file_upload_id, error_lbl_id, append_container, optio
             var data = readCSVFile(csv, ",");
 
             // validate template format
-            var header = data[1];
+            var header = data[2];
 
             if (option === 'tutor') {
                 if (header.length === 8 && header[0] === "Tutor NRIC" && header[1] === "Full Name"
@@ -44,14 +44,15 @@ function checkCSVExtension(file_upload_id, error_lbl_id, append_container, optio
                     $(error_el).html("<span style='color:red;'>Invalid Template</span>");
                 }
             } else {
-                if (header.length === 14 && header[0] === "Student NRIC" && header[1] === "Student Name" && header[2] === "Phone"
+                if (header.length === 17 && header[0] === "Student NRIC" && header[1] === "Student Name" && header[2] === "Phone"
                         && header[3] === "Address" && header[4] === "Birth Date (DD-MM-YYYY)" && header[5] === "Gender (F/M)"
                         && header[6] === "Email" && header[7] === "Academic Level" && header[8] === "Parent Name" && header[9] === "Parent Nationality"
-                        && header[10] === "Parent Company" && header[11] === "Parent Designation" && header[12] === "Parent Mobile" && header[13] === "Parent Email") {
+                        && header[10] === "Parent Company" && header[11] === "Parent Designation" && header[12] === "Parent Mobile" && header[13] === "Parent Email" 
+                        && header[14] === "Registration fee ($)" && header[15] === "Outstanding Registration Fee ($)" && header[16] === "Student Status (Existing (E)/New (N))") {
                     $("#" + append_container).html("");
                     processCSVStudentData(data, append_container, error_el);
                 } else {
-                    $(error_el).html("<span style='color:red;'>Invalid Template</span>");
+                    $(error_el).html("<span style='color:red;'>Invalid Template " + (header.length === 17) + " </span>");
                 }
             }
         };
@@ -153,7 +154,7 @@ function processCSVStudentData(csv_data, append_container, error_el, branch_id) 
                 "<div class='col-sm-1'></div></div>";
 
     }
-    for (var i = 2; i < csv_data.length - 1; i++) {
+    for (var i = 3; i < csv_data.length - 1; i++) {
         Nric = csv_data[i][0];
         Name = csv_data[i][1];
         Phone = csv_data[i][2];
@@ -171,6 +172,9 @@ function processCSVStudentData(csv_data, append_container, error_el, branch_id) 
         Parent_designation = csv_data[i][11];
         Parent_mobile = csv_data[i][12];
         Parent_email = csv_data[i][13];
+        Registration_fee = csv_data[i][14];
+        Outstanding_Registration_fee = csv_data[i][15];
+        Student_status = csv_data[i][16];
 
         html += "<div class='row' rel='" + i + "' id='row_con_" + i + "'>" +
                 "<div class='col-sm-1 bold'></div>" +
@@ -198,6 +202,9 @@ function processCSVStudentData(csv_data, append_container, error_el, branch_id) 
                 "</div>" +
                 "<div class='col-sm-2'>" +
                 "<input type='hidden' name='con_parentEmail[]' id='con_parentEmail_" + i + "' class='form-control' value='" + Parent_email + "'>" +
+                "<input type='hidden' name='con_registrationFee[]' id='con_registrationFee_" + i + "' class='form-control' value='" + Registration_fee + "'>" +
+                "<input type='hidden' name='con_outstandingRegistrationFee[]' id='con_outstandingRegistrationFee_" + i + "' class='form-control' value='" + Outstanding_Registration_fee + "'>" +
+                "<input type='hidden' name='con_studentStatus[]' id='con_studentStatus_" + i + "' class='form-control' value='" + Student_status + "'>" +
                 "</div>" +
                 "<div class='col-sm-1'></div></div><br/>";
 

@@ -17,14 +17,13 @@ public class Parent {
     private String designation;
     private int phone;
     private String email;
-    private String password;
     private int branch_id;
 
     public Parent(){
         
     }
     
-    public Parent(int parentId,String name,String nationality,String company,String designation,int phone,String email,String password,int branch_id){
+    public Parent(int parentId,String name,String nationality,String company,String designation,int phone,String email,int branch_id){
         this.parentId = parentId;
         this.name = name;
         this.nationality = nationality;
@@ -32,7 +31,6 @@ public class Parent {
         this.designation = designation;
         this.phone = phone;
         this.email = email;
-        this.password = password;
         this.branch_id = branch_id;
     }
     
@@ -132,20 +130,6 @@ public class Parent {
      */
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    /**
-     * @return the password
-     */
-    public String getPassword() {
-        return password;
-    }
-
-    /**
-     * @param password the password to set
-     */
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     /**
