@@ -13,21 +13,20 @@ import java.util.Map;
 
 public class StudentDAO {
 
-    public static int insertStudent(String studentName, int phone, String stuEmail, String stuPassword, int level_id, int branch_id) {
+    public static int insertStudent(String studentName, int phone, String stuEmail, int level_id, int branch_id) {
 
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            String sql = "insert ignore into student(student_name, phone, email, password, required_amount, outstanding_amount, level_id, branch_id)"
+            String sql = "insert ignore into student(student_name, phone, email, required_amount, outstanding_amount, level_id, branch_id)"
                     + " value(?, ?, ?, MD5(?), ?, ? ,?, ?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, studentName);
             stmt.setInt(2, phone);
             stmt.setString(3, stuEmail);
-            stmt.setString(4, stuPassword);
+            stmt.setDouble(4, 0);
             stmt.setDouble(5, 0);
-            stmt.setDouble(6, 0);
-            stmt.setInt(7, level_id);
-            stmt.setInt(8, branch_id);
+            stmt.setInt(6, level_id);
+            stmt.setInt(7, branch_id);
             stmt.executeUpdate();
             conn.commit();
             ResultSet rs = stmt.getGeneratedKeys();
@@ -343,7 +342,7 @@ public class StudentDAO {
         boolean updatedStatus = false;
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            String sql = "update student set password = MD5(?) where student_id = ?";
+            String sql = "update student set password = MD5(?) where role = 'student' and student_id = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, password);
             stmt.setInt(2, studentID);
@@ -377,7 +376,7 @@ public class StudentDAO {
 
                 String studentList = String.join(",", studentLists);
                 String [] col = {"student_id"};
-                PreparedStatement insertStatement = conn.prepareStatement("INSERT IGNORE INTO student(student_nric,student_name,phone,address,birth_date,gender,email,password,required_amount,outstanding_amount,level_id,branch_id) VALUES " + studentList, col);
+                PreparedStatement insertStatement = conn.prepareStatement("INSERT IGNORE INTO student(student_nric,student_name,phone,address,birth_date,gender,email,required_amount,outstanding_amount,level_id,branch_id) VALUES " + studentList, col);
                 insertStatement.executeUpdate();
                 ResultSet a = insertStatement.getGeneratedKeys();
                 int count = 0;

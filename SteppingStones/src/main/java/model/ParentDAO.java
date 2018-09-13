@@ -12,18 +12,17 @@ import java.util.Map;
 
 public class ParentDAO {
 
-    public static int insertParent(String name, int phone, String email, String password, int branchID) {
+    public static int insertParent(String name, int phone, String email, int branchID) {
         
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            String sql = "insert ignore into parent(name, phone, email, password, branch_id)"
+            String sql = "insert ignore into parent(name, phone, email, branch_id)"
                     + " value(?, ?, ?, MD5(?), ?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, name);
             stmt.setInt(2, phone);
             stmt.setString(3, email);
-            stmt.setString(4, password);
-            stmt.setInt(5, branchID);
+            stmt.setInt(4, branchID);
             stmt.executeUpdate();
             conn.commit();
             ResultSet rs = stmt.getGeneratedKeys();
@@ -139,7 +138,7 @@ public class ParentDAO {
         boolean updatedStatus = false;
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            String sql = "update parent set password = MD5(?) where parent_id = ?";
+            String sql = "update users set password = MD5(?) where role = 'parent' and parent_id = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, password);
             stmt.setInt(2, parentID);
@@ -173,7 +172,7 @@ public class ParentDAO {
 
                 String parentList = String.join(",", parentLists);
                 String [] col = {"parent_id"};
-                PreparedStatement insertStatement = conn.prepareStatement("INSERT IGNORE INTO parent(name,nationality,company,designation,phone,email,password,branch_id) VALUES " + parentList, col);
+                PreparedStatement insertStatement = conn.prepareStatement("INSERT IGNORE INTO parent(name,nationality,company,designation,phone,email,branch_id) VALUES " + parentList, col);
                 insertStatement.executeUpdate();
                 ResultSet a = insertStatement.getGeneratedKeys();
                 int count = 0;

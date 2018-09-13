@@ -5,9 +5,12 @@
  */
 package controller;
 
+import entity.Tutor;
+import entity.Users;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Set;
 import javax.servlet.ServletException;
@@ -16,8 +19,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import model.GeneratePassword;
 import model.SendMail;
 import model.TutorDAO;
+import model.UsersDAO;
 
 /**
  *
@@ -43,11 +48,12 @@ public class UploadTutorServlet extends HttpServlet {
             String tutorNames[] = request.getParameterValues("con_username[]");
             String phones[] = request.getParameterValues("con_phones[]");
             String addresses[] = request.getParameterValues("con_addresses[]");
-            String images[] = request.getParameterValues("con_images[]");
+            //String images[] = request.getParameterValues("con_images[]");
             String birth_dates[] = request.getParameterValues("con_birthdates[]");
             String genders[] = request.getParameterValues("con_genders[]");
             String emails[] = request.getParameterValues("con_emails[]");
-            String passwords[] = request.getParameterValues("con_pwd[]");
+            //String passwords[] = request.getParameterValues("con_pwd[]");
+            String hourlyRate[] = request.getParameterValues("con_rate[]");
             int branch_id = 0; 
             if(request.getParameter("branch") != null && request.getParameter("branch") != ""){
                 branch_id = Integer.parseInt(request.getParameter("branch"));
@@ -55,7 +61,7 @@ public class UploadTutorServlet extends HttpServlet {
 
   
             ArrayList<String> tutorLists = new ArrayList();
-            ArrayList<String> tutorNameLists = new ArrayList();
+            ArrayList<String> tutorEmailLists = new ArrayList();
             HashMap<String, String> emailList = new HashMap<>();
             for(int i = 0; i < tutorNames.length; i++){
                 if("".equals(tutorNames[i].trim())) continue;
@@ -67,23 +73,52 @@ public class UploadTutorServlet extends HttpServlet {
                 
 //                Tutor tempTutor = new Tutor(tutorNrics[i],tutorNames[i],phone,addresses[i],images[i],birth_dates[i],genders[i],emails[i],passwords[i],branch_id);
 
-                tutorLists.add("('"+tutorNrics[i]+"','"+tutorNames[i].trim()+"',"+phone+",'"+addresses[i]+"','"+images[i]+"','"
-                       +birth_dates[i]+"','"+genders[i]+"','"+emails[i]+"',MD5('"+passwords[i]+"'),"+branch_id+")");
+                tutorLists.add("('"+tutorNrics[i]+"','"+tutorNames[i].trim()+"',"+phone+",'"+addresses[i]+ "','"
+                       +birth_dates[i]+"','"+genders[i]+"','"+emails[i]+"','"+branch_id+"','" + hourlyRate[i] + "')");
 
-                tutorNameLists.add(tutorNames[i].trim());
-                String value = emails[i] + "&" + passwords[i];
-                emailList.put(tutorNames[i].trim(), value);
+                tutorEmailLists.add(emails[i].trim());
+                
             }
             
-            ArrayList<String>existingUsers = new ArrayList<>();
+            ArrayList<Tutor>existingUsers = new ArrayList<>();
             if(tutorLists.size() > 0){
                 TutorDAO tutorDao = new TutorDAO();
-                existingUsers = tutorDao.uploadTutor(tutorLists, tutorNameLists);
+                ArrayList<Object> insertTutor = tutorDao.uploadTutor(tutorLists, tutorEmailLists);
+                existingUsers = (ArrayList<Tutor>)insertTutor.get(0);
+                ArrayList<Tutor> insertedTutor = (ArrayList<Tutor>) insertTutor.get(1);
+                
                 HttpSession session = request.getSession();
                 session.setAttribute("existingUserLists",existingUsers);
-            }
-            for(String existingUser: existingUsers){
-                emailList.remove(existingUser);
+                
+                UsersDAO userDAO = new UsersDAO();
+                for(Tutor tutor: insertedTutor){
+                    String password = GeneratePassword.random(16);
+                    String tutorName = tutor.getName();
+                    String username = tutorName.replace(' ', '.');
+                    int i = -1;
+                    int temp = 0;
+                    while(i<0){
+                        if(temp == 0){
+                            temp++;
+                            username = tutorName.replace(' ', '.') + "." + (Calendar.getInstance().get(Calendar.YEAR));
+                            if(userDAO.retrieveUserByUsername(username) < 1){
+                                i = 0;
+                            }
+                        }else{
+                            username = tutorName.replace(' ', '.') + temp + "." + (Calendar.getInstance().get(Calendar.YEAR));
+                            temp++;
+                            if(userDAO.retrieveUserByUsername(username) < 1){
+                                i = 0;
+                            }
+                        }
+                    }
+                    Users tempUser = new Users(username, password, "tutor", tutor.getTutorId(), branch_id);
+                    boolean userStatus = userDAO.addUser(tempUser);
+                    if(userStatus){
+                        String value = tutor.getEmail() + "&" + password;
+                        emailList.put(tutor.getName().trim(), value);
+                    }
+                }
             }
             
             Set<String> usernames = emailList.keySet();

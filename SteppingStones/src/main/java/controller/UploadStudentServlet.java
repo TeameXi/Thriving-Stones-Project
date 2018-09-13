@@ -88,7 +88,7 @@ public class UploadStudentServlet extends HttpServlet {
                 }
 
                 studentLists.add("('" + studNrics[i] + "','" + studNames[i].trim() + "'," + phone + ",'" + addresses[i] + "','" + birth_dates[i] + 
-                        "','" + genders[i] + "','" + emails[i] + "',MD5('" + passwords[i] + "'),'" + registrationFee[i] +  "','" + 
+                        "','" + genders[i] + "','" + emails[i] + "','" + registrationFee[i] +  "','" + 
                         outstandingRegistrationFee[i] +  "','" + LevelDAO.retrieveLevelID(acad_level[i]) + "'," + branch_id + ")");
 
                 studentNameLists.add(studNrics[i].trim());
@@ -109,7 +109,7 @@ public class UploadStudentServlet extends HttpServlet {
                 }
 
                 parentLists.add("('" + parentNames[i].trim() + "','" + nationality[i] + "','" + company[i] + "','" + designation[i] + "'," + mobile + 
-                        ",'" + parentEmail[i] + "',MD5(" + mobile + ")," + branch_id + ")");
+                        ",'" + parentEmail[i] + "'," + branch_id + ")");
 
                 parentNameLists.add(parentNames[i].trim());
                 parentMobileList.add(mobile);
