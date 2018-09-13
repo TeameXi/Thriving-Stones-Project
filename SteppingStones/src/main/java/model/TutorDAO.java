@@ -61,7 +61,8 @@ public class TutorDAO {
     }
 
     public Tutor retrieveSpecificTutorById(int tutorId) {
-        String select_tutor = "SELECT * FROM tutor WHERE tutor_id = ?";
+        String select_tutor = "SELECT tutor_id, tutor_nric, tutor_fullname, phone, address, image_url, "
+                + "birth_date, gender, email, branch_id FROM tutor WHERE tutor_id = ?";
         try (Connection conn = ConnectionManager.getConnection();
                 PreparedStatement preparedStatement = conn.prepareStatement(select_tutor)) {
             preparedStatement.setInt(1, tutorId);

@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -228,5 +229,81 @@ public class LessonDAO {
             System.out.print(e.getMessage());
         }
         return joinDate;
+    }
+    
+    public String retrieveNumberTutorAttendancePerClass(int classID, int tutorID){
+        double attended = 0;
+        double total = retrieveNumberOfLessons(classID);
+        
+        String sql = "select tutor_attended from lesson where tutor_id = ? and class_id = ?";
+        
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, tutorID);
+            stmt.setInt(2, classID);
+            
+            ResultSet rs = stmt.executeQuery();
+            
+            while(rs.next()){
+                if(rs.getBoolean(1)){
+                    attended += 1;
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(LessonDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        DecimalFormat df = new DecimalFormat("#.##");
+        return df.format((attended/total) * 100);
+    }
+    
+    public double retrieveNumberOfLessons(int classID){
+        double total = 0;
+        
+        String sql = "select distinct lesson_id from lesson where class_id = ?";
+        
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, classID);
+            
+            ResultSet rs = stmt.executeQuery();
+            
+            while(rs.next()){
+                total += 1;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(LessonDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return total;
+    }
+    
+    public String retrieveTotalPercentageAttendance(int tutorID){
+        double attended = 0;
+        double total = retrieveLessonsByTutor(tutorID).size();
+        
+        DecimalFormat df = new DecimalFormat("#.##");
+        
+        if(total > 0){
+            String sql = "select tutor_attended from lesson where tutor_id = ?";
+
+            try(Connection conn = ConnectionManager.getConnection()){
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                stmt.setInt(1, tutorID);
+
+                ResultSet rs = stmt.executeQuery();
+
+                while(rs.next()){
+                    if(rs.getBoolean(1)){
+                        attended += 1;
+                    }
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(LessonDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            System.out.println(df.format((attended/total) * 100));
+            return df.format((attended/total) * 100);
+        }else{
+            return df.format(0);
+        }
     }
 }

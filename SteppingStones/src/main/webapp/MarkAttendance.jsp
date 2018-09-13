@@ -1,4 +1,4 @@
-<%@include file="protect_branch_admin.jsp"%>
+<%@include file="protect_tutor.jsp"%>
 <%@include file="header.jsp"%>
 <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css">
@@ -58,8 +58,10 @@
         tutorID = <%=user.getRespectiveID()%>
         branchID = <%=branch_id%>
         action = 'retrieve';
-
+        
         table = $('#studentAttendanceTable').DataTable({
+            "iDisplayLength": 5,
+            "aLengthMenu": [[5, 10, 25, -1], [5, 10, 25, "All"]],
             'ajax': {
                 "type": "POST",
                 "url": "MarkStudentAttendanceServlet",
@@ -107,6 +109,7 @@
                 row.child(format(row.data())).show();
                 var childTable = $("#studentList").DataTable({
                     "dom": 'tpr',
+                    "iDisplayLength": 5,
                     'ajax': {
                         "type": "POST",
                         "url": "MarkStudentAttendanceServlet",
@@ -167,6 +170,7 @@
 
                         lessonTable = $("#lessonList").DataTable({
                             "dom": 'tpr',
+                            "iDisplayLength": 5,
                             'ajax': {
                                 "type": "POST",
                                 "url": "MarkStudentAttendanceServlet",
