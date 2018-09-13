@@ -15,7 +15,7 @@ public class Student {
     private String studentNRIC;
     private String name;
     private String BOD;
-    private final String gender;
+    private String gender;
     private String level;
     private int branch_id;
     private int phone;
@@ -39,6 +39,13 @@ public class Student {
         this.password = password;
         this.reqAmt = reqAmt;
         this.outstandingAmt = outstandingAmt;
+    }
+    
+    public Student(int studentID, String name, int phone, String level){
+        this.studentID = studentID;
+        this.name = name;
+        this.level = level;
+        this.branch_id = branch_id;
     }
     
     public int getStudentID() {

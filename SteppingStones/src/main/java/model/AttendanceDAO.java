@@ -39,8 +39,35 @@ public class AttendanceDAO {
         return false;
     }
     
-    public boolean retrieveStudentAttendance(int studentID, int lessonID){
-        String sql = "select student_attended from student_attendance where student_id = ? and lesson_id = ?";
+    public double retrieveNumberOfStudentAttendances(int studentID, int classID){
+        String sql = "select student_attended from student_attendance where "
+                +"student_id = ? and lesson_id in (select lesson_id from lesson where class_id = ?)";
+        
+        double attended = 0;
+        
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, studentID);
+            stmt.setInt(2, classID);
+            
+            ResultSet rs = stmt.executeQuery();
+            
+            while(rs.next()){
+                boolean studentAttended = rs.getBoolean(1);
+                
+                if(studentAttended){
+                    attended += 1;
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(AttendanceDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return attended;
+    }
+    
+    public boolean retrieveStudentAttendances(int studentID, int lessonID){
+        String sql = "select student_attended from student_attendance where "
+                +"student_id = ? and lesson_id = ?";
         
         try(Connection conn = ConnectionManager.getConnection()){
             PreparedStatement stmt = conn.prepareStatement(sql);

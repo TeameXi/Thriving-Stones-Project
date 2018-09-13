@@ -11,7 +11,7 @@
 
 <div class="col-md-10">
     <div class="row" id="errorMsg"></div>
-    <div style="text-align: center;margin: 20px;"><span class="tab_active">Mark Attendance </span> / <a href="DisplayTutorAttendance.jsp">View Attendance</a></div>
+    <div style="text-align: center;margin: 20px;"><span class="tab_active">Attendance Taking </span></div>
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-7">
