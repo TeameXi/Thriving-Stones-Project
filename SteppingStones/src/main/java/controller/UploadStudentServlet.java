@@ -129,12 +129,12 @@ public class UploadStudentServlet extends HttpServlet {
             ArrayList<Student> existingUsers = new ArrayList<>();
             
             //Map<Integer,Student> nameWithId = new HashMap<Integer,Student>();
-            
+            ArrayList<Student> insertedStudent = new ArrayList<>();
             if (studentLists.size() > 0) {
                 StudentDAO studentDAO = new StudentDAO();
                 ArrayList<Object> studentReturnList = studentDAO.uploadStudent(studentLists, studentNameLists, studentEmailLists);
                 existingUsers = (ArrayList<Student>)studentReturnList.get(0);
-                ArrayList<Student> insertedStudent = (ArrayList<Student>) studentReturnList.get(1);
+                insertedStudent = (ArrayList<Student>) studentReturnList.get(1);
                 UsersDAO userDAO = new UsersDAO();
                 for(Student key : insertedStudent) {
                     String password = GeneratePassword.random(16);
@@ -228,9 +228,14 @@ public class UploadStudentServlet extends HttpServlet {
                 HttpSession session = request.getSession();
                 session.setAttribute("existingUserLists", existingUsers);
                 session.setAttribute("existingParentLists", existingParents);
+                session.setAttribute("insertedStudent", insertedStudent);
             }
-
-            response.sendRedirect("DisplayStudents.jsp");
+            if(insertedStudent.size() > 0){
+                response.sendRedirect("ClassRegistrationForUploadStudent.jsp");
+            }else{
+                response.sendRedirect("DisplayStudents.jsp");
+            }
+            
         }
     }
 
