@@ -62,7 +62,7 @@ public class CreateTutorServlet extends HttpServlet {
             RequestDispatcher dispatcher = request.getRequestDispatcher("CreateTutor.jsp");
             dispatcher.forward(request, response);
         } else {*/
-        Tutor tempTutor = new Tutor(nric, name, phone, address, image_url, birth_date, gender, email, branch,0.0);
+        Tutor tempTutor = new Tutor(nric, name, phone, address, image_url, birth_date, gender, email, branch);
         int tutorId = tutordao.addTutor(tempTutor);
         status = tutorId>0;
         if (status) {
