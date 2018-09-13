@@ -171,17 +171,7 @@
                     %>
                             <li><a href=""><i class="zmdi zmdi-money-box"></i>Your Payslip</a></li>
                             <li><a href="DisplayClassesBelongToTutor.jsp"><i class="zmdi zmdi-local-library"></i>Classes</a></li>
-                            <li class="submenu">
-                                <a href="#">
-                                    <i class="zmdi zmdi zmdi-graduation-cap"></i> Student Attendance 
-                                    <span class="caret pull-right"></span>
-                                </a>
-                                <!-- Sub menu -->
-                                <ul>
-                                    <li><a href="MarkAttendance.jsp">Mark Attendance</a></li>
-                                    <li><a href="DisplayAttendance.jsp">View Attendance</a></li>
-                                </ul>
-                            </li>
+                            <li><a href="MarkAttendance.jsp"><i class="zmdi zmdi-local-library"></i>Attendance Taking</a></li>
                             <li><a href="stats.html"><i class="zmdi zmdi-chart"></i>Your Attendance</a></li>
                             <li class="submenu">
                                 <a href="#">

@@ -2,6 +2,7 @@ package model;
 
 import entity.Class;
 import connection.ConnectionManager;
+import entity.Student;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,6 +11,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ClassDAO {
     
@@ -362,6 +365,24 @@ public class ClassDAO {
         return classMap;
     }
     
-    
+    public ArrayList<Student> retrieveStudentsByClass(int classID){
+        ArrayList<Student> result = new ArrayList<>();
+        String sql = "select student_id, student_name, phone, level_id from student where student_id in (select student_id from class_student_rel where class_id = ?)";
+        
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1,classID);
+            
+            ResultSet rs = stmt.executeQuery();
+            
+            while(rs.next()){
+                String level = LevelDAO.retrieveLevel(rs.getInt(4));
+                result.add(new Student(rs.getInt(1), rs.getString(2), rs.getInt(3), level));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ClassDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return result;
+    }
 }
     

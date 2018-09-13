@@ -48,6 +48,13 @@ public class Student {
 
     
     
+    public Student(int studentID, String name, int phone, String level){
+        this.studentID = studentID;
+        this.name = name;
+        this.level = level;
+        this.branch_id = branch_id;
+    }
+    
     public int getStudentID() {
         return studentID;
     }
