@@ -17,7 +17,7 @@ public class ParentDAO {
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
             String sql = "insert ignore into parent(name, phone, email, branch_id)"
-                    + " value(?, ?, ?, MD5(?), ?)";
+                    + " value(?, ?, ?, ?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, name);
             stmt.setInt(2, phone);
@@ -138,7 +138,7 @@ public class ParentDAO {
         boolean updatedStatus = false;
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            String sql = "update users set password = MD5(?) where role = 'parent' and parent_id = ?";
+            String sql = "update users set users.password = MD5(?) where role = 'parent' and user_id = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, password);
             stmt.setInt(2, parentID);

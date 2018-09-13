@@ -50,10 +50,21 @@ public class ResetPasswordServlet extends HttpServlet {
         
         boolean status = false;
         if (user != null) {
-            user.setPassword(newPassword);
-            status = true;
+            if(user.getRole().equals("admin")){
+                AdminDAO adminDAO = new AdminDAO();
+                status = adminDAO.updateAdminPassword(id, newPassword);
+            }
+            if(user.getRole().equals("tutor")){
+                TutorDAO tutorDAO = new TutorDAO();
+                status = tutorDAO.updateTutorPassword(id, newPassword);
+            }
+            if(user.getRole().equals("parent")){
+                status = ParentDAO.updateParentPassword(id, newPassword);
+            }
+            if(user.getRole().equals("student")){
+                status = StudentDAO.updateStudentPassword(id, newPassword);
+            }
         }
-        
         RequestDispatcher dispatcher;
         if(status){
             request.setAttribute("status", "Reset password successfully! Please login with new password.");

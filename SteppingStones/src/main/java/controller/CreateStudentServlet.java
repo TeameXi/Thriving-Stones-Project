@@ -131,7 +131,7 @@ public class CreateStudentServlet extends HttpServlet {
             boolean userStatus = userDAO.addUser(tempUser);
             if(userStatus){
                 String subject = "Stepping Stones Tuition Center Parent's Account Creation";
-                String text = "Thanks for choosing us. Your account has been created.\n\nBelow is the username and password to access your account: \nUsername: " + parentName 
+                String text = "Thanks for choosing us. Your account has been created.\n\nBelow is the username and password to access your account: \nUsername: " + username 
                         + "\nPassword: " + parentPassword + "\n\nYou can Login via "+href; 
                 if(parentEmail != null && !parentEmail.equals("")){
                     SendMail.sendingEmail(parentEmail, subject, text);

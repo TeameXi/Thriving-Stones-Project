@@ -17,8 +17,8 @@ public class StudentDAO {
 
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            String sql = "insert ignore into student(student_name, phone, email, required_amount, outstanding_amount, level_id, branch_id)"
-                    + " value(?, ?, ?, MD5(?), ?, ? ,?, ?)";
+            String sql = "insert ignore into student(student_nric, student_name, phone, email, required_amount, outstanding_amount, level_id, branch_id)"
+                    + " value(null, ?, ?, ?, ?, ?, ? ,?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, studentName);
             stmt.setInt(2, phone);
@@ -342,7 +342,7 @@ public class StudentDAO {
         boolean updatedStatus = false;
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            String sql = "update student set password = MD5(?) where role = 'student' and student_id = ?";
+            String sql = "update users set users.password = MD5(?) where role = 'student' and user_id = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, password);
             stmt.setInt(2, studentID);
