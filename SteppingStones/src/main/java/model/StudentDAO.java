@@ -88,6 +88,36 @@ public class StudentDAO {
         }
         return studentList;
     }
+    
+    public static ArrayList<Student> listAllStudentsByBranch(int branch_id) {
+        ArrayList<Student> studentList = new ArrayList();
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("select * from student where branch_id = ? order by level_id, student_name");
+            stmt.setInt(1, branch_id);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                int studentID = rs.getInt("student_id");
+                String studentNRIC = rs.getString("student_nric");
+                String name = rs.getString("student_name");
+                String BOD = rs.getString("birth_date");
+                String gender = rs.getString("gender");
+                int levelID = rs.getInt("level_id");
+                int branchID = rs.getInt("branch_id");
+                int phone = rs.getInt("phone");
+                String address = rs.getString("address");
+                String email = rs.getString("email");
+                double reqAmt = rs.getDouble("required_amount");
+                double outstandingAmt = rs.getDouble("outstanding_amount");
+                String level = LevelDAO.retrieveLevel(levelID);
+                Student student = new Student(studentID, studentNRIC, name, BOD, gender, level, branchID, phone, address, email, reqAmt, outstandingAmt);
+                studentList.add(student);
+            }
+        } catch (SQLException e) {
+            System.out.print(e.getMessage());
+        }
+        return studentList;
+    }
 
     public static LinkedHashMap<String, ArrayList<Student>> listAllStudent(int branch_id) {
         LinkedHashMap<String, ArrayList<Student>> students = new LinkedHashMap<>();

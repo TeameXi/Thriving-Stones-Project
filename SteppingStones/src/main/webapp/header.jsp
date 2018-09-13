@@ -109,6 +109,7 @@
                                 <ul>
                                     <li><a href="CreateStudent.jsp">Create Student</a></li>
                                     <li><a href="DisplayStudents.jsp">View Students</a></li>
+                                    <li><a href="AutoPromote.jsp">Auto Promote</a></li>
                                 </ul>
                             </li>
                             
