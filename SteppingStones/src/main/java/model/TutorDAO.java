@@ -28,8 +28,8 @@ public class TutorDAO {
                 String gender = rs.getString(8);
                 String email = rs.getString(9);
                 int branch_id = rs.getInt(10);
-                double pay = rs.getDouble(11);
-                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email, branch_id, pay);
+                //double pay = rs.getDouble(11);
+                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email, branch_id);
                 return t;
             }
 
@@ -78,8 +78,8 @@ public class TutorDAO {
                 String gender = rs.getString(8);
                 String email = rs.getString(9);
                 int branch_id = rs.getInt(10);
-                double pay = rs.getDouble(11);
-                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email, branch_id, pay);
+                //double pay = rs.getDouble(11);
+                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email, branch_id/*, pay*/);
                 return t;
             }
 
@@ -165,7 +165,7 @@ public class TutorDAO {
 
                 String tutorList = String.join(",", tutorLists);
                 String [] col = {"tutor_id"};
-                String insert_tutor = "INSERT IGNORE INTO tutor(tutor_nric,tutor_fullname,phone,address,birth_date,gender,email,branch_id,pay) VALUES " + tutorList;
+                String insert_tutor = "INSERT IGNORE INTO tutor(tutor_nric,tutor_fullname,phone,address,birth_date,gender,email,branch_id) VALUES " + tutorList;
                 PreparedStatement insertStatement = conn.prepareStatement(insert_tutor, col);
                 insertStatement.executeUpdate();
                 
@@ -204,8 +204,8 @@ public class TutorDAO {
                 String gender = rs.getString(8);
                 String email = rs.getString(9);
                 int branch_id = rs.getInt(10);
-                double pay = rs.getDouble(11);
-                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email, branch_id, pay);
+                //double pay = rs.getDouble(11);
+                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email, branch_id);
                 tutorLists.add(t);
             }
 
@@ -233,8 +233,8 @@ public class TutorDAO {
                 String gender = rs.getString(8);
                 String email = rs.getString(9);
                 int branch_id = rs.getInt(10);
-                double pay = rs.getDouble(11);
-                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email, branch_id, pay);
+                //double pay = rs.getDouble(11);
+                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email, branch_id);
                 tutorLists.add(t);
             }
 
@@ -265,8 +265,8 @@ public class TutorDAO {
                 String gender = rs.getString(8);
                 String email = rs.getString(9);
                 int branch_id = rs.getInt(10);
-                double pay = rs.getDouble(11);
-                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email, branch_id, pay);
+                //double pay = rs.getDouble(11);
+                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email, branch_id);
                 tutorLists.add(t);
             }
 
@@ -312,8 +312,8 @@ public class TutorDAO {
                 String gender = rs.getString(8);
                 String email1 = rs.getString(9);
                 int branch_id = rs.getInt(10);
-                double pay = rs.getDouble(11);
-                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email1, branch_id, pay);
+                //double pay = rs.getDouble(11);
+                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email1, branch_id);
             }
         } catch (Exception e) {
             System.out.println(e);

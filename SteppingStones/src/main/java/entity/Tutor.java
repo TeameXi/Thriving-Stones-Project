@@ -16,7 +16,7 @@ public class Tutor {
     private String gender;
     private String email;
     private int branch_id;
-    private double pay;
+    //private double pay;
 
     public Tutor() {
     }
@@ -27,7 +27,7 @@ public class Tutor {
         this.name = name;
     }
     
-    public Tutor(String nric,String name,int phone,String address,String image_url,String birth_date,String gender,String email,int branch_id, double pay) {
+    public Tutor(String nric,String name,int phone,String address,String image_url,String birth_date,String gender,String email,int branch_id/*, double pay*/) {
         this.nric = nric;
         this.name = name;
         this.phone = phone;
@@ -37,10 +37,10 @@ public class Tutor {
         this.gender = gender;
         this.email = email;
         this.branch_id = branch_id;
-        this.pay = pay;
+        //this.pay = pay;
     }
     
-    public Tutor(int tutorId,String nric,String name,int phone,String address,String image_url,String birth_date,String gender,String email,int branch_id, double pay) {
+    public Tutor(int tutorId,String nric,String name,int phone,String address,String image_url,String birth_date,String gender,String email,int branch_id/*, double pay*/) {
         this.tutorId = tutorId;
         this.nric = nric;
         this.name = name;
@@ -51,7 +51,7 @@ public class Tutor {
         this.gender = gender;
         this.email = email;
         this.branch_id = branch_id;
-        this.pay = pay;
+        //this.pay = pay;
     }
 
     /**
@@ -194,18 +194,18 @@ public class Tutor {
         this.tutorId = tutorId;
     }
 
-    public double getPay() {
+    /*public double getPay() {
         return pay;
     }
 
     public void setPay(double pay) {
         this.pay = pay;
-    }
+    }*/
     
     
     @Override
     public String toString(){
-        return "NRIC : "+this.nric+", Name: "+this.name+",Address : "+this.address+",DOB :"+this.birth_date+", URL : "+this.image_url+", Email : "+this.email+", Branch : "+this.branch_id+", Hourly Rate : "+this.pay;
+        return "NRIC : "+this.nric+", Name: "+this.name+",Address : "+this.address+",DOB :"+this.birth_date+", URL : "+this.image_url+", Email : "+this.email+", Branch : "+this.branch_id/*+", Hourly Rate : "+this.pay*/;
     }
 
 }
