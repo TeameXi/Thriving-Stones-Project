@@ -69,7 +69,7 @@ public class CreateStudentServlet extends HttpServlet {
         String parentEmail = request.getParameter("parentEmail");     
         
         String href =  request.getHeader("origin")+request.getContextPath()+"/Login.jsp";
-        int insertStudent = StudentDAO.insertStudent(studentName, phone,stuEmail, stuPassword, levelID, branchID);
+        int insertStudent = StudentDAO.insertStudent(studentName, phone,stuEmail, levelID, branchID);
         if(insertStudent>0){
             UsersDAO userDAO = new UsersDAO();
             String username = studentName.replace(' ', '.');
@@ -105,7 +105,7 @@ public class CreateStudentServlet extends HttpServlet {
             }
         }
 
-        int insertParent = ParentDAO.insertParent(parentName, parentPhone, parentEmail, parentPassword, branchID);
+        int insertParent = ParentDAO.insertParent(parentName, parentPhone, parentEmail, branchID);
         if(insertParent>0){
             UsersDAO userDAO = new UsersDAO();
             String username = parentName.replace(' ', '.');
@@ -144,7 +144,7 @@ public class CreateStudentServlet extends HttpServlet {
         }
 
         request.setAttribute("creation_status",""+(insertStudent>0 && insertParent>0));
-        ParentChildRelDAO.insertParentChildRel(parentName, insertStudent, branchID);
+        ParentChildRelDAO.insertParentChildRel(parentPhone, insertStudent, branchID);
         response.sendRedirect("RegisterForClasses.jsp?studentName="+studentName);     
     }
 

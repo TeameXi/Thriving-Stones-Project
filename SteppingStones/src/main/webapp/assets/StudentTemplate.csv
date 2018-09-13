@@ -1,3 +1,4 @@
-"Note : Student Records will not be added if (full name,academic level,email,parent's mobile, parent's email) is not entered",,,,,,,,,,,,,
-Student NRIC,Student Name,Phone,Address,Birth Date (DD-MM-YYYY),Gender (F/M),Email,Academic Level,Parent Name,Parent Nationality,Parent Company,Parent Designation,Parent Mobile,Parent Email
-S1234567D,Anthony,97832115,-,14/1/1988,M,xxx@gmail.com,Secondary 1,Alan,Singaporean,-,-,98765432,alan@gmail.com
+"Note : Student Records will not be added if (student name,academic level,parent's mobile) is not entered. Either Student's valid mobile phone or Student's valid email is also required.",,,,,,,,,,,,,,,,
+Student NRIC,Student Name,Phone,Address,Birth Date (DD-MM-YYYY),Gender (F/M),Email,Academic Level,Parent Name,Parent Nationality,Parent Company,Parent Designation,Parent Mobile,Parent Email,Registration fee ($),Outstanding Registration Fee ($),Student Status (Existing (E)/New (N))
+S1234567D,Anthony,97832115,-,14/1/88,M,xxx@gmail.com,Secondary 1,Alan,Singaporean,-,-,98765432,alan@gmail.com,20,0,E
+S1234567D,Anthony,97832115,-,14/1/88,M,xxx@gmail.com,Secondary 1,Alan,Singaporean,-,-,98765442,alan@gmail.com,20,0,E

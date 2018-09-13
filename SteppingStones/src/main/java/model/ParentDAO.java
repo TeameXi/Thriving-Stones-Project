@@ -7,21 +7,22 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ParentDAO {
 
-    public static int insertParent(String name, int phone, String email, String password, int branchID) {
+    public static int insertParent(String name, int phone, String email, int branchID) {
         
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            String sql = "insert ignore into parent(name, phone, email, password, branch_id)"
+            String sql = "insert ignore into parent(name, phone, email, branch_id)"
                     + " value(?, ?, ?, MD5(?), ?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, name);
             stmt.setInt(2, phone);
             stmt.setString(3, email);
-            stmt.setString(4, password);
-            stmt.setInt(5, branchID);
+            stmt.setInt(4, branchID);
             stmt.executeUpdate();
             conn.commit();
             ResultSet rs = stmt.getGeneratedKeys();
@@ -37,12 +38,12 @@ public class ParentDAO {
         return 0;
     }
 
-    public static int retrieveParentID(String parentName) {
+    public static int retrieveParentID(int parentPhone) {
         int result = 0;
         try (Connection conn = ConnectionManager.getConnection()) {
-            String sql = "select parent_id from parent where name = ?";
+            String sql = "select parent_id from parent where phone = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1, parentName);
+            stmt.setInt(1, parentPhone);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 result = rs.getInt("parent_id");
@@ -100,9 +101,8 @@ public class ParentDAO {
                 String designation = rs.getString(5);
                 int phone = rs.getInt(6);
                 String email = rs.getString(7);
-                String password = rs.getString(8);
-                int branch_id = rs.getInt(9);
-                Parent parent = new Parent(id, name, nationality, company, designation, phone, email, password, branch_id);
+                int branch_id = rs.getInt(8);
+                Parent parent = new Parent(id, name, nationality, company, designation, phone, email, branch_id);
                 return parent;
             }
 
@@ -138,7 +138,7 @@ public class ParentDAO {
         boolean updatedStatus = false;
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            String sql = "update parent set password = MD5(?) where parent_id = ?";
+            String sql = "update users set password = MD5(?) where role = 'parent' and parent_id = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, password);
             stmt.setInt(2, parentID);
@@ -151,15 +151,19 @@ public class ParentDAO {
         return updatedStatus;
     }
 
-    public ArrayList<String> uploadParent(ArrayList<String> parentLists, ArrayList<String> parentNameLists) {
+    public ArrayList<Object> uploadParent(ArrayList<String> parentLists, ArrayList<Integer> parentMobileLists) {
+        ArrayList<Object> returnList = new ArrayList<>();
         ArrayList<String> duplicatedParents = new ArrayList<>();
-        if (parentNameLists.size() > 0) {
-            String nameList = "'" + String.join("','", parentNameLists) + "'";
-
+        ArrayList<Parent> insertedParents = new ArrayList<>();
+        if (parentMobileLists.size() > 0) {
+            String mobileList = "'" + String.join("','", parentMobileLists.toString()) + "'";
+            mobileList = mobileList.replace("[", "");
+            mobileList = mobileList.replace("]", "");
             ArrayList<String> existingParents = new ArrayList();
             try (Connection conn = ConnectionManager.getConnection();
-                    PreparedStatement preparedStatement = conn.prepareStatement("SELECT parent_id,name FROM parent WHERE name in (" + nameList + ")")) {
-                
+                PreparedStatement preparedStatement = conn.prepareStatement("SELECT parent_id,name FROM parent WHERE phone in (" + mobileList + ")")) {
+                String x = preparedStatement.toString();
+                System.out.println(preparedStatement);
                 ResultSet rs = preparedStatement.executeQuery();
                 while (rs.next()) {
                     String parent_name = rs.getString(2);
@@ -167,15 +171,24 @@ public class ParentDAO {
                 }
 
                 String parentList = String.join(",", parentLists);
-                PreparedStatement insertStatement = conn.prepareStatement("INSERT IGNORE INTO parent(name,nationality,company,designation,phone,email,password,branch_id) VALUES " + parentList);
-                int num = insertStatement.executeUpdate();
+                String [] col = {"parent_id"};
+                PreparedStatement insertStatement = conn.prepareStatement("INSERT IGNORE INTO parent(name,nationality,company,designation,phone,email,branch_id) VALUES " + parentList, col);
+                insertStatement.executeUpdate();
+                ResultSet a = insertStatement.getGeneratedKeys();
+                int count = 0;
+                while(a.next()){
+                    int id = a.getInt(1);
+                    insertedParents.add(retrieveSpecificParentById(id));
+                    count++;
+                }
                 duplicatedParents = existingParents;
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-
-        return duplicatedParents;
+        returnList.add(duplicatedParents);
+        returnList.add(insertedParents);
+        return returnList;
     }
 
 }

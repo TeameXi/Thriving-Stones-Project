@@ -21,11 +21,10 @@ public class Student {
     private int phone;
     private String address;
     private String email;
-    private String password;
     private double reqAmt;
     private double outstandingAmt;
                   
-    public Student(int studentID, String studentNRIC, String name, String BOD, String gender, String level, int branch_id, int phone, String address, String email, String password, double reqAmt, double outstandingAmt){
+    public Student(int studentID, String studentNRIC, String name, String BOD, String gender, String level, int branch_id, int phone, String address, String email, double reqAmt, double outstandingAmt){
         this.studentID = studentID;
         this.studentNRIC = studentNRIC;
         this.name = name;
@@ -36,10 +35,18 @@ public class Student {
         this.address = address;
         this.phone = phone;
         this.email = email;
-        this.password = password;
         this.reqAmt = reqAmt;
         this.outstandingAmt = outstandingAmt;
     }
+
+    public Student(int studentID, String name, String studentNRIC, String email) {
+        this.studentID = studentID;
+        this.studentNRIC = studentNRIC;
+        this.name = name;
+        this.email = email;
+    }
+
+    
     
     public Student(int studentID, String name, int phone, String level){
         this.studentID = studentID;
@@ -118,14 +125,6 @@ public class Student {
     
     public void setEmail(String newEmail){
         this.email = newEmail;
-    }
-    
-    public String getPassword(){
-        return password;
-    }
-    
-    public void setPassword(String newPassword){
-        this.password = newPassword;
     }
     
     public double getReqAmt(){

@@ -122,11 +122,10 @@ public class StudentClassDAO {
                 int phone = rs.getInt("phone");
                 String address = rs.getString("address");
                 String email = rs.getString("email");
-                String password = rs.getString("password");
                 double reqAmt = rs.getDouble("required_amount");
                 double outstandingAmt = rs.getDouble("outstanding_amount");
                 String level = LevelDAO.retrieveLevel(levelID);
-                Student student = new Student(studentID, studentNRIC, name, BOD, gender, level, branchID, phone, address, email, password, reqAmt, outstandingAmt);
+                Student student = new Student(studentID, studentNRIC, name, BOD, gender, level, branchID, phone, address, email, reqAmt, outstandingAmt);
                 studentList.add(student);
             } 
         } catch (Exception e) {

@@ -91,6 +91,30 @@ public class UsersDAO {
         }
         return null;
     }
+    
+    public Users retrieveUserByID(int id) {
+        try (Connection conn = ConnectionManager.getConnection()) {
+            
+            PreparedStatement stmt = conn.prepareStatement("select user_id,username,password,role,respective_id from users where user_id = ?");
+                stmt.setInt(1, id);
+                ResultSet rs = stmt.executeQuery();
+               
+                while (rs.next()) {
+                    int user_id = rs.getInt(1);
+                    String username = rs.getString(2);
+                    String pwd = rs.getString(3);
+                    String role = rs.getString(4);
+                    int respective_id = rs.getInt(5);
+                    return new Users(user_id, username, pwd, role, respective_id);
+                }
+               
+                return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
     public Users retrieveUserByUsernameRole(String type, String name) {
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement("select user_id,username,password,role,respective_id from users where username = ?");
