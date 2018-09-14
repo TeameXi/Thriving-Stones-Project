@@ -2,6 +2,7 @@ package model;
 
 import entity.Class;
 import connection.ConnectionManager;
+import entity.Student;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,6 +11,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ClassDAO {
     
@@ -129,6 +132,35 @@ public class ClassDAO {
         ArrayList<Class> classList = new ArrayList();
         try(Connection conn = ConnectionManager.getConnection()){
             PreparedStatement stmt = conn.prepareStatement("select * from class where branch_id = ? and tutor_id = ? and DATE_ADD(end_date, INTERVAL 3 MONTH) > curdate()");
+            stmt.setInt(1, branchID);
+            stmt.setInt(2, tutorID);
+            ResultSet rs = stmt.executeQuery();
+
+            while(rs.next()){
+                int classID = rs.getInt("class_id");
+                int subjectID = rs.getInt("subject_id");
+                int levelID = rs.getInt("level_id");
+                int term = rs.getInt("term");
+                String classTime = rs.getString("timing");
+                String classDay = rs.getString("class_day");
+                String startDate = rs.getString("start_date");
+                String endDate = rs.getString("end_date");
+                int mthlyFees = rs.getInt("fees");
+                String subject = SubjectDAO.retrieveSubject(subjectID);
+                String level = LevelDAO.retrieveLevel(levelID);
+                Class cls = new Class(classID, level, subject, term, classTime, classDay, mthlyFees, startDate, endDate);
+                classList.add(cls);
+            }
+        }catch(SQLException e){
+            System.out.print(e.getMessage());
+        }       
+        return classList;
+    }
+    
+    public static ArrayList<Class> retrieveAllClassesOfTutor(int tutorID, int branchID){
+        ArrayList<Class> classList = new ArrayList();
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement("select * from class where branch_id = ? and tutor_id = ? and end_date > curdate()");
             stmt.setInt(1, branchID);
             stmt.setInt(2, tutorID);
             ResultSet rs = stmt.executeQuery();
@@ -362,6 +394,25 @@ public class ClassDAO {
         return classMap;
     }
     
-    
+    public ArrayList<Student> retrieveStudentsByClass(int classID){
+        ArrayList<Student> result = new ArrayList<>();
+        String sql = "select student_id, student_name, phone, level_id from student where student_id in (select student_id from class_student_rel where class_id = ?)";
+        
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1,classID);
+            
+            ResultSet rs = stmt.executeQuery();
+            
+            while(rs.next()){
+                String level = LevelDAO.retrieveLevel(rs.getInt(4));
+                System.out.println(rs.getString(3));
+                result.add(new Student(rs.getInt(1), rs.getString(2), rs.getInt(3), level));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ClassDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return result;
+    }
 }
     

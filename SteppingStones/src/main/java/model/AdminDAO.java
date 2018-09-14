@@ -140,7 +140,7 @@ public class AdminDAO {
     }
     
     public boolean updateAdminPassword(int adminID, String password) {
-        String updateTutorPassword = "UPDATE admin SET admin_password=MD5(?) WHERE admin_id =?";
+        String updateTutorPassword = "update users set users.password = MD5(?) where role = 'admin' and user_id = ?";
         try (Connection conn = ConnectionManager.getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(updateTutorPassword)) {
             preparedStatement.setString(1, password);

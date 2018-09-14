@@ -91,6 +91,30 @@ public class UsersDAO {
         }
         return null;
     }
+    
+    public Users retrieveUserByID(int id) {
+        try (Connection conn = ConnectionManager.getConnection()) {
+            
+            PreparedStatement stmt = conn.prepareStatement("select user_id,username,password,role,respective_id from users where user_id = ?");
+                stmt.setInt(1, id);
+                ResultSet rs = stmt.executeQuery();
+               
+                while (rs.next()) {
+                    int user_id = rs.getInt(1);
+                    String username = rs.getString(2);
+                    String pwd = rs.getString(3);
+                    String role = rs.getString(4);
+                    int respective_id = rs.getInt(5);
+                    return new Users(user_id, username, pwd, role, respective_id);
+                }
+               
+                return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
     public Users retrieveUserByUsernameRole(String type, String name) {
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement("select user_id,username,password,role,respective_id from users where username = ?");
@@ -207,13 +231,13 @@ public class UsersDAO {
         }
         return -1;
     }
-    public static boolean deleteUserByIdAndRole(int relative_id, String role) {
+    public static boolean deleteUserByIdAndRole(int respective_id, String role) {
         boolean deletedStatus = false;
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            String sql = "delete from users where relative_id = ? and role = ?";
+            String sql = "delete from users where respective_id = ? and role = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setInt(1, relative_id);
+            stmt.setInt(1, respective_id);
             stmt.setString(2, role);
             stmt.executeUpdate();
             conn.commit();

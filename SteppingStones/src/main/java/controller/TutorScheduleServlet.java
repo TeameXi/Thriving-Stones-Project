@@ -1,7 +1,11 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package controller;
 
 import entity.Lesson;
-import entity.Tutor;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -12,25 +16,22 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.ClassDAO;
 import model.LessonDAO;
-import model.TutorDAO;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import entity.Class;
-
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+import entity.Student;
+import model.AttendanceDAO;
+import model.StudentClassDAO;
+import model.TutorDAO;
 
 /**
  *
- * @author Zang Yu
+ * @author Xin
  */
-@WebServlet(name = "TutorAttendanceServlet", urlPatterns = {"/TutorAttendanceServlet"})
-public class TutorAttendanceServlet extends HttpServlet {
-    
-       /**
+@WebServlet(name = "TutorScheduleServlet", urlPatterns = {"/TutorScheduleServlet"})
+public class TutorScheduleServlet extends HttpServlet {
+
+    /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
      *
@@ -43,75 +44,70 @@ public class TutorAttendanceServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
+            System.out.println("AJAX SUCCESS");
+            
             String action = request.getParameter("action");
-
-            if (action.equals("retrieve")) {
-                int branchID = Integer.parseInt(request.getParameter("branchID"));
-                
-                JSONArray array = new JSONArray();
-                LessonDAO lessons = new LessonDAO();
-                ArrayList<Tutor> tutors = new TutorDAO().retrieveAllTutorsByBranch(branchID);
-
-                for (Tutor t : tutors) {
-                    JSONObject obj = new JSONObject();
-                    obj.put("id", t.getTutorId());
-                    obj.put("phone", t.getPhone());
-                    obj.put("name", t.getName());
-                    obj.put("attendance", lessons.retrieveTotalPercentageAttendance(t.getTutorId()) + "%");
-                    array.put(obj);
-                }
-                JSONObject toReturn = new JSONObject().put("data", array);
-                String json = toReturn.toString();
-                out.println(json);
-            }else if(action.equals("retrieveClasses")){
+            
+            if(action.equals("retrieve")){
                 int tutorID = Integer.parseInt(request.getParameter("tutorID"));
-                int branchID = Integer.parseInt(request.getParameter("branchID"));
-                
-                LessonDAO lessonDAO = new LessonDAO();
-                ArrayList<Class> classes = ClassDAO.listAllClassesByTutorID(tutorID, branchID);
-                
                 JSONArray array = new JSONArray();
-                for (Class c : classes) {
+                ArrayList<Lesson> lessons = LessonDAO.retrieveLessonsByTutor(tutorID);
+                
+                for(Lesson l : lessons){
                     JSONObject obj = new JSONObject();
-                    obj.put("id", c.getClassID());
-                    obj.put("date", c.getClassDay() + " " + c.getClassTime());
-                    obj.put("attendance", lessonDAO.retrieveNumberTutorAttendancePerClass(c.getClassID(), tutorID) + "%");
-                    obj.put("level", c.getLevel());
-                    obj.put("subject", c.getSubject());
-                    array.put(obj);
-                }
-                JSONObject toReturn = new JSONObject().put("data", array);
-                String json = toReturn.toString();
-                System.out.println(json);
-                out.println(json);
-            }else if(action.equals("retrieveLessons")){
-                int classID = Integer.parseInt(request.getParameter("classID"));
-                
-                LessonDAO lessonDAO = new LessonDAO();
-                ArrayList<Lesson> lessons = LessonDAO.retrieveAllLessonLists(classID);
-                
-                JSONArray array = new JSONArray();
-                
-                for(Lesson l: lessons){
-                    JSONObject obj = new JSONObject();
-                    String date = l.getStartDate();
                     obj.put("id", l.getLessonid());
-                    obj.put("date", date.substring(0, date.indexOf(" ")));
-                    
-                    if(lessonDAO.retrieveAttendanceForLesson(l.getLessonid())){
-                        obj.put("attended", "Present");
-                    }
-                    
+                    Class c = ClassDAO.getClassByID(l.getClassid());
+                    obj.put("start_date", l.getStartDate());
+                    obj.put("end_date", l.endDate());
+                    obj.put("text", c.getLevel() + " " + c.getSubject());
                     array.put(obj);
                 }
                 JSONObject toReturn = new JSONObject().put("data", array);
                 String json = toReturn.toString();
-                System.out.println(json);
                 out.println(json);
-            }else if(action.equals("mark")){
+            }else if(action.equals("retrieveClassDetails")){
                 int lessonID = Integer.parseInt(request.getParameter("lessonID"));
                 
-                boolean status = LessonDAO.updateTutorAttendance(lessonID, 1);
+                Lesson lesson = LessonDAO.getLessonByID(lessonID);
+                JSONObject obj = new JSONObject();
+                obj.put("id", lessonID);
+                obj.put("startDate", lesson.getStartDate());
+                obj.put("endDate", lesson.endDate());
+                obj.put("tutor", new TutorDAO().retrieveSpecificTutorById(lesson.getTutorid()).getName());
+                obj.put("classSize", new StudentClassDAO().retrieveNumberOfStudentByClass(lesson.getClassid()));
+                obj.put("className", new ClassDAO().getClassByID(lesson.getClassid()).getClassDay() + " " + new ClassDAO().getClassByID(lesson.getClassid()).getClassTime());
+                
+                String json = obj.toString();
+                out.println(json);
+            }else if(action.equals("retrieveStudents")){
+                int lessonID = Integer.parseInt(request.getParameter("lessonID"));
+                
+                Lesson lesson = LessonDAO.getLessonByID(lessonID);
+                JSONArray array = new JSONArray();
+                ArrayList<Student> students = StudentClassDAO.listAllStudentsByClass(lesson.getClassid());
+                
+                for(Student s : students){
+                    JSONObject obj = new JSONObject();
+                    obj.put("id", s.getStudentID());
+                    obj.put("name", s.getName());
+                    obj.put("phone", s.getPhone());
+                    
+                    if(new AttendanceDAO().retrieveStudentAttendances(s.getStudentID(), lessonID)){
+                        obj.put("attended", "Present");
+                    }
+                    array.put(obj);
+                }
+                JSONObject toReturn = new JSONObject().put("data", array);
+                String json = toReturn.toString();
+                out.println(json);
+            }else if(action.equals("mark")){
+                int studentID = Integer.parseInt(request.getParameter("studentID"));
+                int tutorID = Integer.parseInt(request.getParameter("tutorID"));
+                int lessonID = Integer.parseInt(request.getParameter("lessonID"));
+                int classID = LessonDAO.getLessonByID(lessonID).getClassid();
+                
+                AttendanceDAO attendance = new AttendanceDAO();
+                boolean status = attendance.updateStudentAttendance(studentID, lessonID, classID, tutorID, true);
                 
                 JSONObject toReturn = new JSONObject().put("data", status);
                 String json = toReturn.toString();
@@ -158,4 +154,5 @@ public class TutorAttendanceServlet extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+
 }

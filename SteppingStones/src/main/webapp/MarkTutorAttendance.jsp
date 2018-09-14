@@ -1,128 +1,214 @@
-<%@page import="entity.Tutor"%>
-<%@page import="model.TutorDAO"%>
-<%@page import="java.util.ArrayList"%>
-<%@page import="model.ClassDAO"%>
-<%@page import="java.util.List"%>
-<%@page import="entity.Branch"%>
-<%@page import="entity.Class"%>
-<%@page import="model.BranchDAO"%>
 <%@include file="protect_branch_admin.jsp"%>
 <%@include file="header.jsp"%>
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.dataTables.min.css">
+<style type="text/css">
+    td.details-control {
+        background: url("${pageContext.request.contextPath}/styling/img/add.png") no-repeat center center;
+        cursor: pointer;
+        background-size: 15px 15px;
+    }
+    tr.shown td.details-control {
+        background: url("${pageContext.request.contextPath}/styling/img/minus.png") no-repeat center center;
+        background-size: 15px 15px;
+    }
 
-<div class="col-md-10">
-    <div class="row" id="errorMsg"></div>
-    <div style="text-align: center;margin: 20px;"><span class="tab_active">Mark Attendance </span> / <a href="DisplayTutorAttendance.jsp">View Attendance</a></div>
-    <div class="row">
-        <div class="col-md-3"></div>
-        <div class="col-md-7">
-            <form id="tutorAttendanceForm" method="POST" class="form-horizontal" action="TutorAttendanceServlet">
-                <div class="form-group">
-                    <label class="col-lg-2 control-label">Tutor</label>  
-                    <div class="col-lg-7 inputGroupContainer">
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="zmdi zmdi-badge-check"></i></span>
-                            <select name="tutorID" class="form-control" onchange="retrieveTutorLessons()" id="tutorID">
-                                <option value="">Select Tutor</option>
-                                <%                                    
-                                    TutorDAO tutors = new TutorDAO();
-                                    ArrayList<Tutor> tutorList = tutors.retrieveAllTutorsByBranch(branch_id);
+    .tutor-text {
+        text-align: center;
+    }
 
-                                    for (Tutor t : tutorList) {
-                                        out.println("<option value='" + t.getTutorId() + "'>" + t.getName() + "</option>");
-                                    }
-                                %>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </form>
-            <div id="lessons">
-            </div>
-        </div>
-    </div>
+    .attendance-button {
+        text-align: center;
+    }
+</style>
+<div class="col-lg-10">
+    <div style="text-align: center;margin: 10px;"><span class="tab_active" style="font-size: 14px">Attendance Taking</span></div>
+    <table id="tutorAttendanceTable" class="table table-bordered table-striped" style="width:100%; font-size: 14px">
+        <thead>
+            <tr>
+                <th></th>
+                <th style="text-align: center">Tutor Name</th>
+                <th style="text-align: center">Phone Number</th>
+                <th style="text-align: center">Overall Attendance</th>
+            </tr>
+        </thead>
+    </table>
 </div>
 </div>
-</div>
-
 <%@include file="footer.jsp"%>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.css" rel="stylesheet">
+<script src='https://code.jquery.com/jquery-3.3.1.js'></script>
+<script src='https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js'></script>
+<script src='https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js'></script>
+<script src='https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js'></script>
 
-<link rel='stylesheet prefetch' href='http://cdnjs.cloudflare.com/ajax/libs/jquery.bootstrapvalidator/0.5.0/css/bootstrapValidator.min.css'>
-<script src='http://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.4.5/js/bootstrapvalidator.min.js'></script>
+<script type="text/javascript">
+    function format(rowData) {
+        return '<table id="classList" class="table table-bordered table-striped" style="width: 100%;">'
+                + '<thead><tr><th></th><th style="text-align: center">Class</th><th style="text-align: center">Level</th><th style="text-align: center">Subject</th><th style="text-align: center">Attendance</th></tr></thead></table>';
+    }
 
-<script>
-    $(function () {
-        $('#studentAttendanceForm').bootstrapValidator({
-            // To use feedback icons, ensure that you use Bootstrap v3.1.0 or later
-            feedbackIcons: {
-                valid: 'glyphicon glyphicon-ok',
-                invalid: 'glyphicon glyphicon-remove',
-                validating: 'glyphicon glyphicon-refresh'
-            },
-            fields: {
-                tutorID: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Please select a class'
-                        }
-                    }
+    function formatLessonList(rowData) {
+        return '<table id="lessonList" class="table table-bordered table-striped" style="width: 100%;">'
+                + '<thead><tr><th style="text-align: center">Lesson Date</th><th style="text-align: center">Present?</th>'
+                + '</tr></thead></table>';
+    }
+
+    $(document).ready(function () {
+        branchID = <%=branch_id%>
+        action = 'retrieve';
+
+        table = $('#tutorAttendanceTable').DataTable({
+            "iDisplayLength": 5,
+            "aLengthMenu": [[5, 10, 25, -1], [5, 10, 25, "All"]],
+            'ajax': {
+                "type": "POST",
+                "url": "TutorAttendanceServlet",
+                "data": {
+                    "branchID": branchID,
+                    "action": action
                 }
+            },
+            "columnDefs": [
+                {
+                    "targets": [1, 2, 3],
+                    "data": null,
+                    "defaultContent": '',
+                    "className": 'tutor-text'
+                }
+            ],
+            'columns': [
+                {
+                    "className": 'details-control',
+                    "orderable": false,
+                    "data": null,
+                    "defaultContent": ''
+                },
+                {"data": "name"},
+                {"data": "phone"},
+                {"data": "attendance"}
+            ],
+            "order": [[1, 'asc']]
+        });
+
+        $('#tutorAttendanceTable tbody').on('click', 'td.details-control', function () {
+            tr = $(this).parents('tr');
+            row = table.row(tr);
+
+            if (row.child.isShown()) {
+                // This row is already open - close it
+                row.child.hide();
+                tr.removeClass('shown');
+            } else {
+                tutorID = row.data().id;
+                action = 'retrieveClasses';
+
+                // Open this row
+                row.child(format(row.data())).show();
+                var childTable = $("#classList").DataTable({
+                    "dom": 'tpr',
+                    "iDisplayLength": 5,
+                    'ajax': {
+                        "type": "POST",
+                        "url": "TutorAttendanceServlet",
+                        "data": {
+                            "tutorID": tutorID,
+                            "action": action,
+                            "branchID": branchID
+                        }
+                    },
+                    "columnDefs": [
+                        {
+                            "targets": [1, 2, 3],
+                            "data": null,
+                            "defaultContent": '',
+                            "className": 'tutor-text'
+                        }
+                    ],
+                    'columns': [
+                        {
+                            "className": 'details-control',
+                            "orderable": false,
+                            "data": null,
+                            "defaultContent": ''
+                        },
+                        {"data": "date"},
+                        {"data": "level"},
+                        {"data": "subject"},
+                        {"data": "attendance"}
+                    ],
+                    "order": [[1, 'asc']]
+                });
+                tr.addClass('shown');
+
+                $('#classList tbody').on('click', 'td.details-control', function () {
+                    childTR = $(this).parents('tr');
+                    childRow = childTable.row(childTR);
+
+                    if (childRow.child.isShown()) {
+                        // This row is already open - close it
+                        childRow.child.hide();
+                        childTR.removeClass('shown');
+                    } else {
+                        classID = childRow.data().id;
+                        action = 'retrieveLessons';
+
+                        // Open this row
+                        childRow.child(formatLessonList(childRow.data())).show();
+
+                        lessonTable = $("#lessonList").DataTable({
+                            "dom": 'tpr',
+                            "iDisplayLength": 5,
+                            'ajax': {
+                                "type": "POST",
+                                "url": "TutorAttendanceServlet",
+                                "data": {
+                                    "classID": classID,
+                                    "action": action
+                                }
+                            },
+                            "columnDefs": [
+                                {
+                                    "targets": 0,
+                                    "data": null,
+                                    "defaultContent": '',
+                                    "className": 'tutor-text'
+                                },
+                                {
+                                    "targets": 1,
+                                    "data": null,
+                                    "defaultContent": '<button class="btn btn-default">Present</button>',
+                                    "className": 'tutor-text'
+                                }
+                            ],
+                            'columns': [
+                                {"data": "date"},
+                                {"data": "attended"}
+                            ]
+                        });
+
+                        $('#lessonList tbody').on('click', 'button', function () {
+                            lessonID = lessonTable.row($(this).parents('tr')).data().id;
+                            rowIndex = lessonTable.row($(this).parents('tr')).index();
+                            columnIndex = lessonTable.cell($(this).closest('td')).index().column;
+                            action = 'mark';
+
+                            $.ajax({
+                                type: 'POST',
+                                url: 'TutorAttendanceServlet',
+                                dataType: 'JSON',
+                                data: {lessonID: lessonID, action: action},
+                                success: function (data) {
+                                    if (data) {
+                                        lessonTable.cell(rowIndex, columnIndex).data('Present').draw();
+                                    }
+                                }
+                            });
+                        });
+                        childTR.addClass('shown');
+                    }
+                });
             }
         });
     });
-</script>
-
-<script>
-    function markAttendance(selectObject){
-        lessonID = selectObject.value;
-        action = 'update';
-        
-        $.ajax({
-            type: 'POST',
-            url: 'TutorAttendanceServlet',
-            dataType: 'JSON',
-            data: {lessonID: lessonID, action: action},
-            success: function (data) {
-                if(data.length !== 0){
-                    if(data.status){
-                        html = '<div class="alert alert-success col-md-12"><strong>Success!</strong> Attendance recorded successfully!</div>';
-                    }else{
-                        html = '<div class="alert alert-success col-md-12"><strong>Failure!</strong> Fail to record attendance!</div>';
-                    }
-                    $("#errorMsg").html(html);
-                    $('#errorMsg').fadeIn().delay(1000).fadeOut();
-                }
-            }
-        });
-    }
-    
-    function retrieveTutorLessons(){
-        tutorID = $("#tutorID").val();
-        action = 'retrieve';
-        
-        $.ajax({
-            type: 'POST',
-            url: 'TutorAttendanceServlet',
-            dataType: 'JSON',
-            data: {tutorID: tutorID, action: action},
-            success: function (data) {
-                var lessons = document.getElementById('lessons');
-                if(data.length !== 0){
-                    var html = '<form><table class="table table-bordered"><thead class="table_title"><tr><th>Subject</th><th>Lesson Timing</th><th>Level</th><th>Present</th></tr><tbody>';
-
-                    var i;
-                    for(i = 0; i < data.length; i++){
-                        html += '<tr class="table_content"><td>' + data[i].subject + '</td><td>' + data[i].date + '</td><td>' + data[i].level + '</td><td><input type="checkbox" onchange="markAttendance(this)" name="studentID" value=' + data[i].lessonID + '></td></tr>';
-                    }
-
-                    html +='</tbody></table><br/></form><br>';
-                    lessons.innerHTML = html;
-                }else{
-                    studentTable.innerHTML = '<h4>No lessons available!</h4>';
-                }
-            }
-        });
-    }
 </script>

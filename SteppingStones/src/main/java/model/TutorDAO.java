@@ -27,9 +27,9 @@ public class TutorDAO {
                 String birth_date = rs.getString(7);
                 String gender = rs.getString(8);
                 String email = rs.getString(9);
-                String password = rs.getString(10);
-                int branch_id = rs.getInt(11);
-                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email, password, branch_id);
+                int branch_id = rs.getInt(10);
+                //double pay = rs.getDouble(11);
+                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email, branch_id);
                 return t;
             }
 
@@ -61,7 +61,8 @@ public class TutorDAO {
     }
 
     public Tutor retrieveSpecificTutorById(int tutorId) {
-        String select_tutor = "SELECT * FROM tutor WHERE tutor_id = ?";
+        String select_tutor = "SELECT tutor_id, tutor_nric, tutor_fullname, phone, address, image_url, "
+                + "birth_date, gender, email, branch_id FROM tutor WHERE tutor_id = ?";
         try (Connection conn = ConnectionManager.getConnection();
                 PreparedStatement preparedStatement = conn.prepareStatement(select_tutor)) {
             preparedStatement.setInt(1, tutorId);
@@ -77,9 +78,9 @@ public class TutorDAO {
                 String birth_date = rs.getString(7);
                 String gender = rs.getString(8);
                 String email = rs.getString(9);
-                String password = rs.getString(10);
-                int branch_id = rs.getInt(11);
-                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email, password, branch_id);
+                int branch_id = rs.getInt(10);
+                //double pay = rs.getDouble(11);
+                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email, branch_id/*, pay*/);
                 return t;
             }
 
@@ -88,9 +89,9 @@ public class TutorDAO {
         }
         return null;
     }
-
+    
     public int addTutor(Tutor tutor) {
-        String insert_Tutor = "INSERT INTO tutor(tutor_nric,tutor_fullname,phone,address,image_url,birth_date,gender,email,password,branch_id) VALUES(?,?,?,?,?,?,?,?,MD5(?),?)";
+        String insert_Tutor = "INSERT INTO tutor(tutor_nric,tutor_fullname,phone,address,image_url,birth_date,gender,email,branch_id) VALUES(?,?,?,?,?,?,?,?,?)";
         try (Connection conn = ConnectionManager.getConnection();
                 PreparedStatement preparedStatement = conn.prepareStatement(insert_Tutor)) {
             preparedStatement.setString(1, tutor.getNric());
@@ -101,8 +102,7 @@ public class TutorDAO {
             preparedStatement.setString(6, tutor.getBirth_date());
             preparedStatement.setString(7, tutor.getGender());
             preparedStatement.setString(8, tutor.getEmail());
-            preparedStatement.setString(9, tutor.getPassword());
-            preparedStatement.setInt(10, tutor.getBranch_id());
+            preparedStatement.setInt(9, tutor.getBranch_id());
 
             int num = preparedStatement.executeUpdate();
             ResultSet rs = preparedStatement.getGeneratedKeys();
@@ -143,35 +143,47 @@ public class TutorDAO {
         return false;
     }
 
-    public ArrayList<String> uploadTutor(ArrayList<String> tutorLists, ArrayList<String> tutorNameLists) {
-        ArrayList<String> duplicatedTutors = new ArrayList<>();
-        if (tutorNameLists.size() > 0) {
-            String nameList = "'" + String.join("','", tutorNameLists) + "'";
-            String select_tutor = "SELECT tutor_id,tutor_fullname FROM tutor WHERE tutor_fullname IN (" + nameList + ")";
+    public ArrayList<Object> uploadTutor(ArrayList<String> tutorLists, ArrayList<String> tutorEmailLists) {
+        ArrayList<Object> returnList = new ArrayList<>();
+        ArrayList<Tutor> duplicatedTutors = new ArrayList<>();
+        ArrayList<Tutor> insertedTutor = new ArrayList<>();
+        if (tutorEmailLists.size() > 0) {
+            String emailList = "'" + String.join("','", tutorEmailLists) + "'";
+            String select_tutor = "SELECT tutor_id,tutor_fullname FROM tutor WHERE email IN (" + emailList + ")";
 
-            ArrayList<String> existingTutors = new ArrayList();
+            ArrayList<Tutor> existingTutors = new ArrayList();
             try (Connection conn = ConnectionManager.getConnection();
                 PreparedStatement preparedStatement = conn.prepareStatement(select_tutor)) {
 
                 ResultSet rs = preparedStatement.executeQuery();
                 while (rs.next()) {
+                    int id = rs.getInt(1);
                     String tutor_fullname = rs.getString(2);
-                    existingTutors.add(tutor_fullname);
+                    existingTutors.add(new Tutor(id, tutor_fullname));
                 }
                 
                 System.out.println(existingTutors.size());
 
                 String tutorList = String.join(",", tutorLists);
-                String insert_tutor = "INSERT IGNORE INTO tutor(tutor_nric,tutor_fullname,phone,address,image_url,birth_date,gender,email,password,branch_id) VALUES " + tutorList;
-                PreparedStatement insertStatement = conn.prepareStatement(insert_tutor);
-                int num = insertStatement.executeUpdate();
+                String [] col = {"tutor_id"};
+                String insert_tutor = "INSERT IGNORE INTO tutor(tutor_nric,tutor_fullname,phone,address,birth_date,gender,email,branch_id) VALUES " + tutorList;
+                PreparedStatement insertStatement = conn.prepareStatement(insert_tutor, col);
+                insertStatement.executeUpdate();
+                
+                ResultSet a = insertStatement.getGeneratedKeys();
+                
+                while(a.next()){
+                    int id = a.getInt(1);
+                    insertedTutor.add(retrieveSpecificTutorById(id));
+                }
                 duplicatedTutors = existingTutors;
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
         }
-
-        return duplicatedTutors;
+        returnList.add(duplicatedTutors);
+        returnList.add(insertedTutor);
+        return returnList;
     }
 
     public ArrayList<Tutor> retrieveAllTutorsByBranch(int branchId) {
@@ -192,9 +204,9 @@ public class TutorDAO {
                 String birth_date = rs.getString(7);
                 String gender = rs.getString(8);
                 String email = rs.getString(9);
-                String password = rs.getString(10);
-                int branch_id = rs.getInt(11);
-                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email, password, branch_id);
+                int branch_id = rs.getInt(10);
+                //double pay = rs.getDouble(11);
+                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email, branch_id);
                 tutorLists.add(t);
             }
 
@@ -221,9 +233,9 @@ public class TutorDAO {
                 String birth_date = rs.getString(7);
                 String gender = rs.getString(8);
                 String email = rs.getString(9);
-                String password = rs.getString(10);
-                int branch_id = rs.getInt(11);
-                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email, password, branch_id);
+                int branch_id = rs.getInt(10);
+                //double pay = rs.getDouble(11);
+                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email, branch_id);
                 tutorLists.add(t);
             }
 
@@ -253,9 +265,9 @@ public class TutorDAO {
                 String birth_date = rs.getString(7);
                 String gender = rs.getString(8);
                 String email = rs.getString(9);
-                String password = rs.getString(10);
-                int branch_id = rs.getInt(11);
-                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email, password, branch_id);
+                int branch_id = rs.getInt(10);
+                //double pay = rs.getDouble(11);
+                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email, branch_id);
                 tutorLists.add(t);
             }
 
@@ -300,9 +312,9 @@ public class TutorDAO {
                 String birth_date = rs.getString(7);
                 String gender = rs.getString(8);
                 String email1 = rs.getString(9);
-                String password = rs.getString(10);
-                int branch_id = rs.getInt(11);
-                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email1, password, branch_id);
+                int branch_id = rs.getInt(10);
+                //double pay = rs.getDouble(11);
+                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email1, branch_id);
             }
         } catch (Exception e) {
             System.out.println(e);
@@ -345,7 +357,7 @@ public class TutorDAO {
     }
     
     public boolean updateTutorPassword(int tutorID, String password) {
-        String updateTutorPassword = "UPDATE tutor SET password=MD5(?) WHERE tutor_id =?";
+        String updateTutorPassword = "update users set users.password = MD5(?) where role = 'tutor' and user_id = ?";
         try (Connection conn = ConnectionManager.getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(updateTutorPassword)) {
             preparedStatement.setString(1, password);

@@ -5,7 +5,8 @@
  */
 package controller;
 
-import entity.Lesson;
+import entity.Student;
+import entity.Class;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -14,16 +15,18 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.LessonDAO;
+import model.ClassDAO;
+import model.LevelDAO;
+import model.StudentDAO;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
  *
- * @author Xin
+ * @author DEYU
  */
-@WebServlet(name = "RetrieveLessonsServlet", urlPatterns = {"/RetrieveLessonsServlet"})
-public class RetrieveLessonsServlet extends HttpServlet {
+@WebServlet(name = "RetrieveStudentByLevelServlet", urlPatterns = {"/RetrieveStudentByLevelServlet"})
+public class RetrieveStudentByLevelServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,23 +39,24 @@ public class RetrieveLessonsServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+        response.setContentType("text/html; charset=utf-8");
         try (PrintWriter out = response.getWriter()) {
           
             JSONArray array = new JSONArray();
             
             int classID = Integer.parseInt(request.getParameter("classID"));
-            LessonDAO lessons = new LessonDAO();
-            ArrayList<Lesson> lessonList = lessons.retrieveAllLessonLists(classID);
+            Class cls = ClassDAO.getClassByID(classID);
+            int levelID = LevelDAO.retrieveLevelID(cls.getLevel());
+            ArrayList<Student> studentList = StudentDAO.listStudentsByLevelNotEnrolledInSpecificClassYet(levelID, classID);
             
-            if(lessonList != null || !lessonList.isEmpty()){
-                for(Lesson l: lessonList){
-                    int lessonID = l.getLessonid();
-                    String date = l.getLessonDateTime().toString().split(" ")[0];
+            if(studentList != null || !studentList.isEmpty()){
+                for(Student s: studentList){
+                    int studentID = s.getStudentID();
+                    String studentName = s.getName();
                     
                     JSONObject obj = new JSONObject();
-                    obj.put("lesson", lessonID);
-                    obj.put("date", date);
+                    obj.put("student", studentID);
+                    obj.put("name", studentName);
                     
                     array.put(obj);
                 }

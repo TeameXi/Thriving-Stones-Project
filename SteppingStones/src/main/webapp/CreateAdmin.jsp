@@ -108,10 +108,10 @@ $(function () {
             adminEmail:{
                 validators: {
                     notEmpty: {
-                        message: 'Enter Email Address'
+                        message: 'Please enter an email address'
                     },
                     emailAddress: {
-                        message: 'Please enter valid email address'
+                        message: 'Please enter a valid email address'
                     }
                 }
             },

@@ -1,241 +1,210 @@
-<%@page import="entity.Tutor"%>
-<%@page import="model.TutorDAO"%>
-<%@page import="java.util.ArrayList"%>
-<%@page import="model.ClassDAO"%>
-<%@page import="java.util.Calendar"%>
 <%@include file="protect_tutor.jsp"%>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/vendor/timetable/reset.css"> 
-<link rel="stylesheet" href="${pageContext.request.contextPath}/vendor/timetable/style.css"> 
-
+<script src="${pageContext.request.contextPath}/vendor/scheduler/dhtmlxscheduler.js" type="text/javascript" charset="utf-8"></script>
+<script src="${pageContext.request.contextPath}/vendor/scheduler/ext/dhtmlxscheduler_year_view.js" type="text/javascript" charset="utf-8"></script>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/vendor/scheduler/dhtmlxscheduler_material.css" type="text/css" charset="utf-8">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.dataTables.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src='https://code.jquery.com/jquery-3.3.1.js'></script>
+<script src='https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js'></script>
+<script src='https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js'></script>
+<script src='https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js'></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <%@include file="header.jsp"%>
 
+<style type="text/css" media="screen">
+    html, body{
+        margin:0px;
+        padding:0px;
+        height:100%;
+    }   
+
+    .student-text{
+        text-align: center;
+    }
+</style>
 
 <div class="col-md-10">
-    <div style="text-align: center;margin: 20px;"><h5><span class="tab_active">Tutor Classes </span></h5></div>
-    <div class="row">
-        <%            
-            int year = Calendar.getInstance().get(Calendar.YEAR);
-            int tutor_id = user.getRespectiveID();
-            
-            TutorDAO tutors = new TutorDAO();
-            Tutor tutor = tutors.retrieveSpecificTutorById(tutor_id);
-            String tutorName   = tutor.getName();
-        %>
-        
-        <br/>
-        <div class="cd-schedule loading">
-            <div class="timeline">
-                <ul>
-                    <li><span>10:00 AM</span></li>
-                    <li><span>11:00 AM</span></li>
-                    <li><span>12:00 AM</span></li>
-                    <li><span>13:00 PM</span></li>
-                    <li><span>14:00 PM</span></li>
-                    <li><span>15:00 PM</span></li>
-                    <li><span>16:00 PM</span></li>
-                    <li><span>17:00 PM</span></li>
-                    <li><span>18:00 PM</span></li>
-                    <li><span>19:00 PM</span></li>
-                    <li><span>20:00 PM</span></li>
-                    <li><span>21:00 PM</span></li>
-                    <li><span>22:00 PM</span></li>
-                </ul>
-            </div> <!-- .timeline -->
-
-            <div class="events">
-                <ul>
-                    <li class="events-group">
-                        <div class="top-info"><span>Mon</span></div>
-                        <ul class="Mon">
-                        <% 
-                            ArrayList<entity.Class> mondayClasses = ClassDAO.listAllClassesBelongToTutorByDay(tutor_id,branch_id,"Mon");
-                            int color_count = 1;
-                            for(entity.Class mondayClass : mondayClasses){
-                                String timingArr[] = mondayClass.getClassTime().split("-");
-                                String startTime = timingArr[0];
-                                String endTime = timingArr[1];
-                                out.println("<li class='single-event' data-start='"+startTime+"' data-end='"+endTime+"'");
-                                out.println("data-content='"+mondayClass.getStartDate()+"&"+mondayClass.getEndDate()+"&"+mondayClass.getMthlyFees()+"&"+tutorName+"'");
-                                out.println("data-event='event-"+color_count+"'><a href='#0'><em class='event-name'>"+mondayClass.getSubject()+"</em></a></li>");
-                                if(color_count > 4){
-                                    color_count = 1;
-                                }
-                            }
-                            
-                        %>
-                        </ul>
-                    </li>
-
-                    <li class="events-group">
-                        <div class="top-info"><span>Tue</span></div>
-                        <ul class="Tue">
-                        <% 
-                            ArrayList<entity.Class> tueClasses = ClassDAO.listAllClassesBelongToTutorByDay(tutor_id,branch_id,"Tue");
-        
-                            for(entity.Class tueClass : tueClasses){
-                                String timingArr[] = tueClass.getClassTime().split("-");
-                                String startTime = timingArr[0];
-                                String endTime = timingArr[1];
-                                out.println("<li class='single-event' data-start='"+startTime+"' data-end='"+endTime+"'");
-                                out.println("data-content='"+tueClass.getStartDate()+"&"+tueClass.getEndDate()+"&"+tueClass.getMthlyFees()+"&"+tutorName+"'");
-                                out.println("data-event='event-"+color_count+"'><a href='#0'><em class='event-name'>"+tueClass.getSubject()+"</em></a></li>");
-                                if(color_count > 4){
-                                    color_count = 1;
-                                }
-                            }
-                            
-                        %>
-                        </ul>
-                    </li>
-
-
-                    <li class="events-group">
-                        <div class="top-info"><span>Wed</span></div>
-                        <ul class="Wed">
-                        <% 
-                            ArrayList<entity.Class> wedClasses = ClassDAO.listAllClassesBelongToTutorByDay(tutor_id,branch_id,"Wed");
-
-                            for(entity.Class wedClass : wedClasses){
-                                String timingArr[] = wedClass.getClassTime().split("-");
-                                String startTime = timingArr[0];
-                                String endTime = timingArr[1];
-                                out.println("<li class='single-event' data-start='"+startTime+"' data-end='"+endTime+"'");
-                                out.println("data-content='"+wedClass.getStartDate()+"&"+wedClass.getEndDate()+"&"+wedClass.getMthlyFees()+"&"+tutorName+"'");
-                                out.println("data-event='event-"+color_count+"'><a href='#0'><em class='event-name'>"+wedClass.getSubject()+"</em></a></li>");
-                                if(color_count > 4){
-                                    color_count = 1;
-                                }
-                            }
-
-                        %>
-                        </ul>
-                    </li>
-
-
-                    <li class="events-group">
-                        <div class="top-info"><span>Thur</span></div>
-                        <ul class="Thur">
-                        <% 
-                            ArrayList<entity.Class> thurClasses = ClassDAO.listAllClassesBelongToTutorByDay(tutor_id,branch_id,"Thur");
-
-                            for(entity.Class thurClass : thurClasses){
-                                String timingArr[] = thurClass.getClassTime().split("-");
-                                String startTime = timingArr[0];
-                                String endTime = timingArr[1];
-                                out.println("<li class='single-event' data-start='"+startTime+"' data-end='"+endTime+"'");
-                                out.println("data-content='"+thurClass.getStartDate()+"&"+thurClass.getEndDate()+"&"+thurClass.getMthlyFees()+"&"+tutorName+"'");
-                                out.println("data-event='event-"+color_count+"'><a href='#0'><em class='event-name'>"+thurClass.getSubject()+"</em></a></li>");
-                                if(color_count > 4){
-                                    color_count = 1;
-                                }
-                            }
-
-                        %>
-                        </ul>
-                    </li>
-
-                    <li class="events-group">
-                        <div class="top-info"><span>Fri</span></div>
-                        <ul class="Fri">
-                        <% 
-                            ArrayList<entity.Class> friClasses = ClassDAO.listAllClassesBelongToTutorByDay(tutor_id,branch_id,"Fri");
-
-                            for(entity.Class friClass : friClasses){
-                                String timingArr[] = friClass.getClassTime().split("-");
-                                String startTime = timingArr[0];
-                                String endTime = timingArr[1];
-                                out.println("<li class='single-event' data-start='"+startTime+"' data-end='"+endTime+"'");
-                                out.println("data-content='"+friClass.getStartDate()+"&"+friClass.getEndDate()+"&"+friClass.getMthlyFees()+"&"+tutorName+"'");
-                                out.println("data-event='event-"+color_count+"'><a href='#0'><em class='event-name'>"+friClass.getSubject()+"</em></a></li>");
-                                if(color_count > 4){
-                                    color_count = 1;
-                                }
-                            }
-
-                        %>
-                        </ul>
-                    </li>
-
-                    <li class="events-group">
-                        <div class="top-info"><span>Sat</span></div>
-                        <ul class="Sat">
-                        <% 
-                            ArrayList<entity.Class> satClasses = ClassDAO.listAllClassesBelongToTutorByDay(tutor_id,branch_id,"Sat");
-
-                            for(entity.Class satClass : satClasses){
-                                String timingArr[] = satClass.getClassTime().split("-");
-                                String startTime = timingArr[0];
-                                String endTime = timingArr[1];
-                                out.println("<li class='single-event' data-start='"+startTime+"' data-end='"+endTime+"'");
-                                out.println("data-content='"+satClass.getStartDate()+"&"+satClass.getEndDate()+"&"+satClass.getMthlyFees()+"&"+tutorName+"'");
-                                out.println("data-event='event-"+color_count+"'><a href='#0'><em class='event-name'>"+satClass.getSubject()+"</em></a></li>");
-                                if(color_count > 4){
-                                    color_count = 1;
-                                }
-                            }
-
-                        %>
-                        </ul>
-                    </li>
-
-                    <li class="events-group">
-                        <div class="top-info"><span>Sun</span></div>
-                        <ul class="Sun">
-                        <% 
-                            ArrayList<entity.Class> sunClasses = ClassDAO.listAllClassesBelongToTutorByDay(tutor_id,branch_id,"Sun");
-
-                            for(entity.Class sunClass : sunClasses){
-                                String timingArr[] = sunClass.getClassTime().split("-");
-                                String startTime = timingArr[0];
-                                String endTime = timingArr[1];
-                                out.println("<li class='single-event' data-start='"+startTime+"' data-end='"+endTime+"'");
-                                out.println("data-content='"+sunClass.getStartDate()+"&"+sunClass.getEndDate()+"&"+sunClass.getMthlyFees()+"&"+tutorName+"'");
-                                out.println("data-event='event-"+color_count+"'><a href='#0'><em class='event-name'>"+sunClass.getSubject()+"</em></a></li>");
-                                if(color_count > 4){
-                                    color_count = 1;
-                                }
-                            }
-
-                        %>
-                        </ul>
-                    </li>
-
-
-                </ul>
-            </div>
-
-            <div class="event-modal">
-                <header class="header">
-                    <div class="content">
-                        <span class="event-date"></span>
-                        <h3 class="event-name"></h3>
-                    </div>
-
-                    <div class="header-bg"></div>
-                </header>
-
-                <div class="body">
-                    <div class="event-info"></div>
-                    <div class="body-bg"></div>
-                </div>
-
-                <a href="#0" class="close">Close</a>
-            </div>
-
-            <div class="cover-layer"></div>
-        </div> <!-- .cd-schedule -->
+    <div id="scheduler_here" class="dhx_cal_container" style='width:100%; height:100%;'>
+        <div class="dhx_cal_navline">
+            <div class="dhx_cal_prev_button">&nbsp;</div>
+            <div class="dhx_cal_next_button">&nbsp;</div>
+            <div class="dhx_cal_today_button"></div>
+            <div class="dhx_cal_date"></div>
+            <div class="dhx_cal_tab" name="day_tab" style="right:204px;"></div>
+            <div class="dhx_cal_tab" name="week_tab" style="right:140px;"></div>
+            <div class="dhx_cal_tab" name="month_tab" style="right:76px;"></div>
+        </div>
+        <div class="dhx_cal_header"></div>
+        <div class="dhx_cal_data"></div>       
     </div>
+</div>
+</div>
 
+<div class="modal fade" id="classDetails" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
 
+                <span class="pc_title centered">Class Details</span>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class = "col-sm-4">
+                        <label class = "form-control-label">Class Timing :</label>
+                        <label id="view_class_time">-</label>
+                    </div>
+                </div><br/>
+
+                <div class="row">
+                    <div class = "col-sm-4">
+                        <label class = "form-control-label">Start Date :</label>
+                        <label id="view_start_date"></label>
+                    </div>
+                </div><br/>
+
+                <div class="row">
+                    <div class = "col-sm-4">
+                        <label class = "form-control-label">End Date :</label>
+                        <label id="view_end_date"></label>
+                    </div>
+                </div><br/>
+
+                <div class="row">
+                    <div class = "col-sm-4">
+                        <label class = "form-control-label">Class Size :</label>
+                        <label id="view_class_size">-</label>
+                    </div>
+                </div><br/>
+
+                <div class="row">
+                    <div class = "col-sm-4">
+                        <label class = "form-control-label">Assigned To :</label>
+                        <label id="view_tutor">-</label>
+                    </div>
+                </div><br/>
+
+                <div class="row">
+                    <table id="studentAttendanceTable" class="table table-bordered table-striped" style="width:100%; font-size: 14px">
+                        <thead>
+                            <tr>
+                                <th style="text-align: center">Student Name</th>
+                                <th style="text-align: center">Contact No.</th>
+                                <th style="text-align: center">Attendance</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div><br/>
+            </div>  
+
+            <div class="modal-footer spaced-top-small centered">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>       
+    </div>
 </div>
-</div>
-</div>
-<%@include file="footer.jsp"%>
-<script src="${pageContext.request.contextPath}/vendor/timetable/main.js"></script>
-<script src="${pageContext.request.contextPath}/vendor/timetable/modernizr.js"></script>
 
 <script>
-$(document).ready(function(){
-    createSchedule();
-});
+    $(document).ready(function () {
+        tutorID = <%=user.getRespectiveID()%>
+        action = 'retrieve';
+
+        scheduler.attachEvent("onBeforeDrag", function () {
+            return false;
+        });//block event resize and drag
+        scheduler.config.dblclick_create = false;//block event creation by doubleclick
+        scheduler.config.readonly_form = true;
+        scheduler.config.readonly = true;
+        scheduler.config.prevent_cache = true;
+        scheduler.config.xml_date = "%Y-%m-%d %H:%i:%s";
+        scheduler.init('scheduler_here', new Date(), "month");
+
+        $.ajax({
+            type: 'POST',
+            url: 'TutorScheduleServlet',
+            dataType: 'JSON',
+            data: {tutorID: tutorID, action: action},
+            success: function (data) {
+                scheduler.parse(data.data, "json");
+            }
+        });
+
+        scheduler.attachEvent("onClick", function (id, e) {
+            $('#classDetails').on('shown.bs.modal', function () {
+                action = 'retrieveClassDetails';
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'TutorScheduleServlet',
+                    dataType: 'JSON',
+                    data: {lessonID: id, action: action},
+                    success: function (data) {
+                        $("#view_class_time").text(data.className);
+                        $("#view_start_date").text(data.startDate);
+                        $("#view_end_date").text(data.endDate);
+                        $("#view_class_size").text(data.classSize);
+                        $("#view_tutor").text(data.tutor);
+                    }
+                });
+
+                action = 'retrieveStudents';
+
+                table = $("#studentAttendanceTable").DataTable({
+                    "dom": 'tpr',
+                    "iDisplayLength": 5,
+                    'ajax': {
+                        "type": "POST",
+                        "url": "TutorScheduleServlet",
+                        "data": {
+                            "lessonID": id,
+                            "action": action
+                        }
+                    },
+                    "columnDefs": [
+                        {
+                            "targets": [0, 1],
+                            "data": null,
+                            "defaultContent": '',
+                            "className": 'student-text'
+                        },
+                        {
+                            "targets": 2,
+                            "data": null,
+                            "defaultContent": '<button class="btn btn-default">Present</button>',
+                            "className": 'student-text'
+                        }
+                    ],
+                    'columns': [
+                        {"data": "name"},
+                        {"data": "phone"},
+                        {"data": "attended"}
+                    ]
+                });
+
+                $('#studentAttendanceTable tbody').on('click', 'button', function () {
+                    studentID = table.row($(this).parents('tr')).data().id;
+                    columnIndex = table.cell($(this).closest('td')).index().column;
+                    rowIndex = table.cell($(this).closest('td')).index().row;
+                    action = 'mark';
+
+                    $.ajax({
+                        type: 'POST',
+                        url: 'TutorScheduleServlet',
+                        dataType: 'JSON',
+                        data: {lessonID: id, studentID: studentID, tutorID: tutorID, action: action},
+                        success: function (data) {
+                            if (data) {
+                                table.cell(rowIndex, columnIndex).data('Present').draw();
+                            }
+                        }
+                    });
+                });
+            });
+            $("#classDetails").modal('show');
+        });
+
+    });
 </script>

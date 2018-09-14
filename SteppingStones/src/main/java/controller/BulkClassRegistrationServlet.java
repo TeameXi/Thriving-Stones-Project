@@ -5,26 +5,24 @@
  */
 package controller;
 
-import entity.Student;
+import entity.Class;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.AttendanceDAO;
+import model.ClassDAO;
+import model.LessonDAO;
 import model.StudentClassDAO;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 /**
  *
- * @author Xin
+ * @author DEYU
  */
-@WebServlet(name = "RetrieveStudentAttendanceServlet", urlPatterns = {"/RetrieveStudentAttendanceServlet"})
-public class RetrieveStudentAttendanceServlet extends HttpServlet {
+@WebServlet(name = "BulkClassRegistrationServlet", urlPatterns = {"/BulkClassRegistrationServlet"})
+public class BulkClassRegistrationServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,34 +36,42 @@ public class RetrieveStudentAttendanceServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-          
-            JSONArray array = new JSONArray();
-            
-            int classID = Integer.parseInt(request.getParameter("classID"));
-            int lessonID = Integer.parseInt(request.getParameter("lessonID"));
-            StudentClassDAO students = new StudentClassDAO();
-            ArrayList<Student> studentList = students.listAllStudentsByClass(classID);
-            
-            if(studentList != null || !studentList.isEmpty()){
-                for(Student s: studentList){
-                    int studentID = s.getStudentID();
-                    String studentName = s.getName();
-                    
-                    AttendanceDAO attendance = new AttendanceDAO();
-                    boolean status = attendance.retrieveStudentAttendance(studentID, lessonID);
-                    
-                    JSONObject obj = new JSONObject();
-                    obj.put("student", studentName);
-                    obj.put("status", status);
-                    
-                    array.put(obj);
+
+        String[] studentValues = request.getParameterValues("studentID");
+        String classIDStr = request.getParameter("classID");
+        int classID = Integer.parseInt(classIDStr);
+
+        if(studentValues != null){
+            for(String studentIDStr: studentValues){
+                int studentID = Integer.parseInt(studentIDStr);
+                String outDep = request.getParameter(studentIDStr + "deposit");
+                String outTuition = request.getParameter(studentIDStr + "tuitionFees");
+                
+                double outstandingDeposit = 0;
+                if(outDep != null && !"".equals(outDep)){
+                    outstandingDeposit = Double.parseDouble(outDep);
                 }
-                String json = array.toString();
-                System.out.println(json);
-                out.println(json);
+                 
+                double outstandingTuitionFees = 0;
+                if(outTuition != null && !"".equals(outTuition)){
+                    outstandingTuitionFees = Double.parseDouble(outTuition);
+                }
+                Class cls = ClassDAO.getClassByID(classID);
+                double monthlyFees = cls.getMthlyFees();
+                String joinDate = LessonDAO.getNearestLessonDate(classID);
+                double firstInstallment = 0; 
+                double outstandingFirstInstallment = 0; 
+                boolean status = StudentClassDAO.saveStudentToRegisterClass(classID, studentID, monthlyFees, outstandingDeposit, monthlyFees, 
+                            outstandingTuitionFees, joinDate, firstInstallment, outstandingFirstInstallment);
+                if(status){
+                    request.setAttribute("status", "Successfully Registered.");
+                }
+                System.out.println("Student 1" + " classID " + classID + " StuID " + studentID + " dep " + outstandingDeposit + " tut " + outstandingTuitionFees);
             }
         }
+        
+        RequestDispatcher view = request.getRequestDispatcher("BulkClassRegistration.jsp");
+        view.forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

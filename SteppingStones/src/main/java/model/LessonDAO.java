@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -78,7 +79,7 @@ public class LessonDAO {
     }
     public static ArrayList<Lesson> retrieveAllLessonLists(int classid) {
         ArrayList<Lesson> lessons = new ArrayList<>();
-        String sql = "select lesson_id, class_id, tutor_id, tutor_attended, lesson_date_time from lesson where class_id = ?";
+        String sql = "select lesson_id, class_id, tutor_id, tutor_attended, start_date, end_date from lesson where class_id = ?";
         System.out.println(sql);
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
@@ -86,7 +87,7 @@ public class LessonDAO {
             ResultSet rs = stmt.executeQuery();
            
             while(rs.next()){
-                Lesson lesson = new Lesson(rs.getInt(1),rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getTimestamp(5));
+                Lesson lesson = new Lesson(rs.getInt(1),rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getTimestamp(5), rs.getTimestamp(6));
                 lessons.add(lesson);
             }
         } catch (Exception e) {
@@ -97,7 +98,7 @@ public class LessonDAO {
     }
     public static ArrayList<Lesson> retrieveAllLessonListsByTutor(int classid, int tutorid) {
         ArrayList<Lesson> lessons = new ArrayList<>();
-        String sql = "select lesson_id, class_id, tutor_id, tutor_attended, lesson_date_time from lesson where class_id = ? and tutor_id = ?";
+        String sql = "select lesson_id, class_id, tutor_id, tutor_attended, start_date, end_date from lesson where class_id = ? and tutor_id = ?";
         System.out.println(sql);
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
@@ -106,7 +107,7 @@ public class LessonDAO {
             ResultSet rs = stmt.executeQuery();
            
             while(rs.next()){
-                Lesson lesson = new Lesson(rs.getInt(1),rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getTimestamp(5));
+                Lesson lesson = new Lesson(rs.getInt(1),rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getTimestamp(5), rs.getTimestamp(6));
                 lessons.add(lesson);
             }
         } catch (Exception e) {
@@ -118,7 +119,7 @@ public class LessonDAO {
     
     public static ArrayList<Lesson> retrieveLessonsByTutor(int tutorid) {
         ArrayList<Lesson> lessons = new ArrayList<>();
-        String sql = "select lesson_id, class_id, tutor_id, tutor_attended, lesson_date_time from lesson where tutor_id = ?";
+        String sql = "select lesson_id, class_id, tutor_id, tutor_attended, start_date, end_date from lesson where tutor_id = ?";
         System.out.println(sql);
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
@@ -126,7 +127,7 @@ public class LessonDAO {
             ResultSet rs = stmt.executeQuery();
            
             while(rs.next()){
-                Lesson lesson = new Lesson(rs.getInt(1),rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getTimestamp(5));
+                Lesson lesson = new Lesson(rs.getInt(1),rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getTimestamp(5), rs.getTimestamp(6));
                 lessons.add(lesson);
             }
         } catch (Exception e) {
@@ -169,9 +170,10 @@ public class LessonDAO {
                 int classid = rs.getInt("class_id");
                 int tutorid = rs.getInt("tutor_id");
                 int tutorAttended = rs.getInt("tutor_attended");
-                Timestamp lessonDateTime = rs.getTimestamp("lesson_date_time");
+                Timestamp startTime = rs.getTimestamp("start_date");
+                Timestamp endTime = rs.getTimestamp("end_date");
                
-                les = new Lesson(lessonid, classid, tutorid, tutorAttended, lessonDateTime);
+                les = new Lesson(lessonid, classid, tutorid, tutorAttended, startTime, endTime);
             }
         }catch(Exception  e){
             System.out.println(e);
@@ -212,5 +214,97 @@ public class LessonDAO {
             Logger.getLogger(LessonDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
+    }
+    
+    public static String getNearestLessonDate(int classID){
+        String joinDate = "";
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("select * from lesson where class_id = ? and lesson_date_time >= curdate() order by lesson_date_time limit 1;");
+            stmt.setInt(1, classID);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                joinDate += rs.getString("lesson_date_time");
+            }
+        } catch (SQLException e) {
+            System.out.print(e.getMessage());
+        }
+        return joinDate;
+    }
+    
+    public String retrieveNumberTutorAttendancePerClass(int classID, int tutorID){
+        double attended = 0;
+        double total = retrieveNumberOfLessons(classID);
+        
+        String sql = "select tutor_attended from lesson where tutor_id = ? and class_id = ?";
+        
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, tutorID);
+            stmt.setInt(2, classID);
+            
+            ResultSet rs = stmt.executeQuery();
+            
+            while(rs.next()){
+                if(rs.getBoolean(1)){
+                    attended += 1;
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(LessonDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        DecimalFormat df = new DecimalFormat("#.##");
+        return df.format((attended/total) * 100);
+    }
+    
+    public double retrieveNumberOfLessons(int classID){
+        double total = 0;
+        
+        String sql = "select distinct lesson_id from lesson where class_id = ?";
+        
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, classID);
+            
+            ResultSet rs = stmt.executeQuery();
+            
+            while(rs.next()){
+                total += 1;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(LessonDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return total;
+    }
+    
+    public String retrieveTotalPercentageAttendance(int tutorID){
+        double attended = 0;
+        double total = retrieveLessonsByTutor(tutorID).size();
+        
+        DecimalFormat df = new DecimalFormat("#.##");
+        
+        if(total > 0){
+            String sql = "select tutor_attended from lesson where tutor_id = ?";
+
+            try(Connection conn = ConnectionManager.getConnection()){
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                stmt.setInt(1, tutorID);
+
+                ResultSet rs = stmt.executeQuery();
+
+                while(rs.next()){
+                    if(rs.getBoolean(1)){
+                        attended += 1;
+                    }
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(LessonDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            System.out.println(df.format((attended/total) * 100));
+            return df.format((attended/total) * 100);
+        }else{
+            return df.format(0);
+        }
     }
 }

@@ -5,25 +5,26 @@
  */
 package controller;
 
-import entity.Student;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.StudentClassDAO;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 /**
  *
- * @author Xin
+ * @author Riana
  */
-@WebServlet(name = "RetrieveStudentsServlet", urlPatterns = {"/RetrieveStudentsServlet"})
-public class RetrieveStudentsServlet extends HttpServlet {
+@WebServlet(name = "ClassRegistrationForUploadServlet", urlPatterns = {"/ClassRegistrationForUploadServlet"})
+public class ClassRegistrationForUploadServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,31 +37,28 @@ public class RetrieveStudentsServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-          
-            JSONArray array = new JSONArray();
-            
-            int classID = Integer.parseInt(request.getParameter("classID"));
-            StudentClassDAO students = new StudentClassDAO();
-            ArrayList<Student> studentList = students.listAllStudentsByClass(classID);
-            
-            if(studentList != null || !studentList.isEmpty()){
-                for(Student s: studentList){
-                    int studentID = s.getStudentID();
-                    String studentName = s.getName();
-                    
-                    JSONObject obj = new JSONObject();
-                    obj.put("student", studentID);
-                    obj.put("name", studentName);
-                    
-                    array.put(obj);
-                }
-                String json = array.toString();
-                System.out.println(json);
-                out.println(json);
-            }
+        
+        String stud_ids[] = request.getParameterValues("arr_id[]");
+        String stud_names[] = request.getParameterValues("arr_name[]");
+        String stud_level[] = request.getParameterValues("arr_level[]");
+        String stud_class[] = request.getParameterValues("arr_class[]");
+        
+        Map<String, List<String>> idWithClasses = new HashMap<String, List<String>>();
+        
+        if(stud_ids.length > 0){
+           for(int i = 0; i < stud_ids.length; i++){
+               String[] tempClass = stud_class[i].split(",");
+               List<String> tempList = new ArrayList<String>();
+               tempList.addAll(Arrays.asList(tempClass));
+               idWithClasses.put(stud_ids[i], tempList);
+           } 
         }
+        
+        request.setAttribute("idWithClasses", idWithClasses);
+
+        RequestDispatcher view = request.getRequestDispatcher("ClassRegistrationDetailsForUpload.jsp");
+        view.forward(request, response);
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

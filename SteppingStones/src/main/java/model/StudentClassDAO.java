@@ -9,14 +9,23 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class StudentClassDAO {
-    public static boolean saveStudentToRegisterClass(int classID, int studentID){
+    public static boolean saveStudentToRegisterClass(int classID, int studentID, double deposit, double outstandingDeposit, double tuitionFee, 
+            double outstandingTuitionFee, String joinDate, double firstInstallment, double outstandingFirstInstallment){
         boolean status = false;
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            String sql = "insert into class_student_rel(class_id, student_id) value(?, ?)";
+            String sql = "insert into class_student_rel(class_id, student_id, deposit_fees, outstanding_deposit, tuition_fees, "
+                    + "outstanding_tuition_fee, join_date, first_installment, outstanding_first_installment) value(?, ?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, classID);
             stmt.setInt(2, studentID);
+            stmt.setDouble(3, deposit);
+            stmt.setDouble(4, outstandingDeposit);
+            stmt.setDouble(5, tuitionFee);
+            stmt.setDouble(6, outstandingTuitionFee);
+            stmt.setString(7, joinDate);
+            stmt.setDouble(8, firstInstallment);
+            stmt.setDouble(9, outstandingFirstInstallment);
             stmt.executeUpdate(); 
             conn.commit();
             status = true;
@@ -25,7 +34,29 @@ public class StudentClassDAO {
         }
         return status;
      }
-    
+    public static boolean saveStudentsToRegisterClass(int classID, int studentID, double deposit, double outstandingDeposit, double tuitionFee, 
+            double outstandingTuitionFee, String joinDate){
+        boolean status = false;
+        try (Connection conn = ConnectionManager.getConnection();) {
+            conn.setAutoCommit(false);
+            String sql = "insert into class_student_rel(class_id, student_id, deposit_fees, deposit_activated_amount, outstanding_deposit, monthly_fees, "
+                    + "outstanding_tuition_fee, join_date) value(?, ?, ?, 0, ?, ?, ?, ?)";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, classID);
+            stmt.setInt(2, studentID);
+            stmt.setDouble(3, deposit);
+            stmt.setDouble(4, outstandingDeposit);
+            stmt.setDouble(5, tuitionFee);
+            stmt.setDouble(6, outstandingTuitionFee);
+            stmt.setString(7, joinDate);
+            stmt.executeUpdate(); 
+            conn.commit();
+            status = true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return status;
+     }
 
     public static ArrayList<String> listStudentsinSpecificClass(int classID){
         ArrayList<String> studentList = new ArrayList<>();
@@ -81,9 +112,6 @@ public class StudentClassDAO {
         }
         return classSub;
     }
-    
-    
-  
   
     public int retrieveNumberOfStudentByClass(int classID){
         int studentCount = 0;
@@ -120,11 +148,10 @@ public class StudentClassDAO {
                 int phone = rs.getInt("phone");
                 String address = rs.getString("address");
                 String email = rs.getString("email");
-                String password = rs.getString("password");
                 double reqAmt = rs.getDouble("required_amount");
                 double outstandingAmt = rs.getDouble("outstanding_amount");
                 String level = LevelDAO.retrieveLevel(levelID);
-                Student student = new Student(studentID, studentNRIC, name, BOD, gender, level, branchID, phone, address, email, password, reqAmt, outstandingAmt);
+                Student student = new Student(studentID, studentNRIC, name, BOD, gender, level, branchID, phone, address, email, reqAmt, outstandingAmt);
                 studentList.add(student);
             } 
         } catch (Exception e) {

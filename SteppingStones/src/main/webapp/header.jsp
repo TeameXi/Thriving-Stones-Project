@@ -109,6 +109,19 @@
                                 <ul>
                                     <li><a href="CreateStudent.jsp">Create Student</a></li>
                                     <li><a href="DisplayStudents.jsp">View Students</a></li>
+                                    <li><a href="AutoPromote.jsp">Auto Promote</a></li>
+                                </ul>
+                            </li>
+                            
+                            <li class="submenu">
+                                <a href="#">
+                                    <i class="zmdi zmdi-book"></i> Register For Classes
+                                    <span class="caret pull-right"></span>
+                                </a>
+                                <!-- Sub menu -->
+                                <ul>
+                                    <li><a href="RegisterForClasses.jsp">Individual Class Registration</a></li>
+                                    <li><a href="BulkClassRegistration.jsp">Bulk Class Registration</a></li>
                                 </ul>
                             </li>
                             
@@ -137,7 +150,8 @@
                                     <li><a href="DisplaySubjects.jsp">View Subjects</a></li>
                                 </ul>
                             </li>
-                            <li><a href="RegisterForClasses.jsp"><i class="zmdi zmdi-library"></i>Register For Classes</a></li>
+                            
+                            <!-- <li><a href="RegisterForClasses.jsp"><i class="zmdi zmdi-library"></i>Register For Classes</a></li> -->
                             
                             <li class="submenu">
                                 <a href="#">
@@ -158,17 +172,7 @@
                     %>
                             <li><a href=""><i class="zmdi zmdi-money-box"></i>Your Payslip</a></li>
                             <li><a href="DisplayClassesBelongToTutor.jsp"><i class="zmdi zmdi-local-library"></i>Classes</a></li>
-                            <li class="submenu">
-                                <a href="#">
-                                    <i class="zmdi zmdi zmdi-graduation-cap"></i> Student Attendance 
-                                    <span class="caret pull-right"></span>
-                                </a>
-                                <!-- Sub menu -->
-                                <ul>
-                                    <li><a href="MarkAttendance.jsp">Mark Attendance</a></li>
-                                    <li><a href="DisplayAttendance.jsp">View Attendance</a></li>
-                                </ul>
-                            </li>
+                            <li><a href="MarkAttendance.jsp"><i class="zmdi zmdi-local-library"></i>Attendance Taking</a></li>
                             <li><a href="stats.html"><i class="zmdi zmdi-chart"></i>Your Attendance</a></li>
                             <li class="submenu">
                                 <a href="#">

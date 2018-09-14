@@ -30,10 +30,14 @@
         }
         
 
-        ArrayList<String>duplicatedUsers= (ArrayList)session.getAttribute("existingUserLists");
+        ArrayList<Tutor>duplicatedUsers= (ArrayList)session.getAttribute("existingUserLists");
         if(duplicatedUsers != null){
             if(duplicatedUsers.size() > 0){
-                out.println("<div id='creation_status' class='row alert alert-danger col-md-12'>The following tutors already<strong>( "+ String.join(",", duplicatedUsers)+" )</strong> exist;</div>");
+                String temp = duplicatedUsers.get(0).getName();
+                for(int i = 1; i < duplicatedUsers.size(); i++){
+                    temp = temp + ", " + duplicatedUsers.get(i).getName();
+                }
+                out.println("<div id='creation_status' class='row alert alert-danger col-md-12'>The following tutors <strong>(" + temp + ")</strong> already exist;</div>");
                 session.removeAttribute("existingUserLists");
             }
         }

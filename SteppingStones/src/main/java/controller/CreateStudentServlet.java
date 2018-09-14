@@ -42,11 +42,9 @@ public class CreateStudentServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
 
-        String studentNRIC = request.getParameter("studentNRIC");
         String studentName = request.getParameter("studentName");
-        String BOD = request.getParameter("bday");
-        String gender = request.getParameter("gender");
         String lvl = request.getParameter("lvl");
+        
         int phone = 0;
         if(request.getParameter("phone") != null && !"".equals(request.getParameter("phone"))){
             phone = Integer.parseInt(request.getParameter("phone"));
@@ -59,24 +57,19 @@ public class CreateStudentServlet extends HttpServlet {
         if(lvl != null && !lvl.equals("")){
             levelID = Integer.parseInt(lvl);
         }
+        double regFees = 0;
+        if(request.getParameter("regFees") != null && !"".equals(request.getParameter("regFees"))){
+            regFees = Double.parseDouble(request.getParameter("phone"));
+        }
         String stuEmail = request.getParameter("studentEmail");
         String stuPassword = GeneratePassword.random(16);
         String parentName = request.getParameter("parentName");
-        String parentNationality = request.getParameter("parentNationality");
-        String parentCompany = request.getParameter("parentCompany");
-        String parentDesgination = request.getParameter("parentDesgination");
         String parentPassword = GeneratePassword.random(16);
         int parentPhone = Integer.parseInt(request.getParameter("parentPhone"));
-        String parentEmail = request.getParameter("parentEmail");
-        String address = request.getParameter("address");     
-
-        /*if(StudentDAO.retrieveStudentID(studentName) != 0){
-            request.setAttribute("existingStudent", studentName);
-            RequestDispatcher dispatcher = request.getRequestDispatcher("CreateStudent.jsp");
-            dispatcher.forward(request, response);
-        }else{*/           
+        String parentEmail = request.getParameter("parentEmail");     
+        
         String href =  request.getHeader("origin")+request.getContextPath()+"/Login.jsp";
-        int insertStudent = StudentDAO.insertStudent(studentNRIC, studentName, phone, address, BOD, gender, stuEmail, stuPassword, levelID, branchID);
+        int insertStudent = StudentDAO.insertStudent(studentName, phone,stuEmail, levelID, branchID);
         if(insertStudent>0){
             UsersDAO userDAO = new UsersDAO();
             String username = studentName.replace(' ', '.');
@@ -112,7 +105,7 @@ public class CreateStudentServlet extends HttpServlet {
             }
         }
 
-        int insertParent = ParentDAO.insertParent(parentName, parentNationality, parentCompany, parentDesgination, parentPhone, parentEmail, parentPassword, branchID);
+        int insertParent = ParentDAO.insertParent(parentName, parentPhone, parentEmail, branchID);
         if(insertParent>0){
             UsersDAO userDAO = new UsersDAO();
             String username = parentName.replace(' ', '.');
@@ -138,7 +131,7 @@ public class CreateStudentServlet extends HttpServlet {
             boolean userStatus = userDAO.addUser(tempUser);
             if(userStatus){
                 String subject = "Stepping Stones Tuition Center Parent's Account Creation";
-                String text = "Thanks for choosing us. Your account has been created.\n\nBelow is the username and password to access your account: \nUsername: " + parentName 
+                String text = "Thanks for choosing us. Your account has been created.\n\nBelow is the username and password to access your account: \nUsername: " + username 
                         + "\nPassword: " + parentPassword + "\n\nYou can Login via "+href; 
                 if(parentEmail != null && !parentEmail.equals("")){
                     SendMail.sendingEmail(parentEmail, subject, text);
@@ -151,9 +144,8 @@ public class CreateStudentServlet extends HttpServlet {
         }
 
         request.setAttribute("creation_status",""+(insertStudent>0 && insertParent>0));
-        ParentChildRelDAO.insertParentChildRel(parentName, studentName, branchID);
-        response.sendRedirect("RegisterForClasses.jsp?studentName="+studentName);
-        //}        
+        ParentChildRelDAO.insertParentChildRel(parentPhone, insertStudent, branchID);
+        response.sendRedirect("RegisterForClasses.jsp?studentName="+studentName);     
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

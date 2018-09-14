@@ -104,10 +104,10 @@
                         out.println("<li class='survey-item' id='sid_" + id + "'><span class='survey-country list-only'>SG</span>");
                         out.println("<span class='survey-name'><i class='zmdi zmdi-account'>&nbsp;&nbsp;</i><span id='name_" + id + "'>");
                         out.println(stu.getName() + "</span></span>");
-                        out.println("<span class='survey-country grid-only'><i class='zmdi zmdi-pin'>&nbsp;&nbsp;</i><span id='address_" + id + "'>");
-                        out.println(stu.getAddress() + "</span></span><br/>");
                         out.println("<span class='survey-country'><i class='zmdi zmdi-graduation-cap'>&nbsp;&nbsp;</i><span id='lvl_" + id + "'>");
                         out.println(stu.getLevel() + "</span></span><br>");
+                        out.println("<span class='survey-end-date'><i class='zmdi zmdi-phone'>&nbsp;&nbsp;</i><span id='phone_" + id + "'>");
+                        out.println(stu.getPhone() + "</span></span><br>");
                         out.println("<span class='survey-country'>");
                         out.println(ParentDAO.retrieveParentByStudentID(id) + "</span></span><br>");
 
@@ -139,8 +139,8 @@
                 </span>
 
 
-                <%          out.println("<span class='survey-end-date'><i class='zmdi zmdi-phone'>&nbsp;&nbsp;</i><span id='phone_" + id + "'>");
-                            out.println(stu.getPhone() + "</span></span></div></li>");
+                <%          //out.println("<span class='survey-end-date'><i class='zmdi zmdi-phone'>&nbsp;&nbsp;</i><span id='phone_" + id + "'>");
+                            //out.println(stu.getPhone() + "</span></span></div></li>");
                         }
 
                     } else {

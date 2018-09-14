@@ -5,14 +5,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import static model.StudentDAO.retrieveStudentID;
 
 public class ParentChildRelDAO {
-    public static void insertParentChildRel(String parentName, String studentName, int branchID) {
+    public static void insertParentChildRel(int parentPhone, int studentID, int branchID) {
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            int parentID = ParentDAO.retrieveParentID(parentName);
-            int studentID = retrieveStudentID(studentName);
+            int parentID = ParentDAO.retrieveParentID(parentPhone);
             String sql = "insert into parent_child_rel(parent_id, child_id, branch_id) value(?, ?, ? )";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, parentID);
