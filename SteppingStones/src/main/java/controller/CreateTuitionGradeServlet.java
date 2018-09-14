@@ -6,18 +6,16 @@
 package controller;
 
 import java.io.IOException;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.ClassDAO;
-import model.StudentClassDAO;
-import entity.Class;
+import java.io.PrintWriter;
 import java.util.ArrayList;
-import model.StudentDAO;
 import model.StudentGradeDAO;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  *
@@ -39,67 +37,103 @@ public class CreateTuitionGradeServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         
-        if(request.getParameter("select") != null){
-            String classIDStr = request.getParameter("select");
-            int classID = Integer.parseInt(classIDStr);
-            ArrayList<String> students = StudentClassDAO.listStudentsinSpecificClass(classID);
-            Class cls = ClassDAO.getClassByID(classID);
-            
-            request.setAttribute("students", students);
-            request.setAttribute("class", cls);  
-        }
-        
-        if(request.getParameter("edit") != null){
-            String classIDStr = request.getParameter("edit");
-            int classID = Integer.parseInt(classIDStr);
-            ArrayList<String> students = StudentClassDAO.listStudentsinSpecificClass(classID);
-            Class cls = ClassDAO.getClassByID(classID);
-            
-            request.setAttribute("EditStudents", students);
-            request.setAttribute("EditClass", cls);  
-        }
-        
-        if(request.getParameter("insert") != null){
-            String assessmentType = request.getParameter("assessmentType");
-            String classIDStr = request.getParameter("classID");
-            int classID = Integer.parseInt(classIDStr);
-            ArrayList<String> students = StudentClassDAO.listStudentsinSpecificClass(classID);
+        try (PrintWriter out = response.getWriter()) {
+            String dataArr = request.getParameter("grade_arr");
+            if(!dataArr.equals("")){
+                JSONArray studentArr = new JSONArray(dataArr);
+                ArrayList<String>gradeValues = new ArrayList<>();
+              
+                for(int i =0; i < studentArr.length(); i++){
+                    String sqlOneRecord = "";
+                    JSONObject currObj = studentArr.getJSONObject(i);
+                    
+                    int studentId = currObj.getInt("student_id");
+                    int classId = currObj.getInt("class_id");
+                    
+                    int CA1_0_top = currObj.getInt("CA1_0_top");
+                    int CA1_0_base = currObj.getInt("CA1_0_base");
+                    double CA1_0_grade = 0;
+                    if(CA1_0_base > 0){
+                        CA1_0_grade = (double)CA1_0_top/CA1_0_base;
+                    }
+                    
+                    int SA1_0_top = currObj.getInt("SA1_0_top");
+                    int SA1_0_base = currObj.getInt("SA1_0_base");
+                    double SA1_0_grade = 0;
+                    if(SA1_0_base > 0){
+                        SA1_0_grade = (double)SA1_0_top/SA1_0_base;
+                    }
+                    
+                    int CA2_0_top = currObj.getInt("CA2_0_top");
+                    int CA2_0_base = currObj.getInt("CA2_0_base");
+                    double CA2_0_grade = 0;
+                    if(CA2_0_base > 0){
+                        CA2_0_grade = (double)CA2_0_top/CA2_0_base;
+                    }
+                    
+                    int SA2_0_top = currObj.getInt("SA2_0_top");
+                    int SA2_0_base = currObj.getInt("SA2_0_base");
+                    double SA2_0_grade = 0;
+                    if(SA2_0_base > 0){
+                        SA2_0_grade = (double)SA2_0_top/SA2_0_base;
+                    }
+                    
+                    // For school
+                    int CA1_1_top = currObj.getInt("CA1_1_top");
+                    int CA1_1_base = currObj.getInt("CA1_1_base");
+                    double CA1_1_grade = 0;
+                    if(CA1_1_base > 0){
+                        CA1_1_grade = (double)CA1_1_top/CA1_1_base;
+                    }
+                    
+                    int SA1_1_top = currObj.getInt("SA1_1_top");
+                    int SA1_1_base = currObj.getInt("SA1_1_base");
+                    double SA1_1_grade = 0;
+                    if(SA1_1_base > 0){
+                        SA1_1_grade = (double)SA1_1_top/SA1_1_base;
+                    }
 
-            String[] grades = request.getParameterValues("grade[]");
-            for(int i = 0; i < grades.length; i++){
-                String grade = grades[i];
-                int studentID = StudentDAO.retrieveStudentID(students.get(i));
-                boolean status = StudentGradeDAO.saveTuitionGrades(studentID, classID, assessmentType, grade);
-                if(status){
-                    request.setAttribute("status", "Successfully added!");
-                }else{
-                    request.setAttribute("errorMsg", "Error while adding grade!");
+                    int CA2_1_top = currObj.getInt("CA2_1_top");
+                    int CA2_1_base = currObj.getInt("CA2_1_base");
+                    double CA2_1_grade = 0;
+                    if(CA2_1_base > 0){
+                        CA2_1_grade = (double)CA2_1_top/CA2_1_base;
+                    }
+                    
+                    int SA2_1_top = currObj.getInt("SA2_1_top");
+                    int SA2_1_base = currObj.getInt("SA2_1_base");
+                    double SA2_1_grade = 0;
+                    if(SA2_1_base > 0){
+                        SA2_1_grade = (double)SA2_1_top/SA2_1_base;
+                    }
+                    
+                    sqlOneRecord +="("+studentId+","+classId+","
+                            +CA1_0_top+","+CA1_0_base+","+CA1_0_grade+","
+                            +SA1_0_top+","+SA1_0_base+","+SA1_0_grade+","
+                            +CA2_0_top+","+CA2_0_base+","+CA2_0_grade+","
+                            +SA2_0_top+","+SA2_0_base+","+SA2_0_grade+","
+                            +CA1_1_top+","+CA1_1_base+","+CA1_1_grade+","
+                            +SA1_1_top+","+SA1_1_base+","+SA1_1_grade+","
+                            +CA2_1_top+","+CA2_1_base+","+CA2_1_grade+","
+                            +SA2_1_top+","+SA2_1_base+","+SA2_1_grade+")";
+                    gradeValues.add(sqlOneRecord);
+                    //System.out.println(sqlOneRecord);
                 }
-            }      
-        }
-        
-        if(request.getParameter("update") != null){
-            String assessmentType = request.getParameter("assessmentType");
-            String classIDStr = request.getParameter("classID");
-            int classID = Integer.parseInt(classIDStr);
-            ArrayList<String> students = StudentClassDAO.listStudentsinSpecificClass(classID);
-
-            String[] grades = request.getParameterValues("grade[]");
-            for(int i = 0; i < grades.length; i++){
-                String grade = grades[i];
-                int studentID = StudentDAO.retrieveStudentID(students.get(i));
-                boolean status = StudentGradeDAO.updateTuitionGrade(studentID, classID, assessmentType, grade);
-                if(status){
-                    request.setAttribute("status", "Successfully updated!");
+                
+                if(gradeValues.size() > 0){
+                    if(StudentGradeDAO.massSaveTutionGrades(gradeValues)){
+                        out.println(1);
+                    }else{
+                        out.println(-1);
+                    }
                 }else{
-                    request.setAttribute("errorMsg", "Error while updating grade!");
+                    out.println(-1);   
                 }
-            }      
+          
+            }else{
+               out.println(-1);  
+            }  
         }
-        
-        RequestDispatcher view = request.getRequestDispatcher("CreateTuitionGrade.jsp");
-        view.forward(request, response); 
-        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

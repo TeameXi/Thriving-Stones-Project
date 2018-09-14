@@ -1,12 +1,3 @@
-<footer>
-    <div class="container">
-
-        <div class="copy text-center">
-            Copyright 2018 <a href='#'>Stepping Stones</a>
-        </div>
-
-    </div>
-</footer>
 </body>
 </html>
 <div class="modal fade bs-modal-sm" id="small" tabindex="-1" role="dialog" aria-hidden="true">

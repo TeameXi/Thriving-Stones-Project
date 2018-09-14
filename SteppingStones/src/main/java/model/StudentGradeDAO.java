@@ -1,6 +1,7 @@
 package model;
 
 import connection.ConnectionManager;
+import entity.Grade;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,24 +11,36 @@ import java.util.LinkedHashMap;
 
 public class StudentGradeDAO {
     
-    public static boolean saveTuitionGrades(int studentID, int classID, String assessmentType, String grade) {
-        boolean status = false;
+    public static boolean massSaveTutionGrades(ArrayList<String>gradeLists) {
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            String sql = "insert into tuition_grade(student_id, class_id, assessment_type, grade)"
-                    + " value(?, ?, ?, ?)";
+            String gradeSQL = String.join(",", gradeLists);
+            String sql = "INSERT INTO grade(student_id,class_id,CA1_tuition_top,CA1_tuition_base,CA1_tuition_grade,SA1_tuition_top,SA1_tuition_base,SA1_tuition_grade,CA2_tuition_top,CA2_tuition_base,CA2_tuition_grade,SA2_tuition_top,SA2_tuition_base,SA2_tuition_grade,CA1_school_top,CA1_school_base,CA1_school_grade,SA1_school_top,SA1_school_base,SA1_school_grade,CA2_school_top,CA2_school_base,CA2_school_grade,SA2_school_top,SA2_school_base,SA2_school_grade)"
+                    + " VALUES "+gradeSQL +" ON DUPLICATE KEY UPDATE "
+                    + " CA1_tuition_top=VALUES(CA1_tuition_top), CA1_tuition_base=VALUES(CA1_tuition_base), CA1_tuition_grade=VALUES(CA1_tuition_grade),"
+                    + " SA1_tuition_top=VALUES(SA1_tuition_top), SA1_tuition_base=VALUES(SA1_tuition_base), SA1_tuition_grade=VALUES(SA1_tuition_grade),"
+                    + " CA2_tuition_top=VALUES(CA2_tuition_top), CA2_tuition_base=VALUES(CA2_tuition_base), CA2_tuition_grade=VALUES(CA2_tuition_grade),"
+                    + " SA2_tuition_top=VALUES(SA2_tuition_top), SA2_tuition_base=VALUES(SA2_tuition_base), SA2_tuition_grade=VALUES(SA2_tuition_grade),"
+                    + " CA1_school_top=VALUES(CA1_school_top), CA1_school_base=VALUES(CA1_school_base), CA1_school_grade=VALUES(CA1_school_grade),"
+                    + " SA1_school_top=VALUES(SA1_school_top), SA1_school_base=VALUES(SA1_school_base), SA1_school_grade=VALUES(SA1_school_grade),"
+                    + " CA2_school_top=VALUES(CA2_school_top), CA2_school_base=VALUES(CA2_school_base), CA2_school_grade=VALUES(CA2_school_grade),"
+                    + " SA2_school_top=VALUES(SA2_school_top), SA2_school_base=VALUES(SA2_school_base), SA2_school_grade=VALUES(SA2_school_grade)";
+            
+            
+             
+            System.out.println(sql);
             PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setInt(1, studentID);
-            stmt.setInt(2, classID);
-            stmt.setString(3, assessmentType);
-            stmt.setString(4, grade);
-            stmt.executeUpdate(); 
+
+            int num = stmt.executeUpdate();
+        
             conn.commit();
-            status = true;
+            if(num > 0){
+                return true;
+            }
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        return status;
+        return false;
     }
     
     public static boolean deleteStudentTuitionGrade(int studentID){
@@ -112,4 +125,52 @@ public class StudentGradeDAO {
         }
         return updatedStatus;
     }
+    
+    
+      public static ArrayList<Grade> listGradesFromSpecificClass(int classID){
+        ArrayList<Grade> studentList = new ArrayList<>();
+        try (Connection conn = ConnectionManager.getConnection();) {
+            String sql = "select s.student_id,student_name from student s, class_student_rel cs where s.student_id = cs.student_id and class_id = ?;";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, classID);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){
+                int studentId = rs.getInt(1);
+                String studentName = rs.getString("student_name");
+                
+                String select_grade_sql = "select CA1_tuition_top,CA1_tuition_base,CA1_tuition_grade,SA1_tuition_top,SA1_tuition_base,SA1_tuition_grade,CA2_tuition_top,CA2_tuition_base,CA2_tuition_grade,SA2_tuition_top,SA2_tuition_base,SA2_tuition_grade,CA1_school_top,CA1_school_base,CA1_school_grade,SA1_school_top,SA1_school_base,SA1_school_grade,CA2_school_top,CA2_school_base,CA2_school_grade,SA2_school_top,SA2_school_base,SA2_school_grade from grade where student_id = ? and class_id = ?";
+                PreparedStatement stmt2 = conn.prepareStatement(select_grade_sql);
+                stmt2.setInt(1, studentId);
+                stmt2.setInt(2,classID);
+                
+                int CA1_tuition_top = 0;int CA1_tuition_base = 100;
+                int SA1_tuition_top = 0;int SA1_tuition_base = 100;
+                int CA2_tuition_top = 0;int CA2_tuition_base = 100;
+                int SA2_tuition_top = 0;int SA2_tuition_base = 100;
+                int CA1_school_top = 0;int CA1_school_base = 100;
+                int SA1_school_top = 0;int SA1_school_base = 100;
+                int CA2_school_top = 0;int CA2_school_base = 100;
+                int SA2_school_top = 0;int SA2_school_base = 100;
+                ResultSet rs2 = stmt2.executeQuery();
+
+                if(rs2.next()){
+                    CA1_tuition_top = rs2.getInt("CA1_tuition_top");CA1_tuition_base=rs2.getInt("CA1_tuition_base");
+                    SA1_tuition_top = rs2.getInt("SA1_tuition_top");SA1_tuition_base=rs2.getInt("SA1_tuition_base");
+                    CA2_tuition_top = rs2.getInt("CA2_tuition_top");CA2_tuition_base=rs2.getInt("CA2_tuition_base");
+                    SA2_tuition_top = rs2.getInt("SA2_tuition_top");SA2_tuition_base=rs2.getInt("SA2_tuition_base");
+                    CA1_school_top =  rs2.getInt("CA1_school_top");CA1_school_base = rs2.getInt("CA1_school_base");
+                    SA1_school_top =  rs2.getInt("SA1_school_top");SA1_school_base = rs2.getInt("SA1_school_base");
+                    CA2_school_top =  rs2.getInt("CA2_school_top");CA2_school_base = rs2.getInt("CA2_school_base");
+                    SA2_school_top =  rs2.getInt("SA2_school_top");SA2_school_base = rs2.getInt("SA2_school_base"); 
+                }
+                
+                Grade g = new Grade(studentName,studentId,classID,CA1_tuition_top,CA1_tuition_base,SA1_tuition_top,SA1_tuition_base,CA2_tuition_top,CA2_tuition_base,SA2_tuition_top,SA2_tuition_base,CA1_school_top,CA1_school_base,SA1_school_top,SA1_school_base,CA2_school_top,CA2_school_base,SA2_school_top,SA2_school_base);
+                studentList.add(g);
+            } 
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return studentList;
+    }
+
 }

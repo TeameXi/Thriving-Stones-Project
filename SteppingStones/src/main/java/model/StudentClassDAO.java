@@ -1,6 +1,5 @@
 package model;
 import connection.ConnectionManager;
-import entity.Lesson;
 import entity.Student;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,6 +26,7 @@ public class StudentClassDAO {
         return status;
      }
     
+
     public static ArrayList<String> listStudentsinSpecificClass(int classID){
         ArrayList<String> studentList = new ArrayList<>();
         try (Connection conn = ConnectionManager.getConnection();) {
@@ -43,6 +43,9 @@ public class StudentClassDAO {
         }
         return studentList;
     }
+    
+  
+  
     
     public static boolean deleteStudentClassRel(int studentID){
         boolean deletedStatus = false;

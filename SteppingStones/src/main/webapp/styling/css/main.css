@@ -1443,5 +1443,9 @@ footer .copy{
 .table_content{
    background-color: #fff;
 }
-    
 
+
+/* CUSTOM HEADER */
+#header_tutor{
+    background-color: #7ecbb7;
+}

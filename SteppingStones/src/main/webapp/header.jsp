@@ -23,7 +23,7 @@
       
     %>
     <!--Header-->
-    <div class="header">
+    <div class="header" id="header_<%=role%>">
         <div class="container">
             <div class="row">
                <div class="col-md-5">
@@ -38,7 +38,7 @@
                       <nav style="text-align: center;">
                         <ul class="nav navbar-nav">
                           <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%=account %><b class="caret"></b></a>
+                              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span><%=role.toUpperCase()%> - </span> <%=account %><b class="caret"></b></a>
                             <ul class="dropdown-menu animated fadeInUp">
                                 <%
                                     if(role != null && role == "admin" && branch_id != 0){
