@@ -52,7 +52,7 @@ public class Student {
         this.studentID = studentID;
         this.name = name;
         this.level = level;
-        this.branch_id = branch_id;
+        this.phone = phone;
     }
     
     public int getStudentID() {

@@ -157,6 +157,35 @@ public class ClassDAO {
         return classList;
     }
     
+    public static ArrayList<Class> retrieveAllClassesOfTutor(int tutorID, int branchID){
+        ArrayList<Class> classList = new ArrayList();
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement("select * from class where branch_id = ? and tutor_id = ? and end_date > curdate()");
+            stmt.setInt(1, branchID);
+            stmt.setInt(2, tutorID);
+            ResultSet rs = stmt.executeQuery();
+
+            while(rs.next()){
+                int classID = rs.getInt("class_id");
+                int subjectID = rs.getInt("subject_id");
+                int levelID = rs.getInt("level_id");
+                int term = rs.getInt("term");
+                String classTime = rs.getString("timing");
+                String classDay = rs.getString("class_day");
+                String startDate = rs.getString("start_date");
+                String endDate = rs.getString("end_date");
+                int mthlyFees = rs.getInt("fees");
+                String subject = SubjectDAO.retrieveSubject(subjectID);
+                String level = LevelDAO.retrieveLevel(levelID);
+                Class cls = new Class(classID, level, subject, term, classTime, classDay, mthlyFees, startDate, endDate);
+                classList.add(cls);
+            }
+        }catch(SQLException e){
+            System.out.print(e.getMessage());
+        }       
+        return classList;
+    }
+    
     
     public static ArrayList<Class> listAllClassesBelongToTutorByDay(int tutorID, int branchID,String day){
         ArrayList<Class> classList = new ArrayList();
@@ -377,6 +406,7 @@ public class ClassDAO {
             
             while(rs.next()){
                 String level = LevelDAO.retrieveLevel(rs.getInt(4));
+                System.out.println(rs.getString(3));
                 result.add(new Student(rs.getInt(1), rs.getString(2), rs.getInt(3), level));
             }
         } catch (SQLException ex) {

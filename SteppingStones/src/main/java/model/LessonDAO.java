@@ -79,7 +79,7 @@ public class LessonDAO {
     }
     public static ArrayList<Lesson> retrieveAllLessonLists(int classid) {
         ArrayList<Lesson> lessons = new ArrayList<>();
-        String sql = "select lesson_id, class_id, tutor_id, tutor_attended, lesson_date_time from lesson where class_id = ?";
+        String sql = "select lesson_id, class_id, tutor_id, tutor_attended, start_date, end_date from lesson where class_id = ?";
         System.out.println(sql);
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
@@ -87,7 +87,7 @@ public class LessonDAO {
             ResultSet rs = stmt.executeQuery();
            
             while(rs.next()){
-                Lesson lesson = new Lesson(rs.getInt(1),rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getTimestamp(5));
+                Lesson lesson = new Lesson(rs.getInt(1),rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getTimestamp(5), rs.getTimestamp(6));
                 lessons.add(lesson);
             }
         } catch (Exception e) {
@@ -98,7 +98,7 @@ public class LessonDAO {
     }
     public static ArrayList<Lesson> retrieveAllLessonListsByTutor(int classid, int tutorid) {
         ArrayList<Lesson> lessons = new ArrayList<>();
-        String sql = "select lesson_id, class_id, tutor_id, tutor_attended, lesson_date_time from lesson where class_id = ? and tutor_id = ?";
+        String sql = "select lesson_id, class_id, tutor_id, tutor_attended, start_date, end_date from lesson where class_id = ? and tutor_id = ?";
         System.out.println(sql);
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
@@ -107,7 +107,7 @@ public class LessonDAO {
             ResultSet rs = stmt.executeQuery();
            
             while(rs.next()){
-                Lesson lesson = new Lesson(rs.getInt(1),rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getTimestamp(5));
+                Lesson lesson = new Lesson(rs.getInt(1),rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getTimestamp(5), rs.getTimestamp(6));
                 lessons.add(lesson);
             }
         } catch (Exception e) {
@@ -119,7 +119,7 @@ public class LessonDAO {
     
     public static ArrayList<Lesson> retrieveLessonsByTutor(int tutorid) {
         ArrayList<Lesson> lessons = new ArrayList<>();
-        String sql = "select lesson_id, class_id, tutor_id, tutor_attended, lesson_date_time from lesson where tutor_id = ?";
+        String sql = "select lesson_id, class_id, tutor_id, tutor_attended, start_date, end_date from lesson where tutor_id = ?";
         System.out.println(sql);
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
@@ -127,7 +127,7 @@ public class LessonDAO {
             ResultSet rs = stmt.executeQuery();
            
             while(rs.next()){
-                Lesson lesson = new Lesson(rs.getInt(1),rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getTimestamp(5));
+                Lesson lesson = new Lesson(rs.getInt(1),rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getTimestamp(5), rs.getTimestamp(6));
                 lessons.add(lesson);
             }
         } catch (Exception e) {
@@ -170,9 +170,10 @@ public class LessonDAO {
                 int classid = rs.getInt("class_id");
                 int tutorid = rs.getInt("tutor_id");
                 int tutorAttended = rs.getInt("tutor_attended");
-                Timestamp lessonDateTime = rs.getTimestamp("lesson_date_time");
+                Timestamp startTime = rs.getTimestamp("start_date");
+                Timestamp endTime = rs.getTimestamp("end_date");
                
-                les = new Lesson(lessonid, classid, tutorid, tutorAttended, lessonDateTime);
+                les = new Lesson(lessonid, classid, tutorid, tutorAttended, startTime, endTime);
             }
         }catch(Exception  e){
             System.out.println(e);
