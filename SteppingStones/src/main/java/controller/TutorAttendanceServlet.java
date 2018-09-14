@@ -16,7 +16,6 @@ import model.TutorDAO;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import entity.Class;
-import model.AttendanceDAO;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -95,7 +94,7 @@ public class TutorAttendanceServlet extends HttpServlet {
                 
                 for(Lesson l: lessons){
                     JSONObject obj = new JSONObject();
-                    String date = l.getLessonDateTime().toString();
+                    String date = l.getStartDate();
                     obj.put("id", l.getLessonid());
                     obj.put("date", date.substring(0, date.indexOf(" ")));
                     
