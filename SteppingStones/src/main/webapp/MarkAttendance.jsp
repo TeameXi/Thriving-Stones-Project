@@ -164,10 +164,9 @@
                     } else {
                         studentID = childRow.data().id;
                         action = 'retrieveLessons';
-
                         // Open this row
                         childRow.child(formatLessonList(childRow.data())).show();
-
+                       
                         lessonTable = $("#lessonList").DataTable({
                             "dom": 'tpr',
                             "iDisplayLength": 5,
@@ -205,7 +204,6 @@
                             rowIndex = lessonTable.row($(this).parents('tr')).index();  
                             columnIndex = lessonTable.cell($(this).closest('td')).index().column;
                             action = 'mark';
-                            
                             $.ajax({
                                 type: 'POST',
                                 url: 'MarkStudentAttendanceServlet',

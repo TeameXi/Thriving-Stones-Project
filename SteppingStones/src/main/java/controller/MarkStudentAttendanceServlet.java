@@ -64,7 +64,6 @@ public class MarkStudentAttendanceServlet extends HttpServlet {
                 }
                 JSONObject toReturn = new JSONObject().put("data", array);
                 String json = toReturn.toString();
-                System.out.println(json);
                 out.println(json);
             }else if(action.equals("retrieveStudents")){
                 int classID = Integer.parseInt(request.getParameter("classID"));
@@ -77,10 +76,8 @@ public class MarkStudentAttendanceServlet extends HttpServlet {
                 for(Student s: students){
                     JSONObject obj = new JSONObject();
                     obj.put("id", s.getStudentID());
-                    System.out.println(s.getStudentID());
                     obj.put("name", s.getName());
                     obj.put("phone", s.getPhone());
-                    System.out.println(s.getPhone());
                     
                     DecimalFormat df = new DecimalFormat("#.##");
                     double attendancePercentage = (attendance.retrieveNumberOfStudentAttendances(s.getStudentID(), classID) / LessonDAO.retrieveAllLessonLists(classID).size()) * 100;
@@ -99,9 +96,10 @@ public class MarkStudentAttendanceServlet extends HttpServlet {
                 
                 JSONArray array = new JSONArray();
                 
-                for(Lesson l: lessons){
+                for(int i = 0; i < lessons.size(); i++){
+                    Lesson l = lessons.get(i);
                     JSONObject obj = new JSONObject();
-                    String date = l.getLessonDateTime().toString();
+                    String date = l.getStartDate();
                     obj.put("id", l.getLessonid());
                     obj.put("date", date.substring(0, date.indexOf(" ")));
                     
