@@ -34,7 +34,29 @@ public class StudentClassDAO {
         }
         return status;
      }
-    
+    public static boolean saveStudentsToRegisterClass(int classID, int studentID, double deposit, double outstandingDeposit, double tuitionFee, 
+            double outstandingTuitionFee, String joinDate){
+        boolean status = false;
+        try (Connection conn = ConnectionManager.getConnection();) {
+            conn.setAutoCommit(false);
+            String sql = "insert into class_student_rel(class_id, student_id, deposit_fees, deposit_activated_amount, outstanding_deposit, monthly_fees, "
+                    + "outstanding_tuition_fee, join_date) value(?, ?, ?, 0, ?, ?, ?, ?)";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, classID);
+            stmt.setInt(2, studentID);
+            stmt.setDouble(3, deposit);
+            stmt.setDouble(4, outstandingDeposit);
+            stmt.setDouble(5, tuitionFee);
+            stmt.setDouble(6, outstandingTuitionFee);
+            stmt.setString(7, joinDate);
+            stmt.executeUpdate(); 
+            conn.commit();
+            status = true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return status;
+     }
     public static ArrayList<String> listStudentsinSpecificClass(int classID){
         ArrayList<String> studentList = new ArrayList<>();
         try (Connection conn = ConnectionManager.getConnection();) {
