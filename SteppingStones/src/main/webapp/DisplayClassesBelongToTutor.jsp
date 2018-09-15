@@ -45,7 +45,6 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-
                 <span class="pc_title centered">Class Details</span>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -55,48 +54,45 @@
                 <div class="row">
                     <div class = "col-sm-4">
                         <label class = "form-control-label">Class Timing :</label>
-                        <label id="view_class_time">-</label>
+                        <input type="text" class="form-control" id="view_class_time" readonly="true" style="text-align: center;">
                     </div>
-                </div><br/>
-
-                <div class="row">
                     <div class = "col-sm-4">
                         <label class = "form-control-label">Start Date :</label>
-                        <label id="view_start_date"></label>
+                        <input type="text" class="form-control" id="view_start_date" readonly="true" style="text-align: center;">
                     </div>
-                </div><br/>
-
-                <div class="row">
                     <div class = "col-sm-4">
                         <label class = "form-control-label">End Date :</label>
-                        <label id="view_end_date"></label>
-                    </div>
+                        <input type="text" class="form-control" id="view_end_date" readonly="true" style="text-align: center;">
+                    </div><br/>
                 </div><br/>
-
                 <div class="row">
                     <div class = "col-sm-4">
                         <label class = "form-control-label">Class Size :</label>
-                        <label id="view_class_size">-</label>
+                        <input type="text" class="form-control" id="view_class_size" readonly="true" style="text-align: center;">
                     </div>
-                </div><br/>
 
-                <div class="row">
                     <div class = "col-sm-4">
                         <label class = "form-control-label">Assigned To :</label>
-                        <label id="view_tutor">-</label>
+                        <input type="text" class="form-control" id="view_tutor" readonly="true" style="text-align: center;">
                     </div>
+                    
+                    <div class = "col-sm-4">
+                        <label class = "form-control-label">Attendance :</label>
+                        <input type="text" class="form-control" id="view_lesson_attendance" readonly="true" style="text-align: center;">
+                    </div><br/>
                 </div><br/>
 
-                <div class="row">
-                    <table id="studentAttendanceTable" class="table table-bordered table-striped" style="width:100%; font-size: 14px">
-                        <thead>
-                            <tr>
-                                <th style="text-align: center">Student Name</th>
-                                <th style="text-align: center">Contact No.</th>
-                                <th style="text-align: center">Attendance</th>
-                            </tr>
-                        </thead>
-                    </table>
+                    <div class="table-responsive">
+                        <table id="studentAttendanceTable" class="table table-bordered table-striped" style="width:100%; font-size: 14px">
+                            <thead>
+                                <tr>
+                                    <th style="text-align: center">Student Name</th>
+                                    <th style="text-align: center">Contact No.</th>
+                                    <th style="text-align: center">Attendance</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
                 </div><br/>
             </div>  
 
@@ -142,17 +138,19 @@
                     dataType: 'JSON',
                     data: {lessonID: id, action: action},
                     success: function (data) {
-                        $("#view_class_time").text(data.className);
-                        $("#view_start_date").text(data.startDate);
-                        $("#view_end_date").text(data.endDate);
-                        $("#view_class_size").text(data.classSize);
-                        $("#view_tutor").text(data.tutor);
+                        $("#view_class_time").val(data.className);
+                        $("#view_start_date").val(data.startDate);
+                        $("#view_end_date").val(data.endDate);
+                        $("#view_class_size").val(data.classSize);
+                        $("#view_tutor").val(data.tutor);
+                        $("#view_lesson_attendance").val(data.attendance);
                     }
                 });
 
                 action = 'retrieveStudents';
 
                 table = $("#studentAttendanceTable").DataTable({
+                    destroy: true,
                     "dom": 'tpr',
                     "iDisplayLength": 5,
                     'ajax': {
@@ -196,8 +194,9 @@
                         dataType: 'JSON',
                         data: {lessonID: id, studentID: studentID, tutorID: tutorID, action: action},
                         success: function (data) {
-                            if (data) {
+                            if (data.status) {
                                 table.cell(rowIndex, columnIndex).data('Present').draw();
+                                $("#view_lesson_attendance").val(data.attendance);
                             }
                         }
                     });

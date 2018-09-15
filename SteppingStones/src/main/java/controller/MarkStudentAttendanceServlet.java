@@ -124,6 +124,63 @@ public class MarkStudentAttendanceServlet extends HttpServlet {
                 JSONObject toReturn = new JSONObject().put("data", status);
                 String json = toReturn.toString();
                 out.println(json);
+            }else if(action.equals("retrieveModal")){
+                int classID = Integer.parseInt(request.getParameter("classID"));
+                
+                ArrayList<Lesson> lessons = LessonDAO.retrieveAllLessonLists(classID);
+                AttendanceDAO attendance = new AttendanceDAO();
+                
+                JSONArray array = new JSONArray();
+                
+                for(int i = 0; i < lessons.size(); i++){
+                    Lesson l = lessons.get(i);
+                    JSONObject obj = new JSONObject();
+                    String date = l.getStartDate();
+                    obj.put("id", l.getLessonid());
+                    obj.put("date", date.substring(0, date.indexOf(" ")));
+                    obj.put("attendance", attendance.retrieveNumberOfStudentsAttended(l.getLessonid()));
+                    array.put(obj);
+                }
+                JSONObject toReturn = new JSONObject().put("data", array);
+                String json = toReturn.toString();
+                out.println(json);
+            }else if(action.equals("retrieveLessonDetails")){
+                int lessonID = Integer.parseInt(request.getParameter("lessonID"));
+                System.out.println("hereeeee");
+                Lesson l = LessonDAO.getLessonByID(lessonID);
+                ArrayList<Student> students = new ClassDAO().retrieveStudentsByClass(l.getClassid());
+                JSONArray array = new JSONArray();
+                AttendanceDAO attendance = new AttendanceDAO();
+                
+                for(Student s: students){
+                    JSONObject obj = new JSONObject();
+                    obj.put("id", s.getStudentID());
+                    obj.put("name", s.getName());
+                    obj.put("phone", s.getPhone());
+                    
+                    if(attendance.retrieveStudentAttendances(s.getStudentID(), l.getLessonid())){
+                        obj.put("attended", "Present");
+                    }
+                    
+                    array.put(obj);
+                }
+                JSONObject toReturn = new JSONObject().put("data", array);
+                String json = toReturn.toString();
+                out.println(json);
+            }else if(action.equals("markLessonModal")){
+                int classID = Integer.parseInt(request.getParameter("classID"));
+                int studentID = Integer.parseInt(request.getParameter("studentID"));
+                int tutorID = Integer.parseInt(request.getParameter("tutorID"));
+                int lessonID = Integer.parseInt(request.getParameter("lessonID"));
+                
+                AttendanceDAO attendance = new AttendanceDAO();
+                boolean status = attendance.updateStudentAttendance(studentID, lessonID, classID, tutorID, true);
+                int attendanceNum = attendance.retrieveNumberOfStudentsAttended(lessonID);
+                
+                JSONObject toReturn = new JSONObject().put("data", status);
+                toReturn.put("attendance", attendanceNum);
+                String json = toReturn.toString();
+                out.println(json);
             }
         }
     }
