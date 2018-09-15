@@ -14,20 +14,50 @@ import java.util.Map;
 
 public class StudentDAO {
 
-    public static int insertStudent(String studentName, int phone, String stuEmail, int level_id, int branch_id) {
+//    public static int insertStudent(String studentName, int phone, String stuEmail, int level_id, int branch_id) {
+//
+//        try (Connection conn = ConnectionManager.getConnection();) {
+//            conn.setAutoCommit(false);
+//            String sql = "insert ignore into student(student_nric, student_name, phone, email, required_amount, outstanding_amount, level_id, branch_id)"
+//                    + " value(null, ?, ?, ?, ?, ?, ? ,?)";
+//            PreparedStatement stmt = conn.prepareStatement(sql);
+//            stmt.setString(1, studentName);
+//            stmt.setInt(2, phone);
+//            stmt.setString(3, stuEmail);
+//            stmt.setDouble(4, 0);
+//            stmt.setDouble(5, 0);
+//            stmt.setInt(6, level_id);
+//            stmt.setInt(7, branch_id);
+//            stmt.executeUpdate();
+//            conn.commit();
+//            ResultSet rs = stmt.getGeneratedKeys();
+//            int generatedKey = 0;
+//            if (rs.next()) {
+//                generatedKey = rs.getInt(1);
+//            }
+//            return generatedKey;
+//        } catch (Exception e) {
+//            System.out.println(e.getMessage());
+//        }
+//        return 0;
+//    }
+    
+    public static int insertStudent(String studentName, int phone, String stuEmail, int level_id, int branch_id, double regFees) {
 
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            String sql = "insert ignore into student(student_nric, student_name, phone, email, required_amount, outstanding_amount, level_id, branch_id)"
-                    + " value(null, ?, ?, ?, ?, ?, ? ,?)";
+            String sql = "insert ignore into student(student_name, phone, email, reg_fees, outstanding_reg_fees, required_amount, outstanding_amount, level_id, branch_id)"
+                    + " value(?, ?, ?, ?, ?, ? ,?, ?, ?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, studentName);
             stmt.setInt(2, phone);
             stmt.setString(3, stuEmail);
-            stmt.setDouble(4, 0);
-            stmt.setDouble(5, 0);
-            stmt.setInt(6, level_id);
-            stmt.setInt(7, branch_id);
+            stmt.setDouble(4, regFees);
+            stmt.setDouble(5, regFees);
+            stmt.setDouble(6, 0);
+            stmt.setDouble(7, 0);
+            stmt.setInt(8, level_id);
+            stmt.setInt(9, branch_id);
             stmt.executeUpdate();
             conn.commit();
             ResultSet rs = stmt.getGeneratedKeys();
@@ -37,9 +67,65 @@ public class StudentDAO {
             }
             return generatedKey;
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("error in insertStudent method" + e.getMessage());
         }
         return 0;
+    }
+    
+    public static String retrieveStudentName(int studentID) {
+        String result = "";
+        try (Connection conn = ConnectionManager.getConnection()) {
+            conn.setAutoCommit(false);
+            String sql = "select student_name from student where student_id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, studentID);
+            conn.commit();
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                result = rs.getString("student_name");
+            }
+        } catch (SQLException ex) {
+            System.out.println("error in retrieveStudentIDWithPhone sql");
+        }
+        return result;
+    }
+    
+    public static int retrieveStudentIDWithPhone(String studentName, int phone) {
+        int result = 0;
+        try (Connection conn = ConnectionManager.getConnection()) {
+            conn.setAutoCommit(false);
+            String sql = "select student_id from student where student_name = ? and phone = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, studentName);
+            stmt.setInt(2, phone);
+            conn.commit();
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                result = rs.getInt("student_id");
+            }
+        } catch (SQLException ex) {
+            System.out.println("error in retrieveStudentIDWithPhone sql");
+        }
+        return result;
+    }
+    
+    public static int retrieveStudentIDWithEmail(String studentName, String email) {
+        int result = 0;
+        try (Connection conn = ConnectionManager.getConnection()) {
+            conn.setAutoCommit(false);
+            String sql = "select student_id from student where student_name = ? and email = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, studentName);
+            stmt.setString(2, email);
+            conn.commit();
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                result = rs.getInt("student_id");
+            }
+        } catch (SQLException ex) {
+            System.out.println("error in retrieveStudentIDWithEmail sql");
+        }
+        return result;
     }
 
     public static int retrieveStudentID(String studentDetails) {
@@ -83,6 +169,32 @@ public class StudentDAO {
                 String level = LevelDAO.retrieveLevel(levelID);
                 Student student = new Student(studentID, studentNRIC, name, BOD, gender, level, branchID, phone, address, email, reqAmt, outstandingAmt);
                 studentList.add(student);
+            }
+        } catch (SQLException e) {
+            System.out.print(e.getMessage());
+        }
+        return studentList;
+    }
+    
+    public static ArrayList<String> listAllStudents(int branch_id) {
+        ArrayList<String> studentList = new ArrayList();
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("select * from student where branch_id = ?");
+            stmt.setInt(1, branch_id);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                String name = rs.getString("student_name");
+                int phone = rs.getInt("phone");
+                String email = rs.getString("email");
+                String stu = "";
+                if(email != null && !email.isEmpty()){
+                    stu = name + "  -  " + email;
+                }else{
+                    stu = name + "  -  " + phone;
+                }
+                
+                studentList.add(stu);
             }
         } catch (SQLException e) {
             System.out.print(e.getMessage());
@@ -247,11 +359,11 @@ public class StudentDAO {
         return stu;
     }
 
-    public static int retrieveStudentLevelbyName(String studentName, int branch_id) {
+    public static int retrieveStudentLevelbyID(int studentID, int branch_id) {
         int levelID = 0;
         try (Connection conn = ConnectionManager.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement("select level_id from student where student_name = ? and branch_id = ?");
-            stmt.setString(1, studentName);
+            PreparedStatement stmt = conn.prepareStatement("select level_id from student where student_id = ? and branch_id = ?");
+            stmt.setInt(1, studentID);
             stmt.setInt(2, branch_id);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
@@ -310,6 +422,23 @@ public class StudentDAO {
             stmt.setDouble(1, reqAmt);
             stmt.setDouble(2, outstandingAmt);
             stmt.setInt(3, studentID);
+            stmt.executeUpdate();
+            conn.commit();
+            updatedStatus = true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return updatedStatus;
+    }
+    
+    public static boolean updateStudentTotalOutstandingFees(int studentID, double outstandingAmt) {
+        boolean updatedStatus = false;
+        try (Connection conn = ConnectionManager.getConnection();) {
+            conn.setAutoCommit(false);
+            String sql = "update student set outstanding_amount = ? where student_id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setDouble(1, outstandingAmt);
+            stmt.setInt(2, studentID);
             stmt.executeUpdate();
             conn.commit();
             updatedStatus = true;

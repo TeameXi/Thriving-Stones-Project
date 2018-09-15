@@ -219,15 +219,16 @@ public class LessonDAO {
     public static String getNearestLessonDate(int classID){
         String joinDate = "";
         try (Connection conn = ConnectionManager.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement("select * from lesson where class_id = ? and lesson_date_time >= curdate() order by lesson_date_time limit 1;");
+            PreparedStatement stmt = conn.prepareStatement("select date(start_date) as lesson_date from lesson where class_id = ? and "
+                    + "date(start_date) >= curdate() order by start_date limit 1;");
             stmt.setInt(1, classID);
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                joinDate += rs.getString("lesson_date_time");
+                joinDate += rs.getString("lesson_date");
             }
         } catch (SQLException e) {
-            System.out.print(e.getMessage());
+            System.out.print("Error in getNearestLessonDate method" + e.getMessage());
         }
         return joinDate;
     }
