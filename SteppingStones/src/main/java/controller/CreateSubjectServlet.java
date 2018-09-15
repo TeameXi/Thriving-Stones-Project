@@ -40,13 +40,18 @@ public class CreateSubjectServlet extends HttpServlet {
             branchID = Integer.parseInt(branch);
         }
         String subjectName = request.getParameter("subjectName");
-        String[] level = request.getParameterValues("level");
+        String[] level = request.getParameterValues("level_id[]");
+        String[] fee = request.getParameterValues("subject_cost[]");
         boolean subjectStatus = false;
         if(level != null){
-            for(String lvl: level){
-                int levelID = Integer.parseInt(lvl);
-                SubjectDAO subjects = new SubjectDAO();
-                subjectStatus = subjects.addSubject(levelID, subjectName, branchID);
+            for(int i=0;i<level.length;i++){
+                int levelID = Integer.parseInt(level[i]);
+                double monthlyFee  = 0;
+                if(!fee[i].equals("")){
+                    monthlyFee = Double.parseDouble(fee[i]);
+                }
+                
+                subjectStatus = SubjectDAO.addSubject(levelID, subjectName, branchID,monthlyFee);
             }    
         }
         if(subjectStatus) {

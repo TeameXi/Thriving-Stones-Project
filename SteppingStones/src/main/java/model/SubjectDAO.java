@@ -1,6 +1,7 @@
 package model;
 
 import connection.ConnectionManager;
+import entity.Lvl_Sub_Rel;
 import entity.Subject;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -104,8 +105,7 @@ public class SubjectDAO {
         return subjects;
     }
     
-    public boolean addSubject(int levelID, String subject, int branchID) {
-        boolean status = false;
+    public static boolean addSubject(int levelID, String subject, int branchID,double monthlyCourseFees) {
         String sql = "insert ignore into subject(subject_name) values(?)";
         
         try(Connection conn = ConnectionManager.getConnection()){
@@ -117,19 +117,22 @@ public class SubjectDAO {
             int subjectID = retrieveSubjectID(subject);
             
             if(subjectID > 0){
-                sql = "insert into lvl_sub_rel(level_id, subject_id, branch_id) values(?,?,?)";
+                sql = "insert into lvl_sub_rel(level_id, subject_id, branch_id,cost) values(?,?,?,?)";
                 stmt = conn.prepareStatement(sql);
                 stmt.setInt(1, levelID);
                 stmt.setInt(2, subjectID);
                 stmt.setInt(3, branchID);
-                stmt.executeUpdate();
-                status = true;
+                stmt.setDouble(4, monthlyCourseFees);
+                int num = stmt.executeUpdate();
+                if(num > 0){
+                    return true;
+                }
             }
         } catch (SQLException ex) {
             //Logger.getLogger(SubjectDAO.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println(ex.getMessage());
         }
-        return status;
+        return false;
     }
     
     public boolean deleteSubject(int subjectID) {
@@ -216,5 +219,29 @@ public class SubjectDAO {
             Logger.getLogger(SubjectDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return status;
+    }
+    
+    
+    public static ArrayList<Lvl_Sub_Rel> retrieveLevelAndSubjectForHourlyRates(int branchId){
+        ArrayList<Lvl_Sub_Rel> lvlWithSubLists = new ArrayList<>();
+         String sql = "SELECT rel.level_id,rel.subject_id,lvl.level_name,sub.subject_name " +
+            "FROM lvl_sub_rel as rel,level as lvl,subject as sub WHERE rel.level_id = lvl.level_id AND " +
+            "rel.subject_id = sub.subject_id AND rel.branch_id = ? ORDER by level_name,subject_name";
+        
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, branchId);
+            
+            ResultSet rs = stmt.executeQuery();
+            
+            while(rs.next()){
+                lvlWithSubLists.add(new Lvl_Sub_Rel(rs.getInt(1), rs.getInt(2), rs.getString(3), rs.getString(4)));
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(SubjectDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return lvlWithSubLists;
     }
 }

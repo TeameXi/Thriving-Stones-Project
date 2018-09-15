@@ -1444,8 +1444,24 @@ footer .copy{
    background-color: #fff;
 }
 
+.table .thead-light th {
+    color: #fff;
+    background-color: #f7a4a3;
+    border-color: #792700;
+}
+
 
 /* CUSTOM HEADER */
 #header_tutor{
     background-color: #7ecbb7;
+}
+
+
+/* Detail Page for datatable */
+td.details-control {
+    background: url('${pageContext.request.contextPath}/styling/img/list_metro.png') no-repeat center center;
+    cursor: pointer;
+}
+tr.shown td.details-control {
+    background: url('${pageContext.request.contextPath}/styling/img/close.png') no-repeat center center;
 }
