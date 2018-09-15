@@ -34,22 +34,25 @@
             </tr>
         </thead>
     </table>
+    <div class="inline">
+        <button class="btn btn-default" id="expand">Expand All</button>
+        <button class="btn btn-default" id="collaspe">Collapse All</button>
+    </div>
 </div>
 </div>
-<%@include file="footer.jsp"%>
 <script src='https://code.jquery.com/jquery-3.3.1.js'></script>
 <script src='https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js'></script>
 <script src='https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js'></script>
 <script src='https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js'></script>
 
 <script type="text/javascript">
-    function format(rowData) {
-        return '<table id="classList" class="table table-bordered table-striped" style="width: 100%;">'
+    function format(rowData, tutorID) {
+        return '<table id=' + tutorID + ' class="table table-bordered table-striped" style="width: 100%;">'
                 + '<thead><tr><th></th><th style="text-align: center">Class</th><th style="text-align: center">Level</th><th style="text-align: center">Subject</th><th style="text-align: center">Attendance</th></tr></thead></table>';
     }
 
-    function formatLessonList(rowData) {
-        return '<table id="lessonList" class="table table-bordered table-striped" style="width: 100%;">'
+    function formatLessonList(rowData, classID) {
+        return '<table id=' + classID + ' class="table table-bordered table-striped" style="width: 100%;">'
                 + '<thead><tr><th style="text-align: center">Lesson Date</th><th style="text-align: center">Present?</th>'
                 + '</tr></thead></table>';
     }
@@ -90,6 +93,25 @@
             ],
             "order": [[1, 'asc']]
         });
+        
+        // Handle click on "Expand All" button
+        $('#expand').on('click', function () {
+            // Expand row details
+            table.rows(':not(.parent)').nodes().to$().find('td:first-child').trigger('click');
+        });
+
+        // Handle click on "Collapse All" button
+        $('#collaspe').on('click', function () {
+            // Collapse row details
+            table.rows().every(function () {
+                // If row has details expanded
+                if (this.child.isShown()) {
+                    // Collapse row details
+                    this.child.hide();
+                    $(this.node()).removeClass('shown');
+                }
+            });
+        });
 
         $('#tutorAttendanceTable tbody').on('click', 'td.details-control', function () {
             tr = $(this).parents('tr');
@@ -104,8 +126,8 @@
                 action = 'retrieveClasses';
 
                 // Open this row
-                row.child(format(row.data())).show();
-                var childTable = $("#classList").DataTable({
+                row.child(format(row.data(), tutorID)).show();
+                var childTable = $("#" + tutorID).DataTable({
                     "dom": 'tpr',
                     "iDisplayLength": 5,
                     'ajax': {
@@ -119,7 +141,7 @@
                     },
                     "columnDefs": [
                         {
-                            "targets": [1, 2, 3],
+                            "targets": [1, 2, 3, 4],
                             "data": null,
                             "defaultContent": '',
                             "className": 'tutor-text'
@@ -141,7 +163,7 @@
                 });
                 tr.addClass('shown');
 
-                $('#classList tbody').on('click', 'td.details-control', function () {
+                $('#' + tutorID + ' tbody').on('click', 'td.details-control', function () {
                     childTR = $(this).parents('tr');
                     childRow = childTable.row(childTR);
 
@@ -154,9 +176,9 @@
                         action = 'retrieveLessons';
 
                         // Open this row
-                        childRow.child(formatLessonList(childRow.data())).show();
+                        childRow.child(formatLessonList(childRow.data(), classID)).show();
 
-                        lessonTable = $("#lessonList").DataTable({
+                        lessonTable = $("#" + classID).DataTable({
                             "dom": 'tpr',
                             "iDisplayLength": 5,
                             'ajax': {
@@ -187,7 +209,7 @@
                             ]
                         });
 
-                        $('#lessonList tbody').on('click', 'button', function () {
+                        $('#' + classID + ' tbody').on('click', 'button', function () {
                             lessonID = lessonTable.row($(this).parents('tr')).data().id;
                             rowIndex = lessonTable.row($(this).parents('tr')).index();
                             columnIndex = lessonTable.cell($(this).closest('td')).index().column;
@@ -197,10 +219,11 @@
                                 type: 'POST',
                                 url: 'TutorAttendanceServlet',
                                 dataType: 'JSON',
-                                data: {lessonID: lessonID, action: action},
+                                data: {lessonID: lessonID, action: action, classID: classID, tutorID: tutorID},
                                 success: function (data) {
-                                    if (data) {
+                                    if (data.data) {
                                         lessonTable.cell(rowIndex, columnIndex).data('Present').draw();
+                                        childTable.cell(childRow.index(), 4).data(data.attendance).draw();
                                     }
                                 }
                             });

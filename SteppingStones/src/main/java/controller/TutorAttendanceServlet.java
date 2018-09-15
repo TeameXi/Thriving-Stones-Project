@@ -111,10 +111,14 @@ public class TutorAttendanceServlet extends HttpServlet {
                 out.println(json);
             }else if(action.equals("mark")){
                 int lessonID = Integer.parseInt(request.getParameter("lessonID"));
+                int classID = Integer.parseInt(request.getParameter("classID"));
+                int tutorID = Integer.parseInt(request.getParameter("tutorID"));
                 
                 boolean status = LessonDAO.updateTutorAttendance(lessonID, 1);
+                String attendance = new LessonDAO().retrieveNumberTutorAttendancePerClass(classID, tutorID) + "%";
                 
                 JSONObject toReturn = new JSONObject().put("data", status);
+                toReturn.put("attendance", attendance);
                 String json = toReturn.toString();
                 out.println(json);
             }else if(action.equals("display")){

@@ -170,7 +170,6 @@
                     <%
                         }else if(role != null && user != null && role == "tutor" ){
                     %>
-                            <li><a href=""><i class="zmdi zmdi-money-box"></i>Your Payslip</a></li>
                             <li><a href="DisplayClassesBelongToTutor.jsp"><i class="zmdi zmdi-local-library"></i>Classes</a></li>
                             <li><a href="MarkAttendance.jsp"><i class="zmdi zmdi-local-library"></i>Attendance Taking</a></li>
                             <li><a href="DisplayTutorAttendance.jsp"><i class="zmdi zmdi-chart"></i>Your Attendance</a></li>
