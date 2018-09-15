@@ -120,8 +120,10 @@ public class MarkStudentAttendanceServlet extends HttpServlet {
                 
                 AttendanceDAO attendance = new AttendanceDAO();
                 boolean status = attendance.updateStudentAttendance(studentID, lessonID, classID, tutorID, true);
+                String percentage = attendance.retrieveNumberOfStudentAttendances(studentID, classID) + "%";
                 
                 JSONObject toReturn = new JSONObject().put("data", status);
+                toReturn.put("attendance", percentage);
                 String json = toReturn.toString();
                 out.println(json);
             }else if(action.equals("retrieveModal")){

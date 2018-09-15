@@ -35,6 +35,10 @@
             </tr>
         </thead>
     </table>
+    <div class="inline">
+        <button class="btn btn-default" id="expand">Expand All</button>
+        <button class="btn btn-default" id="collaspe">Collapse All</button>
+    </div>
 </div>
 </div>
 
@@ -75,13 +79,13 @@
 <script src='https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js'></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <script type="text/javascript">
-    function format(rowData) {
-        return '<table id="studentList" class="table table-bordered table-striped" style="width: 100%;">'
+    function format(rowData, classID) {
+        return '<table id=' + classID + ' class="table table-bordered table-striped" style="width: 100%;">'
                 + '<thead><tr><th></th><th style="text-align: center">Student Name</th><th style="text-align: center">Phone No.</th><th style="text-align: center">Attendance</th></tr></thead></table>';
     }
 
-    function formatLessonList(rowData) {
-        return '<table id="lessonList" class="table table-bordered table-striped" style="width: 100%;">'
+    function formatLessonList(rowData, studentID) {
+        return '<table id=' + studentID + ' class="table table-bordered table-striped" style="width: 100%;">'
                 + '<thead><tr><th style="text-align: center">Lesson Date</th><th style="text-align: center">Present?</th>'
                 + '</tr></thead></table>';
     }
@@ -96,9 +100,9 @@
         tutorID = <%=user.getRespectiveID()%>
         branchID = <%=branch_id%>
         action = 'retrieve';
-        count = 0;
 
         table = $('#studentAttendanceTable').DataTable({
+            'responsive': true,
             "iDisplayLength": 5,
             "aLengthMenu": [[5, 10, 25, -1], [5, 10, 25, "All"]],
             'ajax': {
@@ -138,10 +142,28 @@
             "order": [[1, 'asc']]
         });
 
+        // Handle click on "Expand All" button
+        $('#expand').on('click', function () {
+            // Expand row details
+            table.rows(':not(.parent)').nodes().to$().find('td:first-child').trigger('click');
+        });
+
+        // Handle click on "Collapse All" button
+        $('#collaspe').on('click', function () {
+            // Collapse row details
+            table.rows().every(function () {
+                // If row has details expanded
+                if (this.child.isShown()) {
+                    // Collapse row details
+                    this.child.hide();
+                    $(this.node()).removeClass('shown');
+                }
+            });
+        });
+
         $('#studentAttendanceTable tbody').on('click', 'button', function () {
             classID = table.row($(this).parents('tr')).data().id;
             action = 'retrieveModal';
-
             $('#lessonAttendance').on('shown.bs.modal', function () {
                 lessonAttendanceTable = $("#lessonAttendanceTable").DataTable({
                     destroy: true,
@@ -175,18 +197,15 @@
                     ],
                     "order": [[1, "asc"]]
                 });
-
                 $('#lessonAttendanceTable tbody').on('click', 'td.details-control', function () {
                     lesson_tr = $(this).parents('tr');
                     lesson_row = lessonAttendanceTable.row(lesson_tr);
-                    
                     if (lesson_row.child.isShown()) {
                         lesson_row.child.hide();
                         lesson_tr.removeClass('shown');
                     } else {
                         lessonID = lesson_row.data().id;
                         action = 'retrieveLessonDetails';
-
                         lesson_row.child(formatLessonModal(lesson_row.data())).show();
                         lessonModal = $("#lessonModal").DataTable({
                             "dom": 'tpr',
@@ -227,7 +246,6 @@
                             ],
                             "order": [[1, 'asc']]
                         });
-                        
                         $('#lessonModal tbody').on('click', 'button', function () {
                             studentID = lessonModal.row($(this).parents('tr')).data().id;
                             rowIndex = lessonModal.row($(this).parents('tr')).index();
@@ -246,19 +264,15 @@
                                 }
                             });
                         });
-                        
                         lesson_tr.addClass('shown');
                     }
                 });
             });
-
             $("#lessonAttendance").modal('show');
         });
-
         $('#studentAttendanceTable tbody').on('click', 'td.details-control', function () {
             tr = $(this).parents('tr');
             row = table.row(tr);
-
             if (row.child.isShown()) {
                 // This row is already open - close it
                 row.child.hide();
@@ -266,10 +280,9 @@
             } else {
                 classID = row.data().id;
                 action = 'retrieveStudents';
-
                 // Open this row
-                row.child(format(row.data())).show();
-                var childTable = $("#studentList").DataTable({
+                row.child(format(row.data(), classID)).show();
+                var childTable = $("#" + classID).DataTable({
                     "dom": 'tpr',
                     "iDisplayLength": 5,
                     'ajax': {
@@ -314,11 +327,9 @@
                     "order": [[1, 'asc']]
                 });
                 tr.addClass('shown');
-
-                $('#studentList tbody').on('click', 'td.details-control', function () {
+                $('#' + classID + ' tbody').on('click', 'td.details-control', function () {
                     childTR = $(this).parents('tr');
                     childRow = childTable.row(childTR);
-
                     if (childRow.child.isShown()) {
                         // This row is already open - close it
                         childRow.child.hide();
@@ -327,9 +338,8 @@
                         studentID = childRow.data().id;
                         action = 'retrieveLessons';
                         // Open this row
-                        childRow.child(formatLessonList(childRow.data())).show();
-
-                        lessonTable = $("#lessonList").DataTable({
+                        childRow.child(formatLessonList(childRow.data(), studentID)).show();
+                        lessonTable = $("#" + studentID).DataTable({
                             "dom": 'tpr',
                             "iDisplayLength": 5,
                             'ajax': {
@@ -360,8 +370,7 @@
                                 {"data": "attended"}
                             ]
                         });
-
-                        $('#lessonList tbody').on('click', 'button', function () {
+                        $('#' + studentID + ' tbody').on('click', 'button', function () {
                             lessonID = lessonTable.row($(this).parents('tr')).data().id;
                             rowIndex = lessonTable.row($(this).parents('tr')).index();
                             columnIndex = lessonTable.cell($(this).closest('td')).index().column;
@@ -374,6 +383,7 @@
                                 success: function (data) {
                                     if (data) {
                                         lessonTable.cell(rowIndex, columnIndex).data('Present').draw();
+                                        childTable.cell(childRow.index(), 3).data(data.attendance).draw();
                                     }
                                 }
                             });
