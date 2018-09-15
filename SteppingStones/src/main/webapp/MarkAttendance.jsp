@@ -29,8 +29,8 @@
             <tr>
                 <th></th>
                 <th style="text-align: center">Class</th>
-                <th style="text-align: center">Subject</th>
                 <th style="text-align: center">Level</th>
+                <th style="text-align: center">Subject</th>
                 <th style="text-align: center">Overall Attendance</th>
             </tr>
         </thead>
