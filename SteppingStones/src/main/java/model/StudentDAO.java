@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class StudentDAO {
@@ -401,25 +402,25 @@ public class StudentDAO {
         return updatedStatus;
     }
 
-    public ArrayList<Object> uploadStudent(ArrayList<String> studentLists, ArrayList<String> studentNameLists, ArrayList<String> studentEmailLists) {
-        ArrayList<Object> returnList = new ArrayList<>();
-        ArrayList<Student> duplicatedStudents = new ArrayList<>();
+    public ArrayList<Student> uploadStudent(ArrayList<String> studentLists) {
+        //ArrayList<Object> returnList = new ArrayList<>();
+        //ArrayList<Student> duplicatedStudents = new ArrayList<>();
         ArrayList<Student> insertedStudents = new ArrayList<>();
         //Map<Integer, Student> nameWithId = new HashMap<Integer, Student>();
-        if (studentNameLists.size() > 0) {
-            String nricList = "'" + String.join("','", studentNameLists) + "'";
-            String emailList = "'" + String.join("','", studentNameLists) + "'";
+        if (studentLists.size() > 0) {
+            //String nameList = "'" + String.join("','", studentNameLists) + "'";
+            //String emailList = "'" + String.join("','", studentNameLists) + "'";
             
             ArrayList<Student> existingStudents = new ArrayList();
-            try (Connection conn = ConnectionManager.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement("SELECT student_id,student_name,student_nric,email FROM student WHERE student_name IN (" + nricList + ") or email IN ("+ emailList+")")) {
+            
+            try (Connection conn = ConnectionManager.getConnection();){
+                /*PreparedStatement preparedStatement = conn.prepareStatement("SELECT student_id,student_name,student_nric,email FROM student WHERE (student_name IN (" + nameList + ") AND email IN ("+ emailList+")) OR (student_name IN (" + nameList + ") AND phone IN ("+ emailList+"))")) {
 
                 ResultSet rs = preparedStatement.executeQuery();
                 while (rs.next()) {
                     Student a = new Student(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4));
                     existingStudents.add(a);
-                }
-
+                }*/
                 String studentList = String.join(",", studentLists);
                 String [] col = {"student_id"};
                 PreparedStatement insertStatement = conn.prepareStatement("INSERT IGNORE INTO student(student_nric,student_name,phone,address,birth_date,gender,email,required_amount,outstanding_amount,level_id,branch_id) VALUES " + studentList, col);
@@ -432,13 +433,52 @@ public class StudentDAO {
                     //nameWithId.put(id, retrieveStudentbyID(id));
                     count++;
                 }
-                duplicatedStudents = existingStudents;
+                //duplicatedStudents = existingStudents;
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        returnList.add(duplicatedStudents);
-        returnList.add(insertedStudents);
+        //returnList.add(duplicatedStudents);
+        //returnList.add(insertedStudents);
+        return insertedStudents;
+    }
+    public static List<HashMap<String,String>> retrieveAllStudent() {
+        HashMap<String, String> phoneName = new HashMap<>();
+        HashMap<String, String> emailName = new HashMap<>();
+        ArrayList<HashMap<String,String>> returnList = new ArrayList<>();
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("select student_name, email, phone from student");
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                String name = rs.getString("student_name");
+                String phone = rs.getString("phone");
+                String email = rs.getString("email");
+                if(phone == null || "".equals(phone)){
+                    emailName.put(email, name);
+                }else{
+                    phoneName.put(phone, name);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.print(e.getMessage());
+        }
+        returnList.add(phoneName);
+        returnList.add(emailName);
         return returnList;
+    }
+    public static int retrieveStudentID(List<String> studentDetails) {
+        int result = 0;
+        try (Connection conn = ConnectionManager.getConnection()) {
+            String sql = "select student_id from student where (student_name = '" + studentDetails.get(1) + "' and phone = '" + studentDetails.get(0) + "') or (student_name = '" + studentDetails.get(1) + "' and email = '" + studentDetails.get(0) + "')";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                result = rs.getInt("student_id");
+            }
+        } catch (SQLException ex) {
+            System.out.println("error in retrieveStudentID sql");
+        }
+        return result;
     }
 }
