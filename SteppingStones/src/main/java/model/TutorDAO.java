@@ -1,11 +1,7 @@
 package model;
 
 import connection.ConnectionManager;
-<<<<<<< HEAD
 import entity.Tutor;import entity.Tutor_HourlyRate_Rel;
-=======
-import entity.Tutor;
->>>>>>> 4725f0564a98f0a2d2f0290054542b492d70fabc
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -411,7 +407,6 @@ public class TutorDAO {
         }
         return false;
     }
-<<<<<<< HEAD
     
     
     public static ArrayList<Tutor_HourlyRate_Rel> tutorSubjectListsForSpecificLevel(int level_id,int branch_id){
@@ -462,7 +457,7 @@ public class TutorDAO {
             Logger.getLogger(TutorDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return tutorSubLists;
-=======
+    }
 
     public static double getHourlyPay(int tutorID, int levelID, int subjectID) {
         double pay = 0;
@@ -481,6 +476,6 @@ public class TutorDAO {
             ex.printStackTrace();
         }
         return pay;
->>>>>>> 4725f0564a98f0a2d2f0290054542b492d70fabc
+
     }
 }

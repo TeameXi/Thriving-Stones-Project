@@ -129,7 +129,6 @@ public class ClassDAO {
         }
         return classList;
     }
-<<<<<<< HEAD
     
     
     /* LIST THE CURRENT CLASSES FOR THAT BRANCH WITH THE COST */
@@ -188,12 +187,9 @@ public class ClassDAO {
         }       
         return classList;
     }
-    
-    public static ArrayList<Class> listAllClassesByTutorID(int tutorID, int branchID){
-=======
+
 
     public static ArrayList<Class> listAllClassesByTutorID(int tutorID, int branchID) {
->>>>>>> 4725f0564a98f0a2d2f0290054542b492d70fabc
         ArrayList<Class> classList = new ArrayList();
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement("select * from class where branch_id = ? and tutor_id = ? and DATE_ADD(end_date, INTERVAL 3 MONTH) > curdate()");
