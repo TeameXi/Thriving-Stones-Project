@@ -213,21 +213,21 @@ $(function () {
                         message: 'Invalid format.Must be image'
                     }
                 }
-            },
-            birthDate:{
-                validators:{
-                    notEmpty: {
-                        message: 'BirthDate cannot be empty'
-                    }
-                }
-            },
-            tutorPassword:{
-                validators:{
-                    notEmpty: {
-                        message: 'Password cannot be empty'
-                    }
-                }
             }
+//            birthDate:{
+//                validators:{
+//                    notEmpty: {
+//                        message: 'BirthDate cannot be empty'
+//                    }
+//                }
+//            },
+//            tutorPassword:{
+//                validators:{
+//                    notEmpty: {
+//                        message: 'Password cannot be empty'
+//                    }
+//                }
+//            }
            
         }
     });

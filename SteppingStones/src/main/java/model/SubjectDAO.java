@@ -181,9 +181,9 @@ public class SubjectDAO {
         return deletedStatus;
     }
     
-    public ArrayList<Subject> retrieveSubjectsByBranch(int branchId) {
+    public static ArrayList<Subject> retrieveSubjectsByBranch(int branchId) {
         ArrayList<Subject> subjects = new ArrayList<>();
-        String sql = "select subject_id, subject_name from subject where subject_id in (select subject_id from lvl_sub_rel where branch_id = ?)";
+        String sql = "select subject_id, subject_name from subject where subject_id in (select distinct(subject_id) from lvl_sub_rel where branch_id = ?)";
         
         try(Connection conn = ConnectionManager.getConnection()){
             PreparedStatement stmt = conn.prepareStatement(sql);

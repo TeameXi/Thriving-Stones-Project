@@ -25,10 +25,7 @@ public class StudentGradeDAO {
                     + " SA1_school_top=VALUES(SA1_school_top), SA1_school_base=VALUES(SA1_school_base), SA1_school_grade=VALUES(SA1_school_grade),"
                     + " CA2_school_top=VALUES(CA2_school_top), CA2_school_base=VALUES(CA2_school_base), CA2_school_grade=VALUES(CA2_school_grade),"
                     + " SA2_school_top=VALUES(SA2_school_top), SA2_school_base=VALUES(SA2_school_base), SA2_school_grade=VALUES(SA2_school_grade)";
-            
-            
-             
-            System.out.println(sql);
+
             PreparedStatement stmt = conn.prepareStatement(sql);
 
             int num = stmt.executeUpdate();

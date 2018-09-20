@@ -14,14 +14,6 @@
         <url-pattern>/RetrieveScheduleCreationDetails</url-pattern>
     </servlet-mapping>
     <servlet>
-        <servlet-name>ScheduleCreationServlet</servlet-name>
-        <servlet-class>controller.ScheduleCreationServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>ScheduleCreationServlet</servlet-name>
-        <url-pattern>/ScheduleCreationServlet</url-pattern>
-    </servlet-mapping>
-    <servlet>
         <servlet-name>RetrieveScheduleServlet</servlet-name>
         <servlet-class>controller.RetrieveScheduleServlet</servlet-class>
     </servlet>

@@ -7,6 +7,13 @@
 <%@include file="header.jsp"%>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.18/datatables.min.css"/>
 <style>
+    td.details-control {
+        background: url('${pageContext.request.contextPath}/styling/img/list_metro.png') no-repeat center center;
+        cursor: pointer;
+    }
+    tr.shown td.details-control {
+        background: url('${pageContext.request.contextPath}/styling/img/close.png') no-repeat center center;
+    }
 
     .btn{
         background-color: #9ccbce;

@@ -128,6 +128,64 @@ public class ClassDAO {
         return classList;
     }
     
+    
+    /* LIST THE CURRENT CLASSES FOR THAT BRANCH WITH THE COST */
+    public static ArrayList<Class> listAllClassesForSpecificBranchWithCost(int branchID){
+        ArrayList<Class> classList = new ArrayList();
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement("select * from class where branch_id = ? and end_date > curdate()");
+            stmt.setInt(1, branchID);
+            ResultSet rs = stmt.executeQuery();
+
+            while(rs.next()){
+                int classID = rs.getInt("class_id");
+                int subjectID = rs.getInt("subject_id");
+                int levelID = rs.getInt("level_id");
+                String classTime = rs.getString("timing");
+                String classDay = rs.getString("class_day");
+                String startDate = rs.getString("start_date");
+                String endDate = rs.getString("end_date");
+                double mthlyFees = rs.getDouble("fees");
+                String level = LevelDAO.retrieveLevel(levelID);
+                String holidayDate = rs.getString("holiday_date");
+                Class cls = new Class(classID, level, subjectID, classTime, classDay, mthlyFees, startDate, endDate, holidayDate);
+                classList.add(cls);
+            }
+        }catch(SQLException e){
+            System.out.print(e.getMessage());
+        }       
+        return classList;
+    }
+    
+    /* LIST THE CURRENT CLASSES FOR THAT BRANCH WITH THE COST */
+    public static ArrayList<Class> listAllClassesForSpecificLevelWithCost(int branchID,int levelID){
+        ArrayList<Class> classList = new ArrayList();
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement("select * from class where branch_id = ? and level_id = ? and end_date > curdate()");
+            stmt.setInt(1, branchID);
+            stmt.setInt(2, levelID);
+            ResultSet rs = stmt.executeQuery();
+
+            while(rs.next()){
+                int classID = rs.getInt("class_id");
+                int subjectID = rs.getInt("subject_id");
+                int level_id = rs.getInt("level_id");
+                String classTime = rs.getString("timing");
+                String classDay = rs.getString("class_day");
+                String startDate = rs.getString("start_date");
+                String endDate = rs.getString("end_date");
+                double mthlyFees = rs.getDouble("fees");
+                String level = LevelDAO.retrieveLevel(level_id);
+                String holidayDate = rs.getString("holiday_date");
+                Class cls = new Class(classID, level, subjectID, classTime, classDay, mthlyFees, startDate, endDate, holidayDate);
+                classList.add(cls);
+            }
+        }catch(SQLException e){
+            System.out.print(e.getMessage());
+        }       
+        return classList;
+    }
+    
     public static ArrayList<Class> listAllClassesByTutorID(int tutorID, int branchID){
         ArrayList<Class> classList = new ArrayList();
         try(Connection conn = ConnectionManager.getConnection()){

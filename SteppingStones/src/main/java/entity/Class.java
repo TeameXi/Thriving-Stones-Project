@@ -7,7 +7,7 @@ public class Class {
     private String subject;
     private int term;
     private String classTime;
-    private String classDay;   
+    private String classDay;
     private double mthlyFees;
     private int hasReminderForFees;
     private String startDate;
@@ -16,10 +16,22 @@ public class Class {
     private int year;
     private int subjectID;
     private int tutorID;
-    private String paymentDate;
-    
+    private String holidayDate;
+
     public Class(){
         
+    }
+    
+    public Class(int classID,String level, int subjectID, String classTime, String classDay, double mthlyFees, String startDate, String endDate,String holidayDate) {
+        this.classID = classID;
+        this.level = level;
+        this.subjectID = subjectID;
+        this.classTime = classTime;
+        this.classDay = classDay;
+        this.mthlyFees = mthlyFees;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.holidayDate = holidayDate;
     }
 
     public Class(int classID, String level, String subject, int term, String classTime, String classDay, double mthlyFees, String startDate, String endDate) {
@@ -33,9 +45,8 @@ public class Class {
         this.startDate = startDate;
         this.endDate = endDate;
     }
-    
-    
-    public Class(int classID,int subjectID,String classTime, String classDay,double mthlyFees,String startDate, String endDate,int tutorID) {
+
+    public Class(int classID, int subjectID, String classTime, String classDay, double mthlyFees, String startDate, String endDate, int tutorID) {
         this.classID = classID;
         this.subjectID = subjectID;
         this.classTime = classTime;
@@ -46,7 +57,7 @@ public class Class {
         this.tutorID = tutorID;
     }
 
-     public Class(int classID, String level, String subject, String classTime, String classDay, double mthlyFees, String startDate, String endDate,int year) {
+    public Class(int classID, String level, String subject, String classTime, String classDay, double mthlyFees, String startDate, String endDate, int year) {
         this.classID = classID;
         this.level = level;
         this.subject = subject;
@@ -57,11 +68,11 @@ public class Class {
         this.endDate = endDate;
         this.year = year;
     }
-    
+
     public Class(int classID, int level, int subject, String classTime, String classDay, int mthlyFees, String startDate) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
     public int getTerm() {
         return this.term;
     }
@@ -69,11 +80,11 @@ public class Class {
     public void setTerm(int term) {
         this.term = term;
     }
-    
+
     public int getClassID() {
         return this.classID;
     }
-        
+
     public String getLevel() {
         return this.level;
     }
@@ -101,15 +112,15 @@ public class Class {
     public String getClassDay() {
         return this.classDay;
     }
-    
-     public void setClassID(int id) {
+
+    public void setClassID(int id) {
         this.classID = id;
     }
 
     public void setClassDay(String newClassDay) {
         this.classDay = newClassDay;
     }
-    
+
     public double getMthlyFees() {
         return this.mthlyFees;
     }
@@ -117,7 +128,7 @@ public class Class {
     public void setMthlyFees(double newMthlyFees) {
         this.mthlyFees = newMthlyFees;
     }
-    
+
     public String getStartDate() {
         return this.startDate;
     }
@@ -125,8 +136,7 @@ public class Class {
     public void setStartDate(String newStartDate) {
         this.startDate = newStartDate;
     }
-    
-    
+
     public String getEndDate() {
         return this.endDate;
     }
@@ -134,12 +144,10 @@ public class Class {
     public void setEndDate(String newEndDate) {
         this.endDate = newEndDate;
     }
-    
-    
-    
+
     @Override
-    public String toString(){
-        return this.classID + "&" + this.level + "&" + this.subject + "&" + this.classTime + "&" + this.classDay + "&" +  this.mthlyFees + "&" + this.startDate + "&" + this.endDate;
+    public String toString() {
+        return this.classID + "&" + this.level + "&" + this.subject + "&" + this.classTime + "&" + this.classDay + "&" + this.mthlyFees + "&" + this.startDate + "&" + this.endDate;
     }
 
     /**
@@ -199,17 +207,24 @@ public class Class {
     }
 
     /**
-     * @return the paymentDate
+     * @return the holidayDate
      */
-    public String getPaymentDate() {
-        return paymentDate;
+    public String getHolidayDate() {
+        return holidayDate;
     }
 
     /**
-     * @param paymentDate the paymentDate to set
+     * @return the hasReminderForFees
      */
-    public void setPaymentDate(String paymentDate) {
-        this.paymentDate = paymentDate;
+    public int getHasReminderForFees() {
+        return hasReminderForFees;
     }
-}
 
+    /**
+     * @param hasReminderForFees the hasReminderForFees to set
+     */
+    public void setHasReminderForFees(int hasReminderForFees) {
+        this.hasReminderForFees = hasReminderForFees;
+    }
+
+}
