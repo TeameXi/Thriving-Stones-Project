@@ -1,8 +1,8 @@
 package model;
 
-
 import connection.ConnectionManager;
-import entity.Tutor;import java.sql.Connection;
+import entity.Tutor;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -38,7 +38,7 @@ public class TutorDAO {
         }
         return null;
     }
-    
+
     public static ArrayList<Tutor> retrieveTutorsShortInfoByBranch(int branchId) {
         ArrayList<Tutor> tutorLists = new ArrayList<>();
         String select_tutor = "SELECT tutor_id,tutor_fullname FROM tutor WHERE branch_id = ?";
@@ -89,7 +89,7 @@ public class TutorDAO {
         }
         return null;
     }
-    
+
     public int addTutor(Tutor tutor) {
         String insert_Tutor = "INSERT INTO tutor(tutor_nric,tutor_fullname,phone,address,image_url,birth_date,gender,email,branch_id) VALUES(?,?,?,?,?,?,?,?,?)";
         try (Connection conn = ConnectionManager.getConnection();
@@ -111,27 +111,26 @@ public class TutorDAO {
                 generatedKey = rs.getInt(1);
             }
             return generatedKey;
-            
 
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
         return 0;
     }
-    
-    public boolean updateTutor(int tutorID,String nric,int phone,String address,String image,String dob,String gender,String email) {
+
+    public boolean updateTutor(int tutorID, String nric, int phone, String address, String image, String dob, String gender, String email) {
         String update_Tutor = "UPDATE tutor SET tutor_nric=?,phone=?,address=?,image_url=?,birth_date=?,gender=?,email=? WHERE tutor_id =? ";
         try (Connection conn = ConnectionManager.getConnection();
                 PreparedStatement preparedStatement = conn.prepareStatement(update_Tutor)) {
-            preparedStatement.setString(1,nric);
+            preparedStatement.setString(1, nric);
             preparedStatement.setInt(2, phone);
-            preparedStatement.setString(3,address);
-            preparedStatement.setString(4,image);
-            preparedStatement.setString(5,dob);
-            preparedStatement.setString(6,gender);
+            preparedStatement.setString(3, address);
+            preparedStatement.setString(4, image);
+            preparedStatement.setString(5, dob);
+            preparedStatement.setString(6, gender);
             preparedStatement.setString(7, email);
-            preparedStatement.setInt(8,tutorID);
-            
+            preparedStatement.setInt(8, tutorID);
+
             int num = preparedStatement.executeUpdate();
             if (num != 0) {
                 return true;
@@ -153,7 +152,7 @@ public class TutorDAO {
 
             ArrayList<Tutor> existingTutors = new ArrayList();
             try (Connection conn = ConnectionManager.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(select_tutor)) {
+                    PreparedStatement preparedStatement = conn.prepareStatement(select_tutor)) {
 
                 ResultSet rs = preparedStatement.executeQuery();
                 while (rs.next()) {
@@ -161,18 +160,18 @@ public class TutorDAO {
                     String tutor_fullname = rs.getString(2);
                     existingTutors.add(new Tutor(id, tutor_fullname));
                 }
-                
+
                 System.out.println(existingTutors.size());
 
                 String tutorList = String.join(",", tutorLists);
-                String [] col = {"tutor_id"};
+                String[] col = {"tutor_id"};
                 String insert_tutor = "INSERT IGNORE INTO tutor(tutor_nric,tutor_fullname,phone,address,birth_date,gender,email,branch_id) VALUES " + tutorList;
                 PreparedStatement insertStatement = conn.prepareStatement(insert_tutor, col);
                 insertStatement.executeUpdate();
-                
+
                 ResultSet a = insertStatement.getGeneratedKeys();
-                
-                while(a.next()){
+
+                while (a.next()) {
                     int id = a.getInt(1);
                     insertedTutor.add(retrieveSpecificTutorById(id));
                 }
@@ -244,12 +243,12 @@ public class TutorDAO {
         }
         return tutorLists;
     }
-    
-    public ArrayList<Tutor> retrieveAllTutorsByLimit(int startingRow,int limit, int branchId) {
+
+    public ArrayList<Tutor> retrieveAllTutorsByLimit(int startingRow, int limit, int branchId) {
         ArrayList<Tutor> tutorLists = new ArrayList<>();
         String select_tutor = "SELECT * FROM tutor where branch_id = ? Limit ?,?";
         try (Connection conn = ConnectionManager.getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(select_tutor)) {
+                PreparedStatement preparedStatement = conn.prepareStatement(select_tutor)) {
             preparedStatement.setInt(1, branchId);
             preparedStatement.setInt(2, startingRow);
             preparedStatement.setInt(3, limit);
@@ -276,33 +275,33 @@ public class TutorDAO {
         }
         return tutorLists;
     }
-    
+
     public boolean deleteTutor(int tutorId) {
         String delete_sql = "DELETE FROM tutor WHERE tutor_id = ?";
         try (Connection conn = ConnectionManager.getConnection();
                 PreparedStatement preparedStatement = conn.prepareStatement(delete_sql)) {
             preparedStatement.setInt(1, tutorId);
             int num = preparedStatement.executeUpdate();
-            if(num != 0){
+            if (num != 0) {
                 return true;
             }
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
         return false;
-    }    
-    
-    public Tutor retrieveTutorByEmail(String email){
+    }
+
+    public Tutor retrieveTutorByEmail(String email) {
         Tutor tutor = null;
         String sql = "select * from tutor where email = ?";
         System.out.println(sql);
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, email);
-            
+
             ResultSet rs = stmt.executeQuery();
-            
-            while(rs.next()){
+
+            while (rs.next()) {
                 int id = rs.getInt(1);
                 String nric = rs.getString(2);
                 String fullname = rs.getString(3);
@@ -319,50 +318,50 @@ public class TutorDAO {
         } catch (Exception e) {
             System.out.println(e);
         }
-        
+
         return tutor;
     }
-    
-    public int retrieveNumberOfTutor(){
+
+    public int retrieveNumberOfTutor() {
         int tutorCount = 0;
         String sql = "select COUNT(*) from tutor";
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();
-            while(rs.next()){
+            while (rs.next()) {
                 tutorCount = rs.getInt(1);
             }
         } catch (Exception e) {
             System.out.println(e);
         }
-        
+
         return tutorCount;
     }
-    
-    public int retrieveNumberOfTutorByBranch(int branchId){
+
+    public int retrieveNumberOfTutorByBranch(int branchId) {
         int tutorCount = 0;
         String sql = "select COUNT(*) from tutor where branch_id = ?";
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, branchId);
             ResultSet rs = stmt.executeQuery();
-            while(rs.next()){
+            while (rs.next()) {
                 tutorCount = rs.getInt(1);
             }
         } catch (Exception e) {
             System.out.println(e);
         }
-        
+
         return tutorCount;
     }
-    
+
     public boolean updateTutorPassword(int tutorID, String password) {
         String updateTutorPassword = "update users set users.password = MD5(?) where role = 'tutor' and user_id = ?";
         try (Connection conn = ConnectionManager.getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(updateTutorPassword)) {
+                PreparedStatement preparedStatement = conn.prepareStatement(updateTutorPassword)) {
             preparedStatement.setString(1, password);
-            preparedStatement.setInt(2,tutorID);
-            
+            preparedStatement.setInt(2, tutorID);
+
             int num = preparedStatement.executeUpdate();
             if (num != 0) {
                 return true;
@@ -373,37 +372,56 @@ public class TutorDAO {
         }
         return false;
     }
-    
-    public int calculateLessonCount(int tutorID){
+
+    public static int calculateLessonCount(int tutorID, int classID) {
         int count = 0;
         try (Connection conn = ConnectionManager.getConnection();
-            PreparedStatement stmt = conn.prepareStatement("select count(*) from lesson where tutor_id = ? and paid = 0")) {
-            stmt.setInt(1,tutorID);
-            
+                PreparedStatement stmt = conn.prepareStatement("select count(*) from lesson where tutor_id = ? and class_id = ? and tutor_payment_status = 0 start_date < CURDATE()")) {
+            stmt.setInt(1, tutorID);
+            stmt.setInt(2, classID);
+
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 count = rs.getInt(1);
-            }            
+            }
+            return count;
         } catch (SQLException ex) {
             ex.printStackTrace();;
         }
         return count;
     }
-    
-    public boolean updatePay(int tutorID, double tutorPay,double pay){
-        int count = (int) (pay / tutorPay);
-        
+
+    public static boolean updateTutorPayment(int tutorID, int classID) {
         try (Connection conn = ConnectionManager.getConnection();
-            PreparedStatement stmt = conn.prepareStatement("UPDATE lesson SET paid = 1 where tutor_id = ? AND paid = 0 limit 0,?;")) {
-            stmt.setInt(1,tutorID);
-            stmt.setInt(2,count);
-            
+                PreparedStatement stmt = conn.prepareStatement("UPDATE table lesson set tutor_payment_status = 1 where tutor_id = ? and class_id = ?")) {
+            stmt.setInt(1, tutorID);
+            stmt.setInt(2, classID);
+
             stmt.executeQuery();
             return true;
-            
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();;
+        }
+        return false;
+    }
+
+    public static double getHourlyPay(int tutorID, int levelID, int subjectID) {
+        double pay = 0;
+        try (Connection conn = ConnectionManager.getConnection();
+                PreparedStatement stmt = conn.prepareStatement("select hourly_pay from tutor_hourly_rate where tutor_id = ? and level_id = ? and subject_id = ?")) {
+            stmt.setInt(1, tutorID);
+            stmt.setInt(2, levelID);
+            stmt.setInt(3, subjectID);
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                pay = rs.getDouble(1);
+            }  
+            return pay;
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        return false;
+        return pay;
     }
 }
