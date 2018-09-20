@@ -165,7 +165,17 @@
                                 </ul>
                             </li>
                             <li><a href="stats.html"><i class="zmdi zmdi-chart"></i> Financial Reports</a></li>
-                            <li><a href="TutorPayment.jsp"><i class="zmdi zmdi-money-box"></i> Payment Handling</a></li>
+                            <li class="submenu">
+                                 <a href="#">
+                                     <i class="zmdi zmdi-card"></i> Payment Handling
+                                     <span class="caret pull-right"></span>
+                                 </a>
+                                 <!-- Sub menu -->
+                                 <ul>
+                                     <li><a href="StudentPayment.jsp">Student Payment</a></li>
+                                     <li><a href="TutorPayment.jsp">Tutor Payment</a></li>
+                                 </ul>
+                             </li>
                     
                     <%
                         }else if(role != null && user != null && role == "tutor" ){
