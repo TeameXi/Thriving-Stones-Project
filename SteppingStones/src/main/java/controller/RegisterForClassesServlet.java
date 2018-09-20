@@ -16,9 +16,12 @@ import model.ClassDAO;
 import model.StudentDAO;
 import entity.Class;
 import entity.Student;
+import java.util.HashMap;
+import java.util.Set;
 import javax.servlet.RequestDispatcher;
 import model.LessonDAO;
 import model.LevelDAO;
+import model.PaymentDAO;
 import model.StudentClassDAO;
 
 /**
@@ -42,28 +45,53 @@ public class RegisterForClassesServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         int branchID = Integer.parseInt(request.getParameter("branch_id"));
         if(request.getParameter("search") != null){
-            String studentName = (String) request.getParameter("studentName");
-           
-            int levelID = StudentDAO.retrieveStudentLevelbyName(studentName,branchID);
-            int studentID = StudentDAO.retrieveStudentID(studentName);
+            String student = (String) request.getParameter("student");
+            String[] parts = student.split("-");
+            String studentName = "";
+            String studentEmail = "";
+            int phone = 0;
+            
+            if(parts.length == 2){
+                studentName = parts[0].trim();
+                if(parts[1].contains("@")){
+                    studentEmail = parts[1].trim();
+                }else{
+                    phone = Integer.parseInt(parts[1].trim());
+                }
+            }
+//            System.out.println(phone + "& " + studentEmail);
+            int studentID = 0;
+            if(studentEmail.isEmpty()){
+                studentID = StudentDAO.retrieveStudentIDWithPhone(studentName, phone);
+            }else{
+                studentID = StudentDAO.retrieveStudentIDWithEmail(studentName, studentEmail);
+            }
+//            System.out.println(studentID);
+            int levelID = StudentDAO.retrieveStudentLevelbyID(studentID,branchID);
             if(levelID == 0){
                 request.setAttribute("errorMsg", studentName + " Not Exists in Database, Please Create Student First.");           
             }else{
+                
                 ArrayList<Class> cls = ClassDAO.getClassesToEnrolled(levelID, studentID, branchID);
                 ArrayList<Class> enrolledCls = ClassDAO.getStudentEnrolledClass(studentID);
-                request.setAttribute("level", LevelDAO.retrieveLevel(levelID));
+                request.setAttribute("level", LevelDAO.retrieveLevel(levelID));    
                 request.setAttribute("studentName", studentName);
+                request.setAttribute("student_id", studentID);
                 request.setAttribute("classes", cls);
                 request.setAttribute("enrolledClasses", enrolledCls);
             }
             RequestDispatcher view = request.getRequestDispatcher("RegisterForClasses.jsp");
             view.forward(request, response);
         }
+        
         if(request.getParameter("select") != null){
             String[] classValues = request.getParameterValues("classValue");
-            String studentName = request.getParameter("studentName");
-
-            int studentID = StudentDAO.retrieveStudentID(studentName);
+            int studentID = 0;
+            String studentIDStr = request.getParameter("studentID");
+            if(studentIDStr != null && !studentIDStr.isEmpty()){
+                studentID = Integer.parseInt(studentIDStr);
+            }
+            //System.out.print(studentID);
 
             if(classValues != null){
                 for(String classValue: classValues){
@@ -74,24 +102,37 @@ public class RegisterForClassesServlet extends HttpServlet {
                     }
                     Class cls = ClassDAO.getClassByID(classID);
                     double monthlyFees = cls.getMthlyFees();
-                    double outstandingDeposit = 0;  //need to update
-                    double outstandingTuitionFees = 0; //need to update
-                    double firstInstallment = 0; //need to update
-                    double outstandingFirstInstallment = 0; //need to update
-                    boolean status = StudentClassDAO.saveStudentToRegisterClass(classID, studentID, monthlyFees, outstandingDeposit, monthlyFees, 
-                            outstandingTuitionFees, joinDate, firstInstallment, outstandingFirstInstallment); //calculate outstanding fees
-                    System.out.println(status);
+                    boolean status = StudentClassDAO.saveStudentToRegisterClass(classID, studentID, monthlyFees, monthlyFees, joinDate); 
+                    HashMap<String, Integer> reminders = PaymentDAO.getReminders(classID, joinDate);
+                    Set<String> keys = reminders.keySet();
+                    boolean paymentStauts = false;
+                    if(!reminders.isEmpty()){
+                        for(String reminderDate: keys){
+                            int noOfLessons = reminders.get(reminderDate);
+                            paymentStauts = PaymentDAO.insertPaymentReminderWithAmount(classID, studentID, reminderDate, noOfLessons, monthlyFees);
+                        }
+                    }else{
+                        paymentStauts = true;
+                    }
+
+                    boolean updateOutstandingFees = false;
                     if(status){
                         Student stu = StudentDAO.retrieveStudentbyID(studentID,branchID);
-                        double reqAmt = (monthlyFees * 3) + stu.getReqAmt(); //reqAmt meaning 1 mth or for whole term how to calculate
-                        double outstandingAmt = (monthlyFees * 3) + stu.getOutstandingAmt();
-                        boolean update = StudentDAO.updateStudentFees(studentID, reqAmt, outstandingAmt); 
-                        if(update){
-                            request.setAttribute("status", "Successfully Registered.");
-                        }
+                        double totalOutstandingAmt = stu.getOutstandingAmt() + monthlyFees;
+                        updateOutstandingFees = StudentDAO.updateStudentTotalOutstandingFees(studentID, totalOutstandingAmt);
+                        System.out.println("After Deposit Add" + totalOutstandingAmt);
+                    }
+                    
+                    if(!status || !paymentStauts || !updateOutstandingFees){
+                        request.setAttribute("errorMsg", "Something Went Wrong with Registration.");
+                        RequestDispatcher view = request.getRequestDispatcher("RegisterForClasses.jsp");
+                        view.forward(request, response);   
                     }
                 }
+                response.sendRedirect("PaymentPage.jsp?studentID="+studentID);
+                return;
             }
+            request.setAttribute("errorMsg", "Please select at least 1 class to register");
             RequestDispatcher view = request.getRequestDispatcher("RegisterForClasses.jsp");
             view.forward(request, response);
         }

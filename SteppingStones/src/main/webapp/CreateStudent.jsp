@@ -136,7 +136,7 @@
         String status = (String) request.getAttribute("status");
         if (status != null) {
             out.println(status);
-        }
+        } 
     %>
 
 </div>
@@ -169,15 +169,6 @@ $(function () {
             validating: 'glyphicon glyphicon-refresh'
         },
         fields: {
-            studentNRIC: {
-                validators: {   
-                    stringLength: {
-                        min: 9,
-                        max: 9,
-                        message: 'Invalid NRIC'
-                    },
-                }
-            },
             studentName:{
                 validators:{
                     notEmpty: {

@@ -61,7 +61,7 @@ public class LevelDAO {
             ResultSet rs = stmt.executeQuery();
             while(rs.next()){
                 result = rs.getInt("level_id");
-            } 
+            }
         } catch (SQLException ex) {
             System.out.println("error in retrieveLevelID sql" + ex.getMessage());
         }  

@@ -9,24 +9,55 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class StudentDAO {
 
-    public static int insertStudent(String studentName, int phone, String stuEmail, int level_id, int branch_id) {
+//    public static int insertStudent(String studentName, int phone, String stuEmail, int level_id, int branch_id) {
+//
+//        try (Connection conn = ConnectionManager.getConnection();) {
+//            conn.setAutoCommit(false);
+//            String sql = "insert ignore into student(student_nric, student_name, phone, email, required_amount, outstanding_amount, level_id, branch_id)"
+//                    + " value(null, ?, ?, ?, ?, ?, ? ,?)";
+//            PreparedStatement stmt = conn.prepareStatement(sql);
+//            stmt.setString(1, studentName);
+//            stmt.setInt(2, phone);
+//            stmt.setString(3, stuEmail);
+//            stmt.setDouble(4, 0);
+//            stmt.setDouble(5, 0);
+//            stmt.setInt(6, level_id);
+//            stmt.setInt(7, branch_id);
+//            stmt.executeUpdate();
+//            conn.commit();
+//            ResultSet rs = stmt.getGeneratedKeys();
+//            int generatedKey = 0;
+//            if (rs.next()) {
+//                generatedKey = rs.getInt(1);
+//            }
+//            return generatedKey;
+//        } catch (Exception e) {
+//            System.out.println(e.getMessage());
+//        }
+//        return 0;
+//    }
+    
+    public static int insertStudent(String studentName, int phone, String stuEmail, int level_id, int branch_id, double regFees) {
 
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            String sql = "insert ignore into student(student_nric, student_name, phone, email, required_amount, outstanding_amount, level_id, branch_id)"
-                    + " value(null, ?, ?, ?, ?, ?, ? ,?)";
+            String sql = "insert ignore into student(student_name, phone, email, reg_fees, outstanding_reg_fees, required_amount, outstanding_amount, level_id, branch_id)"
+                    + " value(?, ?, ?, ?, ?, ? ,?, ?, ?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, studentName);
             stmt.setInt(2, phone);
             stmt.setString(3, stuEmail);
-            stmt.setDouble(4, 0);
-            stmt.setDouble(5, 0);
-            stmt.setInt(6, level_id);
-            stmt.setInt(7, branch_id);
+            stmt.setDouble(4, regFees);
+            stmt.setDouble(5, regFees);
+            stmt.setDouble(6, 0);
+            stmt.setDouble(7, 0);
+            stmt.setInt(8, level_id);
+            stmt.setInt(9, branch_id);
             stmt.executeUpdate();
             conn.commit();
             ResultSet rs = stmt.getGeneratedKeys();
@@ -36,9 +67,65 @@ public class StudentDAO {
             }
             return generatedKey;
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("error in insertStudent method" + e.getMessage());
         }
         return 0;
+    }
+    
+    public static String retrieveStudentName(int studentID) {
+        String result = "";
+        try (Connection conn = ConnectionManager.getConnection()) {
+            conn.setAutoCommit(false);
+            String sql = "select student_name from student where student_id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, studentID);
+            conn.commit();
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                result = rs.getString("student_name");
+            }
+        } catch (SQLException ex) {
+            System.out.println("error in retrieveStudentIDWithPhone sql");
+        }
+        return result;
+    }
+    
+    public static int retrieveStudentIDWithPhone(String studentName, int phone) {
+        int result = 0;
+        try (Connection conn = ConnectionManager.getConnection()) {
+            conn.setAutoCommit(false);
+            String sql = "select student_id from student where student_name = ? and phone = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, studentName);
+            stmt.setInt(2, phone);
+            conn.commit();
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                result = rs.getInt("student_id");
+            }
+        } catch (SQLException ex) {
+            System.out.println("error in retrieveStudentIDWithPhone sql");
+        }
+        return result;
+    }
+    
+    public static int retrieveStudentIDWithEmail(String studentName, String email) {
+        int result = 0;
+        try (Connection conn = ConnectionManager.getConnection()) {
+            conn.setAutoCommit(false);
+            String sql = "select student_id from student where student_name = ? and email = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, studentName);
+            stmt.setString(2, email);
+            conn.commit();
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                result = rs.getInt("student_id");
+            }
+        } catch (SQLException ex) {
+            System.out.println("error in retrieveStudentIDWithEmail sql");
+        }
+        return result;
     }
 
     public static int retrieveStudentID(String studentDetails) {
@@ -82,6 +169,32 @@ public class StudentDAO {
                 String level = LevelDAO.retrieveLevel(levelID);
                 Student student = new Student(studentID, studentNRIC, name, BOD, gender, level, branchID, phone, address, email, reqAmt, outstandingAmt);
                 studentList.add(student);
+            }
+        } catch (SQLException e) {
+            System.out.print(e.getMessage());
+        }
+        return studentList;
+    }
+    
+    public static ArrayList<String> listAllStudents(int branch_id) {
+        ArrayList<String> studentList = new ArrayList();
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("select * from student where branch_id = ?");
+            stmt.setInt(1, branch_id);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                String name = rs.getString("student_name");
+                int phone = rs.getInt("phone");
+                String email = rs.getString("email");
+                String stu = "";
+                if(email != null && !email.isEmpty()){
+                    stu = name + "  -  " + email;
+                }else{
+                    stu = name + "  -  " + phone;
+                }
+                
+                studentList.add(stu);
             }
         } catch (SQLException e) {
             System.out.print(e.getMessage());
@@ -246,11 +359,11 @@ public class StudentDAO {
         return stu;
     }
 
-    public static int retrieveStudentLevelbyName(String studentName, int branch_id) {
+    public static int retrieveStudentLevelbyID(int studentID, int branch_id) {
         int levelID = 0;
         try (Connection conn = ConnectionManager.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement("select level_id from student where student_name = ? and branch_id = ?");
-            stmt.setString(1, studentName);
+            PreparedStatement stmt = conn.prepareStatement("select level_id from student where student_id = ? and branch_id = ?");
+            stmt.setInt(1, studentID);
             stmt.setInt(2, branch_id);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
@@ -309,6 +422,23 @@ public class StudentDAO {
             stmt.setDouble(1, reqAmt);
             stmt.setDouble(2, outstandingAmt);
             stmt.setInt(3, studentID);
+            stmt.executeUpdate();
+            conn.commit();
+            updatedStatus = true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return updatedStatus;
+    }
+    
+    public static boolean updateStudentTotalOutstandingFees(int studentID, double outstandingAmt) {
+        boolean updatedStatus = false;
+        try (Connection conn = ConnectionManager.getConnection();) {
+            conn.setAutoCommit(false);
+            String sql = "update student set outstanding_amount = ? where student_id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setDouble(1, outstandingAmt);
+            stmt.setInt(2, studentID);
             stmt.executeUpdate();
             conn.commit();
             updatedStatus = true;
@@ -401,25 +531,25 @@ public class StudentDAO {
         return updatedStatus;
     }
 
-    public ArrayList<Object> uploadStudent(ArrayList<String> studentLists, ArrayList<String> studentNameLists, ArrayList<String> studentEmailLists) {
-        ArrayList<Object> returnList = new ArrayList<>();
-        ArrayList<Student> duplicatedStudents = new ArrayList<>();
+    public ArrayList<Student> uploadStudent(ArrayList<String> studentLists) {
+        //ArrayList<Object> returnList = new ArrayList<>();
+        //ArrayList<Student> duplicatedStudents = new ArrayList<>();
         ArrayList<Student> insertedStudents = new ArrayList<>();
         //Map<Integer, Student> nameWithId = new HashMap<Integer, Student>();
-        if (studentNameLists.size() > 0) {
-            String nricList = "'" + String.join("','", studentNameLists) + "'";
-            String emailList = "'" + String.join("','", studentNameLists) + "'";
+        if (studentLists.size() > 0) {
+            //String nameList = "'" + String.join("','", studentNameLists) + "'";
+            //String emailList = "'" + String.join("','", studentNameLists) + "'";
             
             ArrayList<Student> existingStudents = new ArrayList();
-            try (Connection conn = ConnectionManager.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement("SELECT student_id,student_name,student_nric,email FROM student WHERE student_name IN (" + nricList + ") or email IN ("+ emailList+")")) {
+            
+            try (Connection conn = ConnectionManager.getConnection();){
+                /*PreparedStatement preparedStatement = conn.prepareStatement("SELECT student_id,student_name,student_nric,email FROM student WHERE (student_name IN (" + nameList + ") AND email IN ("+ emailList+")) OR (student_name IN (" + nameList + ") AND phone IN ("+ emailList+"))")) {
 
                 ResultSet rs = preparedStatement.executeQuery();
                 while (rs.next()) {
                     Student a = new Student(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4));
                     existingStudents.add(a);
-                }
-
+                }*/
                 String studentList = String.join(",", studentLists);
                 String [] col = {"student_id"};
                 PreparedStatement insertStatement = conn.prepareStatement("INSERT IGNORE INTO student(student_nric,student_name,phone,address,birth_date,gender,email,required_amount,outstanding_amount,level_id,branch_id) VALUES " + studentList, col);
@@ -432,13 +562,52 @@ public class StudentDAO {
                     //nameWithId.put(id, retrieveStudentbyID(id));
                     count++;
                 }
-                duplicatedStudents = existingStudents;
+                //duplicatedStudents = existingStudents;
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        returnList.add(duplicatedStudents);
-        returnList.add(insertedStudents);
+        //returnList.add(duplicatedStudents);
+        //returnList.add(insertedStudents);
+        return insertedStudents;
+    }
+    public static List<HashMap<String,String>> retrieveAllStudent() {
+        HashMap<String, String> phoneName = new HashMap<>();
+        HashMap<String, String> emailName = new HashMap<>();
+        ArrayList<HashMap<String,String>> returnList = new ArrayList<>();
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("select student_name, email, phone from student");
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                String name = rs.getString("student_name");
+                String phone = rs.getString("phone");
+                String email = rs.getString("email");
+                if(phone == null || "".equals(phone)){
+                    emailName.put(email, name);
+                }else{
+                    phoneName.put(phone, name);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.print(e.getMessage());
+        }
+        returnList.add(phoneName);
+        returnList.add(emailName);
         return returnList;
+    }
+    public static int retrieveStudentID(List<String> studentDetails) {
+        int result = 0;
+        try (Connection conn = ConnectionManager.getConnection()) {
+            String sql = "select student_id from student where (student_name = '" + studentDetails.get(1) + "' and phone = '" + studentDetails.get(0) + "') or (student_name = '" + studentDetails.get(1) + "' and email = '" + studentDetails.get(0) + "')";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                result = rs.getInt("student_id");
+            }
+        } catch (SQLException ex) {
+            System.out.println("error in retrieveStudentID sql");
+        }
+        return result;
     }
 }

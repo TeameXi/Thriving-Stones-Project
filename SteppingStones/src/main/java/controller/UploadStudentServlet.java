@@ -13,6 +13,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -74,6 +75,14 @@ public class UploadStudentServlet extends HttpServlet {
             
             String href =  request.getHeader("origin")+request.getContextPath()+"/Login.jsp";
             
+            StudentDAO studentDAO = new StudentDAO();
+            
+            ArrayList<Student> existingUsers = new ArrayList<>();
+            
+            List<HashMap<String, String>> existingStudentList = StudentDAO.retrieveAllStudent();
+            HashMap<String,String> phoneName = existingStudentList.get(0);
+            HashMap<String,String> emailName = existingStudentList.get(1);
+            
             ArrayList<String> studentLists = new ArrayList();
             ArrayList<String> studentNameLists = new ArrayList();
             ArrayList<String> studentEmailLists = new ArrayList();
@@ -82,17 +91,39 @@ public class UploadStudentServlet extends HttpServlet {
                     continue;
                 }
 
+                if(!"".equals(emails[i])){
+                    String name = emailName.get(emails[i]);
+                    if(name != null){
+                        if(name.equals(studNames[i].trim())){
+                            existingUsers.add(new Student(0,name,0,""));
+                            continue;
+                        }
+                    }
+                }
+                
                 int phone = 0;
                 if (!"".equals(phones[i])) {
                     phone = Integer.parseInt(phones[i]);
+                    String name = phoneName.get(phones[i]);
+                    if(name != null){
+                        if(name.equals(studNames[i].trim())){
+                            existingUsers.add(new Student(0,name,0,""));
+                            continue;
+                        }
+                    }
                 }
-
+                
                 studentLists.add("('" + studNrics[i] + "','" + studNames[i].trim() + "'," + phone + ",'" + addresses[i] + "','" + birth_dates[i] + 
                         "','" + genders[i] + "','" + emails[i] + "','" + registrationFee[i] +  "','" + 
                         outstandingRegistrationFee[i] +  "','" + LevelDAO.retrieveLevelID(acad_level[i]) + "'," + branch_id + ")");
 
-                studentNameLists.add(studNrics[i].trim());
-                studentEmailLists.add(emails[i]);
+                studentNameLists.add(studNames[i].trim());
+                
+                if(phone == 0){
+                    studentEmailLists.add(emails[i]);
+                }else{
+                    studentEmailLists.add(phones[i]);
+                }
             }
 
             ArrayList<String> parentLists = new ArrayList();
@@ -115,26 +146,24 @@ public class UploadStudentServlet extends HttpServlet {
                 parentMobileList.add(mobile);
             }
             
-            HashMap<String, Integer> studParRel = new HashMap<>();
+            HashMap<List<String>, Integer> studParRel = new HashMap<>();
+            
             
             for (int i = 0; i < studentNameLists.size() ; i++){
                 if(!studentNameLists.get(i).equals("")){
-                    studParRel.put(studentNameLists.get(i),parentMobileList.get(i));
-                }else{
-                    studParRel.put(studentEmailLists.get(i),parentMobileList.get(i));
+                    List<String> studentDetails = new ArrayList<>();
+                    studentDetails.add(studentEmailLists.get(i));
+                    studentDetails.add(studentNameLists.get(i));
+                    studParRel.put(studentDetails,parentMobileList.get(i));
                 }
-                
             }
-            
-            ArrayList<Student> existingUsers = new ArrayList<>();
             
             //Map<Integer,Student> nameWithId = new HashMap<Integer,Student>();
             ArrayList<Student> insertedStudent = new ArrayList<>();
             if (studentLists.size() > 0) {
-                StudentDAO studentDAO = new StudentDAO();
-                ArrayList<Object> studentReturnList = studentDAO.uploadStudent(studentLists, studentNameLists, studentEmailLists);
-                existingUsers = (ArrayList<Student>)studentReturnList.get(0);
-                insertedStudent = (ArrayList<Student>) studentReturnList.get(1);
+                //ArrayList<Object> studentReturnList = studentDAO.uploadStudent(studentLists);
+                //existingUsers.addAll((ArrayList<Student>)studentReturnList.get(0));
+                insertedStudent = studentDAO.uploadStudent(studentLists);
                 UsersDAO userDAO = new UsersDAO();
                 for(Student key : insertedStudent) {
                     String password = GeneratePassword.random(16);
@@ -164,10 +193,10 @@ public class UploadStudentServlet extends HttpServlet {
                         String text = "Thanks for choosing us. Your account has been created.\n\nBelow is the username and password to access your account: \nUsername: " + username 
                                 + "\nPassword: " + password + "\n\nYou can Login via "+href; 
                         if(key.getEmail() != null && !key.getEmail().equals("")){
-                            SendMail.sendingEmail(key.getEmail(), subject, text);
+                            //SendMail.sendingEmail(key.getEmail(), subject, text);
                         }else if(key.getPhone() != 0){
-                            String phoneNum = "+65" + key.getPhone();
-                            SendSMS.sendingSMS(phoneNum, text);
+                            //String phoneNum = "+65" + key.getPhone();
+                            //SendSMS.sendingSMS(phoneNum, text);
                         }
                     }
                 }
@@ -205,25 +234,27 @@ public class UploadStudentServlet extends HttpServlet {
                         String text = "Thanks for choosing us. Your account has been created.\n\nBelow is the username and password to access your account: \nUsername: " + username 
                                 + "\nPassword: " + password + "\n\nYou can Login via "+href; 
                         if(parentEmail != null && !parentEmail.equals("")){
-                            SendMail.sendingEmail(p.getEmail(), subject, text);
+                            //SendMail.sendingEmail(p.getEmail(), subject, text);
                         }else if(p.getPhone() != 0){
-                            String phoneNum = "+65" + p.getPhone();
-                            SendSMS.sendingSMS(phoneNum, text);
+                            //String phoneNum = "+65" + p.getPhone();
+                            //SendSMS.sendingSMS(phoneNum, text);
                         }
                     }
                 }
                 
-                for (Student dupStudName: existingUsers){
+                /*for (Student dupStudName: existingUsers){
                     if (studParRel.containsKey(dupStudName.getName())){
                         studParRel.remove(dupStudName.getName());
                     }
-                }
+                }*/
                 
                 ParentChildRelDAO pcrDAO = new ParentChildRelDAO();
-                for (String key: studParRel.keySet()){
+                for (List<String> key: studParRel.keySet()){
                     Integer value = studParRel.get(key);
                     int studentID = StudentDAO.retrieveStudentID(key);
-                    pcrDAO.insertParentChildRel(value, studentID, branch_id);
+                    if(studentID != 0){
+                        pcrDAO.insertParentChildRel(value, studentID, branch_id);
+                    }
                 }
                 HttpSession session = request.getSession();
                 session.setAttribute("existingUserLists", existingUsers);

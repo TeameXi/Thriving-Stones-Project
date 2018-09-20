@@ -70,6 +70,7 @@ public class TutorScheduleServlet extends HttpServlet {
                 
                 Lesson lesson = LessonDAO.getLessonByID(lessonID);
                 JSONObject obj = new JSONObject();
+                obj.put("attendance", new AttendanceDAO().retrieveNumberOfStudentsAttended(lessonID));
                 obj.put("id", lessonID);
                 obj.put("startDate", lesson.getStartDate());
                 obj.put("endDate", lesson.endDate());
@@ -108,8 +109,10 @@ public class TutorScheduleServlet extends HttpServlet {
                 
                 AttendanceDAO attendance = new AttendanceDAO();
                 boolean status = attendance.updateStudentAttendance(studentID, lessonID, classID, tutorID, true);
+                int numStudents = attendance.retrieveNumberOfStudentsAttended(lessonID);
                 
-                JSONObject toReturn = new JSONObject().put("data", status);
+                JSONObject toReturn = new JSONObject().put("status", status);
+                toReturn.put("attendance", numStudents);
                 String json = toReturn.toString();
                 out.println(json);
             }

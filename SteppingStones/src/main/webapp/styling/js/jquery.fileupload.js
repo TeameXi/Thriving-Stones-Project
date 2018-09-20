@@ -45,7 +45,7 @@ function checkCSVExtension(file_upload_id, error_lbl_id, append_container, optio
                     $(error_el).html("<span style='color:red;'>Invalid Template " + (header[0]) + "</span>");
                 }
             } else {
-                var header = data[2];
+                var header = data[1];
                 if (header.length === 17 && header[0] === "Student NRIC" && header[1] === "Student Name" && header[2] === "Phone"
                         && header[3] === "Address" && header[4] === "Birth Date (DD-MM-YYYY)" && header[5] === "Gender (F/M)"
                         && header[6] === "Email" && header[7] === "Academic Level" && header[8] === "Parent Name" && header[9] === "Parent Nationality"

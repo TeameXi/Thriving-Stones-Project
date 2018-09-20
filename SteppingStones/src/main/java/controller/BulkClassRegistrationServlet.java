@@ -6,7 +6,10 @@
 package controller;
 
 import entity.Class;
+import entity.Student;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Set;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,7 +18,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.ClassDAO;
 import model.LessonDAO;
+import model.PaymentDAO;
 import model.StudentClassDAO;
+import model.StudentDAO;
 
 /**
  *
@@ -41,37 +46,50 @@ public class BulkClassRegistrationServlet extends HttpServlet {
         String classIDStr = request.getParameter("classID");
         int classID = Integer.parseInt(classIDStr);
 
-        if(studentValues != null){
-            for(String studentIDStr: studentValues){
+        if (studentValues != null) {
+            for (String studentIDStr : studentValues) {
                 int studentID = Integer.parseInt(studentIDStr);
                 String outDep = request.getParameter(studentIDStr + "deposit");
                 String outTuition = request.getParameter(studentIDStr + "tuitionFees");
-                
+
                 double outstandingDeposit = 0;
-                if(outDep != null && !"".equals(outDep)){
+                if (outDep != null && !"".equals(outDep)) {
                     outstandingDeposit = Double.parseDouble(outDep);
                 }
-                 
+
                 double outstandingTuitionFees = 0;
-                if(outTuition != null && !"".equals(outTuition)){
+                if (outTuition != null && !"".equals(outTuition)) {
                     outstandingTuitionFees = Double.parseDouble(outTuition);
                 }
                 Class cls = ClassDAO.getClassByID(classID);
                 double monthlyFees = cls.getMthlyFees();
                 String joinDate = LessonDAO.getNearestLessonDate(classID);
-                double firstInstallment = 0; 
-                double outstandingFirstInstallment = 0; 
-                boolean status = StudentClassDAO.saveStudentToRegisterClass(classID, studentID, monthlyFees, outstandingDeposit, monthlyFees, 
-                            outstandingTuitionFees, joinDate, firstInstallment, outstandingFirstInstallment);
-                if(status){
-                    request.setAttribute("status", "Successfully Registered.");
+                boolean status = StudentClassDAO.saveStudentToRegisterClass(classID, studentID, monthlyFees, outstandingDeposit, joinDate);
+                PaymentDAO.insertOutstandingTuitionFees(classID, studentID, joinDate, 3, monthlyFees, outstandingTuitionFees);
+                
+                Student stu = StudentDAO.retrieveStudentbyID(studentID);
+                double totalOutstandingAmt = stu.getOutstandingAmt() + outstandingDeposit + outstandingTuitionFees;
+                boolean updateOutstandingFees = StudentDAO.updateStudentTotalOutstandingFees(studentID, totalOutstandingAmt);
+                
+                HashMap<String, Integer> reminders = PaymentDAO.getReminders(classID, joinDate);
+                Set<String> keys = reminders.keySet();
+                boolean paymentStauts = false;
+                if(reminders != null && !reminders.isEmpty()){
+                    for(String reminderDate: keys){
+                        int noOfLessons = reminders.get(reminderDate);
+                        paymentStauts = PaymentDAO.insertPaymentReminderWithAmount(classID, studentID, reminderDate, noOfLessons, monthlyFees);
+                    }
+                }else{
+                    paymentStauts = true;
                 }
-                System.out.println("Student 1" + " classID " + classID + " StuID " + studentID + " dep " + outstandingDeposit + " tut " + outstandingTuitionFees);
+                if (updateOutstandingFees && status && paymentStauts) {
+                    System.out.println("Enter successful");
+                    response.sendRedirect("BulkClassRegistration.jsp?status=Successfully Registered.");
+                    return;
+                }
+                //System.out.println("Student 1" + " classID " + classID + " StuID " + studentID + " dep " + outstandingDeposit + " tut " + outstandingTuitionFees);
             }
         }
-        
-        RequestDispatcher view = request.getRequestDispatcher("BulkClassRegistration.jsp");
-        view.forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

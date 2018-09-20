@@ -165,15 +165,24 @@
                                 </ul>
                             </li>
                             <li><a href="stats.html"><i class="zmdi zmdi-chart"></i> Financial Reports</a></li>
-                            <li><a href="tables.html"><i class="zmdi zmdi-money-box"></i> Payment Handling</a></li>
+                            <li class="submenu">
+                                 <a href="#">
+                                     <i class="zmdi zmdi-card"></i> Payment Handling
+                                     <span class="caret pull-right"></span>
+                                 </a>
+                                 <!-- Sub menu -->
+                                 <ul>
+                                     <li><a href="StudentPayment.jsp">Student Payment</a></li>
+                                     <li><a href="TutorPayment.jsp">Tutor Payment</a></li>
+                                 </ul>
+                             </li>
                     
                     <%
                         }else if(role != null && user != null && role == "tutor" ){
                     %>
-                            <li><a href=""><i class="zmdi zmdi-money-box"></i>Your Payslip</a></li>
                             <li><a href="DisplayClassesBelongToTutor.jsp"><i class="zmdi zmdi-local-library"></i>Classes</a></li>
                             <li><a href="MarkAttendance.jsp"><i class="zmdi zmdi-local-library"></i>Attendance Taking</a></li>
-                            <li><a href="stats.html"><i class="zmdi zmdi-chart"></i>Your Attendance</a></li>
+                            <li><a href="DisplayTutorAttendance.jsp"><i class="zmdi zmdi-chart"></i>Your Attendance</a></li>
                             <li class="submenu">
                                 <a href="#">
                                     <i class="zmdi zmdi-star-circle"></i> Student's Grades

@@ -23,22 +23,17 @@
     }
 </style>
 <div class="col-lg-10">
-    <div style="text-align: center;margin: 10px;"><span class="tab_active" style="font-size: 14px">Attendance Taking</span></div>
-    <table id="tutorAttendanceTable" class="table table-bordered table-striped" style="width:100%; font-size: 14px">
+    <div style="text-align: center;margin: 10px;"><span class="tab_active" style="font-size: 14px">Tutor Payment</span></div>
+    <table id="tutorPaymentTable" class="table table-bordered table-striped" style="width:100%; font-size: 14px">
         <thead>
             <tr>
                 <th></th>
                 <th style="text-align: center">Tutor Name</th>
                 <th style="text-align: center">Phone Number</th>
-                <th style="text-align: center">Overall Attendance</th>
+                <th style="text-align: center">Salary Owed</th>
             </tr>
         </thead>
     </table>
-    <div class="inline">
-        <button class="btn btn-default" id="expand">Expand All</button>
-        <button class="btn btn-default" id="collaspe">Collapse All</button>
-    </div>
-</div>
 </div>
 <script src='https://code.jquery.com/jquery-3.3.1.js'></script>
 <script src='https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js'></script>
@@ -48,12 +43,12 @@
 <script type="text/javascript">
     function format(rowData, tutorID) {
         return '<table id=' + tutorID + ' class="table table-bordered table-striped" style="width: 100%;">'
-                + '<thead><tr><th></th><th style="text-align: center">Class</th><th style="text-align: center">Level</th><th style="text-align: center">Subject</th><th style="text-align: center">Attendance</th></tr></thead></table>';
+                + '<thead><tr><th></th><th style="text-align: center">Class</th><th style="text-align: center">Level</th><th style="text-align: center">Subject</th><th style="text-align: center">Hourly Rate</th><th style="text-align: center">Salary Owed</th></tr></thead></table>';
     }
 
     function formatLessonList(rowData, classID) {
         return '<table id=' + classID + ' class="table table-bordered table-striped" style="width: 100%;">'
-                + '<thead><tr><th style="text-align: center">Lesson Date</th><th style="text-align: center">Present?</th>'
+                + '<thead><tr><th style="text-align: center">Lesson Date</th><th style="text-align: center">Payment Status</th><th style="text-align: center">Pay?</th>'
                 + '</tr></thead></table>';
     }
 
@@ -61,12 +56,12 @@
         branchID = <%=branch_id%>
         action = 'retrieve';
 
-        table = $('#tutorAttendanceTable').DataTable({
+        table = $('#tutorPaymentTable').DataTable({
             "iDisplayLength": 5,
             "aLengthMenu": [[5, 10, 25, -1], [5, 10, 25, "All"]],
             'ajax': {
                 "type": "POST",
-                "url": "TutorAttendanceServlet",
+                "url": "TutorPaymentServlet",
                 "data": {
                     "branchID": branchID,
                     "action": action
@@ -89,31 +84,13 @@
                 },
                 {"data": "name"},
                 {"data": "phone"},
-                {"data": "attendance"}
+                {"data": "salary"}
             ],
             "order": [[1, 'asc']]
         });
         
-        // Handle click on "Expand All" button
-        $('#expand').on('click', function () {
-            // Expand row details
-            table.rows(':not(.parent)').nodes().to$().find('td:first-child').trigger('click');
-        });
 
-        // Handle click on "Collapse All" button
-        $('#collaspe').on('click', function () {
-            // Collapse row details
-            table.rows().every(function () {
-                // If row has details expanded
-                if (this.child.isShown()) {
-                    // Collapse row details
-                    this.child.hide();
-                    $(this.node()).removeClass('shown');
-                }
-            });
-        });
-
-        $('#tutorAttendanceTable tbody').on('click', 'td.details-control', function () {
+        $('#tutorPaymentTable tbody').on('click', 'td.details-control', function () {
             tr = $(this).parents('tr');
             row = table.row(tr);
 
@@ -132,16 +109,16 @@
                     "iDisplayLength": 5,
                     'ajax': {
                         "type": "POST",
-                        "url": "TutorAttendanceServlet",
+                        "url": "TutorPaymentServlet",
                         "data": {
                             "tutorID": tutorID,
                             "action": action,
-                            "branchID": branchID
+                            "branchID": branchID,
                         }
                     },
                     "columnDefs": [
                         {
-                            "targets": [1, 2, 3, 4],
+                            "targets": [1, 2, 3, 4, 5],
                             "data": null,
                             "defaultContent": '',
                             "className": 'tutor-text'
@@ -157,7 +134,8 @@
                         {"data": "date"},
                         {"data": "level"},
                         {"data": "subject"},
-                        {"data": "attendance"}
+                        {"data": "hourly_rate"},
+                        {"data": "owed_amount"}
                     ],
                     "order": [[1, 'asc']]
                 });
@@ -183,29 +161,30 @@
                             "iDisplayLength": 5,
                             'ajax': {
                                 "type": "POST",
-                                "url": "TutorAttendanceServlet",
+                                "url": "TutorPaymentServlet",
                                 "data": {
                                     "classID": classID,
+                                    "tutorID": tutorID,
                                     "action": action
                                 }
                             },
                             "columnDefs": [
                                 {
-                                    "targets": 0,
+                                    "targets": [0, 1],
                                     "data": null,
                                     "defaultContent": '',
                                     "className": 'tutor-text'
                                 },
                                 {
-                                    "targets": 1,
+                                    "targets": 2,
                                     "data": null,
-                                    "defaultContent": '<button class="btn btn-default">Present</button>',
+                                    "defaultContent": '<button class="btn btn-default">Pay</button>',
                                     "className": 'tutor-text'
                                 }
                             ],
                             'columns': [
                                 {"data": "date"},
-                                {"data": "attended"}
+                                {"data": "paid"}
                             ]
                         });
 
@@ -217,12 +196,12 @@
 
                             $.ajax({
                                 type: 'POST',
-                                url: 'TutorAttendanceServlet',
+                                url: 'TutorPaymentServlet',
                                 dataType: 'JSON',
                                 data: {lessonID: lessonID, action: action, classID: classID, tutorID: tutorID},
                                 success: function (data) {
                                     if (data.data) {
-                                        lessonTable.cell(rowIndex, columnIndex).data('Present').draw();
+                                        lessonTable.cell(rowIndex, columnIndex).data('Paid').draw();
                                         childTable.cell(childRow.index(), 4).data(data.attendance).draw();
                                     }
                                 }

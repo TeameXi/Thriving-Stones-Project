@@ -84,4 +84,23 @@ public class AttendanceDAO {
         }
         return false;
     }
+    
+    public int retrieveNumberOfStudentsAttended(int lessonID){
+        String sql = "select count(distinct student_id) from student_attendance where lesson_id = ?";
+        int numStudents = 0;
+        
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, lessonID);
+            
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){
+                numStudents = rs.getInt(1);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(AttendanceDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return numStudents;
+    }
 }

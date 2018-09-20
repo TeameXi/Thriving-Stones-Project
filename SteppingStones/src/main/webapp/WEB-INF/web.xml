@@ -29,4 +29,7 @@
         <servlet-name>ChangePasswordServlet</servlet-name>
         <url-pattern>/ChangePassword</url-pattern>
     </servlet-mapping>
+    <listener>
+        <listener-class>JobScheduler.FinancialReportScheduler</listener-class>
+    </listener>
 </web-app>

@@ -1,4 +1,5 @@
 package model;
+
 import connection.ConnectionManager;
 import entity.Student;
 import java.util.ArrayList;
@@ -9,33 +10,58 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class StudentClassDAO {
-    public static boolean saveStudentToRegisterClass(int classID, int studentID, double deposit, double outstandingDeposit, double tuitionFee, 
-            double outstandingTuitionFee, String joinDate, double firstInstallment, double outstandingFirstInstallment){
+    
+//    public static boolean saveStudentToRegisterClass(int classID, int studentID, double deposit, double outstandingDeposit, double tuitionFee, 
+//            double outstandingTuitionFee, String joinDate, double firstInstallment, double outstandingFirstInstallment){
+//        boolean status = false;
+//        try (Connection conn = ConnectionManager.getConnection();) {
+//            conn.setAutoCommit(false);
+//            String sql = "insert into class_student_rel(class_id, student_id, deposit_fees, outstanding_deposit, tuition_fees, "
+//                    + "outstanding_tuition_fee, join_date, first_installment, outstanding_first_installment) value(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+//            PreparedStatement stmt = conn.prepareStatement(sql);
+//            stmt.setInt(1, classID);
+//            stmt.setInt(2, studentID);
+//            stmt.setDouble(3, deposit);
+//            stmt.setDouble(4, outstandingDeposit);
+//            stmt.setDouble(5, tuitionFee);
+//            stmt.setDouble(6, outstandingTuitionFee);
+//            stmt.setString(7, joinDate);
+//            stmt.setDouble(8, firstInstallment);
+//            stmt.setDouble(9, outstandingFirstInstallment);
+//            stmt.executeUpdate(); 
+//            conn.commit();
+//            status = true;
+//        } catch (Exception e) {
+//            System.out.println(e.getMessage());
+//        }
+//        return status;
+//    }
+
+    public static boolean saveStudentToRegisterClass(int classID, int studentID, double deposit, double outstandingDeposit, String joinDate) {
         boolean status = false;
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            String sql = "insert into class_student_rel(class_id, student_id, deposit_fees, outstanding_deposit, tuition_fees, "
-                    + "outstanding_tuition_fee, join_date, first_installment, outstanding_first_installment) value(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String sql = "insert into class_student_rel(class_id, student_id, deposit_fees, outstanding_deposit, "
+                    + "join_date, first_installment, outstanding_first_installment) value(?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, classID);
             stmt.setInt(2, studentID);
             stmt.setDouble(3, deposit);
             stmt.setDouble(4, outstandingDeposit);
-            stmt.setDouble(5, tuitionFee);
-            stmt.setDouble(6, outstandingTuitionFee);
-            stmt.setString(7, joinDate);
-            stmt.setDouble(8, firstInstallment);
-            stmt.setDouble(9, outstandingFirstInstallment);
-            stmt.executeUpdate(); 
+            stmt.setString(5, joinDate);
+            stmt.setDouble(6, 0);
+            stmt.setDouble(7, 0);
+            stmt.executeUpdate();
             conn.commit();
             status = true;
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
         return status;
-     }
-    public static boolean saveStudentsToRegisterClass(int classID, int studentID, double deposit, double outstandingDeposit, double tuitionFee, 
-            double outstandingTuitionFee, String joinDate){
+    }
+
+    public static boolean saveStudentsToRegisterClass(int classID, int studentID, double deposit, double outstandingDeposit, double tuitionFee,
+            double outstandingTuitionFee, String joinDate) {
         boolean status = false;
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
@@ -49,43 +75,40 @@ public class StudentClassDAO {
             stmt.setDouble(5, tuitionFee);
             stmt.setDouble(6, outstandingTuitionFee);
             stmt.setString(7, joinDate);
-            stmt.executeUpdate(); 
+            stmt.executeUpdate();
             conn.commit();
             status = true;
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
         return status;
-     }
+    }
 
-    public static ArrayList<String> listStudentsinSpecificClass(int classID){
+    public static ArrayList<String> listStudentsinSpecificClass(int classID) {
         ArrayList<String> studentList = new ArrayList<>();
         try (Connection conn = ConnectionManager.getConnection();) {
             String sql = "select student_name from student s, class_student_rel cs where s.student_id = cs.student_id and class_id = ?;";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, classID);
             ResultSet rs = stmt.executeQuery();
-            while(rs.next()){
+            while (rs.next()) {
                 String studentName = rs.getString("student_name");
                 studentList.add(studentName);
-            } 
+            }
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
         return studentList;
     }
-    
-  
-  
-    
-    public static boolean deleteStudentClassRel(int studentID){
+
+    public static boolean deleteStudentClassRel(int studentID) {
         boolean deletedStatus = false;
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
             String sql = "delete from class_student_rel where student_id = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, studentID);
-            stmt.executeUpdate(); 
+            stmt.executeUpdate();
             conn.commit();
             deletedStatus = true;
         } catch (Exception e) {
@@ -93,8 +116,8 @@ public class StudentClassDAO {
         }
         return deletedStatus;
     }
-    
-    public static Map<Integer, String> retrieveStudentClassSub(int studentID){
+
+    public static Map<Integer, String> retrieveStudentClassSub(int studentID) {
         Map<Integer, String> classSub = new HashMap<>();
         try (Connection conn = ConnectionManager.getConnection();) {
             String sql = "select c.class_id, subject_name from class_student_rel cs, class c, subject s "
@@ -102,42 +125,42 @@ public class StudentClassDAO {
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, studentID);
             ResultSet rs = stmt.executeQuery();
-            while(rs.next()){
+            while (rs.next()) {
                 int classID = rs.getInt("class_id");
                 String subject_name = rs.getString("subject_name");
                 classSub.put(classID, subject_name);
-            } 
+            }
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
         return classSub;
     }
-  
-    public int retrieveNumberOfStudentByClass(int classID){
+
+    public int retrieveNumberOfStudentByClass(int classID) {
         int studentCount = 0;
         String sql = "select COUNT(*) from class_student_rel where class_id = ?";
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, classID);
             ResultSet rs = stmt.executeQuery();
-            while(rs.next()){
+            while (rs.next()) {
                 studentCount = rs.getInt(1);
             }
         } catch (Exception e) {
             System.out.println(e);
         }
-        
+
         return studentCount;
     }
-    
-    public static ArrayList<Student> listAllStudentsByClass(int classID){
+
+    public static ArrayList<Student> listAllStudentsByClass(int classID) {
         ArrayList<Student> studentList = new ArrayList<Student>();
         try (Connection conn = ConnectionManager.getConnection();) {
             String sql = "select * from student s, class_student_rel cs where s.student_id = cs.student_id and class_id = ?;";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, classID);
             ResultSet rs = stmt.executeQuery();
-            while(rs.next()){               
+            while (rs.next()) {
                 int studentID = rs.getInt("student_id");
                 String studentNRIC = rs.getString("student_nric");
                 String name = rs.getString("student_name");
@@ -153,10 +176,28 @@ public class StudentClassDAO {
                 String level = LevelDAO.retrieveLevel(levelID);
                 Student student = new Student(studentID, studentNRIC, name, BOD, gender, level, branchID, phone, address, email, reqAmt, outstandingAmt);
                 studentList.add(student);
-            } 
+            }
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
         return studentList;
+    }
+    
+    public static String retrieveJoinDateOfStudentByClass(int studentID, int classID) {
+        String joinDate = "";
+        String sql = "select join_date from class_student_rel where student_id = ? and class_id = ?;";
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, studentID);
+            stmt.setInt(2, classID);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                joinDate = rs.getString("join_date");
+            }
+        } catch (Exception e) {
+            System.out.println("Error in retrieveJoinDateOfStudentByClass method" + e.getMessage());
+        }
+
+        return joinDate;
     }
 }

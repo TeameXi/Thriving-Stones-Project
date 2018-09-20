@@ -39,6 +39,12 @@
                         </div>
                     </div>
                 </div>
+                <%
+                String status = (String) request.getParameter("status");
+                if (status != null) {
+                    out.println("<div id='status' class='alert alert-success col-md-12'><strong>"+status+"</strong></div>");
+                }
+                %>
 
             <div id="studentTable"></div>  
             </form>
@@ -59,6 +65,10 @@
 
 <script>
     $(function () {
+        if($('#status').length){
+           $('#status').fadeIn().delay(2000).fadeOut();
+        }
+        
         $('#bulkRegistrationForm').bootstrapValidator({
             // To use feedback icons, ensure that you use Bootstrap v3.1.0 or later
             feedbackIcons: {

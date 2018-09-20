@@ -33,10 +33,14 @@
             }
         }
 
-        ArrayList<String> duplicatedUsers = (ArrayList) session.getAttribute("existingUserLists");
+        ArrayList<Student> duplicatedUsers = (ArrayList) session.getAttribute("existingUserLists");
         if (duplicatedUsers != null) {
             if (duplicatedUsers.size() > 0) {
-                out.println("<div id='creation_status' class='row alert alert-danger col-md-12'>The following students already <strong>( " + String.join(",", duplicatedUsers) + " )</strong> exist;</div>");
+                String temp = duplicatedUsers.get(0).getName();
+                for (int i = 1; i < duplicatedUsers.size(); i++) {
+                    temp = ", " + temp;
+                }
+                out.println("<div id='creation_status' class='row alert alert-danger col-md-12'>The following students already <strong>( " + temp + " )</strong> exist;</div>");
                 session.removeAttribute("existingUserLists");
             }
         }
@@ -229,7 +233,7 @@
                         <p><label id="view_student_name"></label></p>
                     </div>
                 </div><br/>
-                
+
                 <div class="row">
                     <div class = "col-sm-4">
                         <p class = "form-control-label">Level :</p>
@@ -283,7 +287,7 @@
                         <p><label id="view_email">-</label></p>
                     </div>
                 </div><br/>
-                
+
                 <div class="row">
                     <div class = "col-sm-4">
                         <p class = "form-control-label">Required Amount :</p>
@@ -415,7 +419,7 @@
             });
 
         });
-        $("#viewStudent").on("show.bs.modal", function (e) {       
+        $("#viewStudent").on("show.bs.modal", function (e) {
             var student_id = $(e.relatedTarget).data('target-id');
             var branch_id = $("#branch_id").val();
             $.ajax({
@@ -423,7 +427,7 @@
                 dataType: 'JSON',
                 data: {studentID: student_id, branch_id: branch_id},
                 success: function (data) {
-                    if(data["nric"] != ""){
+                    if (data["nric"] != "") {
                         $("#view_student_nric").text(data["nric"]);
                     }
                     $("#view_student_name").text(data["fullname"]);
@@ -456,7 +460,7 @@
             });
         });
     });
-    
+
     (function () {
         $(function () {
             return $('[data-toggle]').on('click', function () {
@@ -532,7 +536,7 @@
             }
         });
     }
-    
+
 
 
     function updateLevel(level) {

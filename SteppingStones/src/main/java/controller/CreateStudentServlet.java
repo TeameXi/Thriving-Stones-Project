@@ -5,6 +5,7 @@
  */
 package controller;
 
+import entity.Student;
 import entity.Users;
 import java.io.IOException;
 import java.util.Calendar;
@@ -59,17 +60,24 @@ public class CreateStudentServlet extends HttpServlet {
         }
         double regFees = 0;
         if(request.getParameter("regFees") != null && !"".equals(request.getParameter("regFees"))){
-            regFees = Double.parseDouble(request.getParameter("phone"));
+            regFees = Double.parseDouble(request.getParameter("regFees"));
         }
         String stuEmail = request.getParameter("studentEmail");
         String stuPassword = GeneratePassword.random(16);
         String parentName = request.getParameter("parentName");
         String parentPassword = GeneratePassword.random(16);
         int parentPhone = Integer.parseInt(request.getParameter("parentPhone"));
-        String parentEmail = request.getParameter("parentEmail");     
+        String parentEmail = request.getParameter("parentEmail"); 
+        String stu = "";
+        if(stuEmail != null && !stuEmail.isEmpty()){
+            stu = studentName + "-" + stuEmail; 
+        }else{
+            stu = studentName + "-" + phone;
+        }
         
         String href =  request.getHeader("origin")+request.getContextPath()+"/Login.jsp";
-        int insertStudent = StudentDAO.insertStudent(studentName, phone,stuEmail, levelID, branchID);
+        int insertStudent = StudentDAO.insertStudent(studentName, phone,stuEmail, levelID, branchID, regFees);
+        
         if(insertStudent>0){
             UsersDAO userDAO = new UsersDAO();
             String username = studentName.replace(' ', '.');
@@ -92,7 +100,13 @@ public class CreateStudentServlet extends HttpServlet {
             }
             Users tempUser = new Users(username, stuPassword, "student", insertStudent, branchID);
             boolean userStatus = userDAO.addUser(tempUser);
-            if(userStatus){
+            
+            Student student = StudentDAO.retrieveStudentbyID(insertStudent,branchID);
+            double outstandingAmt = student.getOutstandingAmt() + regFees;
+            boolean updateOutstandingFees = StudentDAO.updateStudentTotalOutstandingFees(insertStudent, outstandingAmt);
+            System.out.println("After Reg Fees Add" + outstandingAmt);
+            
+            if(userStatus && updateOutstandingFees){
                 String subject = "Stepping Stones Tuition Center Student's Account Creation";
                 String text = "Thanks for choosing us. Your account has been created.\n\nBelow is the username and password to access your account: \nUsername: " + username 
                         + "\nPassword: " + stuPassword + "\n\nYou can Login via "+href; 
@@ -142,10 +156,16 @@ public class CreateStudentServlet extends HttpServlet {
             }
             
         }
-
+        System.out.print("parent Child Rel" + parentPhone + " " + insertStudent );
         request.setAttribute("creation_status",""+(insertStudent>0 && insertParent>0));
-        ParentChildRelDAO.insertParentChildRel(parentPhone, insertStudent, branchID);
-        response.sendRedirect("RegisterForClasses.jsp?studentName="+studentName);     
+        if(insertStudent == 0){
+            request.setAttribute("existingStudent", studentName);
+            RequestDispatcher view = request.getRequestDispatcher("CreateStudent.jsp");
+            view.forward(request, response);
+        }else{
+            ParentChildRelDAO.insertParentChildRel(parentPhone, insertStudent, branchID);
+            response.sendRedirect("RegisterForClasses.jsp?studentName="+stu);
+        }     
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
