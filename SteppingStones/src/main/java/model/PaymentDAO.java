@@ -139,7 +139,7 @@ public class PaymentDAO {
         }
         return reminders;
     }
-  
+    
     public static void getStudentRegFeesData(int studentID, ArrayList<Payment> paymentData){
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement("select reg_fees, outstanding_reg_fees, date(updated) as due_date from student where student_id = ? and outstanding_reg_fees > 0;");
@@ -301,17 +301,18 @@ public class PaymentDAO {
         return updatedStatus;
     }
     
-    public static boolean insertPaymentToRevenue(String studentName, int noOfLessons, String paymentType, String lvlSubject, double amountPaid) {
+    public static boolean insertPaymentToRevenue(int studentID, String studentName, int noOfLessons, String paymentType, String lvlSubject, double amountPaid) {
         boolean status = false;
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            String sql = "insert into revenue(student_name, no_of_lessons, payment_date, payment_type, lvl_subject, amount_paid) value(?, ?, curdate(), ?, ?, ?);";
+            String sql = "insert into revenue(student_id, student_name, no_of_lessons, payment_date, payment_type, lvl_subject, amount_paid) value(?, ?, ?, curdate(), ?, ?, ?);";
             PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1, studentName);
-            stmt.setInt(2, noOfLessons);
-            stmt.setString(3, paymentType);
-            stmt.setString(4, lvlSubject);
-            stmt.setDouble(5, amountPaid);
+            stmt.setInt(1, studentID);
+            stmt.setString(2, studentName);
+            stmt.setInt(3, noOfLessons);
+            stmt.setString(4, paymentType);
+            stmt.setString(5, lvlSubject);
+            stmt.setDouble(6, amountPaid);
             stmt.executeUpdate();
             conn.commit();
             status = true;

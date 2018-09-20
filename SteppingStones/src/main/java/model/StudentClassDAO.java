@@ -182,4 +182,22 @@ public class StudentClassDAO {
         }
         return studentList;
     }
+    
+    public static String retrieveJoinDateOfStudentByClass(int studentID, int classID) {
+        String joinDate = "";
+        String sql = "select join_date from class_student_rel where student_id = ? and class_id = ?;";
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, studentID);
+            stmt.setInt(2, classID);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                joinDate = rs.getString("join_date");
+            }
+        } catch (Exception e) {
+            System.out.println("Error in retrieveJoinDateOfStudentByClass method" + e.getMessage());
+        }
+
+        return joinDate;
+    }
 }

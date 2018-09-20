@@ -12,7 +12,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.LessonDAO;
 import model.PaymentDAO;
+import model.StudentClassDAO;
 import model.StudentDAO;
 
 /**
@@ -69,7 +71,7 @@ public class PaymentHandlerServlet extends HttpServlet {
                 
                 PaymentDAO.updateDepositOutstandingAmount(studentID, classID, calculatedOutstandingAmount);
                 if (paymentAmount != 0) {
-                    PaymentDAO.insertPaymentToRevenue(studentName, noOfLesson, "Deposit", lvlSubject, paymentAmount);
+                    PaymentDAO.insertPaymentToRevenue(studentID, studentName, noOfLesson, "Deposit", lvlSubject, paymentAmount);
                 }
                 
                 Student stu = StudentDAO.retrieveStudentbyID(studentID);
@@ -79,6 +81,9 @@ public class PaymentHandlerServlet extends HttpServlet {
                 
             } else if (type.equals("First Installment")) {
                 
+                String joinDate = StudentClassDAO.retrieveJoinDateOfStudentByClass(studentID, classID);
+                System.out.print(joinDate);
+                noOfLesson = LessonDAO.retrieveNoOfLessonForFirstInstallment(classID, joinDate);
                 Student stu = StudentDAO.retrieveStudentbyID(studentID);
                 String firstInstallmentStr = request.getParameter("" + classID);
                 
@@ -110,15 +115,16 @@ public class PaymentHandlerServlet extends HttpServlet {
                     }
                 }
 
+                System.out.print(noOfLesson);
                 if (paymentAmount != 0) {
-                    PaymentDAO.insertPaymentToRevenue(studentName, noOfLesson, "First Installment", lvlSubject, paymentAmount);
+                    PaymentDAO.insertPaymentToRevenue(studentID, studentName, noOfLesson, "First Installment", lvlSubject, paymentAmount);
                 } 
                 
             } else if (type.equals("Reg Fees")) {
                 
                 PaymentDAO.updateRegFeesOutstandingAmount(studentID, calculatedOutstandingAmount);
                 if (paymentAmount != 0) {
-                    PaymentDAO.insertPaymentToRevenue(studentName, noOfLesson, "Reg Fees", lvlSubject, paymentAmount);
+                    PaymentDAO.insertPaymentToRevenue(studentID, studentName, noOfLesson, "Reg Fees", lvlSubject, paymentAmount);
                 }
                 
                 Student stu = StudentDAO.retrieveStudentbyID(studentID);
@@ -131,7 +137,7 @@ public class PaymentHandlerServlet extends HttpServlet {
                 Student stu = StudentDAO.retrieveStudentbyID(studentID);
                 PaymentDAO.updateTuitionFeesOutstandingAmount(studentID, classID, dueDate, calculatedOutstandingAmount);
                 if (paymentAmount != 0) {
-                    PaymentDAO.insertPaymentToRevenue(studentName, noOfLesson, "Tuition Fees", lvlSubject, paymentAmount);
+                    PaymentDAO.insertPaymentToRevenue(studentID, studentName, noOfLesson, "Tuition Fees", lvlSubject, paymentAmount);
                 }
                 
                 if(chargeAmount == outstandingAmount){
