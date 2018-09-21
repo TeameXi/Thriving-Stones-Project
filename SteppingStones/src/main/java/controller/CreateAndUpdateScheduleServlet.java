@@ -51,30 +51,24 @@ public class CreateAndUpdateScheduleServlet extends HttpServlet {
             // Add Schedule
             if (add.equals("true")) {
                 String lvl = request.getParameter("lvl_id");
-                String yr = request.getParameter("year");
-                String term_name = request.getParameter("term");
+
                 String branch = request.getParameter("branch");
-                if (lvl.equals("") || yr.equals("") || term_name.equals("") || branch.equals("")) {
+                if (lvl.equals("")  || branch.equals("")) {
                     out.println(-1);
                 } else {
+                    System.out.println("not null for lvl and branch");
                     int levelid = Integer.parseInt(lvl);
                     int branchid = Integer.parseInt(branch);
-                    int term = Integer.parseInt(term_name);
-                    int year = Integer.parseInt(yr);
-
                     double fees = 0;
                     int has_reminder = 0;
                     int subjectid = 0;
                     int tutorId = 0;
-                    int lessonNo = 0;
 
                     String subject = request.getParameter("subject_id");
                     if (!subject.equals("")) {
                         subjectid = Integer.parseInt(subject);
                     }
-                    if (!request.getParameter("fees").equals("")) {
-                        fees = Double.parseDouble(request.getParameter("fees"));
-                    }
+
                     if (!request.getParameter("has_reminder").equals("")) {
                         has_reminder = Integer.parseInt(request.getParameter("has_reminder"));
                     }
@@ -83,9 +77,6 @@ public class CreateAndUpdateScheduleServlet extends HttpServlet {
                         tutorId = Integer.parseInt(request.getParameter("tutor_id"));
                     }
 
-                    if (!request.getParameter("lesson").equals("")) {
-                        lessonNo = Integer.parseInt(request.getParameter("lesson"));
-                    }
 
                     String timing = request.getParameter("timing");
                     String classDay = request.getParameter("class_day");
@@ -93,49 +84,50 @@ public class CreateAndUpdateScheduleServlet extends HttpServlet {
                     String endDate = request.getParameter("end_date");
 
                     // Handling Holiday
-                    String holiday = request.getParameter("holiday");
-                    ArrayList<String> holidayDates = new ArrayList<>();
-                    if (!holiday.equals("")) {
-                        holidayDates = HolidayDAO.getHolidayDateLists(holiday);
-                        if (holidayDates.size() > 0) {
-                            DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-                            try {
-                                Date convertedEndDate = formatter.parse(endDate);
-                                Calendar c = Calendar.getInstance();
-                                c.setTime(convertedEndDate);
-                                for (String h : holidayDates) {
-                                    Date currentSelectedHoliday = formatter.parse(h);
-                                    if (convertedEndDate.after(currentSelectedHoliday)) {
-                                        c.add(Calendar.WEEK_OF_MONTH, 1);
-                                        endDate = formatter.format(c.getTime());
-                                    }
-
-                                }
-
-                                while (holidayDates.contains(endDate)) {
-                                    convertedEndDate = formatter.parse(endDate);
-                                    c.add(Calendar.WEEK_OF_MONTH, 1);
-                                    endDate = formatter.format(c.getTime());
-
-                                    String nextYearHoliday = HolidayDAO.getHolidayDate(endDate);
-                                    if (!nextYearHoliday.equals("")) {
-                                        convertedEndDate = formatter.parse(endDate);
-                                        c.add(Calendar.WEEK_OF_MONTH, 1);
-                                        endDate = formatter.format(c.getTime());
-                                    }
-                                }
-
-                            } catch (ParseException e) {
-                                out.println(-1);
-                            }
-                        }
-                    }
-
-                    int classid = ClassDAO.createClass(levelid, subjectid, term, year, fees, has_reminder, timing, classDay, startDate, endDate, lessonNo, branchid, tutorId);
+//                    String holiday = request.getParameter("holiday");
+//                    ArrayList<String> holidayDates = new ArrayList<>();
+//                    if (!holiday.equals("")) {
+//                        holidayDates = HolidayDAO.getHolidayDateLists(holiday);
+//                        if (holidayDates.size() > 0) {
+//                            DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+//                            try {
+//                                Date convertedEndDate = formatter.parse(endDate);
+//                                Calendar c = Calendar.getInstance();
+//                                c.setTime(convertedEndDate);
+//                                for (String h : holidayDates) {
+//                                    Date currentSelectedHoliday = formatter.parse(h);
+//                                    if (convertedEndDate.after(currentSelectedHoliday)) {
+//                                        c.add(Calendar.WEEK_OF_MONTH, 1);
+//                                        endDate = formatter.format(c.getTime());
+//                                    }
+//
+//                                }
+//
+//                                while (holidayDates.contains(endDate)) {
+//                                    convertedEndDate = formatter.parse(endDate);
+//                                    c.add(Calendar.WEEK_OF_MONTH, 1);
+//                                    endDate = formatter.format(c.getTime());
+//
+//                                    String nextYearHoliday = HolidayDAO.getHolidayDate(endDate);
+//                                    if (!nextYearHoliday.equals("")) {
+//                                        convertedEndDate = formatter.parse(endDate);
+//                                        c.add(Calendar.WEEK_OF_MONTH, 1);
+//                                        endDate = formatter.format(c.getTime());
+//                                    }
+//                                }
+//
+//                            } catch (ParseException e) {
+//                                out.println(-1);
+//                            }
+//                        }
+//                    }
+                       System.out.println("B4 Class");
+                    int classid = ClassDAO.createClass(levelid, subjectid,fees, has_reminder, timing, classDay, startDate, endDate, branchid, tutorId);
+                    System.out.println(classid);
                     if (classid == 0) {
                         out.println(-1);
                     } else {
-                        boolean status = insertLesson(classid, startDate, endDate, timing, tutorId, holidayDates);
+                        boolean status = insertLesson(classid, startDate, endDate, timing, tutorId);
                         if (status) {
                             out.println(1);
                         } else {
@@ -236,7 +228,7 @@ public class CreateAndUpdateScheduleServlet extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    private boolean insertLesson(int classid, String startDate, String endDate, String timing, int tutorid, ArrayList<String> holidayDates) {
+    private boolean insertLesson(int classid, String startDate, String endDate, String timing, int tutorid) {
         DateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
 
@@ -246,15 +238,12 @@ public class CreateAndUpdateScheduleServlet extends HttpServlet {
             List<Date> dates = getDatesBetween(dateFormat1.parse(startDate), dateFormat1.parse(endDate));
             for (int i = 0; i < dates.size(); i += 7) {
                 String date = dateFormat1.format(dates.get(i)) + " " + timingArr[0] + ":00.000";
-                if (holidayDates.contains(dateFormat1.format(dates.get(i)))) {
-//                    System.out.println("Yes");
-                } else {
-                    parsedDate = dateFormat.parse(date);
-                    Timestamp timestamp = new java.sql.Timestamp(parsedDate.getTime());
+                parsedDate = dateFormat.parse(date);
+                Timestamp timestamp = new java.sql.Timestamp(parsedDate.getTime());
 
-                    LessonDAO lessonDAO = new LessonDAO();
-                    lessonDAO.createLesson(classid, tutorid, timestamp);
-                }
+                LessonDAO lessonDAO = new LessonDAO();
+                lessonDAO.createLesson(classid, tutorid, timestamp);
+                
             }
         } catch (ParseException ex) {
             return false;

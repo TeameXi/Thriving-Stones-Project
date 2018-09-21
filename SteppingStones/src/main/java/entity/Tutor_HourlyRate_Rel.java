@@ -15,13 +15,15 @@ public class Tutor_HourlyRate_Rel {
     private int level_id;
     private int subject_id;
     private double hourly_pay;
+    private String subject_name;
     
-    public Tutor_HourlyRate_Rel(int tutor_id,String tutor_name,int subject_id,double hourly_pay,int level_id){
+    public Tutor_HourlyRate_Rel(int tutor_id,String tutor_name,int subject_id,double hourly_pay,int level_id,String subject_name){
         this.tutor_id = tutor_id;
         this.tutor_name = tutor_name;
         this.subject_id = subject_id;
         this.hourly_pay = hourly_pay;
         this.level_id = level_id;
+        this.subject_name = subject_name;
     }
     
     public Tutor_HourlyRate_Rel(int tutor_id,String tutor_name,int subject_id,double hourly_pay){
@@ -93,6 +95,20 @@ public class Tutor_HourlyRate_Rel {
      */
     public String getTutor_name() {
         return tutor_name;
+    }
+
+    /**
+     * @return the subject_name
+     */
+    public String getSubject_name() {
+        return subject_name;
+    }
+
+    /**
+     * @param subject_name the subject_name to set
+     */
+    public void setSubject_name(String subject_name) {
+        this.subject_name = subject_name;
     }
     
     

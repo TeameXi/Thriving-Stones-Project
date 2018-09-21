@@ -310,26 +310,24 @@ public class ClassDAO {
         }
     }
 
-    public static int createClass(int level, int subject, int term, int year, double mthlyFees, int hasReminderForFees, String classTime, String classDay, String startDate, String endDate, int lessonNo, int branch, int tutorId) {
+    public static int createClass(int level, int subject,double mthlyFees, int hasReminderForFees, String classTime, String classDay, String startDate, String endDate, int branch, int tutorId) {
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            String sql = "INSERT into CLASS (level_id, subject_id,term,year,fees,has_reminder_for_fees,timing, class_day, start_date, end_date,lesson_number,branch_id,tutor_id)"
-                    + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            String sql = "INSERT into CLASS (level_id, subject_id,fees,has_reminder_for_fees,timing, class_day, start_date, end_date,branch_id,tutor_id)"
+                    + "VALUES (?,?,?,?,?,?,?,?,?,?)";
             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
+            System.out.println(sql);
             stmt.setInt(1, level);
             stmt.setInt(2, subject);
-            stmt.setInt(3, term);
-            stmt.setInt(4, year);
-            stmt.setDouble(5, mthlyFees);
-            stmt.setInt(6, hasReminderForFees);
-            stmt.setString(7, classTime);
-            stmt.setString(8, classDay);
-            stmt.setString(9, startDate);
-            stmt.setString(10, endDate);
-            stmt.setInt(11, lessonNo);
-            stmt.setInt(12, branch);
-            stmt.setInt(13, tutorId);
+            stmt.setDouble(3, mthlyFees);
+            stmt.setInt(4, hasReminderForFees);
+            stmt.setString(5, classTime);
+            stmt.setString(6, classDay);
+            stmt.setString(7, startDate);
+            stmt.setString(8, endDate);
+            stmt.setInt(9, branch);
+            stmt.setInt(10, tutorId);
             stmt.executeUpdate();
             conn.commit();
             ResultSet rs = stmt.getGeneratedKeys();

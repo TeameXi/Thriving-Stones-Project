@@ -73,7 +73,13 @@ public class RetrieveAllClassesData extends HttpServlet {
             for (Tutor_HourlyRate_Rel t : tutorList) {
                 JSONObject obj = new JSONObject();
                 obj.put("key", t.getTutor_id());
-                obj.put("label", t.getTutor_name() + "($ " + t.getHourly_pay() + ")");
+              
+                int lvlId = t.getLevel_id();
+                String lvlName = "Primary "+lvlId;
+                if(lvlId > 6){
+                    lvlName = "Secondary "+(lvlId-6);
+                }
+                obj.put("label", t.getTutor_name() + "( "+lvlName+" - "+t.getSubject_name()+" - $ " + t.getHourly_pay() + ")");
                 obj.put("level", t.getLevel_id());
                 obj.put("subject",t.getSubject_id());
                 

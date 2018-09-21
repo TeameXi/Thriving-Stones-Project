@@ -115,21 +115,21 @@
                 dataType: 'JSON',
                 data: {branchId:branch_id,levelId:levelId}
             }).then(function(data){
-                processingSchedule(data,levelId);
+                processingSchedule(data,levelId,branch_id);
             });  
         }
         
         //radio onchange
         $("input[name='levelRdoBtn']").on('change', function () {
             var selectedValue = $("input[name='levelRdoBtn']:checked").val();
-            window.location.href = 'CreateClassesSchedule_v1.jsp?lvl_id='+selectedValue;
+            window.location.href = 'CreateClassesSchedule.jsp?lvl_id='+selectedValue;
         
         });
 
         
-        function processingSchedule(data,level_id){
+        function processingSchedule(data,level_id,branch_id){
         //Refresh Schedule
-        
+                console.log(data);
                 scheduler.clearAll();
                 if(data === -1){
                     html = '<div class="alert alert-danger col-md-5"><strong>Sorry!</strong> Something went wrong</div>';
@@ -194,12 +194,13 @@
                     // CUSTOM ADD LIGHTBOX
                     scheduler.form_blocks["custom_classendtimeperiod"]={
                             render:function(sns){
-                                return "<div class='dhx_cal_ltext'>&nbsp;<input type='date' id='classEndDate' /></div>";
+                                return "<div class='dhx_cal_ltext'>&nbsp;<input type='date' id='ending' /></div>";
                             },
                             set_value:function(node,value,ev){
                                 node.childNodes[1].value=value||"";
                             },
-                           get_value:function(node,ev){ var convert = scheduler.date.str_to_date("%format%",true); return convert(node.childNodes[1].value); },
+                           get_value:function(node,ev){
+                               return node.childNodes[1].value; },
                             focus:function(node){
                                 var a=node.childNodes[1]; a.select(); a.focus(); 
                             }
@@ -208,7 +209,7 @@
                     // HOLIDAY DYNAMIC
                     scheduler.form_blocks["custom_holidayDate"]={
                             render:function(sns){
-                                return "<div class='dhx_cal_ltext'>&nbsp;<input type='date' id='classHolidayDate' /><button type='button' class='btn btn-default addButton'><i class='zmdi zmdi-plus'></i></button></div>";
+                                return "<div class='dhx_cal_ltext'>&nbsp;<input type='text' id='classHolidayDate' /><button type='button' class='btn btn-default addButton'><i class='zmdi zmdi-plus'></i></button></div>";
                             },
                             set_value:function(node,value,ev){
                                 node.childNodes[1].value=value||"";
@@ -223,21 +224,19 @@
                         var add_lightbox = [
                             {name:"Level", height:20, type:"select", options: lvlLists, map_to:"level" },
                             {name:"Subject", height:20, type:"select", options: subject, map_to:"subject" },
-                            {name:"Tution fees", height:20,type:"textarea",map_to:"fees"},
                             {name:"Assign To", height:20,type:"select", options: tutor, map_to:"tutor"},
                             {name:"selectme", height: 20, options: has_reminder, map_to:"has_reminder", type:"radio", vertical: true,default_value:"0" },
-                            {name:"Class EndDate", height:14, map_to:"class_endDate", type:"custom_classendtimeperiod"},
-                            {name:"Date Skip For Holiday", height:14, map_to:"class_endDate", type:"custom_holidayDate"},
+                            {name:"Class EndDate", height:14, map_to:"ending", type:"custom_classendtimeperiod"},
+                            {name:"Date Skip For Holiday", height:14, map_to:"skip_date", type:"custom_holidayDate"},
                             {name:"time", height:72, type:"time", map_to:"auto" }
                         ];
                     }else{
                         var add_lightbox = [
                             {name:"Subject", height:20, type:"select", options: subject, map_to:"subject" },
-                            {name:"Tution fees", height:20,type:"textarea",map_to:"fees"},
                             {name:"Assign To", height:20,type:"select", options: tutor, map_to:"tutor"},
                             {name:"selectme", height: 20, options: has_reminder, map_to:"has_reminder", type:"radio", vertical: true,default_value:"0" },
-                            {name:"Class EndDate", height:14, map_to:"class_endDate", type:"custom_classendtimeperiod"},
-                            {name:"Date Skip For Holiday", height:14, map_to:"class_endDate", type:"custom_holidayDate"},
+                            {name:"Class EndDate", height:14, map_to:"ending", type:"custom_classendtimeperiod"},
+                            {name:"Date Skip For Holiday", height:14, map_to:"skip_date", type:"custom_holidayDate"},
                             // {name:"recurring", type:"recurring", map_to:"rec_type", button:"recurring"},
                             {name:"time", height:72, type:"time", map_to:"auto" }
                         ];
@@ -251,10 +250,10 @@
                     
                     // Recurring Events
                     scheduler.config.prevent_cache = true;
-//                    scheduler.config.details_on_create=true;
-//                    scheduler.config.details_on_dblclick=true;
-//                    scheduler.config.occurrence_timestamp_in_utc = true;
-//                    scheduler.config.repeat_precise = true;
+                    scheduler.config.details_on_create=true;
+                    scheduler.config.details_on_dblclick=true;
+                    scheduler.config.occurrence_timestamp_in_utc = true;
+                    scheduler.config.repeat_precise = true;
                     
                     // Auto Update End Time
                     scheduler.config.event_duration = 90; 
@@ -416,20 +415,14 @@
                     
                     if(!scheduler._onEventSave){
                         scheduler.attachEvent('onEventSave', function(eventId, event) {
-                        console.log("ddd");
                         if(Number.isInteger(eventId)){                            
                             // Validation
-                            if (!event.text && !event.fees && !event.lesson) {
-                                dhtmlx.alert("Please enter all informations");
+                            console.log(event);
+                            if (!event.ending) {
+                                dhtmlx.alert("Please End Date in (yyyy/mm/dd) format");
                                 return false;
                             }
                            
-                            var temp_fees = event.fees;
-                            if (temp_fees !== (parseInt(temp_fees,10)+"" )) {
-                                dhtmlx.alert("Tution fees must be valid number");
-                                return false;
-                            }
-                            
                             // START DATE
                             startingDay = new Date(event["start_date"]);
                             s_year = startingDay.getFullYear();
@@ -438,51 +431,39 @@
                             s_hours = ("0" + startingDay.getHours()).slice(-2);
                             s_minutes = ("0" + startingDay.getMinutes()).slice(-2);
                             
-                            var start_date = [s_year,s_month,s_day].join("-");
+                            var starting = [s_year,s_month,s_day].join("-");
+                            var ending = event.ending;
                             var start_time = [s_hours,s_minutes].join(":");
                             var day = weekday[startingDay.getDay()];
                             
                             
                             // END DATE
-                            var endDay = new Date(event["end_date"]);
+                            endDay = new Date(event["end_date"]);
                             e_hours = ("0" + endDay.getHours()).slice(-2);
                             e_minutes = ("0" + endDay.getMinutes()).slice(-2);
 
                             var end_time = [e_hours,e_minutes].join(":");
                             
-                            // 11 lesson
-                            endDay.setDate(endDay.getDate()+(7*10));
-                            e_year = endDay.getFullYear();
-                            e_month = ("0" + (endDay.getMonth() + 1)).slice(-2);
-                            e_day = ("0" + endDay.getDate()).slice(-2);
-                            var end_date = [e_year,e_month,e_day].join("-");
-                            
-                            var timing = [start_time,end_time].join("-");
-                            var holiday = "";
-                            if(typeof event["holiday"] !== "undefined"){
-                                holiday = event["holiday"];
-                            }
-                         
-//                            $.ajax({
-//                                url: 'CreateAndUpdateScheduleServlet',
-//                                dataType: 'JSON',
-//                                data: {
-//                                    add_new:true,
-//                                    lvl_id: general_data["lvl_id"],year:general_data["year"],term:general_data["term"],branch:general_data["branch"],
-//                                    subject_id: event["subject"],fees:event["fees"],has_reminder:event["has_reminder"],timing:timing,class_day:day,
-//                                    start_date:start_date,end_date:end_date,tutor_id:event["tutor"],
-//                                    lesson: event["lessons"],holiday:holiday
-//                                },
-//                                success: function (data) {
-//                                    if(data === -1){
-//                                        dhtmlx.alert("Sorry,Something went wrong");
-//                                        return false;
-//                                    }else{
-//                                        dhtmlx.alert("Created successfully");
-//                                        return true;
-//                                    }
-//                                }
-//                            });
+                            var timing = [start_time,end_time].join("-");                       
+                            $.ajax({
+                                url: 'CreateAndUpdateScheduleServlet',
+                                dataType: 'JSON',
+                                data: {
+                                    add_new:true,
+                                    lvl_id: level_id,branch:branch_id,
+                                    subject_id: event["subject"],has_reminder:event["has_reminder"],timing:timing,class_day:day,
+                                    start_date:starting,end_date:ending,tutor_id:event["tutor"]
+                                },
+                                success: function (data) {
+                                    if(data === -1){
+                                        dhtmlx.alert("Sorry,Something went wrong");
+                                        return false;
+                                    }else{
+                                        dhtmlx.alert("Created successfully");
+                                        return true;
+                                    }
+                                }
+                            });
                             
                         }else{
                             var classId = eventId.split("#")[0];

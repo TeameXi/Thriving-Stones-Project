@@ -412,7 +412,7 @@ public class TutorDAO {
     public static ArrayList<Tutor_HourlyRate_Rel> tutorSubjectListsForSpecificLevel(int level_id,int branch_id){
         ArrayList<Tutor_HourlyRate_Rel> tutorSubLists = new ArrayList<>();
         String sql = "SELECT tutor_fullname,tutor.tutor_id,subject_id,hourly_pay FROM tutor_hourly_rate,tutor WHERE "
-                + "tutor.tutor_id = tutor_hourly_rate.tutor_id AND level_id = ? AND tutor.branch_id =? ORDER BY tutor_fullname";
+                + "tutor.tutor_id = tutor_hourly_rate.tutor_id AND level_id = ? AND tutor.branch_id =? ORDER BY subject_id";
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1,level_id);
@@ -425,7 +425,8 @@ public class TutorDAO {
                 int tutor_id = rs.getInt(2);
                 int subject_id = rs.getInt(3);
                 double hourlyFee = rs.getDouble(4);
-                tutorSubLists.add(new Tutor_HourlyRate_Rel(tutor_id, fullname, subject_id, hourlyFee,level_id));
+                String subjectName = SubjectDAO.retrieveSubject(subject_id);
+                tutorSubLists.add(new Tutor_HourlyRate_Rel(tutor_id, fullname, subject_id, hourlyFee,level_id,subjectName));
             }
        
         }   catch (SQLException ex) {
@@ -437,7 +438,7 @@ public class TutorDAO {
     public static ArrayList<Tutor_HourlyRate_Rel> tutorSubjectListsForSpecificBranch(int branch_id){
         ArrayList<Tutor_HourlyRate_Rel> tutorSubLists = new ArrayList<>();
         String sql = "SELECT tutor_fullname,tutor.tutor_id,subject_id,hourly_pay,level_id FROM tutor_hourly_rate,tutor WHERE "
-                + "tutor.tutor_id = tutor_hourly_rate.tutor_id AND tutor.branch_id =? ORDER BY level_id";
+                + "tutor.tutor_id = tutor_hourly_rate.tutor_id AND tutor.branch_id =? ORDER BY subject_id";
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1,branch_id);
@@ -450,7 +451,8 @@ public class TutorDAO {
                 int subject_id = rs.getInt(3);
                 double hourlyFee = rs.getDouble(4);
                 int level_id = rs.getInt(5);
-                tutorSubLists.add(new Tutor_HourlyRate_Rel(tutor_id, fullname, subject_id, hourlyFee,level_id));
+                String subject_name = SubjectDAO.retrieveSubject(subject_id);
+                tutorSubLists.add(new Tutor_HourlyRate_Rel(tutor_id, fullname, subject_id, hourlyFee,level_id,subject_name));
             }
        
         }   catch (SQLException ex) {
