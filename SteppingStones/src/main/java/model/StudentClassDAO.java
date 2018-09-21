@@ -83,6 +83,23 @@ public class StudentClassDAO {
         }
         return status;
     }
+    
+    public static boolean updateDepositPaymentDate(int studentID, int classID){
+        boolean updatedStatus = false;
+        try (Connection conn = ConnectionManager.getConnection();) {
+            conn.setAutoCommit(false);
+            String sql = "update class_student_rel set deposit_payment_date = curdate() where student_id = ? and class_id = ?;";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, studentID);
+            stmt.setInt(2, classID);
+            stmt.executeUpdate();
+            conn.commit();
+            updatedStatus = true;
+        } catch (Exception e) {
+            System.out.println("Error in updateDepositpaymentDate method" + e.getMessage());
+        }
+        return updatedStatus;
+    }
 
     public static ArrayList<String> listStudentsinSpecificClass(int classID) {
         ArrayList<String> studentList = new ArrayList<>();
