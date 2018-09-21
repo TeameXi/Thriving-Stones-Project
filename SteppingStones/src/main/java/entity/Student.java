@@ -21,8 +21,26 @@ public class Student {
     private int phone;
     private String address;
     private String email;
+    private String school;
     private double reqAmt;
     private double outstandingAmt;
+
+    public Student(int studentID, String studentNRIC, String name, String BOD, String gender, String level, int branch_id, int phone, String address, String email, String school, double reqAmt, double outstandingAmt) {
+        this.studentID = studentID;
+        this.studentNRIC = studentNRIC;
+        this.name = name;
+        this.BOD = BOD;
+        this.gender = gender;
+        this.level = level;
+        this.branch_id = branch_id;
+        this.phone = phone;
+        this.address = address;
+        this.email = email;
+        this.school = school;
+        this.reqAmt = reqAmt;
+        this.outstandingAmt = outstandingAmt;
+    }
+    
                   
     public Student(int studentID, String studentNRIC, String name, String BOD, String gender, String level, int branch_id, int phone, String address, String email, double reqAmt, double outstandingAmt){
         this.studentID = studentID;

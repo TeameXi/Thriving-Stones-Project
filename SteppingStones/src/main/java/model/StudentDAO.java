@@ -348,10 +348,11 @@ public class StudentDAO {
                 int phone = rs.getInt("phone");
                 String address = rs.getString("address");
                 String email = rs.getString("email");
+                String school = rs.getString("school");
                 double reqAmt = rs.getDouble("required_amount");
                 double outstandingAmt = rs.getDouble("outstanding_amount");
                 String level = LevelDAO.retrieveLevel(levelID);
-                stu = new Student(studentID, studentNRIC, name, BOD, gender, level, branchID, phone, address, email, reqAmt, outstandingAmt);
+                stu = new Student(studentID, studentNRIC, name, BOD, gender, level, branchID, phone, address, email, school, reqAmt, outstandingAmt);
             }
         } catch (SQLException e) {
             System.out.print(e.getMessage());
@@ -552,7 +553,7 @@ public class StudentDAO {
                 }*/
                 String studentList = String.join(",", studentLists);
                 String [] col = {"student_id"};
-                PreparedStatement insertStatement = conn.prepareStatement("INSERT IGNORE INTO student(student_nric,student_name,phone,address,birth_date,gender,email,required_amount,outstanding_amount,level_id,branch_id) VALUES " + studentList, col);
+                PreparedStatement insertStatement = conn.prepareStatement("INSERT ignore INTO student(student_nric,student_name,phone,address,birth_date,gender,email,required_amount,outstanding_amount,level_id,branch_id, school) VALUES " + studentList, col);
                 insertStatement.executeUpdate();
                 ResultSet a = insertStatement.getGeneratedKeys();
                 int count = 0;

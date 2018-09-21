@@ -46,11 +46,11 @@ function checkCSVExtension(file_upload_id, error_lbl_id, append_container, optio
                 }
             } else {
                 var header = data[1];
-                if (header.length === 17 && header[0] === "Student NRIC" && header[1] === "Student Name" && header[2] === "Phone"
+                if (header.length === 19 && header[0] === "Student NRIC" && header[1] === "Student Name" && header[2] === "Phone"
                         && header[3] === "Address" && header[4] === "Birth Date (DD-MM-YYYY)" && header[5] === "Gender (F/M)"
-                        && header[6] === "Email" && header[7] === "Academic Level" && header[8] === "Parent Name" && header[9] === "Parent Nationality"
-                        && header[10] === "Parent Company" && header[11] === "Parent Designation" && header[12] === "Parent Mobile" && header[13] === "Parent Email" 
-                        && header[14] === "Registration fee ($)" && header[15] === "Outstanding Registration Fee ($)" && header[16] === "Student Status (Existing (E)/New (N))") {
+                        && header[6] === "Email" && header[7] === "School" && header[8] === "Academic Level" && header[9] === "Parent Name" && header[10] === "Relationship"
+                        && header[11] === "Parent Nationality" && header[12] === "Parent Company" && header[13] === "Parent Designation" && header[14] === "Parent Mobile" && header[15] === "Parent Email" 
+                        && header[16] === "Registration fee ($)" && header[17] === "Outstanding Registration Fee ($)" && header[18] === "Student Status (Existing (E)/New (N))") {
                     $("#" + append_container).html("");
                     processCSVStudentData(data, append_container, error_el);
                 } else {
@@ -165,19 +165,21 @@ function processCSVStudentData(csv_data, append_container, error_el, branch_id) 
         Birth_date = csv_data[i][4];
         Gender = csv_data[i][5];
         Email = csv_data[i][6];
-        Academic_level = csv_data[i][7];
-        Parent_name = csv_data[i][8];
-        Parent_nationality = csv_data[i][9];
+        School = csv_data[i][7];
+        Academic_level = csv_data[i][8];
+        Parent_name = csv_data[i][9];
+        Relationship = csv_data[i][10];
+        Parent_nationality = csv_data[i][11];
         var Parent_company = "";
-        if(csv_data[i][10] != ""){
-            Parent_company = csv_data[i][10];
+        if(csv_data[i][12] != ""){
+            Parent_company = csv_data[i][12];
         }
-        Parent_designation = csv_data[i][11];
-        Parent_mobile = csv_data[i][12];
-        Parent_email = csv_data[i][13];
-        Registration_fee = csv_data[i][14];
-        Outstanding_Registration_fee = csv_data[i][15];
-        Student_status = csv_data[i][16];
+        Parent_designation = csv_data[i][13];
+        Parent_mobile = csv_data[i][14];
+        Parent_email = csv_data[i][15];
+        Registration_fee = csv_data[i][16];
+        Outstanding_Registration_fee = csv_data[i][17];
+        Student_status = csv_data[i][18];
 
         html += "<div class='row' rel='" + i + "' id='row_con_" + i + "'>" +
                 "<div class='col-sm-1 bold'></div>" +
@@ -191,6 +193,8 @@ function processCSVStudentData(csv_data, append_container, error_el, branch_id) 
                 "<input type='hidden' name='con_birthdates[]' id='con_birthdates_num_" + i + "' class='form-control' value = '" + Birth_date + "'>" +
                 "<input type='hidden' name='con_genders[]' id='con_genders_num_" + i + "' class='form-control' value='" + Gender + "'>" +
                 "<input type='hidden' name='con_emails[]' id='con_emails_num_" + i + "' class='form-control' value='" + Email + "'>" +
+                "<input type='hidden' name='con_school[]' id='con_school_num_" + i + "' class='form-control' value='" + School + "'>" +
+                "<input type='hidden' name='con_relationship[]' id='con_relationship_num_" + i + "' class='form-control' value='" + Relationship + "'>" +
                 "<input type='text' name='con_acadlevel[]' id='con_acadlevel_" + i + "' class='form-control' value='" + Academic_level + "' readonly='readonly'>" +
                 "</div>" +
                 "<div class='col-sm-2'>" +
