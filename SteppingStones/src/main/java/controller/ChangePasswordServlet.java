@@ -67,21 +67,21 @@ public class ChangePasswordServlet extends HttpServlet {
             Logger.getLogger(ChangePasswordServlet.class.getName()).log(Level.SEVERE, null, ex);
         }*/
         
-        /*String password = request.getParameter("p");
+        String password = request.getParameter("p");
         String username = request.getParameter("u");
-        String role = request.getParameter("r");
+        //String role = request.getParameter("r");
         
-        if(password == null || password.equals("") || username == null || username.equals("") || role == null || role.equals("")){
+        if(password == null || password.equals("") || username == null || username.equals("")){
             errorList.add("link is invalid");
         }
         if(errorList.isEmpty()){
             UsersDAO userDAO = new UsersDAO();
-            Users user = userDAO.retrieveUserByUsernameRole(role, username);
+            Users user = userDAO.retrieveUserByUsernames(username);
             if(user != null){
                 boolean match = user.authenticateUser(user, password);
                 if(match){
                     request.setAttribute("user", user);
-                    request.setAttribute("role", role);
+                    //request.setAttribute("role", role);
                     RequestDispatcher dispatcher = request.getRequestDispatcher("ChangePassword.jsp");
                     dispatcher.forward(request, response);
                 }else{
@@ -97,7 +97,7 @@ public class ChangePasswordServlet extends HttpServlet {
         dispatcher.forward(request, response);
         
     }
-    public static String decrypt(String strEncrypted,String strKey) throws Exception{
+    /*public static String decrypt(String strEncrypted,String strKey) throws Exception{
 	String strData="";
 	
 	try {
@@ -111,8 +111,8 @@ public class ChangePasswordServlet extends HttpServlet {
 		e.printStackTrace();
 		throw new Exception(e);
 	}
-	return strData;*/
-    }
+	return strData;
+    }*/
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.

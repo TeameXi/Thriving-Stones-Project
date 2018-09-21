@@ -21,7 +21,7 @@
         <div class="col-md-10">
     <%  
         Users user = (Users) request.getAttribute("user");
-        String role = (String) request.getAttribute("role");
+        //String role = (String) request.getAttribute("role");
         
         String errorMsg = (String) request.getAttribute("errorMsg");
         if (errorMsg != null) {
@@ -45,9 +45,8 @@
                         </div>
                     </div>
                 </div>
-                <input type='hidden' name='role' value="<%=role%>">
+                
                 <input type='hidden' name='id' value="<%=user.getUserId()%>">
-                <input type='hidden' name='username' value="<%=user.getEmail()%>">
                 <div class="form-group">
                     <label class="col-lg-2 control-label">Confirm New Password</label>  
                     <div class="col-lg-7 inputGroupContainer">

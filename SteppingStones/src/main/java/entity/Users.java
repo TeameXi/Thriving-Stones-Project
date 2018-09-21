@@ -148,13 +148,13 @@ public class Users {
     public void setMailingAddress(String mailingAddress) {
         this.mailingAddress = mailingAddress;
     }
-    
+    */
     public boolean authenticateUser(Users user, String password){
        if (user != null && user.getPassword().equals(password)) {
             return true;
         }
         return false;
-    }*/
+    }
 
     public int getBranchId() {
         return branch_id;
