@@ -72,6 +72,7 @@ public class PaymentHandlerServlet extends HttpServlet {
                 PaymentDAO.updateDepositOutstandingAmount(studentID, classID, calculatedOutstandingAmount);
                 if (paymentAmount != 0) {
                     PaymentDAO.insertPaymentToRevenue(studentID, studentName, noOfLesson, "Deposit", lvlSubject, paymentAmount);
+                    StudentClassDAO.updateDepositPaymentDate(studentID, classID);
                 }
                 
                 Student stu = StudentDAO.retrieveStudentbyID(studentID);
@@ -115,7 +116,7 @@ public class PaymentHandlerServlet extends HttpServlet {
                     }
                 }
 
-                System.out.print(noOfLesson);
+                //System.out.print(noOfLesson);
                 if (paymentAmount != 0) {
                     PaymentDAO.insertPaymentToRevenue(studentID, studentName, noOfLesson, "First Installment", lvlSubject, paymentAmount);
                 } 
@@ -151,7 +152,6 @@ public class PaymentHandlerServlet extends HttpServlet {
                 }
     
             }
-            //System.out.println(type + classID + dueDate + paymentAmount + outstandingAmount);
         }
         response.sendRedirect("RegisterForClasses.jsp?status=Payment successful.");
         return;

@@ -65,8 +65,7 @@ public class BulkClassRegistrationServlet extends HttpServlet {
                 double monthlyFees = cls.getMthlyFees();
                 String joinDate = LessonDAO.getNearestLessonDate(classID);
                 boolean status = StudentClassDAO.saveStudentToRegisterClass(classID, studentID, monthlyFees, outstandingDeposit, joinDate);
-                PaymentDAO.insertOutstandingTuitionFees(classID, studentID, joinDate, 3, monthlyFees, outstandingTuitionFees);
-                
+                boolean insertOutFeesStatus = PaymentDAO.insertOutstandingTuitionFees(classID, studentID, joinDate, 3, monthlyFees, outstandingTuitionFees);
                 Student stu = StudentDAO.retrieveStudentbyID(studentID);
                 double totalOutstandingAmt = stu.getOutstandingAmt() + outstandingDeposit + outstandingTuitionFees;
                 boolean updateOutstandingFees = StudentDAO.updateStudentTotalOutstandingFees(studentID, totalOutstandingAmt);
@@ -82,7 +81,7 @@ public class BulkClassRegistrationServlet extends HttpServlet {
                 }else{
                     paymentStauts = true;
                 }
-                if (updateOutstandingFees && status && paymentStauts) {
+                if (updateOutstandingFees && status && paymentStauts && insertOutFeesStatus) {
                     System.out.println("Enter successful");
                     response.sendRedirect("BulkClassRegistration.jsp?status=Successfully Registered.");
                     return;

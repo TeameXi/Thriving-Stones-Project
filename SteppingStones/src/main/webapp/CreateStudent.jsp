@@ -17,7 +17,7 @@
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-7">
-            <h4>Students Details</h4><br/>
+            <h4>Student's Details</h4><br/>
             <form id="createTutorForm" method="POST" class="form-horizontal" action="CreateStudentServlet">
                 
                 <% if(user != null){
@@ -86,7 +86,7 @@
                     </div>
                 </div>
 
-                <h4>Parents Details</h4><br/>
+                <h4>Parent's Details</h4><br/>
 
                  <div class="form-group">
                     <label class="col-lg-2 control-label">Full name</label>  

@@ -4,6 +4,7 @@
     Author     : DEYU
 --%>
 
+<%@page import="model.LevelDAO"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="model.ClassDAO"%>
 <%@page import="java.util.List"%>
@@ -20,33 +21,39 @@
         <div class="col-md-3"></div>
         <div class="col-md-7">
             <form id="bulkRegistrationForm" method="POST" class="form-horizontal" action="BulkClassRegistrationServlet">
+                
                 <div class="form-group">
-                    <label class="col-lg-2 control-label">Class</label>  
+                    <label class="col-lg-2 control-label">Level</label>  
                     <div class="col-lg-7 inputGroupContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-badge-check"></i></span>
-                            <select name="classID" class="form-control" onchange="retrieveStudents(this)" id="classID">
-                                <option value="">Select Class</option>
+                            <select name="levelID" class="form-control" onchange="retrieveClasses(this)" id="levelID">
+                                <option value="">Select Level</option>
                                 <%                                    
-                                    ClassDAO classes = new ClassDAO();
-                                    ArrayList<Class> classList = classes.listAllClasses(branch_id);
+                                    LevelDAO levels = new LevelDAO();
+                                    ArrayList<String> levelList = levels.retrieveAllLevels();
 
-                                    for (Class c : classList) {
-                                        out.println("<option value='" + c.getClassID() + "'>" + c.getLevel() + " " + c.getSubject() + " (" + c.getClassDay() + " " + c.getClassTime() + ")</option>");
+                                    for (String level : levelList) {
+                                        out.println("<option value='" + LevelDAO.retrieveLevelID(level) + "'>" + level + "</option>");
                                     }
                                 %>
                             </select>
                         </div>
                     </div>
                 </div>
+                <input type="hidden" name="branchID" value="<%=branch_id%>" id = "branchID">
+                <div id="ClassOptions"></div>               
+                            
                 <%
                 String status = (String) request.getParameter("status");
                 if (status != null) {
                     out.println("<div id='status' class='alert alert-success col-md-12'><strong>"+status+"</strong></div>");
                 }
                 %>
-
-            <div id="studentTable"></div>  
+            <div class="table-responsive-sm">
+            <div id="studentTable"></div>
+            
+            </div>
             </form>
             
         </div>
@@ -83,15 +90,66 @@
                             message: 'Please select a class'
                         }
                     }
+                },
+                levelID: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Please select level'
+                        }
+                    }
                 }
             }
         });
     });
 </script>
 
-<script>    
+<script>   
+    (document).ready(function () {
+        $('#BulkRegistration').dataTable( {
+            "paging":   false,
+            "info":     false,
+            "searching": false
+        });
+    });
+    
+    function retrieveClasses(selectObject){
+        levelID = $("#levelID").val();
+        branchID = $("#branchID").val();
+
+        studentTable.innerHTML = "";
+        
+        $.ajax({
+            type: 'POST',
+            url: 'RetrieveClassesByLevelServlet',
+            dataType: 'JSON',
+            data: {levelID: levelID, branchID: branchID},
+            success: function (data) {  
+                var ClassOptions = document.getElementById('ClassOptions');
+                
+                if(data.length !== 0){
+                    var html = '<div class="form-group"><label class="col-lg-2 control-label">Class</label><div class="col-lg-7 inputGroupContainer"><div class="input-group">\n\
+                                    <span class="input-group-addon"><i class="zmdi zmdi-badge-check"></i></span>\n\
+                                    <select name="classID" class="form-control" onchange="retrieveStudents(this)" id="classID">\n\
+                                    <option value="">Select Class</option><div id="ClassOptions"></div>';
+                    for(i = 0; i < data.length; i++){
+                        html += "<option value='" + data[i].class + "'>" + data[i].name + "</option>";
+                    }  
+                    html += '</select></div></div></div>';                        
+
+                    ClassOptions.innerHTML = html;
+                }else{
+                    var html = '<div class="form-group"><label class="col-lg-2 control-label">Class</label><div class="col-lg-7 inputGroupContainer"><div class="input-group">\n\
+                                    <span class="input-group-addon"><i class="zmdi zmdi-badge-check"></i></span>\n\
+                                    <select name="classID" class="form-control" id="classID">\n\
+                                    <option value="">No classes at this level</option><div id="ClassOptions"></div>';
+                    html += '</select></div></div></div>';
+                    ClassOptions.innerHTML = html;
+                }
+            }
+        });
+    }
+    
     function retrieveStudents(selectObject){
-        lessonID = selectObject.value;
         classID = $("#classID").val();
         
         $.ajax({
@@ -103,11 +161,11 @@
                 var studentTable = document.getElementById('studentTable');
                 if(data.length !== 0){
                     var html = '<br><h4>Tick students to enroll</h4><br>';
-                    
-                    html += '<table class="table table-bordered"><thead class="table_title"><tr><th>Ticker</th><th>Student Name</th><th>Outstanding Deposit</th><th>Outstanding Tuition Fees</th></tr><tbody>';
+
+                    html += '<table id="BulkRegistration" class="table display responsive nowrap" style="width:100%"><thead class="thead-light"><tr><th scope="col"></th><th scope="col">Student Name</th><th scope="col">Outstanding Deposit</th><th scope="col">Outstanding Tuition Fees</th></tr></thead><tbody>';
                     var i;
                     for(i = 0; i < data.length; i++){
-                        html += '<tr class="table_content"><td><input type="checkbox" onchange="markAttendance(this)" name="studentID" value=' + data[i].student + '></td><td>' + data[i].name + '</td>\n\
+                        html += '<tr><td><input type="checkbox" onchange="markAttendance(this)" name="studentID" value=' + data[i].student + '></td><td>' + data[i].name + '</td>\n\
                                     <td><input type ="number" name ='+ data[i].student + "deposit" +' class="form-control"></td>\n\
                                     <td><input type ="number" name ='+ data[i].student + "tuitionFees" +' class="form-control"></td>\n\
                                     <td><input type="hidden" name="studentName" value="${classID}"></td></tr>';
@@ -121,5 +179,6 @@
             }
         });
     }
-
+    
 </script>
+

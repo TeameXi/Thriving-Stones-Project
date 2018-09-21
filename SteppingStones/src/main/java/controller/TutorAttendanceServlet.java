@@ -158,11 +158,14 @@ public class TutorAttendanceServlet extends HttpServlet {
                     String date = l.getStartDate();
                     obj.put("date", date.substring(0, date.indexOf(" ")));
                     
+                    
                     if(lessonDAO.retrieveAttendanceForLesson(l.getLessonid())){
                         obj.put("attendance", "Present");
                     } else {
                         obj.put("attendance", "Absent");
                     }
+                    
+                    obj.put("overall", lessonDAO.retrieveNumberTutorAttendancePerClass(classID, tutorID) + "%");
                     array.put(obj);
                 }
                 

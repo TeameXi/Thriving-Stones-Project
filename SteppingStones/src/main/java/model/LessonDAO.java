@@ -353,8 +353,8 @@ public class LessonDAO {
 
     public static int retrieveNoOfLessonForFirstInstallment(int classID, String joinDate) {
         int noOfLessons = 0;
-        String sql = "select count(lesson_id) as noOfLessons from lesson where class_id = ? and start_date > ? and "
-                + "start_date < (select date(start_date) from lesson where class_id = ? and date(start_date) > ? and reminder_status != 0 order by start_date limit 1);";
+        String sql = "select count(lesson_id) as noOfLessons from lesson where class_id = ? and date(start_date) >= ? and "
+                + "date(start_date) <= (select date(start_date) from lesson where class_id = ? and date(start_date) > ? and reminder_status != 0 order by start_date limit 1);";
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, classID);
@@ -370,6 +370,43 @@ public class LessonDAO {
         }
 
         return noOfLessons;
+    }
+    
+    public boolean updateLessonDate(int lessonID, String editedDate){
+        String sql = "update lesson set edited_date = ? where lesson_id = ?";
+        
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, editedDate);
+            stmt.setInt(2, lessonID);
+            
+            int rowsUpdated = stmt.executeUpdate();
+            
+            if(rowsUpdated > 0){
+                return true;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(LessonDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+    
+    public String retrieveUpdatedLessonDate(int lessonID){
+        String sql = "select edited_date from lesson where lesson_id = ?";
+        
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, lessonID);
+            
+            ResultSet rs = stmt.executeQuery();
+            
+            while(rs.next()){
+                return rs.getString(1);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(LessonDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return "";
     }
 
 }

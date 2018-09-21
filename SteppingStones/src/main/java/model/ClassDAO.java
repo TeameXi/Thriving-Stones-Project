@@ -361,6 +361,34 @@ public class ClassDAO {
         }
         return true;
     }
+    
+    public static ArrayList<Class> getClassesByLevel(int levelID, int branchID) {
+        ArrayList<Class> classList = new ArrayList();
+        try (Connection conn = ConnectionManager.getConnection()) {
+            String select_class_sql = "select * from class where branch_id = ? and level_id = ?";
+            PreparedStatement stmt = conn.prepareStatement(select_class_sql);
+            stmt.setInt(1, branchID);
+            stmt.setInt(2, levelID);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                int classID = rs.getInt("class_id");
+                int subjectID = rs.getInt("subject_id");
+                int term = rs.getInt("term");
+                String classTime = rs.getString("timing");
+                String classDay = rs.getString("class_day");
+                String startDate = rs.getString("start_date");
+                String endDate = rs.getString("end_date");
+                int mthlyFees = rs.getInt("fees");
+                String subject = SubjectDAO.retrieveSubject(subjectID);
+                String level = LevelDAO.retrieveLevel(levelID);
+                Class cls = new Class(classID, level, subject, term, classTime, classDay, mthlyFees, startDate, endDate);
+                classList.add(cls);
+            }
+        } catch (SQLException e) {
+            System.out.print(e.getMessage());
+        }
+        return classList;
+    }
 
     public static ArrayList<Class> getClassesByTermAndLevel(int level_id, int term, int branch_id, String level) {
         ArrayList<Class> classList = new ArrayList();
@@ -500,5 +528,25 @@ public class ClassDAO {
             ex.printStackTrace();
         }
         return duration;
+    }
+    
+    public static String retrieveClassLevelSubject(int classID) {
+        String lvlSubject = "";
+        try (Connection conn = ConnectionManager.getConnection()) {
+            String select_class_sql = "select level_id, subject_id from class where class_id = ?;";
+            PreparedStatement stmt = conn.prepareStatement(select_class_sql);
+            stmt.setInt(1, classID);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                int levelID = rs.getInt("level_id");
+                int subjectID = rs.getInt("subject_id");
+                String level = LevelDAO.retrieveLevel(levelID);
+                String subject = SubjectDAO.retrieveSubject(subjectID);
+                lvlSubject = level + " " + subject;
+            }
+        } catch (SQLException e) {
+            System.out.print(e.getMessage());
+        }
+        return lvlSubject;
     }
 }

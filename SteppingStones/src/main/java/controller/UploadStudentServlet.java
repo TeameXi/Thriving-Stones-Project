@@ -55,7 +55,7 @@ public class UploadStudentServlet extends HttpServlet {
             String emails[] = request.getParameterValues("con_emails[]");
             String acad_level[] = request.getParameterValues("con_acadlevel[]");
             String passwords[] = request.getParameterValues("con_pwd[]");
-            
+            String school[] = request.getParameterValues("con_school[]");
             
             String parentNames[] = request.getParameterValues("con_parentName[]");
             String nationality[] = request.getParameterValues("con_nationality[]");
@@ -63,6 +63,7 @@ public class UploadStudentServlet extends HttpServlet {
             String designation[] = request.getParameterValues("con_designation[]");
             String mobiles[] = request.getParameterValues("con_mobile[]");
             String parentEmail[] = request.getParameterValues("con_parentEmail[]");
+            String relationship[] = request.getParameterValues("con_relationship[]");
             
             String registrationFee[] = request.getParameterValues("con_registrationFee[]");
             String outstandingRegistrationFee[] = request.getParameterValues("con_outstandingRegistrationFee[]");
@@ -86,12 +87,22 @@ public class UploadStudentServlet extends HttpServlet {
             ArrayList<String> studentLists = new ArrayList();
             ArrayList<String> studentNameLists = new ArrayList();
             ArrayList<String> studentEmailLists = new ArrayList();
+            ArrayList<String> studentRelationshipLists = new ArrayList();
             for (int i = 0; i < studNames.length; i++) {
-                if ("".equals(studNames[i].trim())) {
+                boolean checkName = "".equals(studNames[i].trim()) || "NIL".equalsIgnoreCase(studNames[i].trim());
+                boolean checkEmail = "".equals(studNames[i].trim()) || "NIL".equalsIgnoreCase(emails[i].trim());
+                boolean checkPhone = "".equals(phones[i]) || "NIL".equalsIgnoreCase(phones[i].trim());
+                if (checkName) {
+                    continue;
+                }
+                if((checkName && checkEmail) && (checkName && checkPhone)){
+                    continue;
+                }
+                if(!checkEmail){
                     continue;
                 }
 
-                if(!"".equals(emails[i])){
+                if(!checkPhone){
                     String name = emailName.get(emails[i]);
                     if(name != null){
                         if(name.equals(studNames[i].trim())){
@@ -102,7 +113,7 @@ public class UploadStudentServlet extends HttpServlet {
                 }
                 
                 int phone = 0;
-                if (!"".equals(phones[i])) {
+                if (!checkPhone) {
                     phone = Integer.parseInt(phones[i]);
                     String name = phoneName.get(phones[i]);
                     if(name != null){
@@ -113,12 +124,50 @@ public class UploadStudentServlet extends HttpServlet {
                     }
                 }
                 
+                if("NIL".equalsIgnoreCase(studNrics[i])){
+                    studNrics[i] = "";
+                }
+                
+                if("NIL".equalsIgnoreCase(addresses[i])){
+                    addresses[i] = "";
+                }
+                
+                if("NIL".equalsIgnoreCase(birth_dates[i])){
+                    birth_dates[i] = "";
+                }
+                
+                if("NIL".equalsIgnoreCase(genders[i])){
+                    genders[i] = "";
+                }
+                
+                if("NIL".equalsIgnoreCase(emails[i])){
+                    emails[i] = "";
+                }
+                
+                if("".equals(registrationFee[i]) || "NIL".equalsIgnoreCase(registrationFee[i])){
+                    registrationFee[i] = "0";
+                }
+                
+                if("".equals(outstandingRegistrationFee[i]) || "NIL".equalsIgnoreCase(outstandingRegistrationFee[i])){
+                    outstandingRegistrationFee[i] = "0";
+                }
+                
+                if("NIL".equalsIgnoreCase(school[i])){
+                    school[i] = "0";
+                }
+                
+                int level = LevelDAO.retrieveLevelID(changeLevelString(acad_level[i]));
+                if( level == 0){
+                    continue;
+                }
+                
                 studentLists.add("('" + studNrics[i] + "','" + studNames[i].trim() + "'," + phone + ",'" + addresses[i] + "','" + birth_dates[i] + 
                         "','" + genders[i] + "','" + emails[i] + "','" + registrationFee[i] +  "','" + 
-                        outstandingRegistrationFee[i] +  "','" + LevelDAO.retrieveLevelID(acad_level[i]) + "'," + branch_id + ")");
-
-                studentNameLists.add(studNames[i].trim());
+                        outstandingRegistrationFee[i] +  "','" + level + "'," + branch_id + ",'" + school[i] +"')");
                 
+                
+                studentNameLists.add(studNames[i].trim());
+                studentRelationshipLists.add(relationship[i]);
                 if(phone == 0){
                     studentEmailLists.add(emails[i]);
                 }else{
@@ -130,15 +179,24 @@ public class UploadStudentServlet extends HttpServlet {
             ArrayList<String> parentNameLists = new ArrayList();
             ArrayList<Integer> parentMobileList = new ArrayList();
             for (int i = 0; i < parentNames.length; i++) {
-                if ("".equals(parentNames[i].trim())) {
+                if ("".equals(parentNames[i].trim()) || "NIL".equalsIgnoreCase(parentNames[i].trim())) {
                     continue;
                 }
-
                 int mobile = 0;
-                if (!"".equals(mobiles[i])) {
+                if (!"".equals(mobiles[i]) || "NIL".equalsIgnoreCase(mobiles[i].trim())) {
                     mobile = Integer.parseInt(mobiles[i]);
+                }else{
+                    continue;
                 }
-
+                if("NIL".equalsIgnoreCase(nationality[i].trim())){
+                    nationality[i] = "";
+                }
+                if("NIL".equalsIgnoreCase(company[i].trim())){
+                    company[i] = "";
+                }
+                if("NIL".equalsIgnoreCase(designation[i].trim())){
+                    designation[i] = "";
+                }
                 parentLists.add("('" + parentNames[i].trim() + "','" + nationality[i] + "','" + company[i] + "','" + designation[i] + "'," + mobile + 
                         ",'" + parentEmail[i] + "'," + branch_id + ")");
 
@@ -154,6 +212,7 @@ public class UploadStudentServlet extends HttpServlet {
                     List<String> studentDetails = new ArrayList<>();
                     studentDetails.add(studentEmailLists.get(i));
                     studentDetails.add(studentNameLists.get(i));
+                    studentDetails.add(studentRelationshipLists.get(i));
                     studParRel.put(studentDetails,parentMobileList.get(i));
                 }
             }
@@ -253,7 +312,7 @@ public class UploadStudentServlet extends HttpServlet {
                     Integer value = studParRel.get(key);
                     int studentID = StudentDAO.retrieveStudentID(key);
                     if(studentID != 0){
-                        pcrDAO.insertParentChildRel(value, studentID, branch_id);
+                        pcrDAO.insertParentChildRelForUpload(value, studentID, branch_id, key.get(2));
                     }
                 }
                 HttpSession session = request.getSession();
@@ -309,4 +368,16 @@ public class UploadStudentServlet extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
+    private String changeLevelString(String level){
+        if(level.trim().length() != 2){
+            return level;
+        }else{
+            if(level.charAt(0) == 'P' || level.charAt(0) == 'p'){
+                return "Primary " + level.charAt(1);
+            }else if(level.charAt(0) == 'S' || level.charAt(0) == 's'){
+                return "Secondary " + level.charAt(1);
+            }
+        }
+        return "";
+    }
 }

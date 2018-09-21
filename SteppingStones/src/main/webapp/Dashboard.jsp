@@ -92,36 +92,62 @@
                     </div>
                 </div>
             </div>
+            <br>            
             <%
                 Set<String> levels = studentPerLevel.keySet();
+                String[] arrayLevels = levels.toArray(new String[0]);
                 if (levels.size() != 0) {
             %>
-            <div class="col-md-4">
-                <p class="text-center">
-                    <strong>NUMBER OF STUDENT PER LEVEL</strong>
-                </p>
-
+            <table cellpadding="0" cellspacing="0" width="80%" border="0"> 
+                <tr>
+                    <td colspan="3" ><p class="text-center"><strong>NUMBER OF STUDENT PER LEVEL</strong></p></td>
+                </tr>
                 <%
-                    for (String level : levels) {
-                        int numberOfStudentPerLevel = studentPerLevel.get(level);
-                        int percentage = 0;
-                        if(numberOfStudent != 0){
-                            percentage = (numberOfStudentPerLevel * 100) / numberOfStudent;
-                        }
-                %>
-                <div class="progress-group">
-                    <span class="progress-text"><%=level%></span>
-                    <span class="progress-number"><b><%=studentPerLevel.get(level)%></b></span>
+                    for (int j=1; j<levels.size()/2.0+1; j++){
+                     
+                        %>
+                        <tr>                            
+                            <%
+                                int firstColumn = j*2-2;
+                                if(firstColumn<levels.size()){
+                                String firstLevel = arrayLevels[firstColumn];
+                                %>
+                                    <td width="40%">
+                                        <div class="progress-group">
+                                            <span class="progress-text"><%=firstLevel%></span>
+                                            <span class="progress-number"><b><%=studentPerLevel.get(firstLevel)%></b></span>
 
-                    <div class="progress sm">
-                        <div class="progress-bar progress-bar-yellow" style="width: <%=percentage%>%"></div>
-                    </div>
-                </div>
-                <%
-                    }
-                %>
-            </div>       
-            <%}
+                                            <div class="progress sm">
+                                                <div class="progress-bar progress-bar-yellow" style="width: <%=(studentPerLevel.get(firstLevel) * 100) / numberOfStudent%>%"></div>
+                                            </div>
+                                        </div>                                        
+                                    </td>
+                                    <td width="20%"></td>
+                                <%
+                                }
+                                int secondColumn = j*2-1;
+                                if(secondColumn<levels.size()){
+                                String secondLevel = arrayLevels[secondColumn];                               
+                                %>    
+                                    <td width="40%">
+                                        <div class="progress-group">
+                                            <span class="progress-text"><%=secondLevel%></span>
+                                            <span class="progress-number"><b><%=studentPerLevel.get(secondLevel)%></b></span>
+
+                                            <div class="progress sm">
+                                                <div class="progress-bar progress-bar-yellow" style="width: <%=(studentPerLevel.get(secondLevel) * 100) / numberOfStudent%>%"></div>
+                                            </div> 
+                                        </div>
+                                    </td>
+                                </tr>
+                            
+                <%  }}
+                    %>
+                            
+                        </table>
+                            
+            <% }
+
             } else if (role != null && role == "admin" && user.getBranchId() != 0) {
                 //retrieve number of tutor                
                 int numberOfTutorByBranch = tutorDAO.retrieveNumberOfTutorByBranch(user.getBranchId());
@@ -154,35 +180,60 @@
                     <!-- /.info-box -->
                 </div>
             </div>
+            <br>            
             <%
                 Set<String> levels = studentPerLevelByBranch.keySet();
+                String[] arrayLevels = levels.toArray(new String[0]);
                 if (levels.size() != 0) {
             %>
-            <div class="col-md-4">
-                <p class="text-center">
-                    <strong>NUMBER OF STUDENT PER LEVEL</strong>
-                </p>
-
+            <table cellpadding="0" cellspacing="0" width="80%" border="0"> 
+                <tr>
+                    <td colspan="3" ><p class="text-center"><strong>NUMBER OF STUDENT PER LEVEL</strong></p></td>
+                </tr>
                 <%
-                    for (String level : levels) {
-                        int numberOfStudentPerLevel = studentPerLevelByBranch.get(level);
-                        int percentage = 0;
-                        if(numberOfStudentByBranch != 0){
-                            percentage = (numberOfStudentPerLevel * 100) / numberOfStudentByBranch;
-                        }
-                %>
-                <div class="progress-group">
-                    <span class="progress-text"><%=level%></span>
-                    <span class="progress-number"><b><%=studentPerLevelByBranch.get(level)%></b></span>
+                    for (int j=1; j<levels.size()/2.0+1; j++){
+                     
+                        %>
+                        <tr>                            
+                            <%
+                                int firstColumn = j*2-2;
+                                if(firstColumn<levels.size()){
+                                String firstLevel = arrayLevels[firstColumn];
+                                %>
+                                    <td width="40%">
+                                        <div class="progress-group">
+                                            <span class="progress-text"><%=firstLevel%></span>
+                                            <span class="progress-number"><b><%=studentPerLevelByBranch.get(firstLevel)%></b></span>
 
-                    <div class="progress sm">
-                        <div class="progress-bar progress-bar-yellow" style="width: <%=percentage%>%"></div>
-                    </div>
-                </div>
-                <%
-                    }
-                %>
-            </div> 
+                                            <div class="progress sm">
+                                                <div class="progress-bar progress-bar-yellow" style="width: <%=(studentPerLevelByBranch.get(firstLevel) * 100) / numberOfStudentByBranch%>%"></div>
+                                            </div>
+                                        </div>                                        
+                                    </td>
+                                    <td width="20%"></td>
+                                <%
+                                }
+                                int secondColumn = j*2-1;
+                                if(secondColumn<levels.size()){
+                                String secondLevel = arrayLevels[secondColumn];                               
+                                %>    
+                                    <td width="40%">
+                                        <div class="progress-group">
+                                            <span class="progress-text"><%=secondLevel%></span>
+                                            <span class="progress-number"><b><%=studentPerLevelByBranch.get(secondLevel)%></b></span>
+
+                                            <div class="progress sm">
+                                                <div class="progress-bar progress-bar-yellow" style="width: <%=(studentPerLevelByBranch.get(secondLevel) * 100) / numberOfStudentByBranch%>%"></div>
+                                            </div> 
+                                        </div>
+                                    </td>
+                                </tr>
+                            
+                <%  }}
+                    %>
+                            
+                        </table>
+                            
             <% }
             } else if (role != null && role == "tutor") {
                 ArrayList<Class> classes = ClassDAO.listAllClassesByTutorID(user.getRespectiveID(), user.getBranchId());
@@ -217,27 +268,54 @@
             </div>
             </br>
             <% if (classes.size() != 0 && numberOfStudents != 0) { %>
-            <div class="col-md-4">
-                <p class="text-center">
-                    <strong>NUMBER OF STUDENT PER CLASS</strong>
-                </p>                
-                <%
-                    for (Class clss : classes) {
-                        int percentage = (studentClassDAO.retrieveNumberOfStudentByClass(clss.getClassID()) * 100) / numberOfStudents;
-                %>
-                <div class="progress-group">
-                    <span class="progress-text"><%=clss.getSubject()%>  (<%=clss.getClassDay()%>  <%=clss.getClassTime()%>)</span>
-                    <span class="progress-number"><b><%=studentClassDAO.retrieveNumberOfStudentByClass(clss.getClassID())%></b></span>
+            
+            <table cellpadding="0" cellspacing="0" width="80%" border="0"> 
+                <tr>
+                    <td colspan="3" ><p class="text-center"><strong>NUMBER OF STUDENT PER CLASS</strong></p></td>
+                </tr>
+            <%
+                for (int j=1; j<classes.size()/2.0+1; j++){
+                     
+                    %>
+                    <tr>                            
+                    <%
+                        int firstColumn = j*2-2;
+                        if(firstColumn<classes.size()){
+                            Class clss = classes.get(firstColumn);
+                        %>
+                        <td width="40%">
+                            <div class="progress-group">
+                                <span class="progress-text"><%=clss.getSubject()%>  (<%=clss.getClassDay()%>  <%=clss.getClassTime()%>)</span>
+                                <span class="progress-number"><b><%=studentClassDAO.retrieveNumberOfStudentByClass(clss.getClassID())%></b></span>
 
-                    <div class="progress sm">
-                        <div class="progress-bar progress-bar-yellow" style="width: <%=percentage%>%"></div>
-                    </div>
-                </div>
-                <%
-                    }
+                                <div class="progress sm">
+                                    <div class="progress-bar progress-bar-yellow" style="width: <%=(studentClassDAO.retrieveNumberOfStudentByClass(clss.getClassID()) * 100) / numberOfStudents%>%"></div>
+                                </div>
+                            </div>                                        
+                        </td>
+                        <td width="20%"></td>
+                        <%
+                        }
+                        int secondColumn = j*2-1;
+                        if(secondColumn<classes.size()){
+                        Class clss = classes.get(secondColumn);                               
+                        %>    
+                            <td width="40%">
+                                <div class="progress-group">
+                                    <span class="progress-text"><%=clss.getSubject()%>  (<%=clss.getClassDay()%>  <%=clss.getClassTime()%>)</span>
+                                    <span class="progress-number"><b><%=studentClassDAO.retrieveNumberOfStudentByClass(clss.getClassID())%></b></span>
 
-                %>
-            </div> 
+                                    <div class="progress sm">
+                                        <div class="progress-bar progress-bar-yellow" style="width: <%=(studentClassDAO.retrieveNumberOfStudentByClass(clss.getClassID()) * 100) / numberOfStudents%>%"></div>
+                                    </div>
+                                </div>                                        
+                            </td>
+                        </tr>
+            <%  }}
+                    %>
+                            
+            </table>
+                         
             <%}
                 }
             %>
