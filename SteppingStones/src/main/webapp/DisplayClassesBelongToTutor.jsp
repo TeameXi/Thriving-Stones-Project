@@ -6,6 +6,9 @@
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.dataTables.min.css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script src='https://code.jquery.com/jquery-3.3.1.js'></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.css" rel="stylesheet">
 <script src='https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js'></script>
 <script src='https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js'></script>
 <script src='https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js'></script>
@@ -75,32 +78,51 @@
                         <label class = "form-control-label">Assigned To :</label>
                         <input type="text" class="form-control" id="view_tutor" readonly="true" style="text-align: center;">
                     </div>
-                    
+
                     <div class = "col-sm-4">
                         <label class = "form-control-label">Attendance :</label>
                         <input type="text" class="form-control" id="view_lesson_attendance" readonly="true" style="text-align: center;">
                     </div><br/>
                 </div><br/>
 
-                    <div class="table-responsive">
-                        <table id="studentAttendanceTable" class="table table-bordered table-striped" style="width:100%; font-size: 14px">
-                            <thead>
-                                <tr>
-                                    <th style="text-align: center">Student Name</th>
-                                    <th style="text-align: center">Contact No.</th>
-                                    <th style="text-align: center">Attendance</th>
-                                </tr>
-                            </thead>
-                        </table>
+                <div class="row">
+                    <div class = "col-sm-4" style="display: inline-block">
+                        <label class = "form-control-label">Edit Lesson Date :</label>
+                        
+                        <input type="text" class="form-control" id="datetimepicker" style="text-align: center;">
+                        
+                        
                     </div>
+                    <div class="col-sm-4">
+                        <button class="btn btn-default" style="margin-top:25px" id="alter_date">Edit</button>
+                    </div>
+                    <br/>
+                    <script type="text/javascript">
+                        $('#datetimepicker').datetimepicker({
+                            format: 'YYYY-MM-DD hh:mm:ss'
+                        });
+                    </script>
                 </div><br/>
-            </div>  
 
-            <div class="modal-footer spaced-top-small centered">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
-        </div>       
-    </div>
+                <div class="table-responsive">
+                    <table id="studentAttendanceTable" class="table table-bordered table-striped" style="width:100%; font-size: 14px">
+                        <thead>
+                            <tr>
+                                <th style="text-align: center">Student Name</th>
+                                <th style="text-align: center">Contact No.</th>
+                                <th style="text-align: center">Attendance</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div><br/>
+        </div>  
+
+        <div class="modal-footer spaced-top-small centered">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+    </div>       
+</div>
 </div>
 
 <script>
@@ -144,6 +166,7 @@
                         $("#view_class_size").val(data.classSize);
                         $("#view_tutor").val(data.tutor);
                         $("#view_lesson_attendance").val(data.attendance);
+                        $("#datetimepicker").val(data.editedDate);
                     }
                 });
 
@@ -198,6 +221,20 @@
                                 table.cell(rowIndex, columnIndex).data('Present').draw();
                                 $("#view_lesson_attendance").val(data.attendance);
                             }
+                        }
+                    });
+                });
+                
+                $('#alter_date').on('click', function(){
+                    lessonDate = $('#datetimepicker').val();
+                    action = 'updateLessonDate';
+                    
+                    $.ajax({
+                        type: 'POST',
+                        url: 'TutorScheduleServlet',
+                        dataType: 'JSON',
+                        data: {lessonID: id, action: action, editedDate: lessonDate},
+                        success: function (data) {
                         }
                     });
                 });

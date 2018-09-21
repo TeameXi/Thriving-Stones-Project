@@ -44,7 +44,6 @@ public class TutorScheduleServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            System.out.println("AJAX SUCCESS");
             
             String action = request.getParameter("action");
             
@@ -71,13 +70,15 @@ public class TutorScheduleServlet extends HttpServlet {
                 Lesson lesson = LessonDAO.getLessonByID(lessonID);
                 JSONObject obj = new JSONObject();
                 obj.put("attendance", new AttendanceDAO().retrieveNumberOfStudentsAttended(lessonID));
+                System.out.println(new AttendanceDAO().retrieveNumberOfStudentsAttended(lessonID));
                 obj.put("id", lessonID);
                 obj.put("startDate", lesson.getStartDate());
                 obj.put("endDate", lesson.endDate());
                 obj.put("tutor", new TutorDAO().retrieveSpecificTutorById(lesson.getTutorid()).getName());
                 obj.put("classSize", new StudentClassDAO().retrieveNumberOfStudentByClass(lesson.getClassid()));
                 obj.put("className", new ClassDAO().getClassByID(lesson.getClassid()).getClassDay() + " " + new ClassDAO().getClassByID(lesson.getClassid()).getClassTime());
-                
+                obj.put("editedDate", new LessonDAO().retrieveUpdatedLessonDate(lessonID));
+                System.out.println(new LessonDAO().retrieveUpdatedLessonDate(lessonID) + " HALPPPPPPP");
                 String json = obj.toString();
                 out.println(json);
             }else if(action.equals("retrieveStudents")){
@@ -114,6 +115,15 @@ public class TutorScheduleServlet extends HttpServlet {
                 JSONObject toReturn = new JSONObject().put("status", status);
                 toReturn.put("attendance", numStudents);
                 String json = toReturn.toString();
+                out.println(json);
+            }else if (action.equals("updateLessonDate")){
+                int lessonID = Integer.parseInt(request.getParameter("lessonID"));
+                String editedDate = request.getParameter("editedDate");
+                
+                boolean status = new LessonDAO().updateLessonDate(lessonID, editedDate);
+                
+                JSONObject obj = new JSONObject().put("data", status);
+                String json = obj.toString();
                 out.println(json);
             }
         }
