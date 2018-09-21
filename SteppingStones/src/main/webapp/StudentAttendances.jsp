@@ -1,4 +1,4 @@
-<%@include file="protect_tutor.jsp"%>
+<%@include file="protect_branch_admin.jsp"%>
 <%@include file="header.jsp"%>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.dataTables.min.css">
@@ -95,7 +95,7 @@
     }
 
     $(document).ready(function () {
-        tutorID = <%=user.getRespectiveID()%>
+        adminID = <%=user.getRespectiveID()%>
         branchID = <%=branch_id%>
         action = 'retrieve';
 
@@ -105,9 +105,8 @@
             "aLengthMenu": [[5, 10, 25, -1], [5, 10, 25, "All"]],
             'ajax': {
                 "type": "POST",
-                "url": "MarkStudentAttendanceServlet",
+                "url": "AdminStudentAttendancesServlet",
                 "data": {
-                    "tutorID": tutorID,
                     "branchID": branchID,
                     "action": action
                 }
@@ -169,7 +168,7 @@
                     "iDisplayLength": 5,
                     'ajax': {
                         "type": "POST",
-                        "url": "MarkStudentAttendanceServlet",
+                        "url": "AdminStudentAttendancesServlet",
                         "data": {
                             "classID": classID,
                             "action": action
@@ -210,7 +209,7 @@
                             "iDisplayLength": 5,
                             'ajax': {
                                 "type": "POST",
-                                "url": "MarkStudentAttendanceServlet",
+                                "url": "AdminStudentAttendancesServlet",
                                 "data": {
                                     "lessonID": lessonID,
                                     "action": action
@@ -233,7 +232,7 @@
                                     "targets": 2,
                                     "data": null,
                                     "orderable": false,
-                                    "defaultContent": '<button class="btn btn-default">Present</button>',
+                                    "defaultContent": '',
                                     "className": 'student-text'
                                 }
                             ],
@@ -243,24 +242,6 @@
                                 {"data": "attended"}
                             ],
                             "order": [[1, 'asc']]
-                        });
-                        $('#lessonModal tbody').on('click', 'button', function () {
-                            studentID = lessonModal.row($(this).parents('tr')).data().id;
-                            rowIndex = lessonModal.row($(this).parents('tr')).index();
-                            columnIndex = lessonModal.cell($(this).closest('td')).index().column;
-                            action = 'markLessonModal';
-                            $.ajax({
-                                type: 'POST',
-                                url: 'MarkStudentAttendanceServlet',
-                                dataType: 'JSON',
-                                data: {classID: classID, lessonID: lessonID, studentID: studentID, tutorID: tutorID, action: action},
-                                success: function (data) {
-                                    if (data) {
-                                        lessonModal.cell(rowIndex, columnIndex).data('Present').draw();
-                                        lessonAttendanceTable.cell(lesson_row.index(), 2).data(data.attendance).draw();
-                                    }
-                                }
-                            });
                         });
                         lesson_tr.addClass('shown');
                     }
@@ -285,7 +266,7 @@
                     "iDisplayLength": 5,
                     'ajax': {
                         "type": "POST",
-                        "url": "MarkStudentAttendanceServlet",
+                        "url": "AdminStudentAttendancesServlet",
                         "data": {
                             "classID": classID,
                             "action": action
@@ -342,7 +323,7 @@
                             "iDisplayLength": 5,
                             'ajax': {
                                 "type": "POST",
-                                "url": "MarkStudentAttendanceServlet",
+                                "url": "AdminStudentAttendancesServlet",
                                 "data": {
                                     "classID": classID,
                                     "action": action,
@@ -359,7 +340,7 @@
                                 {
                                     "targets": 1,
                                     "data": null,
-                                    "defaultContent": '<button class="btn btn-default">Present</button>',
+                                    "defaultContent": '',
                                     "className": 'student-text'
                                 }
                             ],

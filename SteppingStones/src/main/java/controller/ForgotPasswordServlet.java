@@ -61,11 +61,11 @@ public class ForgotPasswordServlet extends HttpServlet {
         ArrayList<String> errorList = new ArrayList<>();
         
         if(username == null || username.equals("")){
-            errorList.add("username is required");
+            errorList.add("Username is required");
         }
         
         if((email == null || email.equals("")) && (phone == null || phone.equals("")) ){
-            errorList.add("please enter email or phone number");
+            errorList.add("Please enter email or phone number");
         }
         
         if(errorList.isEmpty()){
@@ -73,7 +73,7 @@ public class ForgotPasswordServlet extends HttpServlet {
             Users user = users.retrieveUserByUsernames(username);
             
             if(user == null){
-                errorList.add("user does not exist");
+                errorList.add("User does not exist");
                 request.setAttribute("error", errorList);
             }else{
                 String password = user.getPassword();

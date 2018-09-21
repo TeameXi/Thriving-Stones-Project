@@ -109,6 +109,7 @@
                                 <ul>
                                     <li><a href="CreateSubject.jsp">Create Subject</a></li>
                                     <li><a href="DisplaySubjects.jsp">View Subjects</a></li>
+                                    <li><a href="UpdateSubject.jsp">Update Subject Fees</a></li>
                                 </ul>
                             </li>
                             
@@ -140,6 +141,7 @@
                                     <li><a href="CreateStudent.jsp">Create Student</a></li>
                                     <li><a href="DisplayStudents.jsp">View Students</a></li>
                                     <li><a href="AutoPromote.jsp">Auto Promote</a></li>
+                                    <li><a href="StudentAttendances.jsp">Student Attendances</a></li>
                                 </ul>
                             </li>
                             
@@ -161,18 +163,18 @@
                             <!-- <li><a href="RegisterForClasses.jsp"><i class="zmdi zmdi-library"></i>Register For Classes</a></li> -->
                             
                           
-                            <li><a href="stats.html"><i class="zmdi zmdi-chart"></i> Financial Reports</a></li>
+                            <!-- <li><a href="stats.html"><i class="zmdi zmdi-chart"></i> Financial Reports</a></li>
                             <li class="submenu">
                                  <a href="#">
                                      <i class="zmdi zmdi-card"></i> Payment Handling
                                      <span class="caret pull-right"></span>
                                  </a>
                                  <!-- Sub menu -->
-                                 <ul>
+                                 <!--<ul>
                                      <li><a href="StudentPayment.jsp">Student Payment</a></li>
                                      <li><a href="TutorPayment.jsp">Tutor Payment</a></li>
                                  </ul>
-                             </li>
+                             </li>-->
                     
                     <%
                         }else if(role != null && user != null && role == "tutor" ){
