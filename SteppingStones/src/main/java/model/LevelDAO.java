@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Logger;
 
 public class LevelDAO {
     public ArrayList<String> retrieveAllLevels() {
@@ -152,18 +153,39 @@ public class LevelDAO {
     public static ArrayList<Subject> retrieveAllSubjectsBelongToLevelAndBranch(int levelID, int branchID){
         ArrayList<Subject> subjectLists = new ArrayList<>();
         try(Connection conn = ConnectionManager.getConnection()){
-            String sql = "SELECT s.subject_id,subject_name FROM subject as s, lvl_sub_rel as l WHERE s.subject_id = l.subject_id and branch_id = ? and level_id = ?;";
+            String sql = "SELECT s.subject_id,subject_name, l.cost FROM subject as s, lvl_sub_rel as l WHERE s.subject_id = l.subject_id and branch_id = ? and level_id = ?;";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, branchID);
             stmt.setInt(2, levelID);
             ResultSet rs = stmt.executeQuery();
             while(rs.next()){
-                Subject s = new Subject(rs.getInt(1), rs.getString(2));
+                Subject s = new Subject(rs.getInt(1), rs.getString(2), rs.getFloat(3));
                 subjectLists.add(s);
             } 
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }  
         return subjectLists;
+    }
+    
+    public boolean updateSubjectFees(int branchID, int subjectID, int levelID, float fees){
+        String sql = "update lvl_sub_rel set cost = ? where level_id = ? and subject_id = ? and branch_id = ?";
+        
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setFloat(1, fees);
+            stmt.setInt(2, levelID);
+            stmt.setInt(3, subjectID);
+            stmt.setInt(4, branchID);
+            
+            int rows = stmt.executeUpdate();
+            
+            if(rows > 0){
+                return true;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(LevelDAO.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        return false;
     }
 }

@@ -109,6 +109,7 @@
                                 <ul>
                                     <li><a href="CreateSubject.jsp">Create Subject</a></li>
                                     <li><a href="DisplaySubjects.jsp">View Subjects</a></li>
+                                    <li><a href="UpdateSubject.jsp">Update Subject Fees</a></li>
                                 </ul>
                             </li>
                             
