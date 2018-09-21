@@ -5,6 +5,7 @@
  */
 package controller;
 
+import entity.Users;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.RequestDispatcher;
@@ -39,34 +40,37 @@ public class UpdatePasswordServlet extends HttpServlet {
             throws ServletException, IOException {
         String newPassword = request.getParameter("newPassword");
         String idStr = request.getParameter("id");
-        String role = request.getParameter("role");
-        String name = request.getParameter("name");
         int id = 0;
         if(idStr != null){
             id = Integer.parseInt(idStr);
         }
+        UsersDAO users = new UsersDAO();
+        Users user = users.retrieveUserByID(id);
         
         boolean status = false;
-        if(role.equals("tutor")){
-            TutorDAO tutorDao = new TutorDAO();
-            status = tutorDao.updateTutorPassword(id, newPassword);
-        }else if(role.equals("admin")){
-            AdminDAO adminDao = new AdminDAO();
-            status = adminDao.updateAdminPassword(id, newPassword);
-        }else if(role.equals("student")){
-            status = StudentDAO.updateStudentPassword(id, newPassword);
-        }else if(role.equals("parent")){
-            status = ParentDAO.updateParentPassword(id, newPassword);
+        if (user != null) {
+            if(user.getRole().equals("admin")){
+                AdminDAO adminDAO = new AdminDAO();
+                status = adminDAO.updateAdminPassword(id, newPassword);
+            }
+            if(user.getRole().equals("tutor")){
+                TutorDAO tutorDAO = new TutorDAO();
+                status = tutorDAO.updateTutorPassword(id, newPassword);
+            }
+            if(user.getRole().equals("parent")){
+                status = ParentDAO.updateParentPassword(id, newPassword);
+            }
+            if(user.getRole().equals("student")){
+                status = StudentDAO.updateStudentPassword(id, newPassword);
+            }
         }
-        
         RequestDispatcher dispatcher;
         if(status){
             request.setAttribute("status", "Reset password successfully! Please login with new password.");
             dispatcher = request.getRequestDispatcher("Login.jsp");
         }else{
             request.setAttribute("errorMsg", "Failed to reset password!");
-            UsersDAO userDAO = new UsersDAO();
-            request.setAttribute("user", userDAO.retrieveUserByUsernameRole(role, name));
+            request.setAttribute("user", user);
             dispatcher = request.getRequestDispatcher("ChangePassword.jsp");
         }
         dispatcher.forward(request, response);

@@ -5,6 +5,9 @@
  */
 package controller;
 
+import entity.Admin;
+import entity.Parent;
+import entity.Student;
 import model.TutorDAO;
 import entity.Tutor;
 import entity.Users;
@@ -23,7 +26,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.AdminDAO;
+import model.ParentDAO;
 import model.SendMail;
+import model.SendSMS;
+import model.StudentDAO;
 import model.UsersDAO;
 
 /**
@@ -46,48 +53,87 @@ public class ForgotPasswordServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
        
-        /*String email = request.getParameter("email");
-        String role = request.getParameter("type");
+        
+        String username = request.getParameter("username");
+        String email = request.getParameter("email");
+        String phone = request.getParameter("phone");
         
         ArrayList<String> errorList = new ArrayList<>();
         
-        if(email == null || email.equals("")){
+        if(username == null || username.equals("")){
             errorList.add("username is required");
         }
         
-        if(role == null || role.equals("")){
-            errorList.add("please select role");
+        if((email == null || email.equals("")) && (phone == null || phone.equals("")) ){
+            errorList.add("please enter email or phone number");
         }
         
         if(errorList.isEmpty()){
             UsersDAO users = new UsersDAO();
-            Users user = users.retrieveUserByUsernameRole(role, email);
+            Users user = users.retrieveUserByUsernames(username);
             
             if(user == null){
                 errorList.add("user does not exist");
                 request.setAttribute("error", errorList);
             }else{
+                String password = user.getPassword();
+                String userEmail = "";
+                int userPhone = 0;
                 
-                try {
-                    String subject = "Stepping Stones Tuition Center Account Password Reset";
-                    //String encrypt = encrypt(user.getPassword()+"&"+user.getEmail()+"&"+role, "a");
-                    String href = request.getHeader("origin")+request.getContextPath()+"/ChangePassword?";
-                    String msg = "p="+user.getPassword()+"&u="+user.getEmail()+"&r="+role;
-                    String text = "Dear " + user.getEmail() + ", "
-                        + "\n\nWe have received a request to reset your Stepping Stones Tuition Center Account password."
-                        + "\nSimply click the link below to reset your password."
-                        + "\n"+href+msg;
-                    SendMail.sendingEmail(user.getMailingAddress(), subject, text);
-                    request.setAttribute("status", "Email sent. please check your email for instruction to reset your password.");
-                } catch (Exception ex) {
-                    Logger.getLogger(ForgotPasswordServlet.class.getName()).log(Level.SEVERE, null, ex);
+                if(user.getRole().equals("admin")){
+                    AdminDAO adminDao = new AdminDAO();
+                    Admin admin = adminDao.retrieveAdminById(user.getRespectiveID());
+                    userEmail = admin.getEmail();
+                    
+                }else if(user.getRole().equals("tutor")){
+                    TutorDAO tutorDAO = new TutorDAO();
+                    Tutor tutor = tutorDAO.retrieveSpecificTutorById(user.getRespectiveID());
+                    userEmail = tutor.getEmail();
+                    userPhone = tutor.getPhone();
+                }else if(user.getRole().equals("student")){
+                    Student student = StudentDAO.retrieveStudentbyID(user.getRespectiveID());
+                    userEmail = student.getEmail();
+                    userPhone = student.getPhone();
+                }else{
+                    ParentDAO parentDAO = new ParentDAO();
+                    Parent parent = parentDAO.retrieveSpecificParentById(user.getRespectiveID());
+                    userEmail = parent.getEmail();
+                    userPhone = parent.getPhone();
                 }
+                String href = request.getHeader("origin")+request.getContextPath()+"/ChangePassword?";
+                String msg = "p="+password+"&u="+username;
+                if(email != null && !email.equals("") && email.equals(userEmail)){
+                    try {
+                        String subject = "Stepping Stones Tuition Center Account Password Reset";
+                        //String encrypt = encrypt(user.getPassword()+"&"+user.getEmail()+"&"+role, "a");
+                        
+                        String text = "Dear " + username + ", "
+                            + "\n\nWe have received a request to reset your Stepping Stones Tuition Center Account password."
+                            + "\nSimply click the link below to reset your password."
+                            + "\n"+href+msg;
+                        SendMail.sendingEmail(userEmail, subject, text);
+                        request.setAttribute("status", "Email sent. please check your email for instruction to reset your password.");
+                    } catch (Exception ex) {
+                        Logger.getLogger(ForgotPasswordServlet.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }else if(phone!= null && !phone.equals("") && Integer.parseInt(phone) == userPhone){
+                    
+                    String text = "We have received a request to reset your Stepping Stones Tuition Center Account password."
+                            + "\nSimply click the link below to reset your password."
+                            + "\n"+href+msg;
+                    String phoneNum = "+65" + phone;
+                    SendSMS.sendingSMS(phoneNum, text);
+                }else{
+                    errorList.add("User not found");
+                    request.setAttribute("error", errorList);
+                }
+                
             }
         }else{
             request.setAttribute("error", errorList);
         }
         RequestDispatcher dispatcher = request.getRequestDispatcher("ForgotPassword.jsp");
-        dispatcher.forward(request, response);*/
+        dispatcher.forward(request, response);
     }
     public static String encrypt(String strClearText,String strKey) throws Exception{
 	String strData="";

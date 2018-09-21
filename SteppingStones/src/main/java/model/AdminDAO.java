@@ -105,13 +105,14 @@ public class AdminDAO {
 
     public Admin retrieveAdminById(int admin_id) {
         try (Connection conn = ConnectionManager.getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement("SELECT admin_username,branch_id FROM admin WHERE admin_id = ?")) {
+            PreparedStatement preparedStatement = conn.prepareStatement("SELECT admin_username,email,branch_id FROM admin WHERE admin_id = ?")) {
             preparedStatement.setInt(1, admin_id);
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 String admin_username = rs.getString(1);
-                int branch_id = rs.getInt(2);
-                Admin admin = new Admin(admin_username, branch_id);
+                String email = rs.getString(2);
+                int branch_id = rs.getInt(3);
+                Admin admin = new Admin(admin_username, email, branch_id);
                 return admin;
             }
 

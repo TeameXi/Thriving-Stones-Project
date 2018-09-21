@@ -196,6 +196,27 @@ public class UsersDAO {
         }
         return null;
     }
+    public Users retrieveUserByUsernames(String name) {
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("select user_id,username,password,role,respective_id from users where username = ?");
+                stmt.setString(1, name.trim());
+                ResultSet rs = stmt.executeQuery();
+               
+                while (rs.next()) {
+                    int user_id = rs.getInt(1);
+                    String username = rs.getString(2);
+                    String pwd = rs.getString(3);
+                    String role = rs.getString(4);
+                    int respective_id = rs.getInt(5);
+                    return new Users(user_id, username, pwd, role, respective_id);
+                }
+               
+                return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
     public boolean addUser(Users user) {
         try (Connection conn = ConnectionManager.getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO users(username,password,role,respective_id) VALUES(?,MD5(?),?,?)")) {
