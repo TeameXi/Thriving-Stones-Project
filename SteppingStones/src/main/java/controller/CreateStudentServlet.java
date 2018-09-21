@@ -76,8 +76,15 @@ public class CreateStudentServlet extends HttpServlet {
         }
         
         String href =  request.getHeader("origin")+request.getContextPath()+"/Login.jsp";
-        int insertStudent = StudentDAO.insertStudent(studentName, phone,stuEmail, levelID, branchID, regFees);
         
+        if(stuEmail.equals("")){
+            stuEmail = null;
+        }
+        
+        int insertStudent = StudentDAO.insertStudent(studentName, phone,stuEmail, levelID, branchID, regFees);
+//        System.out.println("Insert Student " + insertStudent);
+//        System.out.println("StuEmail" + stuEmail);
+//        System.out.println(phone);
         if(insertStudent>0){
             UsersDAO userDAO = new UsersDAO();
             String username = studentName.replace(' ', '.');
@@ -106,17 +113,17 @@ public class CreateStudentServlet extends HttpServlet {
             boolean updateOutstandingFees = StudentDAO.updateStudentTotalOutstandingFees(insertStudent, outstandingAmt);
             System.out.println("After Reg Fees Add" + outstandingAmt);
             
-            if(userStatus && updateOutstandingFees){
-                String subject = "Stepping Stones Tuition Center Student's Account Creation";
-                String text = "Thanks for choosing us. Your account has been created.\n\nBelow is the username and password to access your account: \nUsername: " + username 
-                        + "\nPassword: " + stuPassword + "\n\nYou can Login via "+href; 
-                if(stuEmail != null && !stuEmail.equals("")){
-                    SendMail.sendingEmail(stuEmail, subject, text);
-                }else if(phone != 0){
-                    String phoneNum = "+65" + phone;
-                    SendSMS.sendingSMS(phoneNum, text);
-                }
-            }
+//            if(userStatus && updateOutstandingFees){
+//                String subject = "Stepping Stones Tuition Center Student's Account Creation";
+//                String text = "Thanks for choosing us. Your account has been created.\n\nBelow is the username and password to access your account: \nUsername: " + username 
+//                        + "\nPassword: " + stuPassword + "\n\nYou can Login via "+href; 
+//                if(stuEmail != null && !stuEmail.equals("")){
+//                    SendMail.sendingEmail(stuEmail, subject, text);
+//                }else if(phone != 0){
+//                    String phoneNum = "+65" + phone;
+//                    SendSMS.sendingSMS(phoneNum, text);
+//                }
+//            }
         }
 
         int insertParent = ParentDAO.insertParent(parentName, parentPhone, parentEmail, branchID);
@@ -143,20 +150,22 @@ public class CreateStudentServlet extends HttpServlet {
 
             Users tempUser = new Users(username, parentPassword, "parent", insertParent, branchID);
             boolean userStatus = userDAO.addUser(tempUser);
-            if(userStatus){
-                String subject = "Stepping Stones Tuition Center Parent's Account Creation";
-                String text = "Thanks for choosing us. Your account has been created.\n\nBelow is the username and password to access your account: \nUsername: " + username 
-                        + "\nPassword: " + parentPassword + "\n\nYou can Login via "+href; 
-                if(parentEmail != null && !parentEmail.equals("")){
-                    SendMail.sendingEmail(parentEmail, subject, text);
-                }else if(parentPhone != 0){
-                    String phoneNum = "+65" + parentPhone;
-                    SendSMS.sendingSMS(phoneNum, text);
-                }
-            }
+//            if(userStatus){
+//                String subject = "Stepping Stones Tuition Center Parent's Account Creation";
+//                String text = "Thanks for choosing us. Your account has been created.\n\nBelow is the username and password to access your account: \nUsername: " + username 
+//                        + "\nPassword: " + parentPassword + "\n\nYou can Login via "+href; 
+//                if(parentEmail != null && !parentEmail.equals("")){
+//                    SendMail.sendingEmail(parentEmail, subject, text);
+//                }else if(parentPhone != 0){
+//                    String phoneNum = "+65" + parentPhone;
+//                    SendSMS.sendingSMS(phoneNum, text);
+//                }
+//            }
             
         }
-        System.out.print("parent Child Rel" + parentPhone + " " + insertStudent );
+        
+        //System.out.print("parent Child Rel" + parentPhone + " " + insertStudent );
+        
         request.setAttribute("creation_status",""+(insertStudent>0 && insertParent>0));
         if(insertStudent == 0){
             request.setAttribute("existingStudent", studentName);

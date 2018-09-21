@@ -352,8 +352,8 @@ public class LessonDAO {
 
     public static int retrieveNoOfLessonForFirstInstallment(int classID, String joinDate) {
         int noOfLessons = 0;
-        String sql = "select count(lesson_id) as noOfLessons from lesson where class_id = ? and start_date > ? and "
-                + "start_date < (select date(start_date) from lesson where class_id = ? and date(start_date) > ? and reminder_status != 0 order by start_date limit 1);";
+        String sql = "select count(lesson_id) as noOfLessons from lesson where class_id = ? and date(start_date) >= ? and "
+                + "date(start_date) <= (select date(start_date) from lesson where class_id = ? and date(start_date) > ? and reminder_status != 0 order by start_date limit 1);";
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, classID);
