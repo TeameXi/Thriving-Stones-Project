@@ -22,7 +22,7 @@ public class Class {
         
     }
     
-    public Class(int classID,String level, int subjectID, String classTime, String classDay, double mthlyFees, String startDate, String endDate,String holidayDate) {
+    public Class(int classID,String level, int subjectID, String classTime, String classDay, double mthlyFees, String startDate, String endDate,String holidayDate,int tutorID) {
         this.classID = classID;
         this.level = level;
         this.subjectID = subjectID;
@@ -32,6 +32,7 @@ public class Class {
         this.startDate = startDate;
         this.endDate = endDate;
         this.holidayDate = holidayDate;
+        this.tutorID = tutorID;
     }
 
     public Class(int classID, String level, String subject, int term, String classTime, String classDay, double mthlyFees, String startDate, String endDate) {

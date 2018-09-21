@@ -150,7 +150,8 @@ public class ClassDAO {
                 double mthlyFees = rs.getDouble("fees");
                 String level = LevelDAO.retrieveLevel(levelID);
                 String holidayDate = rs.getString("holiday_date");
-                Class cls = new Class(classID, level, subjectID, classTime, classDay, mthlyFees, startDate, endDate, holidayDate);
+                int tutorID =rs.getInt("tutor_id");
+                Class cls = new Class(classID, level, subjectID, classTime, classDay, mthlyFees, startDate, endDate, holidayDate,tutorID);
                 classList.add(cls);
             }
         }catch(SQLException e){
@@ -179,7 +180,8 @@ public class ClassDAO {
                 double mthlyFees = rs.getDouble("fees");
                 String level = LevelDAO.retrieveLevel(level_id);
                 String holidayDate = rs.getString("holiday_date");
-                Class cls = new Class(classID, level, subjectID, classTime, classDay, mthlyFees, startDate, endDate, holidayDate);
+                int tutorID =rs.getInt("tutor_id");
+                Class cls = new Class(classID, level, subjectID, classTime, classDay, mthlyFees, startDate, endDate, holidayDate,tutorID);
                 classList.add(cls);
             }
         }catch(SQLException e){

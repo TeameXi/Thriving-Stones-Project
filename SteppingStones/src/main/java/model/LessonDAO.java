@@ -41,14 +41,15 @@ public class LessonDAO {
         }
     }
 
-    public static boolean updateTutor(int tutorId, int classId, Timestamp lessonDateTime) {
+    public static boolean updateTutorForOneLesson(int classId,int tutorId,Timestamp lessonStartDate,Timestamp lessonEndDate) {
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            String sql = "update lesson set tutor_id = ? where class_id = ? and lesson_date_time = ?";
+            String sql = "update lesson set tutor_id = ? where class_id = ? and start_date = ? and end_date=?";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, tutorId);
             stmt.setInt(2, classId);
-            stmt.setTimestamp(3, lessonDateTime);
+            stmt.setTimestamp(3, lessonStartDate);
+            stmt.setTimestamp(4, lessonEndDate);
 
             stmt.executeUpdate();
             conn.commit();

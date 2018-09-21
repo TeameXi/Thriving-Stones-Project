@@ -146,8 +146,10 @@ public class CreateAndUpdateScheduleServlet extends HttpServlet {
             } else if (add.equals("false")) {
                 //Edit schedule
                 String classVal = request.getParameter("classId");
-                String tempDate = request.getParameter("lessonDate").trim();
+                String date = request.getParameter("lessonDate").trim();
                 String tutorVal = request.getParameter("tutorId");
+                String time = request.getParameter("lessonTime").trim();
+                String assignmentType = request.getParameter("tutor_assignmentType");
    
                 int classId = 0;
                 int tutorId = 0;
@@ -165,9 +167,19 @@ public class CreateAndUpdateScheduleServlet extends HttpServlet {
                 }else{
                     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
                     try{
-                        Date convertedLessonDate = dateFormat.parse(tempDate+".000");
-                        Timestamp LessonTimestamp = new java.sql.Timestamp(convertedLessonDate.getTime());
-                        boolean editStatus = LessonDAO.updateTutor(tutorId, classId, LessonTimestamp);
+                        String timeArr[] = time.split("-");
+                        String startDate = date+" "+timeArr[0]+":00";
+                        String endDate = date+" "+timeArr[1]+":00";
+                        Date convertedLessonStartDate = dateFormat.parse(startDate+".000");
+                        Timestamp LessonStartTimestamp = new java.sql.Timestamp(convertedLessonStartDate.getTime());
+                        
+                        Date convertedLessonEndDate = dateFormat.parse(endDate+".000");
+                        Timestamp LessonEndTimestamp = new java.sql.Timestamp(convertedLessonEndDate.getTime());
+                        
+                        boolean editStatus = false;
+                        if(assignmentType.equals("0")){
+                            editStatus = LessonDAO.updateTutorForOneLesson(tutorId, classId,LessonStartTimestamp,LessonEndTimestamp);
+                        }
                         if(editStatus){
                             out.println(1);
                         }else{

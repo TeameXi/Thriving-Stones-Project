@@ -425,7 +425,7 @@ public class TutorDAO {
                 int tutor_id = rs.getInt(2);
                 int subject_id = rs.getInt(3);
                 double hourlyFee = rs.getDouble(4);
-                tutorSubLists.add(new Tutor_HourlyRate_Rel(tutor_id, fullname, subject_id, hourlyFee));
+                tutorSubLists.add(new Tutor_HourlyRate_Rel(tutor_id, fullname, subject_id, hourlyFee,level_id));
             }
        
         }   catch (SQLException ex) {

@@ -77,7 +77,7 @@
         <div class="dhx_cal_header">
         </div>
         <div class="dhx_cal_data">
-        </div>		
+        </div>      
     </div>
     
     
@@ -97,18 +97,17 @@
         // First Time loading Page
         level_id = 0;
         branch_id = $("#branch_id").val();
-        console.log(branch_id);
-        $.ajax({
-            type: 'POST',
-            url: 'RetrieveAllClassesData',
-            dataType: 'JSON',
-            data: {branchId:branch_id,levelId:level_id},
-            success: function (data) {
-                console.log(data);
-                processingSchedule(data,level_id);
-            }
-
-        });
+//        $.ajax({
+//            type: 'POST',
+//            url: 'RetrieveAllClassesData',
+//            dataType: 'JSON',
+//            data: {branchId:branch_id,levelId:level_id},
+//            success: function (data) {
+//                console.log(data);
+//                processingSchedule(data,level_id);
+//            }
+//
+//        });
         
         $("input[name='levelRdoBtn']").on('change', function () {
             var selectedValue = $("input[name='levelRdoBtn']:checked").val();
@@ -116,12 +115,11 @@
                 type: 'POST',
                 url: 'RetrieveAllClassesData',
                 dataType: 'JSON',
-                data: {branchId:branch_id,levelId:selectedValue},
-                success: function (data) {
-                    processingSchedule(data,selectedValue);
-            }
-            });         
-        });  
+                data: {branchId:branch_id,levelId:selectedValue}
+            }).then(function(data){
+                processingSchedule(data,selectedValue);
+            });          
+        })
     });
     
    
@@ -129,23 +127,27 @@
         //Refresh Schedule
         
                 scheduler.clearAll();
-                
-                //console.log(data);
                 if(data === -1){
                     html = '<div class="alert alert-danger col-md-5"><strong>Sorry!</strong> Something went wrong</div>';
                     $("#errorMsg").html(html);
                     $('#errorMsg').fadeIn().delay(2000).fadeOut();
                 }else{  
-                    var classLists = data["class"];
-                    var general_data = data['general'];
-                    
+                    var classLists = "";
+                    var subject = "";
+                    var tutor = "";
+                 
+                    classLists = data["class"];
+
                     // Subject Dropdown data
-                    var subject = data["subject"];
+                    subject = data["subject"];
+                    
+                    console.log("Level Subject");
+                    console.log(subject);
+                    console.log("======");
                     
                     // Tutor Dropdown Data
-                    var tutor = data["tutor"];  
+                    tutor = data["tutor"];  
                     
-
                     // Radio box
                     scheduler.locale.labels.section_selectme = "Reminder"; 
                     var has_reminder = [
@@ -179,18 +181,16 @@
                     
                     // Lightbox field
                     scheduler.locale.labels.section_template = 'Lesson';
-                    scheduler.locale.labels.section_timetemplate = 'Timing';
-                    var edit_lightbox = [
-                        {name:"template", height: 60, type:"template", map_to:"my_template"},
-                        {name:"timetemplate", height:20, type:"template", map_to:"lessonDate" },
-                        {name:"Assign To", height:20,type:"select", options: tutor, map_to:"tutor"},
-                        {name:"changeTutorType", height: 20, options: tutor_assignment_type, map_to:"tutor_assignment_type", type:"radio",vertical:true}
-                    ];
+                    scheduler.locale.labels.section_datetemplate = 'Lesson Date';
+                    scheduler.locale.labels.section_timetemplate = 'Duration';
+                    scheduler.locale.labels.section_tutortemplate = 'Assign Tutor';
+                    scheduler.locale.labels.section_currenttutortemplate = 'Tutor';
+                 
                     
                     // CUSTOM ADD LIGHTBOX
                     scheduler.form_blocks["custom_classendtimeperiod"]={
                             render:function(sns){
-                                return "<div class='dhx_cal_ltext'>&nbsp;<input type='text' id='classEndDate' /></div>";
+                                return "<div class='dhx_cal_ltext'>&nbsp;<input type='date' id='classEndDate' /></div>";
                             },
                             set_value:function(node,value,ev){
                                 node.childNodes[1].value=value||"";
@@ -239,18 +239,18 @@
                         ];
                     }
                    
-                    console.log(scheduler.form_blocks.custom_classendtimeperiod);
-                    scheduler.form_blocks.custom_classendtimeperiod.button_click=function(index,button,shead,sbody){
-                        console.log("fff");
-                    }
+//                    console.log(scheduler.form_blocks.custom_classendtimeperiod);
+//                    scheduler.form_blocks.custom_classendtimeperiod.button_click=function(index,button,shead,sbody){
+//                        console.log("fff");
+//                    }
                     scheduler.config.xml_date="%Y-%m-%d %H:%i";
                     
                     // Recurring Events
                     scheduler.config.prevent_cache = true;
-                    scheduler.config.details_on_create=true;
-                    scheduler.config.details_on_dblclick=true;
-                    scheduler.config.occurrence_timestamp_in_utc = true;
-                    scheduler.config.repeat_precise = true;
+//                    scheduler.config.details_on_create=true;
+//                    scheduler.config.details_on_dblclick=true;
+//                    scheduler.config.occurrence_timestamp_in_utc = true;
+//                    scheduler.config.repeat_precise = true;
                     
                     // Auto Update End Time
                     scheduler.config.event_duration = 90; 
@@ -263,23 +263,72 @@
                     ];
                     
                     // Customization of edit and add for lightbox
-                    scheduler.attachEvent("onBeforeLightbox", function(event_id) {
+                    if(!scheduler._onBeforeLightbox){
+                        scheduler.attachEvent("onBeforeLightbox", function(event_id) {
                         scheduler.resetLightbox();
-                        
+                        console.log("dddddd======");
                         var ev = scheduler.getEvent(event_id);
+                        
+                        
                         tempDate = new Date(ev["start_date"]);
                         tempDay = tempDate.getDay(); 
-                        
+
                         if (ev.restricted ===true){
-                           
+                            // Display existing tutor only if exist
+                            currentTutor = "";
+                            if(ev["tutor"] !== 0){
+                                findingTutorName = data["tutor"].find(x=>x.key === ev["tutor"] && x.subject === parseInt(ev["text"]));
+                                if(typeof findingTutorName !== "undefined" || findingTutorName === "undefined"){
+                                    currentTutor = findingTutorName.label;
+                                }
+                            }
+                            
+                            findingLvlIdGivenValue = lvlLists.find(x => x.label === ev.level);
+                            editlvlId = findingLvlIdGivenValue.key;
+                            
+                            //Filter Tutor Lists For level and subject
+                            var filterTutor = data["tutor"].filter(function (el) {
+                                return editlvlId === parseInt(el.level) && parseInt(ev["text"]) === el.subject;
+                            });
+                            if(filterTutor.length > 0){
+                                var edit_lightbox = [
+                                    {name:"template", height: 60, type:"template", map_to:"my_template"},
+                                    {name:"currenttutortemplate", height:20,type:"template", map_to:"currentTutorTemple"},
+                                    {name:"datetemplate", height:20, type:"template", map_to:"lessonDate"},
+                                    {name:"timetemplate", height:20, type:"template", map_to:"lessonTime"},
+                                    {name:"Assign To", height:20,type:"select", options: filterTutor, map_to:"tutor"},
+                                    {name:"changeTutorType", height: 20, options: tutor_assignment_type, map_to:"tutor_assignment_type", type:"radio",vertical:true,default_value:0}
+                                ];
+                            }else{
+                                var edit_lightbox = [
+                                    {name:"template", height: 60, type:"template", map_to:"my_template"},
+                                    {name:"currenttutortemplate", height:20,type:"template", map_to:"currentTutorTemple"},
+                                    {name:"datetemplate", height:20, type:"template", map_to:"lessonDate"},
+                                    {name:"timetemplate", height:20, type:"template", map_to:"lessonTime"},
+                                    {name:"tutortemplate", height:20,type:"template", map_to:"tutorText"},
+                                    {name:"changeTutorType", height: 20, options: tutor_assignment_type, map_to:"tutor_assignment_type", type:"radio",vertical:true,default_value:0}
+                                ];                             
+                            }
+
                             // Edit Display
                             scheduler.config.lightbox.sections = edit_lightbox;
                             
                             // Display Subject
-                            eventName = subject.find(x => x.key === parseInt(ev["text"]));
-                            eventName = eventName["label"];
+                            eventNameObj = data["subject"].find(x => x.key === parseInt(ev["text"]));
+                            eventName = '0';
+              
+                            if(typeof  eventNameObj !== "undefined"){
+                                eventName = eventNameObj.label;
+                            }
                             ev.my_template = "<b>Subject : </b>"+ eventName+"<br>";
-
+                            
+                            //Display Tutor
+                            if(currentTutor !== ""){
+                                ev.currentTutorTemple = currentTutor+"<br/>";
+                            }else{
+                                ev.currentTutorTemple = "Tutor has not been assign yet. Assign now<br/>";
+                            }
+                            
                             //Display time
                             temp_year = tempDate.getFullYear();
 
@@ -289,19 +338,34 @@
                             temp_hours = ("0" + tempDate.getHours()).slice(-2);
                             temp_minutes = ("0" + tempDate.getMinutes()).slice(-2);
                             
-                            ev.lessonDate = [temp_year,temp_month,temp_day].join("-")+" ";
-                            ev.lessonDate += [temp_hours,temp_minutes,"00"].join(":");
+                            temp_end_date = new Date(ev["end_date"]);
+                            temp_end_hours = ("0" + temp_end_date.getHours()).slice(-2);
+                            temp_end_minutes = ("0" + temp_end_date.getMinutes()).slice(-2); 
+                            
+                            // date
+                            
+                            ev.lessonDate = [temp_year,temp_month,temp_day].join("-");
+                            ev.lessonTime = [temp_hours,temp_minutes,"00"].join(":");
+                            ev.lessonTime += "-"+[temp_end_hours,temp_end_minutes,"00"].join(":");
+                         
+                            // Display Tutor Assignment
+                            if(filterTutor.length <= 0){
+                                ev.tutorText = "No Tutor to assign to";
+                            }
+                            
                         } else {
                             // Add Display
                             scheduler.config.lightbox.sections = add_lightbox;
                         };   
                         return true;
                     });
+                    }
 
                     // CUSTOMIZE HEADER FOR DAY AND WEEK VIEW
+                   
                     scheduler.templates.event_text = function(start,end,event){
                         if(event.text !== "New event"){
-                            tempObj = subject.find(x => x.key === parseInt(event.text));
+                            tempObj = data["subject"].find(x => x.key === parseInt(event.text));
                             return tempObj["label"];
                         }else{
                             eventName = scheduler.getLabel("subject",event["subject"]);
@@ -339,9 +403,9 @@
                     weekday[5] = "Fri";
                     weekday[6] = "Sat";
                     
-                
-                    scheduler.attachEvent('onEventSave', function(eventId, event) {
-                        console.log()
+                    if(!scheduler._onEventSave){
+                        scheduler.attachEvent('onEventSave', function(eventId, event) {
+                        console.log("ddd");
                         if(Number.isInteger(eventId)){                            
                             // Validation
                             if (!event.text && !event.fees && !event.lesson) {
@@ -411,30 +475,45 @@
                             
                         }else{
                             var classId = eventId.split("#")[0];
-                            console.log(event["lessonDate"]);
-                            $.ajax({
-                                url: 'CreateAndUpdateScheduleServlet',
-                                dataType: 'JSON',
-                                data: {
-                                    add_new:false,
-                                    classId:classId,lessonDate:event["lessonDate"],tutorId:event["tutor"]
-                                },
-                                success: function (data) {
-                                    console.log(data);
-                                    if(data === -1){
-                                        dhtmlx.alert("Sorry, Something went wrong");
-                                        return false;
-                                    }else{
-                                        dhtmlx.alert("Updated successfully");
-                                        return true;
-                                    }
-                                }
-                            });
+                            lessondDate = event["lessonDate"];
+                            lessonTime = event["lessonTime"];
+                            tutorId = event["tutor"];
+                            tutor_assignmentType = event["tutor_assignment_type"];
+                            
+                            if (tutorId === "") {
+                                dhtmlx.alert("Select One Tutor");
+                                return false;
+                            }
+                            console.log(1);
+                              
+//                            $.ajax({
+//                                url: 'CreateAndUpdateScheduleServlet',
+//                                dataType: 'JSON',
+//                                data: {
+//                                    add_new:false,
+//                                    classId:classId,
+//                                    lessonDate:lessondDate,
+//                                    lessonTime:lessonTime,
+//                                    tutorId:tutorId,
+//                                    tutor_assignmentType:tutor_assignmentType
+//                                },
+//                                success: function (data) {
+//                                    console.log(data);
+//                                    if(data === -1){
+//                                        dhtmlx.alert("Sorry, Something went wrong");
+//                                        return false;
+//                                    }else{
+//                                        dhtmlx.alert("Updated successfully");
+//                                        return true;
+//                                    }
+//                                }
+//                            });
                             
                         }
 
                         return true;
                     });
+                    }
                 }
    }
 

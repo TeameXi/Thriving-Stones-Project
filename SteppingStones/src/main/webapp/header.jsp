@@ -38,7 +38,7 @@
                       <nav style="text-align: center;">
                         <ul class="nav navbar-nav">
                           <li class="dropdown">
-                              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span><%=role.toUpperCase()%> - </span> <%=account %><b class="caret"></b></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span><%=role.toUpperCase()%> - </span> <%=account %><b class="caret"></b></a>
                             <ul class="dropdown-menu animated fadeInUp">
                                 <%
                                     if(role != null && role == "admin" && branch_id != 0){
@@ -99,6 +99,36 @@
                     <%
                         }else if(user != null && user.getBranchId() !=0 && role == "admin"){
                     %>
+                                  
+                            <li class="submenu">
+                                <a href="#">
+                                    <i class="zmdi zmdi-book"></i> Subject
+                                    <span class="caret pull-right"></span>
+                                </a>
+                                <!-- Sub menu -->
+                                <ul>
+                                    <li><a href="CreateSubject.jsp">Create Subject</a></li>
+                                    <li><a href="DisplaySubjects.jsp">View Subjects</a></li>
+                                </ul>
+                            </li>
+                            
+                            <li class="submenu">
+                                <a href="#">
+                                    <i class="zmdi zmdi-accounts-alt"></i> Tutor
+                                    <span class="caret pull-right"></span>
+                                </a>
+                                <!-- Sub menu -->
+                                <ul>
+                                    <li><a href="CreateTutor.jsp">Create Tutor</a></li>
+                                    <li><a href="DisplayTutors.jsp">View Tutors</a></li>
+                                    <li><a href="MassUpdateTutorPay.jsp">Tutor Hourly Rate</a></li>
+                                    <li><a href="MarkTutorAttendance.jsp">Tutor Attendance</a></li>
+                                </ul>
+                            </li>
+                            
+                            <li><a href="CreateClassesSchedule.jsp"><i class="zmdi zmdi-calendar"></i>Scheduling Classes</a></li>
+                         
+                            
                     
                             <li class="submenu">
                                 <a href="#">
@@ -125,45 +155,12 @@
                                 </ul>
                             </li>
                             
-                            <li class="submenu">
-                                <a href="#">
-                                    <i class="zmdi zmdi-accounts-alt"></i> Tutor
-                                    <span class="caret pull-right"></span>
-                                </a>
-                                <!-- Sub menu -->
-                                <ul>
-                                    <li><a href="CreateTutor.jsp">Create Tutor</a></li>
-                                    <li><a href="DisplayTutors.jsp">View Tutors</a></li>
-                                </ul>
-                            </li>
+                           
                             
-                            <li><a href="MarkTutorAttendance.jsp"><i class="zmdi zmdi-accounts-alt"></i>Tutor Attendance</a></li>
-                            
-                            <li class="submenu">
-                                <a href="#">
-                                    <i class="zmdi zmdi-book"></i> Subject
-                                    <span class="caret pull-right"></span>
-                                </a>
-                                <!-- Sub menu -->
-                                <ul>
-                                    <li><a href="CreateSubject.jsp">Create Subject</a></li>
-                                    <li><a href="DisplaySubjects.jsp">View Subjects</a></li>
-                                </ul>
-                            </li>
-                            
+                      
                             <!-- <li><a href="RegisterForClasses.jsp"><i class="zmdi zmdi-library"></i>Register For Classes</a></li> -->
                             
-                            <li class="submenu">
-                                <a href="#">
-                                    <i class="zmdi zmdi-calendar-note"></i> Scheduling classes
-                                    <span class="caret pull-right"></span>
-                                </a>
-                                <!-- Sub menu -->
-                                <ul>
-                                    <li><a href="CreateClassesSchedule.jsp">Create Schedule</a></li>
-                                    <li><a href="DisplayClassesSchedule.jsp">View Schedules</a></li>
-                                </ul>
-                            </li>
+                          
                             <li><a href="stats.html"><i class="zmdi zmdi-chart"></i> Financial Reports</a></li>
                             <li class="submenu">
                                  <a href="#">

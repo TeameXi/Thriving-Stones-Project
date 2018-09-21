@@ -251,11 +251,13 @@
     (function () {
         $(function () {
             return $('[data-toggle]').on('click', function () {
-                var toggle;
-                toggle = $(this).addClass('active').attr('data-toggle');
-                $(this).siblings('[data-toggle]').removeClass('active');
-                if (toggle !== "modal") {
-                    return $('.surveys').removeClass('grid list').addClass(toggle);
+                var toggleView;
+                toggleView = $(this).addClass('active').attr('data-toggle');
+                if(toggleView !== "dropdown"){
+                    $(this).siblings('[data-toggle]').removeClass('active');
+                    if (toggleView !== "modal") {
+                        return $('.surveys').removeClass('grid list').addClass(toggleView);
+                    }
                 }
             });
         });
