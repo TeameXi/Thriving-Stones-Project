@@ -168,24 +168,27 @@ public class CreateAndUpdateScheduleServlet extends HttpServlet {
                     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
                     try{
                         String timeArr[] = time.split("-");
-                        String startDate = date+" "+timeArr[0]+":00";
-                        String endDate = date+" "+timeArr[1]+":00";
+                        String startDate = date+" "+timeArr[0];
+                        String endDate = date+" "+timeArr[1];
                         Date convertedLessonStartDate = dateFormat.parse(startDate+".000");
                         Timestamp LessonStartTimestamp = new java.sql.Timestamp(convertedLessonStartDate.getTime());
                         
                         Date convertedLessonEndDate = dateFormat.parse(endDate+".000");
                         Timestamp LessonEndTimestamp = new java.sql.Timestamp(convertedLessonEndDate.getTime());
                         
+                        System.out.println("fff_date"); 
                         boolean editStatus = false;
                         if(assignmentType.equals("0")){
-                            editStatus = LessonDAO.updateTutorForOneLesson(tutorId, classId,LessonStartTimestamp,LessonEndTimestamp);
+                            editStatus = LessonDAO.updateTutorForOneLesson(classId,tutorId,LessonStartTimestamp,LessonEndTimestamp);
+                            System.out.println(editStatus);
                         }
                         if(editStatus){
                             out.println(1);
                         }else{
-                            out.print(-1);
+                            out.print(2);
                         }
                     }catch(ParseException e){
+                        System.out.println(e);
                         out.println(-1);
                     }
                 }

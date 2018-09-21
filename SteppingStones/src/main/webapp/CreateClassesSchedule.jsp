@@ -45,7 +45,8 @@
 <div class="col-md-10">
     <div style="text-align: center;margin: 20px;"><span class="tab_active">Scheduling</span></h5></div>
     <div class="row" id="errorMsg"></div>
-    <div class="row"><form>
+    <div class="row">
+        <form name="lvlForm">
             <label>Filter By : </label>
             <label class="radio-inline"><input type="radio" name="levelRdoBtn" checked value="0">All</label>
             <label class="radio-inline"><input type="radio" name="levelRdoBtn" value="1">Pri 1</label>
@@ -59,7 +60,8 @@
             <label class="radio-inline"><input type="radio" name="levelRdoBtn" value="9">Sec 3</label>
             <label class="radio-inline"><input type="radio" name="levelRdoBtn" value="10">Sec 4</label>
             <input type="hidden" value="<%=branch_id%>" id="branch_id"/>
-    </form></div>
+    </form>
+    </div>
 
     <br/>                       
                         
@@ -85,45 +87,47 @@
 </div>
 </div>
 </div>
-
-
 <%@include file="footer.jsp"%>
-<script charset="utf-8">
-
-    $(document).ready(function(){
-        scheduler.config.xml_date="%Y-%m-%d %H:%i";
-        scheduler.init('scheduler_here',new Date(),"year");
-        
-        // First Time loading Page
+<script>
+ $(document).ready(function(){
         level_id = 0;
         branch_id = $("#branch_id").val();
-//        $.ajax({
-//            type: 'POST',
-//            url: 'RetrieveAllClassesData',
-//            dataType: 'JSON',
-//            data: {branchId:branch_id,levelId:level_id},
-//            success: function (data) {
-//                console.log(data);
-//                processingSchedule(data,level_id);
-//            }
-//
-//        });
         
-        $("input[name='levelRdoBtn']").on('change', function () {
-            var selectedValue = $("input[name='levelRdoBtn']:checked").val();
+        var myParam = location.search.split('lvl_id=')[1];
+        if(typeof myParam === "undefined"){
             $.ajax({
                 type: 'POST',
                 url: 'RetrieveAllClassesData',
                 dataType: 'JSON',
-                data: {branchId:branch_id,levelId:selectedValue}
+                data: {branchId:branch_id,levelId:level_id},
+                success: function (data) {
+                    console.log(data);
+                    processingSchedule(data,level_id);
+                }
+
+            });
+        }else{
+            document.lvlForm.levelRdoBtn.value = myParam;
+            levelId = parseInt(myParam);
+            $.ajax({
+                type: 'POST',
+                url: 'RetrieveAllClassesData',
+                dataType: 'JSON',
+                data: {branchId:branch_id,levelId:levelId}
             }).then(function(data){
-                processingSchedule(data,selectedValue);
-            });          
-        })
-    });
-    
-   
-   function processingSchedule(data,level_id){
+                processingSchedule(data,levelId);
+            });  
+        }
+        
+        //radio onchange
+        $("input[name='levelRdoBtn']").on('change', function () {
+            var selectedValue = $("input[name='levelRdoBtn']:checked").val();
+            window.location.href = 'CreateClassesSchedule_v1.jsp?lvl_id='+selectedValue;
+        
+        });
+
+        
+        function processingSchedule(data,level_id){
         //Refresh Schedule
         
                 scheduler.clearAll();
@@ -141,10 +145,10 @@
                     // Subject Dropdown data
                     subject = data["subject"];
                     
-                    console.log("Level Subject");
-                    console.log(subject);
-                    console.log("======");
-                    
+//                    console.log("Level Subject");
+//                    console.log(subject);
+//                    console.log("======");
+//                           
                     // Tutor Dropdown Data
                     tutor = data["tutor"];  
                     
@@ -265,15 +269,18 @@
                     // Customization of edit and add for lightbox
                     if(!scheduler._onBeforeLightbox){
                         scheduler.attachEvent("onBeforeLightbox", function(event_id) {
+                        // Take out delete btn
+                        scheduler.config.buttons_left = [];
+                           
                         scheduler.resetLightbox();
-                        console.log("dddddd======");
+  
                         var ev = scheduler.getEvent(event_id);
-                        
-                        
+
                         tempDate = new Date(ev["start_date"]);
                         tempDay = tempDate.getDay(); 
 
                         if (ev.restricted ===true){
+                           
                             // Display existing tutor only if exist
                             currentTutor = "";
                             if(ev["tutor"] !== 0){
@@ -387,7 +394,11 @@
 
                     // Limit the event date
                     var startMonth = new Date();
-                    scheduler.init('scheduler_here',startMonth,"month"); 
+                    if(level_id == 0){
+                        scheduler.init('scheduler_here',startMonth,"year"); 
+                    }else{
+                        scheduler.init('scheduler_here',startMonth,"month"); 
+                    }
                     
                    
                     if(typeof(classLists) !== "undefined" || classLists.length > 0){
@@ -484,30 +495,32 @@
                                 dhtmlx.alert("Select One Tutor");
                                 return false;
                             }
-                            console.log(1);
                               
-//                            $.ajax({
-//                                url: 'CreateAndUpdateScheduleServlet',
-//                                dataType: 'JSON',
-//                                data: {
-//                                    add_new:false,
-//                                    classId:classId,
-//                                    lessonDate:lessondDate,
-//                                    lessonTime:lessonTime,
-//                                    tutorId:tutorId,
-//                                    tutor_assignmentType:tutor_assignmentType
-//                                },
-//                                success: function (data) {
-//                                    console.log(data);
-//                                    if(data === -1){
-//                                        dhtmlx.alert("Sorry, Something went wrong");
-//                                        return false;
-//                                    }else{
-//                                        dhtmlx.alert("Updated successfully");
-//                                        return true;
-//                                    }
-//                                }
-//                            });
+                            $.ajax({
+                                url: 'CreateAndUpdateScheduleServlet',
+                                dataType: 'JSON',
+                                data: {
+                                    add_new:false,
+                                    classId:classId,
+                                    lessonDate:lessondDate,
+                                    lessonTime:lessonTime,
+                                    tutorId:tutorId,
+                                    tutor_assignmentType:tutor_assignmentType
+                                },
+                                success: function (data) {
+                                    console.log(data);
+                                    if(data === -1){
+                                        dhtmlx.alert("Tutor is not updated");
+                                        return false;
+                                    }else if(data === 2){
+                                        dhtmlx.alert("These Tutor got other class.Select another one");
+                                        return false;
+                                    }else{
+                                        dhtmlx.alert("Updated successfully");
+                                        return true;
+                                    }
+                                }
+                            });
                             
                         }
 
@@ -516,6 +529,5 @@
                     }
                 }
    }
-
-   
+});
 </script>
