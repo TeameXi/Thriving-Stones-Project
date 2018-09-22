@@ -17,7 +17,7 @@
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-7">
-            <form id="createTutorForm" method="POST" class="form-horizontal" action="CreateTutorServlet">
+            <form id="createTutorForm" method="POST" class="form-horizontal" action="CreateTutorServlet" autocomplete="off">
                 <div class="form-group">
                     <label class="col-lg-2 control-label">NRIC</label>  
                     <div class="col-lg-7 inputGroupContainer">
@@ -52,6 +52,16 @@
                         </div>
                     </div>
                 </div>
+                        
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">Qualification </label>  
+                    <div class="col-lg-7 inputGroupContainer">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="zmdi zmdi-graduation-cap"></i></span>
+                            <input name="qualification" class="form-control" type="text">
+                        </div>
+                    </div>
+                </div>
 
 
                 <div class="form-group">
@@ -63,17 +73,6 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="form-group">
-                    <label class="col-lg-2 control-label">Image</label>  
-                    <div class="col-lg-7 inputGroupContainer">
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="zmdi zmdi-image"></i></span>
-                            <input name="tutorImage"  class="form-control" type="file">
-                        </div>
-                    </div>
-                </div>
-
 
                 <div class="form-group">
                     <label class="col-lg-2 control-label">Birth Date</label>  
@@ -204,15 +203,6 @@ $(function () {
                         message: 'Please enter valid email address'
                     }
                 }
-            },
-            tutorImage: {
-                validators: {
-                    file: {
-                        extension: 'jpeg,png,jpg',
-                        type: 'image/jpeg,image/png,image/jpg',
-                        message: 'Invalid format.Must be image'
-                    }
-                }
             }
 //            birthDate:{
 //                validators:{
@@ -220,27 +210,11 @@ $(function () {
 //                        message: 'BirthDate cannot be empty'
 //                    }
 //                }
-//            },
-//            tutorPassword:{
-//                validators:{
-//                    notEmpty: {
-//                        message: 'Password cannot be empty'
-//                    }
-//                }
 //            }
            
         }
     });
     
-    
-//    $('#birthDate').on('dp.change dp.show', function(e) {
-//        $('#createTutorForm').bootstrapValidator('revalidateField', 'birthDate');
-//    
-//    });
-
-    $( "#tutorPassword" ).change(function() {
-        $('#createTutorForm').bootstrapValidator('revalidateField', $(this).prop('name'));
-    });
     
     
 });

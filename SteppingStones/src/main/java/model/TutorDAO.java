@@ -25,13 +25,13 @@ public class TutorDAO {
                 String fullname = rs.getString(3);
                 int phone = rs.getInt(4);
                 String address = rs.getString(5);
-                String image_url = rs.getString(6);
+                String qualification = rs.getString(6);
                 String birth_date = rs.getString(7);
                 String gender = rs.getString(8);
                 String email = rs.getString(9);
                 int branch_id = rs.getInt(10);
                 //double pay = rs.getDouble(11);
-                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email, branch_id);
+                Tutor t = new Tutor(id, nric, fullname, phone, address, qualification, birth_date, gender, email, branch_id);
                 return t;
             }
 
@@ -63,7 +63,7 @@ public class TutorDAO {
     }
 
     public Tutor retrieveSpecificTutorById(int tutorId) {
-        String select_tutor = "SELECT tutor_id, tutor_nric, tutor_fullname, phone, address, image_url, "
+        String select_tutor = "SELECT tutor_id, tutor_nric, tutor_fullname, phone, address,highest_qualification, "
                 + "birth_date, gender, email, branch_id FROM tutor WHERE tutor_id = ?";
         try (Connection conn = ConnectionManager.getConnection();
                 PreparedStatement preparedStatement = conn.prepareStatement(select_tutor)) {
@@ -76,13 +76,13 @@ public class TutorDAO {
                 String fullname = rs.getString(3);
                 int phone = rs.getInt(4);
                 String address = rs.getString(5);
-                String image_url = rs.getString(6);
+                String qualification = rs.getString(6);
                 String birth_date = rs.getString(7);
                 String gender = rs.getString(8);
                 String email = rs.getString(9);
                 int branch_id = rs.getInt(10);
                 //double pay = rs.getDouble(11);
-                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email, branch_id/*, pay*/);
+                Tutor t = new Tutor(id, nric, fullname, phone, address, qualification, birth_date, gender, email, branch_id/*, pay*/);
                 return t;
             }
 
@@ -93,14 +93,14 @@ public class TutorDAO {
     }
 
     public int addTutor(Tutor tutor) {
-        String insert_Tutor = "INSERT INTO tutor(tutor_nric,tutor_fullname,phone,address,image_url,birth_date,gender,email,branch_id) VALUES(?,?,?,?,?,?,?,?,?)";
+        String insert_Tutor = "INSERT INTO tutor(tutor_nric,tutor_fullname,phone,address,highest_qualification,birth_date,gender,email,branch_id) VALUES(?,?,?,?,?,?,?,?,?)";
         try (Connection conn = ConnectionManager.getConnection();
                 PreparedStatement preparedStatement = conn.prepareStatement(insert_Tutor)) {
             preparedStatement.setString(1, tutor.getNric());
             preparedStatement.setString(2, tutor.getName());
             preparedStatement.setInt(3, tutor.getPhone());
             preparedStatement.setString(4, tutor.getAddress());
-            preparedStatement.setString(5, tutor.getImage_url());
+            preparedStatement.setString(5, tutor.getQualification());
             preparedStatement.setString(6, tutor.getBirth_date());
             preparedStatement.setString(7, tutor.getGender());
             preparedStatement.setString(8, tutor.getEmail());
@@ -120,14 +120,14 @@ public class TutorDAO {
         return 0;
     }
 
-    public boolean updateTutor(int tutorID, String nric, int phone, String address, String image, String dob, String gender, String email) {
-        String update_Tutor = "UPDATE tutor SET tutor_nric=?,phone=?,address=?,image_url=?,birth_date=?,gender=?,email=? WHERE tutor_id =? ";
+    public boolean updateTutor(int tutorID, String nric, int phone, String address, String highest_qualification, String dob, String gender, String email) {
+        String update_Tutor = "UPDATE tutor SET tutor_nric=?,phone=?,address=?,highest_qualification=?,birth_date=?,gender=?,email=? WHERE tutor_id =? ";
         try (Connection conn = ConnectionManager.getConnection();
                 PreparedStatement preparedStatement = conn.prepareStatement(update_Tutor)) {
             preparedStatement.setString(1, nric);
             preparedStatement.setInt(2, phone);
             preparedStatement.setString(3, address);
-            preparedStatement.setString(4, image);
+            preparedStatement.setString(4, highest_qualification);
             preparedStatement.setString(5, dob);
             preparedStatement.setString(6, gender);
             preparedStatement.setString(7, email);
@@ -201,13 +201,13 @@ public class TutorDAO {
                 String fullname = rs.getString(3);
                 int phone = rs.getInt(4);
                 String address = rs.getString(5);
-                String image_url = rs.getString(6);
+                String highest_qualification = rs.getString(6);
                 String birth_date = rs.getString(7);
                 String gender = rs.getString(8);
                 String email = rs.getString(9);
                 int branch_id = rs.getInt(10);
                 //double pay = rs.getDouble(11);
-                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email, branch_id);
+                Tutor t = new Tutor(id, nric, fullname, phone, address, highest_qualification, birth_date, gender, email, branch_id);
                 tutorLists.add(t);
             }
 
@@ -230,13 +230,13 @@ public class TutorDAO {
                 String fullname = rs.getString(3);
                 int phone = rs.getInt(4);
                 String address = rs.getString(5);
-                String image_url = rs.getString(6);
+                String highest_qualification = rs.getString(6);
                 String birth_date = rs.getString(7);
                 String gender = rs.getString(8);
                 String email = rs.getString(9);
                 int branch_id = rs.getInt(10);
                 //double pay = rs.getDouble(11);
-                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email, branch_id);
+                Tutor t = new Tutor(id, nric, fullname, phone, address, highest_qualification, birth_date, gender, email, branch_id);
                 tutorLists.add(t);
             }
 
@@ -262,13 +262,13 @@ public class TutorDAO {
                 String fullname = rs.getString(3);
                 int phone = rs.getInt(4);
                 String address = rs.getString(5);
-                String image_url = rs.getString(6);
+                String highest_qualification = rs.getString(6);
                 String birth_date = rs.getString(7);
                 String gender = rs.getString(8);
                 String email = rs.getString(9);
                 int branch_id = rs.getInt(10);
                 //double pay = rs.getDouble(11);
-                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email, branch_id);
+                Tutor t = new Tutor(id, nric, fullname, phone, address, highest_qualification, birth_date, gender, email, branch_id);
                 tutorLists.add(t);
             }
 
@@ -309,13 +309,13 @@ public class TutorDAO {
                 String fullname = rs.getString(3);
                 int phone = rs.getInt(4);
                 String address = rs.getString(5);
-                String image_url = rs.getString(6);
+                String highest_qualification = rs.getString(6);
                 String birth_date = rs.getString(7);
                 String gender = rs.getString(8);
                 String email1 = rs.getString(9);
                 int branch_id = rs.getInt(10);
                 //double pay = rs.getDouble(11);
-                Tutor t = new Tutor(id, nric, fullname, phone, address, image_url, birth_date, gender, email1, branch_id);
+                Tutor t = new Tutor(id, nric, fullname, phone, address, highest_qualification, birth_date, gender, email1, branch_id);
             }
         } catch (Exception e) {
             System.out.println(e);

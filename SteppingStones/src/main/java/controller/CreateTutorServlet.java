@@ -43,7 +43,7 @@ public class CreateTutorServlet extends HttpServlet {
             phone = Integer.parseInt(request.getParameter("phone"));
         }
         String address = request.getParameter("address");
-        String image_url = request.getParameter("tutorImage");
+        String qualification = request.getParameter("qualification");
         String birth_date = request.getParameter("birthDate");
         String gender = request.getParameter("gender");
         String email = request.getParameter("email");
@@ -62,7 +62,7 @@ public class CreateTutorServlet extends HttpServlet {
             RequestDispatcher dispatcher = request.getRequestDispatcher("CreateTutor.jsp");
             dispatcher.forward(request, response);
         } else {*/
-        Tutor tempTutor = new Tutor(nric, name, phone, address, image_url, birth_date, gender, email, branch);
+        Tutor tempTutor = new Tutor(nric, name, phone, address, qualification, birth_date, gender, email, branch);
         int tutorId = tutordao.addTutor(tempTutor);
         status = tutorId>0;
         if (status) {

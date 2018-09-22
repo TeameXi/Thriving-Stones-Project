@@ -11,7 +11,7 @@ public class Tutor {
     private String name;
     private int phone;
     private String address;
-    private String image_url;
+    private String qualification;
     private String birth_date;
     private String gender;
     private String email;
@@ -33,12 +33,12 @@ public class Tutor {
         this.pay = pay;
     }
     
-    public Tutor(String nric,String name,int phone,String address,String image_url,String birth_date,String gender,String email,int branch_id/*, double pay*/) {
+    public Tutor(String nric,String name,int phone,String address,String qualification,String birth_date,String gender,String email,int branch_id/*, double pay*/) {
         this.nric = nric;
         this.name = name;
         this.phone = phone;
         this.address = address;
-        this.image_url = image_url;
+        this.qualification = qualification;
         this.birth_date = birth_date;
         this.gender = gender;
         this.email = email;
@@ -46,13 +46,13 @@ public class Tutor {
         //this.pay = pay;
     }
     
-    public Tutor(int tutorId,String nric,String name,int phone,String address,String image_url,String birth_date,String gender,String email,int branch_id/*, double pay*/) {
+    public Tutor(int tutorId,String nric,String name,int phone,String address,String qualification,String birth_date,String gender,String email,int branch_id/*, double pay*/) {
         this.tutorId = tutorId;
         this.nric = nric;
         this.name = name;
         this.phone = phone;
         this.address = address;
-        this.image_url = image_url;
+        this.qualification = qualification;
         this.birth_date = birth_date;
         this.gender = gender;
         this.email = email;
@@ -116,20 +116,7 @@ public class Tutor {
         this.address = address;
     }
 
-    /**
-     * @return the image_url
-     */
-    public String getImage_url() {
-        return image_url;
-    }
-
-    /**
-     * @param image_url the image_url to set
-     */
-    public void setImage_url(String image_url) {
-        this.image_url = image_url;
-    }
-
+   
     /**
      * @return the birth_date
      */
@@ -211,7 +198,14 @@ public class Tutor {
     
     @Override
     public String toString(){
-        return "NRIC : "+this.nric+", Name: "+this.name+",Address : "+this.address+",DOB :"+this.birth_date+", URL : "+this.image_url+", Email : "+this.email+", Branch : "+this.branch_id/*+", Hourly Rate : "+this.pay*/;
+        return "NRIC : "+this.nric+", Name: "+this.name+",Address : "+this.address+",DOB :"+this.birth_date+", URL : "+this.qualification+", Email : "+this.email+", Branch : "+this.branch_id/*+", Hourly Rate : "+this.pay*/;
+    }
+
+    /**
+     * @return the qualification
+     */
+    public String getQualification() {
+        return qualification;
     }
 
 
