@@ -49,6 +49,11 @@
                 if (status != null) {
                     out.println("<div id='status' class='alert alert-success col-md-12'><strong>"+status+"</strong></div>");
                 }
+                
+                String errorMsg = (String) request.getParameter("errorMsg");
+                if (errorMsg != null) {
+                    out.println("<div id='status' class='alert alert-danger col-md-12'><strong>"+errorMsg+"</strong></div>");
+                }
                 %>
             <div class="table-responsive-sm">
             <div id="studentTable"></div>
@@ -106,7 +111,7 @@
 <script>   
     (document).ready(function () {
         $('#BulkRegistration').dataTable( {
-            "paging":   false,
+            "paging":   true,
             "info":     false,
             "searching": false
         });
@@ -162,11 +167,10 @@
                 if(data.length !== 0){
                     var html = '<br><h4>Tick students to enroll</h4><br>';
 
-                    html += '<table id="BulkRegistration" class="table display responsive nowrap" style="width:100%"><thead class="thead-light"><tr><th scope="col"></th><th scope="col">Student Name</th><th scope="col">Outstanding Deposit</th><th scope="col">Outstanding Tuition Fees</th></tr></thead><tbody>';
+                    html += '<table id="BulkRegistration" class="table display responsive nowrap" style="width:70%"><thead class="thead-light"><tr><th scope="col"></th><th scope="col">Student Name</th><th scope="col">Outstanding Tuition Fees</th></tr></thead><tbody>';
                     var i;
                     for(i = 0; i < data.length; i++){
                         html += '<tr><td><input type="checkbox" onchange="markAttendance(this)" name="studentID" value=' + data[i].student + '></td><td>' + data[i].name + '</td>\n\
-                                    <td><input type ="number" name ='+ data[i].student + "deposit" +' class="form-control"></td>\n\
                                     <td><input type ="number" name ='+ data[i].student + "tuitionFees" +' class="form-control"></td>\n\
                                     <td><input type="hidden" name="studentName" value="${classID}"></td></tr>';
                     }
@@ -174,7 +178,7 @@
                     html += "<div class='form-group'><div class='col-lg-2 col-lg-offset-2'><button type='submit' class='btn btn-default' name='enroll'>Register Student</button></div></div>"
                     studentTable.innerHTML = html;
                 }else{
-                    studentTable.innerHTML = '<h4>No students available!</h4>';
+                    studentTable.innerHTML = '<h4>No students available to enroll!</h4>';
                 }
             }
         });

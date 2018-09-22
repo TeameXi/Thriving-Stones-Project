@@ -42,22 +42,23 @@ public class StudentDAO {
 //        return 0;
 //    }
     
-    public static int insertStudent(String studentName, int phone, String stuEmail, int level_id, int branch_id, double regFees) {
+    public static int insertStudent(String studentName, int phone, String stuEmail, int level_id, int branch_id, double regFees, String school) {
 
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            String sql = "insert ignore into student(student_name, phone, email, reg_fees, outstanding_reg_fees, required_amount, outstanding_amount, level_id, branch_id)"
-                    + " value(?, ?, ?, ?, ?, ? ,?, ?, ?)";
+            String sql = "insert ignore into student(student_name, phone, email, school, reg_fees, outstanding_reg_fees, required_amount, outstanding_amount, level_id, branch_id)"
+                    + " value(?, ?, ?, ?, ?, ? ,?, ?, ?, ?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, studentName);
             stmt.setInt(2, phone);
-            stmt.setString(3, stuEmail);
-            stmt.setDouble(4, regFees);
+            stmt.setString(3, school);
+            stmt.setString(4, stuEmail);
             stmt.setDouble(5, regFees);
-            stmt.setDouble(6, 0);
+            stmt.setDouble(6, regFees);
             stmt.setDouble(7, 0);
-            stmt.setInt(8, level_id);
-            stmt.setInt(9, branch_id);
+            stmt.setDouble(8, 0);
+            stmt.setInt(9, level_id);
+            stmt.setInt(10, branch_id);
             stmt.executeUpdate();
             conn.commit();
             ResultSet rs = stmt.getGeneratedKeys();

@@ -36,7 +36,17 @@
                 </div>
                 
                 <div class="form-group">
-                    <label class="col-lg-2 control-label">Academic Level</label>  
+                    <label class="col-lg-2 control-label">School</label>  
+                    <div class="col-lg-7 inputGroupContainer">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="zmdi zmdi-account"></i></span>
+                            <input id="school"  name="school" placeholder="School Name" class="form-control"  type="text">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">Level</label>  
                     <div class="col-lg-7 inputGroupContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-badge-check"></i></span>
@@ -61,7 +71,7 @@
                     <div class="col-lg-7 inputGroupContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-phone"></i></span>
-                            <input name="phone" id="phone" class="form-control" type="text">
+                            <input name="phone" placeholder="Mobile Number" id="phone" class="form-control" type="text">
                         </div>
                     </div>
                 </div>
@@ -77,23 +87,33 @@
                 </div>
                             
                 <div class="form-group">
-                    <label class="col-lg-2 control-label">Registration Fees</label>  
+                    <label class="col-lg-2 control-label">Reg Fees</label>  
                     <div class="col-lg-7 inputGroupContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-money"></i></span>
-                            <input name="regFees" id="phone" class="form-control" type="text">
+                            <input name="regFees" placeholder="Registration Fees" id="phone" class="form-control" type="text">
                         </div>
                     </div>
                 </div>
 
                 <h4>Parent's Details</h4><br/>
 
-                 <div class="form-group">
+                <div class="form-group">
                     <label class="col-lg-2 control-label">Full name</label>  
                     <div class="col-lg-7 inputGroupContainer"> 
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-account"></i></span>
                             <input id="parentName"  name="parentName" placeholder="Parent Name" class="form-control"  type="text">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">Relationship</label>  
+                    <div class="col-lg-7 inputGroupContainer"> 
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="zmdi zmdi-account"></i></span>
+                            <input id="rel"  name="relationship" placeholder="Relationship" class="form-control"  type="text">
                         </div>
                     </div>
                 </div>
@@ -103,7 +123,7 @@
                     <div class="col-lg-7 inputGroupContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-phone"></i></span>
-                            <input name="parentPhone" class="form-control" type="text">
+                            <input name="parentPhone" placeholder="Mobile Number" class="form-control" type="text">
                         </div>
                     </div>
                 </div>
@@ -173,6 +193,13 @@ $(function () {
                 validators:{
                     notEmpty: {
                         message: 'Please enter student name'
+                    }
+                }
+            },
+            school:{
+                validators:{
+                    notEmpty: {
+                        message: 'Please enter school name'
                     }
                 }
             },
@@ -247,6 +274,13 @@ $(function () {
                 validators:{
                     notEmpty: {
                         message: 'Name cannot be empty'
+                    }
+                }
+            },
+            rel:{
+                validators:{
+                    notEmpty: {
+                        message: 'Please enter school name'
                     }
                 }
             },

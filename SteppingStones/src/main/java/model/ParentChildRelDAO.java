@@ -7,15 +7,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class ParentChildRelDAO {
-    public static void insertParentChildRel(int parentPhone, int studentID, int branchID) {
+    public static void insertParentChildRel(int parentPhone, int studentID, int branchID, String relationship) {
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
             int parentID = ParentDAO.retrieveParentID(parentPhone);
-            String sql = "insert into parent_child_rel(parent_id, child_id, branch_id) value(?, ?, ?)";
+            String sql = "insert into parent_child_rel(parent_id, child_id, branch_id, relationship) value(?, ?, ?, ?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, parentID);
             stmt.setInt(2, studentID);
             stmt.setInt(3, branchID);
+            stmt.setString(4, relationship);
             stmt.executeUpdate(); 
             conn.commit();
         } catch (Exception e) {

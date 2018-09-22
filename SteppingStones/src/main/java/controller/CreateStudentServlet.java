@@ -45,6 +45,8 @@ public class CreateStudentServlet extends HttpServlet {
 
         String studentName = request.getParameter("studentName");
         String lvl = request.getParameter("lvl");
+        String school = request.getParameter("school");
+        String relationship = request.getParameter("relationship");
         
         int phone = 0;
         if(request.getParameter("phone") != null && !"".equals(request.getParameter("phone"))){
@@ -81,7 +83,7 @@ public class CreateStudentServlet extends HttpServlet {
             stuEmail = null;
         }
         
-        int insertStudent = StudentDAO.insertStudent(studentName, phone,stuEmail, levelID, branchID, regFees);
+        int insertStudent = StudentDAO.insertStudent(studentName, phone,stuEmail, levelID, branchID, regFees, school);
 //        System.out.println("Insert Student " + insertStudent);
 //        System.out.println("StuEmail" + stuEmail);
 //        System.out.println(phone);
@@ -172,7 +174,7 @@ public class CreateStudentServlet extends HttpServlet {
             RequestDispatcher view = request.getRequestDispatcher("CreateStudent.jsp");
             view.forward(request, response);
         }else{
-            ParentChildRelDAO.insertParentChildRel(parentPhone, insertStudent, branchID);
+            ParentChildRelDAO.insertParentChildRel(parentPhone, insertStudent, branchID, relationship);
             response.sendRedirect("RegisterForClasses.jsp?studentName="+stu);
         }     
     }

@@ -10,7 +10,6 @@ import entity.Student;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Set;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -47,15 +46,20 @@ public class BulkClassRegistrationServlet extends HttpServlet {
         int classID = Integer.parseInt(classIDStr);
 
         if (studentValues != null) {
+            boolean updateOutstandingFees = false;
+            boolean status = false;
+            boolean paymentStauts = false;
+            boolean insertOutFeesStatus = false;
+            
             for (String studentIDStr : studentValues) {
                 int studentID = Integer.parseInt(studentIDStr);
-                String outDep = request.getParameter(studentIDStr + "deposit");
+                //String outDep = request.getParameter(studentIDStr + "deposit");
                 String outTuition = request.getParameter(studentIDStr + "tuitionFees");
 
                 double outstandingDeposit = 0;
-                if (outDep != null && !"".equals(outDep)) {
-                    outstandingDeposit = Double.parseDouble(outDep);
-                }
+//                if (outDep != null && !"".equals(outDep)) {
+//                    outstandingDeposit = Double.parseDouble(outDep);
+//                }
 
                 double outstandingTuitionFees = 0;
                 if (outTuition != null && !"".equals(outTuition)) {
@@ -64,15 +68,15 @@ public class BulkClassRegistrationServlet extends HttpServlet {
                 Class cls = ClassDAO.getClassByID(classID);
                 double monthlyFees = cls.getMthlyFees();
                 String joinDate = LessonDAO.getNearestLessonDate(classID);
-                boolean status = StudentClassDAO.saveStudentToRegisterClass(classID, studentID, monthlyFees, outstandingDeposit, joinDate);
-                boolean insertOutFeesStatus = PaymentDAO.insertOutstandingTuitionFees(classID, studentID, joinDate, 3, monthlyFees, outstandingTuitionFees);
+                status = StudentClassDAO.saveStudentToRegisterClass(classID, studentID, monthlyFees, outstandingDeposit, joinDate);
+                insertOutFeesStatus = PaymentDAO.insertOutstandingTuitionFees(classID, studentID, joinDate, 3, monthlyFees, outstandingTuitionFees);
                 Student stu = StudentDAO.retrieveStudentbyID(studentID);
                 double totalOutstandingAmt = stu.getOutstandingAmt() + outstandingDeposit + outstandingTuitionFees;
-                boolean updateOutstandingFees = StudentDAO.updateStudentTotalOutstandingFees(studentID, totalOutstandingAmt);
+                updateOutstandingFees = StudentDAO.updateStudentTotalOutstandingFees(studentID, totalOutstandingAmt);
                 
                 HashMap<String, Integer> reminders = PaymentDAO.getReminders(classID, joinDate);
                 Set<String> keys = reminders.keySet();
-                boolean paymentStauts = false;
+                paymentStauts = false;
                 if(reminders != null && !reminders.isEmpty()){
                     for(String reminderDate: keys){
                         int noOfLessons = reminders.get(reminderDate);
@@ -81,12 +85,16 @@ public class BulkClassRegistrationServlet extends HttpServlet {
                 }else{
                     paymentStauts = true;
                 }
-                if (updateOutstandingFees && status && paymentStauts && insertOutFeesStatus) {
+                if (!updateOutstandingFees && !status && !paymentStauts && !insertOutFeesStatus) {
                     System.out.println("Enter successful");
-                    response.sendRedirect("BulkClassRegistration.jsp?status=Successfully Registered.");
+                    response.sendRedirect("BulkClassRegistration.jsp?errorMsg=Error Occurs while inserting!");
                     return;
                 }
-                //System.out.println("Student 1" + " classID " + classID + " StuID " + studentID + " dep " + outstandingDeposit + " tut " + outstandingTuitionFees);
+            }
+            if (updateOutstandingFees && status && paymentStauts && insertOutFeesStatus) {
+                System.out.println("Enter successful");
+                response.sendRedirect("BulkClassRegistration.jsp?status=Successfully Registered.");
+                return;
             }
         }
     }
