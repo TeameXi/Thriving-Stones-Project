@@ -59,14 +59,14 @@ public class AutoPromoteServlet extends HttpServlet {
                     if(totalNumber > 0){
                        ArrayList<Student> students = StudentDAO.listAllStudentsByLimit(branchID, levelID, 0, totalNumber);
                        allSelectedStudents.addAll(students); 
+                       status = true;
                     }
-                status = true;
                 }   
             }
             if(status) {
                 
             }else{
-                request.setAttribute("errorMsg", "Error retrieve students!");
+                request.setAttribute("errorMsg", "No student found!");
             }
             request.setAttribute("selectedStudents",allSelectedStudents );
             RequestDispatcher view = request.getRequestDispatcher("AutoPromote.jsp");

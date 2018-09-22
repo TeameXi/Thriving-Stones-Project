@@ -97,9 +97,9 @@
             </form>    
                     
             <%  }else{
-                
-                ArrayList<Student> allStudents = StudentDAO.listAllStudentsByBranch(1);
-                if(allStudents.size() > 0){
+                    if (errorMsg == null) {
+                        ArrayList<Student> allStudents = StudentDAO.listAllStudentsByBranch(1);
+                        if(allStudents.size() > 0){
             %>
             <table class="table table-bordered">
                 <thead class="table_title"><tr><th>Name</th><th>Level</th><th>Email</th><th>Action</th></tr></thead>
@@ -114,7 +114,9 @@
                             out.println("<td>"+stu.getLevel()+"</td>");
                             out.println("<td>"+stu.getEmail()+"</td>"); 
                         %>
-                            <td><button type="button" class="btn btn-primary btn-xs">Parent</button>
+                            <td>
+                                <a href="#viewParent" data-toggle="modal" data-target-id="<%=stu.getStudentID()%>" class="view_more">
+                                    <button type="button" class="btn btn-primary btn-xs">Parent</button></a>
                             <button type="button" class="btn btn-primary btn-xs">Attendance</button>
                             <button type="button" class="btn btn-primary btn-xs">Grades</button>
                             </td>
@@ -125,12 +127,86 @@
                  
                 </tbody>
             </table>
-            <% }} %> 
+            <% }}} %> 
         </div>
     </div>
 </div>
 </div>
 </div>
+<!-- Detail Dialog -->
+<div class="modal fade" id="viewParent" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <span class="pc_title centered">Parent Details</span>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class = "col-sm-4">
+                        <p class = "form-control-label">Fullname :</p>
+                    </div>
+                    <div class = "col-sm-8">
+                        <p><label id="view_parent_name">-</label></p>
+                    </div>
+                </div><br/>
+
+                <div class="row">
+                    <div class = "col-sm-4">
+                        <p class = "form-control-label">Nationality :</p>
+                    </div>
+                    <div class = "col-sm-8">
+                        <p><label id="view_parent_nationality"></label></p>
+                    </div>
+                </div><br/>
+                
+                <div class="row">
+                    <div class = "col-sm-4">
+                        <p class = "form-control-label">Company :</p>
+                    </div>
+                    <div class = "col-sm-8">
+                        <p><label id="view_company"></label></p>
+                    </div>
+                </div><br/>
+
+                <div class="row">
+                    <div class = "col-sm-4">
+                        <p class = "form-control-label">Designation :</p>
+                    </div>
+                    <div class = "col-sm-8">
+                        <p><label id="view_designation">-</label></p>
+                    </div>
+                </div><br/>
+
+                <div class="row">
+                    <div class = "col-sm-4">
+                        <p class = "form-control-label">Mobile :</p>
+                    </div>
+                    <div class = "col-sm-8">
+                        <p><label id="view_phone">-</label></p>
+                    </div>
+                </div><br/>
+
+                <div class="row">
+                    <div class = "col-sm-4">
+                        <p class = "form-control-label">Email :</p>
+                    </div>
+                    <div class = "col-sm-8">
+                        <p><label id="view_email">-</label></p>
+                    </div>
+                </div><br/>
+            </div>  
+
+            <div class="modal-footer spaced-top-small centered">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>       
+    </div>
+</div>
+<!-- End of Detail Dialog -->
 
 <%@include file="footer.jsp"%>
 <script src='http://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.4.5/js/bootstrapvalidator.min.js'></script>
@@ -163,6 +239,41 @@
         });
     });
 </script>
+
+<script>
+    $(document).ready(function () {
+        $("#viewParent").on("show.bs.modal", function (e) {       
+            var student_id = $(e.relatedTarget).data('target-id');
+            var branch_id = $("#branch").val();
+            $.ajax({
+                url: 'RetrieveParentServlet',
+                dataType: 'JSON',
+                data: {studentID: student_id, branch_id: branch_id},
+                success: function (data) {
+                    if(data["fullname"] != ""){
+                        $("#view_parent_name").text(data["fullname"]);
+                    }
+                    if (data["nationality"] !== "") {
+                        $("#view_parent_nationality").text(data["nationality"]);
+                    }
+                    if (data["company"] !== "") {
+                        $("#view_company").val(data["company"]);
+                    }
+                    if (data["designation"] !== "") {
+                        $("#view_designation").text(data["designation"]);
+                    }
+                    if (data["phone"] !== "") {
+                        $("#view_phone").text(data["phone"]);
+                    }
+                    if (data["email"] !== "") {
+                        $("#view_email").text(data["email"]);
+                    }
+                }
+            });
+        });
+    });
+    
+    </script>
 
 
 
