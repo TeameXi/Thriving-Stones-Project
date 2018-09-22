@@ -95,12 +95,14 @@ public class UploadStudentServlet extends HttpServlet {
                 if (checkName) {
                     continue;
                 }
-                if((checkName && checkEmail) && (checkName && checkPhone)){
-                    continue;
+                if((checkName && checkEmail)){
+                    if((checkName && checkPhone)){
+                        continue;
+                    }
                 }
-                if(!checkEmail){
+                /*if(!checkEmail){
                     continue;
-                }
+                }*/
 
                 if(!checkPhone){
                     String name = emailName.get(emails[i]);
@@ -321,7 +323,8 @@ public class UploadStudentServlet extends HttpServlet {
                 session.setAttribute("insertedStudent", insertedStudent);
             }
             if(insertedStudent.size() > 0){
-                response.sendRedirect("ClassRegistrationForUploadStudent.jsp");
+                //response.sendRedirect("ClassRegistrationForUploadStudent.jsp");
+                response.sendRedirect("DisplayStudents.jsp");
             }else{
                 response.sendRedirect("DisplayStudents.jsp");
             }

@@ -157,7 +157,7 @@ function processCSVStudentData(csv_data, append_container, error_el, branch_id) 
                 "<div class='col-sm-1'></div></div>";
 
     }
-    for (var i = 3; i < csv_data.length - 1; i++) {
+    for (var i = 2; i < csv_data.length - 1; i++) {
         Nric = csv_data[i][0];
         Name = csv_data[i][1];
         Phone = csv_data[i][2];

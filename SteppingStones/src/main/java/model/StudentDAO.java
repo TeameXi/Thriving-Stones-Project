@@ -554,7 +554,7 @@ public class StudentDAO {
                 }*/
                 String studentList = String.join(",", studentLists);
                 String [] col = {"student_id"};
-                PreparedStatement insertStatement = conn.prepareStatement("INSERT ignore INTO student(student_nric,student_name,phone,address,birth_date,gender,email,required_amount,outstanding_amount,level_id,branch_id, school) VALUES " + studentList, col);
+                PreparedStatement insertStatement = conn.prepareStatement("INSERT ignore INTO student(student_nric,student_name,phone,address,birth_date,gender,email,reg_fees,outstanding_reg_fees,level_id,branch_id, school) VALUES " + studentList, col);
                 insertStatement.executeUpdate();
                 ResultSet a = insertStatement.getGeneratedKeys();
                 int count = 0;
