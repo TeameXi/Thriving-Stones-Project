@@ -17,11 +17,8 @@ public class Class {
     private int subjectID;
     private int tutorID;
     private String holidayDate;
+    private String type;
 
-    public Class(){
-        
-    }
-    
     public Class(int classID,String level, int subjectID, String classTime, String classDay, double mthlyFees, String startDate, String endDate,String holidayDate,int tutorID) {
         this.classID = classID;
         this.level = level;
@@ -35,7 +32,7 @@ public class Class {
         this.tutorID = tutorID;
     }
 
-    public Class(int classID, String level, String subject, int term, String classTime, String classDay, double mthlyFees, String startDate, String endDate) {
+    public Class(int classID, String level, String subject, int term, String classTime, String classDay, double mthlyFees, String startDate, String endDate, String type) {
         this.classID = classID;
         this.level = level;
         this.subject = subject;
@@ -45,9 +42,10 @@ public class Class {
         this.mthlyFees = mthlyFees;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.type = type;
     }
-
-    public Class(int classID, int subjectID, String classTime, String classDay, double mthlyFees, String startDate, String endDate, int tutorID) {
+    
+    public Class(int classID, int subjectID, String classTime, String classDay, double mthlyFees, String startDate, String endDate, int tutorID, String type) {
         this.classID = classID;
         this.subjectID = subjectID;
         this.classTime = classTime;
@@ -56,23 +54,31 @@ public class Class {
         this.startDate = startDate;
         this.endDate = endDate;
         this.tutorID = tutorID;
+        this.type = type;  
     }
 
-    public Class(int classID, String level, String subject, String classTime, String classDay, double mthlyFees, String startDate, String endDate, int year) {
-        this.classID = classID;
-        this.level = level;
-        this.subject = subject;
-        this.classTime = classTime;
-        this.classDay = classDay;
-        this.mthlyFees = mthlyFees;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.year = year;
-    }
+//    public Class(int classID, int subjectID, String classTime, String classDay, double mthlyFees, String startDate, String endDate, int tutorID) {
+//        this.classID = classID;
+//        this.subjectID = subjectID;
+//        this.classTime = classTime;
+//        this.classDay = classDay;
+//        this.mthlyFees = mthlyFees;
+//        this.startDate = startDate;
+//        this.endDate = endDate;
+//        this.tutorID = tutorID;
+//    }
 
-    public Class(int classID, int level, int subject, String classTime, String classDay, int mthlyFees, String startDate) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+//    public Class(int classID, String level, String subject, String classTime, String classDay, double mthlyFees, String startDate, String endDate, int year) {
+//        this.classID = classID;
+//        this.level = level;
+//        this.subject = subject;
+//        this.classTime = classTime;
+//        this.classDay = classDay;
+//        this.mthlyFees = mthlyFees;
+//        this.startDate = startDate;
+//        this.endDate = endDate;
+//        this.year = year;
+//    }
 
     public int getTerm() {
         return this.term;
@@ -96,6 +102,14 @@ public class Class {
 
     public String getSubject() {
         return this.subject;
+    }
+    
+    public String getType(){
+        return this.type;
+    }
+    
+    public void setType(String type){
+        this.type = type;
     }
 
     public void setSubject(String newSubject) {

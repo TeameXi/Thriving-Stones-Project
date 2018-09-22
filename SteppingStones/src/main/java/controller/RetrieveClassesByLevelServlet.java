@@ -49,7 +49,12 @@ public class RetrieveClassesByLevelServlet extends HttpServlet {
             if(classList != null || !classList.isEmpty()){
                 for(Class c: classList){
                     int classID = c.getClassID();
-                    String name = c.getSubject() + " (" + c.getClassDay() + " " + c.getClassTime() + ")";
+                    String name;
+                    if(c.getType().equals("P")){
+                        name = c.getSubject() + " (" + c.getClassDay() + " " + c.getClassTime() + ")" + " - Premium Class";
+                    }else{
+                        name = c.getSubject() + " (" + c.getClassDay() + " " + c.getClassTime() + ")";
+                    }
                     
                     JSONObject obj = new JSONObject();
                     obj.put("class", classID);
@@ -58,7 +63,7 @@ public class RetrieveClassesByLevelServlet extends HttpServlet {
                     array.put(obj);
                 }
                 String json = array.toString();
-                System.out.println(json);
+                //System.out.println(json);
                 out.println(json);
             }
         }

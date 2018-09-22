@@ -164,15 +164,28 @@
             data: {classID: classID},
             success: function (data) {    
                 var studentTable = document.getElementById('studentTable');
+                console.log(data);
                 if(data.length !== 0){
-                    var html = '<br><h4>Tick students to enroll</h4><br>';
-
-                    html += '<table id="BulkRegistration" class="table display responsive nowrap" style="width:70%"><thead class="thead-light"><tr><th scope="col"></th><th scope="col">Student Name</th><th scope="col">Outstanding Tuition Fees</th></tr></thead><tbody>';
+                    var html = '<br><h4>Tick students to enroll</h4><br>'; 
+                    if(data[0].type === "N"){
+                        html += '<table id="BulkRegistration" class="table display responsive nowrap" style="width:70%"><thead class="thead-light"><tr>\n\
+                                    <th scope="col"></th><th scope="col">Student Name</th><th scope="col">Outstanding Tuition Fees</th></tr></thead><tbody>';
+                    }else{
+                        html += '<table id="BulkRegistration" class="table display responsive nowrap" style="width:80%"><thead class="thead-light"><tr>\n\
+                                    <th scope="col"></th><th scope="col">Student Name</th><th scope="col">Outstanding Tuition Fees</th><th scope="col">Payment Per Term/Month</th></tr></thead><tbody>';
+                    }
                     var i;
                     for(i = 0; i < data.length; i++){
-                        html += '<tr><td><input type="checkbox" onchange="markAttendance(this)" name="studentID" value=' + data[i].student + '></td><td>' + data[i].name + '</td>\n\
-                                    <td><input type ="number" name ='+ data[i].student + "tuitionFees" +' class="form-control"></td>\n\
-                                    <td><input type="hidden" name="studentName" value="${classID}"></td></tr>';
+                        if(data[i].type === "N"){
+                            html += '<tr><td><input type="checkbox" name="studentID" value=' + data[i].student + '></td><td>' + data[i].name + '</td>\n\
+                                        <td><input type ="number" name ='+ data[i].student + "tuitionFees" +' class="form-control"></td>\n\
+                                        <td><input type="hidden" name="studentName" value="${classID}"></td></tr>';
+                        }else{
+                            html += '<tr><td><input type="checkbox" name="studentID" value=' + data[i].student + '></td><td>' + data[i].name + '</td>\n\
+                                        <td><input type ="number" name ='+ data[i].student + "tuitionFees" +' class="form-control"></td>\n\
+                                        <td><select name='+ data[i].student + "paymentType" +' class="form-control" id="paymentType"><option value="term">Pay Per Term</option><option value="month">Pay Per Month</option></td>\n\
+                                        <input type="hidden" name="studentName" value="${classID}"></td></tr>';
+                        }
                     }
                     html += '</tbody></table><br/>';
                     html += "<div class='form-group'><div class='col-lg-2 col-lg-offset-2'><button type='submit' class='btn btn-default' name='enroll'>Register Student</button></div></div>"

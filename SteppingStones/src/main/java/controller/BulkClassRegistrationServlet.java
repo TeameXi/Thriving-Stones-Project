@@ -50,16 +50,15 @@ public class BulkClassRegistrationServlet extends HttpServlet {
             boolean status = false;
             boolean paymentStauts = false;
             boolean insertOutFeesStatus = false;
+            boolean firstInstallentStatus = false;
             
             for (String studentIDStr : studentValues) {
                 int studentID = Integer.parseInt(studentIDStr);
-                //String outDep = request.getParameter(studentIDStr + "deposit");
                 String outTuition = request.getParameter(studentIDStr + "tuitionFees");
-
+                String paymentType = request.getParameter(studentIDStr + "paymentType");
+                System.out.println("Payment Type" + paymentType);
+                
                 double outstandingDeposit = 0;
-//                if (outDep != null && !"".equals(outDep)) {
-//                    outstandingDeposit = Double.parseDouble(outDep);
-//                }
 
                 double outstandingTuitionFees = 0;
                 if (outTuition != null && !"".equals(outTuition)) {
@@ -68,31 +67,54 @@ public class BulkClassRegistrationServlet extends HttpServlet {
                 Class cls = ClassDAO.getClassByID(classID);
                 double monthlyFees = cls.getMthlyFees();
                 String joinDate = LessonDAO.getNearestLessonDate(classID);
-                status = StudentClassDAO.saveStudentToRegisterClass(classID, studentID, monthlyFees, outstandingDeposit, joinDate);
-                insertOutFeesStatus = PaymentDAO.insertOutstandingTuitionFees(classID, studentID, joinDate, 3, monthlyFees, outstandingTuitionFees);
-                Student stu = StudentDAO.retrieveStudentbyID(studentID);
-                double totalOutstandingAmt = stu.getOutstandingAmt() + outstandingDeposit + outstandingTuitionFees;
-                updateOutstandingFees = StudentDAO.updateStudentTotalOutstandingFees(studentID, totalOutstandingAmt);
                 
-                HashMap<String, Integer> reminders = PaymentDAO.getReminders(classID, joinDate);
+                HashMap<String, Integer> reminders = null;
+                double fees = 0;
+                double deposit = 0;
+                int lessonNum = 0;
+                if(paymentType == null){
+                    paymentType = "month";
+                }
+                if(paymentType.equals("term")){
+                    fees = monthlyFees * 3;
+                    lessonNum = 11;
+                    System.out.println("Per Term" + fees + " " + deposit);
+                    reminders = PaymentDAO.getRemindersForPremiumStudent(classID, joinDate);
+                    
+                }else{
+                    System.out.println("Per Month" + fees + " " + deposit);
+                    fees = monthlyFees;
+                    deposit = monthlyFees;
+                    lessonNum = 4;
+                    reminders = PaymentDAO.getReminders(classID, joinDate);
+                }
+
+                status = StudentClassDAO.saveStudentToRegisterClass(classID, studentID, deposit, outstandingDeposit, joinDate);
+                insertOutFeesStatus = PaymentDAO.insertOutstandingTuitionFees(classID, studentID, joinDate, lessonNum, fees, outstandingTuitionFees);
+                Student stu = StudentDAO.retrieveStudentbyID(studentID);
+                double totalOutstandingAmt = stu.getOutstandingAmt() + outstandingTuitionFees;
+                updateOutstandingFees = StudentDAO.updateStudentTotalOutstandingFees(studentID, totalOutstandingAmt);
+                firstInstallentStatus = StudentClassDAO.updateFirstInsatllment(classID, studentID);
+                
                 Set<String> keys = reminders.keySet();
+                //System.out.println(reminders.keySet());
                 paymentStauts = false;
                 if(reminders != null && !reminders.isEmpty()){
                     for(String reminderDate: keys){
+                        System.out.println("ReminderDates " + reminders.get(reminderDate));
                         int noOfLessons = reminders.get(reminderDate);
-                        paymentStauts = PaymentDAO.insertPaymentReminderWithAmount(classID, studentID, reminderDate, noOfLessons, monthlyFees);
+                        paymentStauts = PaymentDAO.insertPaymentReminderWithAmount(classID, studentID, reminderDate, noOfLessons, fees);
                     }
                 }else{
                     paymentStauts = true;
                 }
-                if (!updateOutstandingFees && !status && !paymentStauts && !insertOutFeesStatus) {
-                    System.out.println("Enter successful");
+                if (!updateOutstandingFees && !status && !paymentStauts && !insertOutFeesStatus && !firstInstallentStatus) {
                     response.sendRedirect("BulkClassRegistration.jsp?errorMsg=Error Occurs while inserting!");
                     return;
                 }
             }
-            if (updateOutstandingFees && status && paymentStauts && insertOutFeesStatus) {
-                System.out.println("Enter successful");
+            if (updateOutstandingFees && status && paymentStauts && insertOutFeesStatus && firstInstallentStatus) {
+                //System.out.println("Enter successful");
                 response.sendRedirect("BulkClassRegistration.jsp?status=Successfully Registered.");
                 return;
             }

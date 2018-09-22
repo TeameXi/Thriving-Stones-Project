@@ -415,5 +415,21 @@ public class LessonDAO {
         }
         return "";
     }
+    
+    public static boolean deleteAttendancebyID(int studentID) {
+        boolean deletedStatus = false;
+        try (Connection conn = ConnectionManager.getConnection();) {
+            conn.setAutoCommit(false);
+            String sql = "delete from student_attendance where student_id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, studentID);
+            stmt.executeUpdate();
+            conn.commit();
+            deletedStatus = true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return deletedStatus;
+    }
 
 }

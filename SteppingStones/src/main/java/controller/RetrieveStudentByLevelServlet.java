@@ -57,11 +57,12 @@ public class RetrieveStudentByLevelServlet extends HttpServlet {
                     JSONObject obj = new JSONObject();
                     obj.put("student", studentID);
                     obj.put("name", studentName);
+                    obj.put("type", cls.getType());
                     
                     array.put(obj);
                 }
                 String json = array.toString();
-                System.out.println(json);
+                //System.out.println(json);
                 out.println(json);
             }
         }

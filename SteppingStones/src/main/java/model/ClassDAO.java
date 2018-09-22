@@ -39,7 +39,8 @@ public class ClassDAO {
                 String endDate = rs.getString("end_date");
                 int mthlyFees = rs.getInt("fees");
                 String subject = SubjectDAO.retrieveSubject(subjectID);
-                Class cls = new Class(classID, level, subject, term, classTime, classDay, mthlyFees, startDate, endDate);
+                String type = rs.getString("class_type");
+                Class cls = new Class(classID, level, subject, term, classTime, classDay, mthlyFees, startDate, endDate, type);
                 classList.add(cls);
             }
         } catch (SQLException e) {
@@ -66,7 +67,8 @@ public class ClassDAO {
                 int mthlyFees = rs.getInt("fees");
                 String subject = SubjectDAO.retrieveSubject(subjectID);
                 String level = LevelDAO.retrieveLevel(levelID);
-                cls = new Class(classID, level, subject, term, classTime, classDay, mthlyFees, startDate, endDate);
+                String type = rs.getString("class_type");
+                cls = new Class(classID, level, subject, term, classTime, classDay, mthlyFees, startDate, endDate, type);
             }
         } catch (SQLException e) {
             System.out.print(e.getMessage());
@@ -93,7 +95,8 @@ public class ClassDAO {
                 int mthlyFees = rs.getInt("fees");
                 String subject = SubjectDAO.retrieveSubject(subjectID);
                 String level = LevelDAO.retrieveLevel(levelID);
-                Class cls = new Class(classID, level, subject, term, classTime, classDay, mthlyFees, startDate, endDate);
+                String type = rs.getString("class_type");
+                Class cls = new Class(classID, level, subject, term, classTime, classDay, mthlyFees, startDate, endDate, type);
                 classList.add(cls);
             }
         } catch (SQLException e) {
@@ -121,7 +124,8 @@ public class ClassDAO {
                 int mthlyFees = rs.getInt("fees");
                 String subject = SubjectDAO.retrieveSubject(subjectID);
                 String level = LevelDAO.retrieveLevel(levelID);
-                Class cls = new Class(classID, level, subject, term, classTime, classDay, mthlyFees, startDate, endDate);
+                String type = rs.getString("class_type");
+                Class cls = new Class(classID, level, subject, term, classTime, classDay, mthlyFees, startDate, endDate, type);
                 classList.add(cls);
             }
         } catch (SQLException e) {
@@ -211,7 +215,8 @@ public class ClassDAO {
                 int mthlyFees = rs.getInt("fees");
                 String subject = SubjectDAO.retrieveSubject(subjectID);
                 String level = LevelDAO.retrieveLevel(levelID);
-                Class cls = new Class(classID, level, subject, term, classTime, classDay, mthlyFees, startDate, endDate);
+                String type = rs.getString("class_type");
+                Class cls = new Class(classID, level, subject, term, classTime, classDay, mthlyFees, startDate, endDate, type);
                 classList.add(cls);
             }
         } catch (SQLException e) {
@@ -240,7 +245,8 @@ public class ClassDAO {
                 int mthlyFees = rs.getInt("fees");
                 String subject = SubjectDAO.retrieveSubject(subjectID);
                 String level = LevelDAO.retrieveLevel(levelID);
-                Class cls = new Class(classID, level, subject, term, classTime, classDay, mthlyFees, startDate, endDate);
+                String type = rs.getString("class_type");
+                Class cls = new Class(classID, level, subject, term, classTime, classDay, mthlyFees, startDate, endDate, type);
                 classList.add(cls);
             }
         } catch (SQLException e) {
@@ -271,7 +277,8 @@ public class ClassDAO {
                 int mthlyFees = rs.getInt("fees");
                 String subject = SubjectDAO.retrieveSubject(subjectID);
                 String level = LevelDAO.retrieveLevel(levelID);
-                Class cls = new Class(classID, level, subject, term, classTime, classDay, mthlyFees, startDate, endDate);
+                String type = rs.getString("class_type");
+                Class cls = new Class(classID, level, subject, term, classTime, classDay, mthlyFees, startDate, endDate, type);
                 classList.add(cls);
             }
         } catch (SQLException e) {
@@ -379,7 +386,8 @@ public class ClassDAO {
                 int mthlyFees = rs.getInt("fees");
                 String subject = SubjectDAO.retrieveSubject(subjectID);
                 String level = LevelDAO.retrieveLevel(levelID);
-                Class cls = new Class(classID, level, subject, term, classTime, classDay, mthlyFees, startDate, endDate);
+                String type = rs.getString("class_type");
+                Class cls = new Class(classID, level, subject, term, classTime, classDay, mthlyFees, startDate, endDate, type);
                 classList.add(cls);
             }
         } catch (SQLException e) {
@@ -406,7 +414,8 @@ public class ClassDAO {
                 String endDate = rs.getString("end_date");
                 int mthlyFees = rs.getInt("fees");
                 String subject = SubjectDAO.retrieveSubject(subjectID);
-                Class cls = new Class(classID, level, subject, term, classTime, classDay, mthlyFees, startDate, endDate);
+                String type = rs.getString("class_type");
+                Class cls = new Class(classID, level, subject, term, classTime, classDay, mthlyFees, startDate, endDate, type);
                 classList.add(cls);
             }
         } catch (SQLException e) {
@@ -434,7 +443,8 @@ public class ClassDAO {
                 String endDate = rs.getString("end_date");
                 int mthlyFees = rs.getInt("fees");
                 int tutorID = rs.getInt("tutor_id");
-                Class cls = new Class(classID, subjectID, classTime, classDay, mthlyFees, startDate, endDate, tutorID);
+                String type = rs.getString("class_type");
+                Class cls = new Class(classID, subjectID, classTime, classDay, mthlyFees, startDate, endDate, tutorID, type);
                 classList.add(cls);
             }
         } catch (SQLException e) {
@@ -461,7 +471,8 @@ public class ClassDAO {
                 String endDate = rs.getString("end_date");
                 int mthlyFees = rs.getInt("fees");
                 String subject = SubjectDAO.retrieveSubject(subjectID);
-                Class cls = new Class(classID, level, subject, term, classTime, classDay, mthlyFees, startDate, endDate);
+                String type = rs.getString("class_type");
+                Class cls = new Class(classID, level, subject, term, classTime, classDay, mthlyFees, startDate, endDate, type);
 
                 String key = classTime + "-" + classDay;
                 ArrayList<Class> tempClassLists = classMap.get(key);

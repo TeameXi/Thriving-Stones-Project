@@ -15,11 +15,6 @@
 <%@include file="header.jsp"%>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.18/datatables.min.css"/>
 <div class="col-md-10">
-    <%//        String existingStudent = (String) request.getAttribute("existingStudent");
-//        if (existingStudent != null) {
-//            out.println("<div id='creation_status' class='alert alert-danger col-md-12'>Student : <strong>"+existingStudent+"</strong> is already added. Try another student again. </div>");
-//        }
-    %>
 
     <div style="text-align: center;margin: 20px;"><span class="tab_active">Make Payment</span></div>
     <div class="row">
@@ -99,16 +94,16 @@
                         <input type="hidden" value="<%=payment.getNoOfLessons()%>" name="noOfLessons[]">
                         <input type="hidden" value="<%=payment.getDetails()%>" name="subject[]">
                         <input type="hidden" value="<%=payment.getChargeAmount()%>" name="chargeAmount[]">
-                        <input name="paymentAmount[]" id="paymentAmount" class="form-control" type="number">
+                        <input name="paymentAmount[]" id="paymentAmount" class="form-control calculate" type="number">
                         <%        
                                     out.println("</td></tr>");
                                 }
 
-                                //out.println("<tr><td>Total</td><td> </td><td> </td><td> </td><td> </td><td>");
+                                out.println("<tr><td> </td><td> </td><td> </td><td> </td><td><label>Total</label></td><td>");
                         %>
-                        <!--<input name="totalAmount" id="totalAmount" class="form-control" type="number">-->
+                        <input name="totalAmount" id="totalAmount" class="form-control calculate" type="number" readonly>
                         <%        
-                                //out.println("</td></tr>");
+                                out.println("</td></tr>");
                         %>
 
                         </tbody> 
@@ -121,7 +116,6 @@
                 </div>
             </form>
             <%        
-                                //out.println("</td></tr>");
                             }else{
                                 out.println("<label>" + studentName + " has no outstanding fees.</label>");
                             }
@@ -152,36 +146,49 @@
 
 <script>
     $(document).ready(function () {
-        // $('#gradeTable').DataTable({});
         $('#paymentTable').dataTable( {
             "paging":   false,
             "ordering": false,
             "info":     false,
             "searching": false
         } );
+
+//        var chargeAmount = $("input[name='chargeAmount[]']").map(function(){return $(this).val();}).get();
+//        console.log("Amount " + chargeAmount);
         
         $('.calculate').keyup(function () {
-            var Tot = parseFloat($('#paymnetAmounnt').val());
-            $('#totalAmount').val(Tot);
-        });
-        
-        $('#paymentPage').bootstrapValidator({
-        // To use feedback icons, ensure that you use Bootstrap v3.1.0 or later
-            feedbackIcons: {
-                valid: 'glyphicon glyphicon-ok',
-                invalid: 'glyphicon glyphicon-remove',
-                validating: 'glyphicon glyphicon-refresh'
-            },
-            fields: {
-                'fees[]': {
-                    validators: { 
-                        integer: {
-                            message: 'Integer Only'
-                        }
-                    }
+            var values = $("input[name='paymentAmount[]']").map(function(){return $(this).val();}).get();    
+            var total = 0;
+            for (var i = 0; i < values.length; i++) {
+                var paymentAmount = parseFloat(values[i]);
+                if(isNaN(paymentAmount)){   
+                }else{
+                    //console.log(paymentAmount > parseFloat(chargeAmount[i]));
+                    var total = total + paymentAmount;
                 }
             }
+            $('#totalAmount').val(total);
         });
+        
+        
+        
+//        $('#paymentPage').bootstrapValidator({
+//        // To use feedback icons, ensure that you use Bootstrap v3.1.0 or later
+//            feedbackIcons: {
+//                valid: 'glyphicon glyphicon-ok',
+//                invalid: 'glyphicon glyphicon-remove',
+//                validating: 'glyphicon glyphicon-refresh'
+//            },
+//            fields: {
+//                'paymentAmount[]': {
+//                    validators: { 
+//                        integer: {
+//                            message: 'Integer Only'
+//                        }
+//                    }
+//                }
+//            }
+//        });
     });
 
 </script>

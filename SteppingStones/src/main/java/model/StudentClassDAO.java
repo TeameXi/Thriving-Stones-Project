@@ -59,6 +59,23 @@ public class StudentClassDAO {
         }
         return status;
     }
+    
+    public static boolean updateFirstInsatllment(int classID, int studentID) {
+        boolean updatedStatus = false;
+        try (Connection conn = ConnectionManager.getConnection();) {
+            conn.setAutoCommit(false);
+            String sql = "update class_student_rel set first_installment = -1 where student_id = ? and class_id = ?;";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, studentID);
+            stmt.setInt(2, classID);
+            stmt.executeUpdate();
+            conn.commit();
+            updatedStatus = true;
+        } catch (Exception e) {
+            System.out.println("Error in updateDepositpaymentDate method" + e.getMessage());
+        }
+        return updatedStatus;
+    }
 
     public static boolean saveStudentsToRegisterClass(int classID, int studentID, double deposit, double outstandingDeposit, double tuitionFee,
             double outstandingTuitionFee, String joinDate) {

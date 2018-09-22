@@ -12,8 +12,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.LessonDAO;
 import model.ParentChildRelDAO;
 import model.ParentDAO;
+import model.PaymentDAO;
 import model.StudentClassDAO;
 import model.StudentDAO;
 import model.StudentGradeDAO;
@@ -55,8 +57,12 @@ public class DeleteStudentServlet extends HttpServlet {
         }     
         boolean deleteTuitionGrade = StudentGradeDAO.deleteStudentTuitionGrade(studentID);
         boolean deleteStudentClassRel = StudentClassDAO.deleteStudentClassRel(studentID);
+        boolean deletePaymentReminder = PaymentDAO.deletePaymentReminderbyStudentID(studentID);
+        boolean deleteRevenue = PaymentDAO.deleteRevenuebyStudentID(studentID);
+        boolean deleteAttendance = LessonDAO.deleteAttendancebyID(studentID);
         
-        if(deleteStudent && deleteParentChildRel && deleteParent && deleteTuitionGrade && deleteStudentClassRel && deleteUser){
+        if(deleteStudent && deleteParentChildRel && deleteParent && deleteTuitionGrade && deleteStudentClassRel && 
+                deleteUser && deletePaymentReminder && deleteRevenue && deleteAttendance){
             out.println(1);
         }else{
             out.println(0);
