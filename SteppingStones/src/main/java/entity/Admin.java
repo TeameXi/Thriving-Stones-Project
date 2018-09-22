@@ -3,7 +3,6 @@ package entity;
 public class Admin {
     private int admin_id;
     private String admin_username;
-    private String password;
     private int branch_id;
     private String email;
     
@@ -22,9 +21,8 @@ public class Admin {
         this.admin_id = admin_id;
     }
     
-    public Admin(String admin_username, String password, String email, int branch_id){
+    public Admin(String admin_username,String email, int branch_id){
         this(admin_username, branch_id);
-        this.password = password;
         this.branch_id = branch_id;
         this.email = email;
     }
@@ -56,20 +54,7 @@ public class Admin {
         this.admin_username = admin_username;
     }
 
-    /**
-     * @return the password
-     */
-    public String getPassword() {
-        return password;
-    }
-
-    /**
-     * @param password the password to set
-     */
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
+ 
     /**
      * @return the branch_id
      */

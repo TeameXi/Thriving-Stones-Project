@@ -49,7 +49,7 @@ public class CreateAdminServlet extends HttpServlet {
             RequestDispatcher dispatcher = request.getRequestDispatcher("CreateAdmin.jsp");
             dispatcher.forward(request, response);
         } else {*/
-            Admin tempAdmin = new Admin(admin_username, password, adminEmail, branch_id);
+            Admin tempAdmin = new Admin(admin_username, adminEmail, branch_id);
             int status = adminDao.addAdmin(tempAdmin);
             
             RequestDispatcher dispatcher;
@@ -91,7 +91,7 @@ public class CreateAdminServlet extends HttpServlet {
                     dispatcher = request.getRequestDispatcher("CreateAdmin.jsp");
                 }
             }else{
-                request.setAttribute("errorMsg", "Error creating admin!");
+                request.setAttribute("errorMsg", "Admin Exist Already");
                 dispatcher = request.getRequestDispatcher("CreateAdmin.jsp");
             }
             dispatcher.forward(request, response);

@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.AdminDAO;
 import model.BranchDAO;
+import model.UsersDAO;
 import org.json.JSONObject;
 
 /**
@@ -58,6 +59,7 @@ public class BranchAdminServlet extends HttpServlet {
            }else if(action.equals("delete")){
                 boolean deleteStatus = AdminDAO.deleteAdmin(adminId);
                 if(deleteStatus){
+                    UsersDAO.deleteUserByIdAndRole(adminId, "admin");
                     out.println(1);
                 }else{
                     out.println(-1);
