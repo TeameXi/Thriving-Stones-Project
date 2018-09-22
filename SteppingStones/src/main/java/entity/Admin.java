@@ -16,10 +16,10 @@ public class Admin {
         this.branch_id = branch_id;
     }
     
-    public Admin(String admin_username, String email, int branch_id){
+    public Admin(String admin_username, String email, int branch_id,int admin_id){
         this(admin_username, branch_id);
         this.email = email;
-        
+        this.admin_id = admin_id;
     }
     
     public Admin(String admin_username, String password, String email, int branch_id){

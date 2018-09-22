@@ -18,8 +18,8 @@
     %> 
     <div style="text-align: center;margin: 20px;"><span class="tab_active">Add Branch Admin</span></h5></div>
     <div class="row">
-        <div class="col-md-3"></div>
-        <div class="col-md-7">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
             <form id="createAdminForm" method="POST" class="form-horizontal" action="CreateAdminServlet">
                 <%  
                     BranchDAO branchDao = new BranchDAO();
@@ -27,7 +27,7 @@
                 %>
                 
                 <div class="form-group">
-                    <label class="col-lg-2 control-label">Branch</label>  
+                    <label class="col-lg-3 control-label">Branch</label>  
                     <div class="col-lg-7 inputGroupContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-city"></i></span>
@@ -44,7 +44,7 @@
                             
                             
                 <div class="form-group">
-                    <label class="col-lg-2 control-label">Username</label>  
+                    <label class="col-lg-3 control-label">Admin Name</label>  
                     <div class="col-lg-7 inputGroupContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-account"></i></span>
@@ -54,7 +54,7 @@
                 </div>
                 
                 <div class="form-group">
-                    <label class="col-lg-2 control-label">Email**</label>  
+                    <label class="col-lg-3 control-label">Email</label>  
                     <div class="col-lg-7 inputGroupContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-email"></i></span>
@@ -101,7 +101,7 @@ $(function () {
             admin_name: {
                 validators: {
                     notEmpty: {
-                        message: 'Please enter username'
+                        message: 'Please enter name'
                     }
                 }
             },

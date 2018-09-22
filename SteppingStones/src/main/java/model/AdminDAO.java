@@ -32,11 +32,11 @@ public class AdminDAO {
         return 0;
     }
 
-    public boolean updateAdmin(int admin_id, String admin_username, String password, int branch_id) {
+    public static boolean updateAdmin(String admin_username,String email,int branch_id,int admin_id) {
         try (Connection conn = ConnectionManager.getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement("UPDATE admin SET admin_username=?,password=MD5(?),branch_id=? WHERE admin_id =? ")) {
+            PreparedStatement preparedStatement = conn.prepareStatement("UPDATE admin SET admin_username=?,email=?,branch_id=? WHERE admin_id =? ")) {
             preparedStatement.setString(1, admin_username);
-            preparedStatement.setString(2, password);
+            preparedStatement.setString(2, email);
             preparedStatement.setInt(3, branch_id);
             preparedStatement.setInt(4, admin_id);
 
@@ -51,7 +51,7 @@ public class AdminDAO {
         return false;
     }
 
-    public boolean deleteAdmin(int adminId) {
+    public static boolean deleteAdmin(int adminId) {
         try (Connection conn = ConnectionManager.getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement("DELETE FROM admin WHERE admin_id = ?")) {
             preparedStatement.setInt(1, adminId);
@@ -85,15 +85,16 @@ public class AdminDAO {
     public ArrayList<Admin> retrieveAllAdmins() {
         ArrayList<Admin> admins = new ArrayList<>();
         try (Connection conn = ConnectionManager.getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement("SELECT admin_username,email,branch_id FROM admin where branch_id <> 0 order by branch_id")) {
+            PreparedStatement preparedStatement = conn.prepareStatement("SELECT admin_username,email,branch_id,admin_id FROM admin where branch_id <> 0 order by branch_id")) {
 
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 String admin_username = rs.getString(1);
                 String email = rs.getString(2);
                 int branch_id = rs.getInt(3);
-                System.out.println(email);
-                Admin branch = new Admin(admin_username, email, branch_id);
+                int admin_id = rs.getInt(4);
+
+                Admin branch = new Admin(admin_username, email, branch_id,admin_id);
                 admins.add(branch);
             }
 
@@ -112,7 +113,7 @@ public class AdminDAO {
                 String admin_username = rs.getString(1);
                 String email = rs.getString(2);
                 int branch_id = rs.getInt(3);
-                Admin admin = new Admin(admin_username, email, branch_id);
+                Admin admin = new Admin(admin_username, email, branch_id,admin_id);
                 return admin;
             }
 
