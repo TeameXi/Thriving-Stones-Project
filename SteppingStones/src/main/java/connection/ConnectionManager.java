@@ -5,6 +5,7 @@
  */
 package connection;
 
+import java.io.FileInputStream;
 import java.sql.*;
 import java.util.Properties;
 import java.io.InputStream;
@@ -48,15 +49,20 @@ public class ConnectionManager {
 
             // grab environment variable to check if we are on production environment
             String osName = System.getProperty("os.name").toLowerCase();
-            
+
             if (osName.contains("windows") || osName.contains("mac")) {
                 // in local environment, use db.password
                 dbPassword = props.getProperty("db.password");
                 dbURL = "jdbc:mysql://" + host + ":" + port + "/" + dbName;
             } else {
-                // in production environment, use jelastic password
-                dbPassword = "GRPesv72616";
-                dbURL = "jdbc:mysql://node34999-steppingstones.njs.jelastic.vps-host.net/stepping_stones";
+                Properties prop = new Properties();
+                System.out.println("test");
+                prop.load(new FileInputStream(System.getProperty("user.home") + "/steppingstones.cfg"));
+                System.out.println("user.home: " + System.getProperty("user.home"));
+                dbURL = prop.getProperty("host").toString();
+                dbUser = prop.getProperty("username").toString();
+                dbPassword = prop.getProperty("password").toString();
+                String driver = prop.getProperty("driver").toString();
             }
         } catch (Exception ex) {
             // unable to load properties file
