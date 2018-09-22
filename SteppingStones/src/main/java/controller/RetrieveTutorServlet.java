@@ -48,7 +48,7 @@ public class RetrieveTutorServlet extends HttpServlet {
                 String fullname = tu.getName();
                 int phone = tu.getPhone();
                 String address = tu.getAddress();
-                String image_url = tu.getImage_url();
+                String image_url = tu.getQualification();
                 String birth_date = tu.getBirth_date();
                 String gender = tu.getGender();
                 String email = tu.getEmail();
