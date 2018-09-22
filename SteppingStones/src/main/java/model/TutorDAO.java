@@ -167,7 +167,7 @@ public class TutorDAO {
 
                 String tutorList = String.join(",", tutorLists);
                 String[] col = {"tutor_id"};
-                String insert_tutor = "INSERT IGNORE INTO tutor(tutor_nric,tutor_fullname,phone,address,birth_date,gender,email,branch_id) VALUES " + tutorList;
+                String insert_tutor = "INSERT IGNORE INTO tutor(tutor_nric,tutor_fullname,phone,address,birth_date,gender,email,highest_qualification,branch_id) VALUES " + tutorList;
                 PreparedStatement insertStatement = conn.prepareStatement(insert_tutor, col);
                 insertStatement.executeUpdate();
 
