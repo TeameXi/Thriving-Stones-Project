@@ -35,10 +35,10 @@ function checkCSVExtension(file_upload_id, error_lbl_id, append_container, optio
 
             if (option === 'tutor') {
                 var header = data[1];
-                if (header.length === 8 && header[0] === "Tutor NRIC" && header[1] === "Full Name"
+                if (header.length === 9 && header[0] === "Tutor NRIC" && header[1] === "Full Name"
                         && header[2] === "Phone" && header[3] === "Address"
                         && header[4] === "Birth Date (DD-MM-YYYY)"
-                        && header[5] === "Gender (F/M)" && header[6] === "Email" && header[7] === "Hourly Rate") {
+                        && header[5] === "Gender (F/M)" && header[6] === "Email" && header[7] === "Hourly Rate" && header[8] === "Qualification") {
                     $("#" + append_container).html("");
                     processCSVTutorData(data, append_container, error_el, branch_id);
                 } else {
@@ -93,6 +93,7 @@ function processCSVTutorData(csv_data, append_container, error_el, branch_id) {
         Gender = csv_data[i][5];
         Email = csv_data[i][6];
         Hourly_Rate = csv_data[i][7];
+        Qualification = csv_data[i][8];
 
         html += "<div class='row' rel='" + i + "' id='row_con_" + i + "'>" +
                 "<div class='col-sm-1 bold'></div>" +
@@ -104,6 +105,7 @@ function processCSVTutorData(csv_data, append_container, error_el, branch_id) {
                 "<input type='hidden' name='con_birthdates[]' id='con_birthdates_num_" + i + "' class='form-control' value = '" + Birth_date + "'>" +
                 "<input type='hidden' name='con_genders[]' id='con_genders_num_" + i + "' class='form-control' value = '" + Gender + "'>" +
                 "<input type='hidden' name='con_rate[]' id='con_rate_" + i + "' class='form-control' value = '" + Hourly_Rate + "'>" +
+                "<input type='hidden' name='con_qualification[]' id='con_qualification_" + i + "' class='form-control' value = '" + Qualification + "'>" +
                 "</div>" +
                 "<div class='col-sm-3'>" +
                 "<input type='text' name='con_phones[]' id='con_phones_num_" + i + "' class='form-control' value='" + Phone + "' readonly='readonly'>" +

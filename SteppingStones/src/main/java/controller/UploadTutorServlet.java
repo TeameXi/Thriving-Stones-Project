@@ -54,6 +54,7 @@ public class UploadTutorServlet extends HttpServlet {
             String emails[] = request.getParameterValues("con_emails[]");
             //String passwords[] = request.getParameterValues("con_pwd[]");
             String hourlyRate[] = request.getParameterValues("con_rate[]");
+            String qualification[] = request.getParameterValues("con_qualification[]");
             int branch_id = 0; 
             if(request.getParameter("branch") != null && request.getParameter("branch") != ""){
                 branch_id = Integer.parseInt(request.getParameter("branch"));
@@ -64,8 +65,33 @@ public class UploadTutorServlet extends HttpServlet {
             ArrayList<String> tutorEmailLists = new ArrayList();
             HashMap<String, String> emailList = new HashMap<>();
             for(int i = 0; i < tutorNames.length; i++){
-                if("".equals(tutorNames[i].trim())) continue;
-              
+                if("".equals(tutorNames[i].trim()) || "NIL".equalsIgnoreCase(tutorNames[i].trim())) continue;
+                
+                if("".equals(emails[i].trim()) || "NIL".equalsIgnoreCase(emails[i].trim())) continue;
+                
+                if("".equals(phones[i].trim()) || "NIL".equalsIgnoreCase(phones[i].trim())) continue;
+                
+                if("NIL".equalsIgnoreCase(tutorNrics[i])){
+                    tutorNrics[i] = "";
+                }
+                
+                if("NIL".equalsIgnoreCase(addresses[i])){
+                    addresses[i] = "";
+                }
+                
+                if("NIL".equalsIgnoreCase(birth_dates[i])){
+                    birth_dates[i] = "";
+                }
+                
+                if("NIL".equalsIgnoreCase(genders[i])){
+                    genders[i] = "";
+                }
+                
+                
+                if("NIL".equalsIgnoreCase(qualification[i])){
+                    qualification[i] = "";
+                }
+                
                 int phone = 0;
                 if(!"".equals(phones[i])){
                     phone = Integer.parseInt(phones[i]);
@@ -74,7 +100,7 @@ public class UploadTutorServlet extends HttpServlet {
 //                Tutor tempTutor = new Tutor(tutorNrics[i],tutorNames[i],phone,addresses[i],images[i],birth_dates[i],genders[i],emails[i],passwords[i],branch_id);
 
                 tutorLists.add("('"+tutorNrics[i]+"','"+tutorNames[i].trim()+"',"+phone+",'"+addresses[i]+ "','"
-                       +birth_dates[i]+"','"+genders[i]+"','"+emails[i]+"','"+branch_id+"')");
+                       +birth_dates[i]+"','"+genders[i]+"','"+emails[i]+"','"+ qualification[i] + "','"+branch_id+"')");
 
                 tutorEmailLists.add(emails[i].trim());
                 
