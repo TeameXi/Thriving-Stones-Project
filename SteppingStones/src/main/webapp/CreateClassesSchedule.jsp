@@ -162,8 +162,8 @@
                     // Radio box for tutor assignment
                     scheduler.locale.labels.section_changeTutorType = "Tutor Changes Type"; 
                     var tutor_assignment_type = [
-                        { key: 0, label: 'Change For 1 Lesson' },
-                        { key: 1, label: 'For Following Lessons' }
+                        { key: 0, label: 'Change For 1 Lesson' }
+                        //,{ key: 1, label: 'For Following Lessons' }
                     ];
                     
                     // SElect primary box
@@ -174,10 +174,10 @@
                         { key: 4, label: 'Primary 4' },
                         { key: 5, label: 'Primary 5' },
                         { key: 6, label: 'Primary 6' },
-                        { key: 7, label: 'Primary 7' },
-                        { key: 8, label: 'Primary 8' },
-                        { key: 9, label: 'Primary 9' },
-                        { key: 10, label: 'Primary 10' },
+                        { key: 7, label: 'Secondary 1' },
+                        { key: 8, label: 'Secondary 2' },
+                        { key: 9, label: 'Secondary 3' },
+                        { key: 10, label: 'Secondary 4' },
                     ];
                     
                     // Checkbox Lists
@@ -227,7 +227,7 @@
                             {name:"Assign To", height:20,type:"select", options: tutor, map_to:"tutor"},
                             {name:"selectme", height: 20, options: has_reminder, map_to:"has_reminder", type:"radio", vertical: true,default_value:"0" },
                             {name:"Class EndDate", height:14, map_to:"ending", type:"custom_classendtimeperiod"},
-                            {name:"Date Skip For Holiday", height:14, map_to:"skip_date", type:"custom_holidayDate"},
+//                            {name:"Date Skip For Holiday", height:14, map_to:"skip_date", type:"custom_holidayDate"},
                             {name:"time", height:72, type:"time", map_to:"auto" }
                         ];
                     }else{
@@ -236,7 +236,7 @@
                             {name:"Assign To", height:20,type:"select", options: tutor, map_to:"tutor"},
                             {name:"selectme", height: 20, options: has_reminder, map_to:"has_reminder", type:"radio", vertical: true,default_value:"0" },
                             {name:"Class EndDate", height:14, map_to:"ending", type:"custom_classendtimeperiod"},
-                            {name:"Date Skip For Holiday", height:14, map_to:"skip_date", type:"custom_holidayDate"},
+//                            {name:"Date Skip For Holiday", height:14, map_to:"skip_date", type:"custom_holidayDate"},
                             // {name:"recurring", type:"recurring", map_to:"rec_type", button:"recurring"},
                             {name:"time", height:72, type:"time", map_to:"auto" }
                         ];
@@ -288,7 +288,7 @@
                                     currentTutor = findingTutorName.label;
                                 }
                             }
-                            
+
                             findingLvlIdGivenValue = lvlLists.find(x => x.label === ev.level);
                             editlvlId = findingLvlIdGivenValue.key;
                             

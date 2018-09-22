@@ -122,7 +122,8 @@ public class RetrieveAllClassesData extends HttpServlet {
                 String day = c.getClassDay();
                 String start_date = c.getStartDate() + " " + startingTime;
                 String end_date = c.getEndDate() + " " + endingTime;
-                
+                System.out.println("classINfo");
+                System.out.println(classId);
                 String holiday_date = c.getHolidayDate();
                 
                 SimpleDateFormat format = new SimpleDateFormat("HH:mm");
@@ -146,19 +147,19 @@ public class RetrieveAllClassesData extends HttpServlet {
                 obj.put("holiday_date",holiday_date);
                 obj.put("restricted", true);
                 if (day.equals("Mon")) {
-                    obj.put("rec_type", "week_1___1#11");
+                    obj.put("rec_type", "week_1___1#44");
                 } else if (day.equals("Tue")) {
-                    obj.put("rec_type", "week_1___2#11");
+                    obj.put("rec_type", "week_1___2#44");
                 } else if (day.equals("Wed")) {
-                    obj.put("rec_type", "week_1___3#11");
+                    obj.put("rec_type", "week_1___3#44");
                 } else if (day.equals("Thur")) {
-                    obj.put("rec_type", "week_1___4#11");
+                    obj.put("rec_type", "week_1___4#44");
                 } else if (day.equals("Fri")) {
-                    obj.put("rec_type", "week_1___5#11");
+                    obj.put("rec_type", "week_1___5#44");
                 } else if (day.equals("Sat")) {
-                    obj.put("rec_type", "week_1___6#11");
+                    obj.put("rec_type", "week_1___6#44");
                 } else if (day.equals("Sun")) {
-                    obj.put("rec_type", "week_1___7#11");
+                    obj.put("rec_type", "week_1___7#44");
                 }
                 classObjLists.put(obj);
             }
