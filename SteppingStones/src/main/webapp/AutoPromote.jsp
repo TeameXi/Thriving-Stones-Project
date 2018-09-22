@@ -24,8 +24,8 @@
     %> 
     <div style="text-align: center;margin: 20px;">Auto Promote </h5></div>
     <div class="row">
-        <div class="col-md-3"></div>
-        <div class="col-md-7">
+        <div class="col-md-3" style="width: 15%"></div>
+        <div class="col-md-7" style="width: 65%">
             <form id="filterLevelForm" method="POST" class="form-horizontal" action="AutoPromoteServlet">
                 <input type='hidden' name='branch' value='<%=branchID%>'>
 
@@ -64,7 +64,7 @@
             %>  
             <form id="submitStudentForm" method="POST" class="form-horizontal" action="AutoPromoteServlet">
                 <table class="table table-bordered">
-                    <thead class="table_title"><tr><th></th><th>Name</th><th>Level</th><th>Email</th><th>Action</th></tr></thead>
+                    <thead class="table_title"><tr><th width="5%"></th><th width="20%">Name</th><th width="15%">Level</th><th width="27%">Email</th><th width="33%">Action</th></tr></thead>
                     <tbody>
                         <%
                             for (Student stu : selectedStudents) {
@@ -102,7 +102,7 @@
                         if(allStudents.size() > 0){
             %>
             <table class="table table-bordered">
-                <thead class="table_title"><tr><th>Name</th><th>Level</th><th>Email</th><th>Action</th></tr></thead>
+                <thead class="table_title"><tr><th width="20%">Name</th><th width="15%">Level</th><th width="30%">Email</th><th width="35%">Action</th></tr></thead>
                 <tbody>
                     <%
                         for (Student stu : allStudents) {

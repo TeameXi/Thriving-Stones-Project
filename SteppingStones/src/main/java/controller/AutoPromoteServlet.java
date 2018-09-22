@@ -78,14 +78,19 @@ public class AutoPromoteServlet extends HttpServlet {
                 for(String stuValue: studentValue){
                     int stuID = Integer.parseInt(stuValue);
                     Student student = StudentDAO.retrieveStudentbyID(stuID);
+                    
+                    out.println("student id" +stuID);
+                    out.println("name" +student.getName());
                     String level = student.getLevel();
+                    
                     int levelID = LevelDAO.retrieveLevelID(level);                    
                     boolean update = StudentDAO.promoteStudentLevel(stuID, levelID+1);
                     if(update){
                             request.setAttribute("status", "Successfully Promoted.");
-                    }
+                   }
                 }
             }
+            
             RequestDispatcher view = request.getRequestDispatcher("AutoPromote.jsp");
             view.forward(request,response);
         }
