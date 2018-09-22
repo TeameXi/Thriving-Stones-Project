@@ -111,7 +111,10 @@ public class ForgotPasswordServlet extends HttpServlet {
                             + "\n\nWe have received a request to reset your Stepping Stones Tuition Center Account password."
                             + "\nSimply click the link below to reset your password."
                             + "\n"+href+msg;
-                        SendMail.sendingEmail(userEmail, subject, text);
+                        //for local
+                        //SendMail.sendingEmail(userEmail, subject, text);
+                        //for deploy
+                        SendMail.sendingEmailUsingSendGrid(userEmail, subject, text);
                         request.setAttribute("status", "Email sent. please check your email for instruction to reset your password.");
                     } catch (Exception ex) {
                         Logger.getLogger(ForgotPasswordServlet.class.getName()).log(Level.SEVERE, null, ex);

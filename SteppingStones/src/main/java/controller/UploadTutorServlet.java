@@ -157,7 +157,10 @@ public class UploadTutorServlet extends HttpServlet {
                 String text = "Your account has been created.\n\nBelow is the username and password to access your account: \nUsername: " + username
                         + "\nPassword: " + password + "\n\nYou can Login via "+href; 
                 if(email != null && !email.equals("")){
-                    SendMail.sendingEmail(email, subject, text);
+                    //for local
+                    //SendMail.sendingEmail(email, subject, text);
+                    //for deploy
+                    SendMail.sendingEmailUsingSendGrid(email, subject, text);
                 } 
             }
                     
