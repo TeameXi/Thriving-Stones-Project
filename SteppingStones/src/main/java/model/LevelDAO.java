@@ -33,7 +33,7 @@ public class LevelDAO {
         return levels;
     }
     
-    public ArrayList<Level> retrieveAllLevelLists() {
+    public static ArrayList<Level> retrieveAllLevelLists() {
         ArrayList<Level> levels = new ArrayList<>();
         String sql = "select * from level";
         System.out.println(sql);

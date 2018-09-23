@@ -34,6 +34,7 @@
                     <div class="col-lg-7 inputGroupContainer">
                         <div class="input-group">
                             <select id="lvlSelect" multiple="multiple" name="level" class="form-control">
+                                <option value='0'>Select All</option>
                                 <option value='1'>Primary 1</option>
                                 <option value='2'>Primary 2</option>
                                 <option value='3'>Primary 3</option>
@@ -64,7 +65,8 @@
             %>  
             <form id="submitStudentForm" method="POST" class="form-horizontal" action="AutoPromoteServlet">
                 <table class="table table-bordered">
-                    <thead class="table_title"><tr><th width="5%"></th><th width="20%">Name</th><th width="15%">Level</th><th width="27%">Email</th><th width="33%">Action</th></tr></thead>
+                    <thead class="table_title"><tr><th width="5%"></th><th width="20%">Name</th><th width="15%">Level</th><th width="27%">Email</th>
+                            <%--<th width="33%">Action</th> --%></tr></thead>
                     <tbody>
                         <%
                             for (Student stu : selectedStudents) {
@@ -77,10 +79,14 @@
                                 out.println("<td>"+stu.getLevel()+"</td>");
                                 out.println("<td>"+stu.getEmail()+"</td>");
                                 %>
-                            <td><button type="button" class="btn btn-primary btn-xs">Parent</button>
-                            <button type="button" class="btn btn-primary btn-xs">Attendance</button>
-                            <button type="button" class="btn btn-primary btn-xs">Grades</button>
-                            </td>
+             <%--                 <td>
+                                <a href="#viewParent" data-toggle="modal" data-target-id="<%=stu.getStudentID()%>" class="view_more">
+                                    <button type="button" class="btn btn-primary btn-xs">Parent</button></a>
+                                <a href="#viewAttendance" data-toggle="modal" data-target-id="<%=stu.getStudentID()%>" class="view_more">
+                                    <button type="button" class="btn btn-primary btn-xs">Attendance</button></a>
+                                <a href="#viewGrade" data-toggle="modal" data-target-id="<%=stu.getStudentID()%>" class="view_more">
+                                    <button type="button" class="btn btn-primary btn-xs">Grades</button></a>
+                            </td>           --%>
                         <%
                                 out.println("</tr>");
                                 }
@@ -102,7 +108,8 @@
                         if(allStudents.size() > 0){
             %>
             <table class="table table-bordered">
-                <thead class="table_title"><tr><th width="20%">Name</th><th width="15%">Level</th><th width="30%">Email</th><th width="35%">Action</th></tr></thead>
+                <thead class="table_title"><tr><th width="20%">Name</th><th width="15%">Level</th><th width="30%">Email</th>
+                        <%--<th width="35%">Action</th> --%></tr></thead>
                 <tbody>
                     <%
                         for (Student stu : allStudents) {
@@ -114,12 +121,14 @@
                             out.println("<td>"+stu.getLevel()+"</td>");
                             out.println("<td>"+stu.getEmail()+"</td>"); 
                         %>
-                            <td>
+                        <%--                  <td>
                                 <a href="#viewParent" data-toggle="modal" data-target-id="<%=stu.getStudentID()%>" class="view_more">
                                     <button type="button" class="btn btn-primary btn-xs">Parent</button></a>
-                            <button type="button" class="btn btn-primary btn-xs">Attendance</button>
-                            <button type="button" class="btn btn-primary btn-xs">Grades</button>
-                            </td>
+                                <a href="#viewAttendance" data-toggle="modal" data-target-id="<%=stu.getStudentID()%>" class="view_more">
+                                    <button type="button" class="btn btn-primary btn-xs">Attendance</button></a>
+                                <a href="#viewGrade" data-toggle="modal" data-target-id="<%=stu.getStudentID()%>" class="view_more">
+                                    <button type="button" class="btn btn-primary btn-xs">Grades</button></a>
+                            </td>  --%>
                         <%
                             out.println("</tr>");
                             }
@@ -208,6 +217,34 @@
 </div>
 <!-- End of Detail Dialog -->
 
+<!-- Detail Dialog -->
+<div class="modal fade" id="viewAttendance" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <span class="pc_title centered">Attendance Details</span>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table>
+                    <tr>
+                        <th>Lesson Date</th><th>Present/Absent</th>
+                    </tr>
+                    
+                </table>
+            </div>  
+
+            <div class="modal-footer spaced-top-small centered">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>       
+    </div>
+</div>
+<!-- End of Detail Dialog -->
+
 <%@include file="footer.jsp"%>
 <script src='http://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.4.5/js/bootstrapvalidator.min.js'></script>
 <link rel='stylesheet prefetch' href='http://cdnjs.cloudflare.com/ajax/libs/jquery.bootstrapvalidator/0.5.0/css/bootstrapValidator.min.css'>
@@ -242,7 +279,7 @@
 
 <script>
     $(document).ready(function () {
-        $("#viewParent").on("show.bs.modal", function (e) {       
+        $("#viewParent").on("show.bs.modal", function (e) { 
             var student_id = $(e.relatedTarget).data('target-id');
             var branch_id = $("#branch").val();
             $.ajax({

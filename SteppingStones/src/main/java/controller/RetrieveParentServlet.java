@@ -38,16 +38,15 @@ public class RetrieveParentServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html; charset=utf-8");
-        try (PrintWriter out = response.getWriter()) {
+        PrintWriter out = response.getWriter();
           
             JSONObject obj = new JSONObject();
             int studentID = Integer.parseInt(request.getParameter("studentID"));
-            int branchID = Integer.parseInt(request.getParameter("branch_id"));
             ParentChildRelDAO parentChildRelDAO = new ParentChildRelDAO();
             int parentID = parentChildRelDAO.getParentID(studentID);
             ParentDAO parentDao = new ParentDAO();
-            Parent parent = parentDao.retrieveSpecificParentById(parentID);
-            
+            Parent parent = parentDao.retrieveSpecificParentById(11);
+            out.println("studentID"+studentID);
             if(parent != null){
                 int id = parent.getParentId();                
                 String fullname = parent.getName();
@@ -56,9 +55,7 @@ public class RetrieveParentServlet extends HttpServlet {
                 String designation = parent.getDesignation();
                 int phone = parent.getPhone();
                 String email = parent.getEmail();
-                
-                   
-                obj.put("id",id);
+
                 obj.put("fullname",fullname); 
                 obj.put("nationality",nationality);
                 obj.put("company",company);
@@ -70,7 +67,7 @@ public class RetrieveParentServlet extends HttpServlet {
             
             out.println(obj);
        
-        }
+        
         
         
     }
@@ -113,6 +110,7 @@ public class RetrieveParentServlet extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+
 
     
 }
