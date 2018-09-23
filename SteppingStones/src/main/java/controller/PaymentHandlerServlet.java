@@ -68,48 +68,48 @@ public class PaymentHandlerServlet extends HttpServlet {
             String lvlSubject = level + " " + subject;
 
             if (type.equals("Deposit")) {
-                
+
                 PaymentDAO.updateDepositOutstandingAmount(studentID, classID, calculatedOutstandingAmount);
                 if (paymentAmount != 0) {
                     PaymentDAO.insertPaymentToRevenue(studentID, studentName, noOfLesson, "Deposit", lvlSubject, paymentAmount);
                     StudentClassDAO.updateDepositPaymentDate(studentID, classID);
                 }
-                
+
                 Student stu = StudentDAO.retrieveStudentbyID(studentID);
                 double totalOutstandingAmt = stu.getOutstandingAmt() - paymentAmount;
                 StudentDAO.updateStudentTotalOutstandingFees(studentID, totalOutstandingAmt);
                 System.out.println("After Deposit Payment" + totalOutstandingAmt + "  " + stu.getOutstandingAmt() + "  " + paymentAmount);
-                
+
             } else if (type.equals("First Installment")) {
-                
+
                 String joinDate = StudentClassDAO.retrieveJoinDateOfStudentByClass(studentID, classID);
                 System.out.print(joinDate);
                 noOfLesson = LessonDAO.retrieveNoOfLessonForFirstInstallment(classID, joinDate);
                 Student stu = StudentDAO.retrieveStudentbyID(studentID);
                 String firstInstallmentStr = request.getParameter("" + classID);
-                
+
                 System.out.println("Installment Fees" + firstInstallmentStr);
-                if(firstInstallmentStr == null){
+                if (firstInstallmentStr == null) {
                     PaymentDAO.updateFirstInstallmentOutstandingAmount(studentID, classID, calculatedOutstandingAmount);
                     double totalOutstandingAmt = stu.getOutstandingAmt() - paymentAmount;
                     StudentDAO.updateStudentTotalOutstandingFees(studentID, totalOutstandingAmt);
                     System.out.println("After FirstInstallment Pay" + totalOutstandingAmt + "  " + stu.getOutstandingAmt() + "  " + paymentAmount);
                 }
-                
+
                 double firstInstallment = -1;
-                if(firstInstallmentStr != null && firstInstallmentStr.isEmpty()){
+                if (firstInstallmentStr != null && firstInstallmentStr.isEmpty()) {
                     PaymentDAO.updateFirstInstallmentAmount(studentID, classID, firstInstallment, calculatedOutstandingAmount);
                 }
-                
+
                 if (firstInstallmentStr != null && !firstInstallmentStr.isEmpty()) {
                     firstInstallment = Double.parseDouble(firstInstallmentStr);
                     calculatedOutstandingAmount = firstInstallment - paymentAmount;
                     PaymentDAO.updateFirstInstallmentAmount(studentID, classID, firstInstallment, calculatedOutstandingAmount);
-                    if(chargeAmount == outstandingAmount){
+                    if (chargeAmount == outstandingAmount) {
                         double totalOutstandingAmt = stu.getOutstandingAmt() + calculatedOutstandingAmount;
                         StudentDAO.updateStudentTotalOutstandingFees(studentID, totalOutstandingAmt);
                         System.out.println("After FirstInstallment Out" + totalOutstandingAmt + "  " + stu.getOutstandingAmt() + "  " + paymentAmount);
-                    }else{
+                    } else {
                         double totalOutstandingAmt = stu.getOutstandingAmt() - paymentAmount;
                         StudentDAO.updateStudentTotalOutstandingFees(studentID, totalOutstandingAmt);
                         System.out.println("After FirstInstallment Pay" + totalOutstandingAmt + "  " + stu.getOutstandingAmt() + "  " + paymentAmount);
@@ -119,42 +119,48 @@ public class PaymentHandlerServlet extends HttpServlet {
                 //System.out.print(noOfLesson);
                 if (paymentAmount != 0) {
                     PaymentDAO.insertPaymentToRevenue(studentID, studentName, noOfLesson, "First Installment", lvlSubject, paymentAmount);
-                } 
-                
+                }
+
             } else if (type.equals("Reg Fees")) {
-                
+
                 PaymentDAO.updateRegFeesOutstandingAmount(studentID, calculatedOutstandingAmount);
                 if (paymentAmount != 0) {
                     PaymentDAO.insertPaymentToRevenue(studentID, studentName, noOfLesson, "Reg Fees", lvlSubject, paymentAmount);
                 }
-                
+
                 Student stu = StudentDAO.retrieveStudentbyID(studentID);
                 double totalOutstandingAmt = stu.getOutstandingAmt() - paymentAmount;
                 StudentDAO.updateStudentTotalOutstandingFees(studentID, totalOutstandingAmt);
                 System.out.println("After Reg Fees Payment" + totalOutstandingAmt + "  " + stu.getOutstandingAmt() + "  " + paymentAmount);
-                
+
             } else if (type.equals("Tuition Fees")) {
-                
+
                 Student stu = StudentDAO.retrieveStudentbyID(studentID);
                 PaymentDAO.updateTuitionFeesOutstandingAmount(studentID, classID, dueDate, calculatedOutstandingAmount);
                 if (paymentAmount != 0) {
                     PaymentDAO.insertPaymentToRevenue(studentID, studentName, noOfLesson, "Tuition Fees", lvlSubject, paymentAmount);
                 }
-                
-                if(chargeAmount == outstandingAmount){
+
+                if (chargeAmount == outstandingAmount) {
                     double totalOutstandingAmt = stu.getOutstandingAmt() + calculatedOutstandingAmount;
                     StudentDAO.updateStudentTotalOutstandingFees(studentID, totalOutstandingAmt);
                     System.out.println("After Tuition Fees Out" + totalOutstandingAmt + "  " + stu.getOutstandingAmt() + "  " + paymentAmount);
-                }else{
+                } else {
                     double totalOutstandingAmt = stu.getOutstandingAmt() - paymentAmount;
                     StudentDAO.updateStudentTotalOutstandingFees(studentID, totalOutstandingAmt);
                     System.out.println("After Tuition Fees Pay" + totalOutstandingAmt + "  " + stu.getOutstandingAmt() + "  " + paymentAmount);
                 }
-    
+
             }
         }
-        response.sendRedirect("RegisterForClasses.jsp?status=Payment successful.");
-        return;
+        String from = (String) request.getSession().getAttribute("from");
+        if (from.equals("registration")) {
+            response.sendRedirect("RegisterForClasses.jsp?status=Payment successful.");
+            return;
+        } else if (from.equals("payment")) {
+            response.sendRedirect("PaymentStudent.jsp?status=Payment successful.");
+            return;
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

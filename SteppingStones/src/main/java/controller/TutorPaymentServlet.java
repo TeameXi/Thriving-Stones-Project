@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.ClassDAO;
+import model.ExpenseDAO;
 import model.LessonDAO;
 import model.LevelDAO;
 import model.SubjectDAO;
@@ -123,7 +124,14 @@ public class TutorPaymentServlet extends HttpServlet {
                 int classID = Integer.parseInt(request.getParameter("classID"));
                 int tutorID = Integer.parseInt(request.getParameter("tutorID"));
 
+                TutorDAO tutorDAO = new TutorDAO();
+                Class c = ClassDAO.getClassByID(classID);
+                double amount = TutorDAO.calculateLessonCount(tutorID, c.getClassID()) * 
+                        ClassDAO.getClassTime(c.getClassID()) * 
+                        TutorDAO.getHourlyPay(tutorID, LevelDAO.retrieveLevelID(c.getLevel()), SubjectDAO.retrieveSubjectID(c.getSubject()));
+                
                 boolean status = TutorDAO.updateTutorPayment(tutorID, classID);
+                ExpenseDAO.insertExpense(tutorID, tutorDAO.retrieveSpecificTutorById(tutorID).getName(), c.getSubject(), c.getLevel(), tutorID);
 
                 JSONObject toReturn = new JSONObject().put("data", status);
                 String json = toReturn.toString();

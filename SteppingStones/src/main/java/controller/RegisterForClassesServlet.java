@@ -129,6 +129,7 @@ public class RegisterForClassesServlet extends HttpServlet {
                         view.forward(request, response);   
                     }
                 }
+                request.getSession().setAttribute("from", "registration");
                 response.sendRedirect("PaymentPage.jsp?studentID="+studentID);
                 return;
             }

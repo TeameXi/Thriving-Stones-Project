@@ -172,7 +172,7 @@
                                  </a>
                                  <!-- Sub menu -->
                                  <!--<ul>
-                                     <li><a href="StudentPayment.jsp">Student Payment</a></li>
+                                     <li><a href="PaymentStudent.jsp">Student Payment</a></li>
                                      <li><a href="TutorPayment.jsp">Tutor Payment</a></li>
                                  </ul>
                              </li>-->
