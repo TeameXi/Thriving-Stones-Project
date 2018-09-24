@@ -12,10 +12,7 @@ import model.TutorDAO;
 import entity.Tutor;
 import entity.Users;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.crypto.Cipher;
@@ -106,15 +103,11 @@ public class ForgotPasswordServlet extends HttpServlet {
                     try {
                         String subject = "Stepping Stones Tuition Center Account Password Reset";
                         //String encrypt = encrypt(user.getPassword()+"&"+user.getEmail()+"&"+role, "a");
-                        
-                        String text = "Dear " + username + ", "
-                            + "\n\nWe have received a request to reset your Stepping Stones Tuition Center Account password."
-                            + "\nSimply click the link below to reset your password."
-                            + "\n"+href+msg;
+                        String link = href + msg;
                         //for local
                         //SendMail.sendingEmail(userEmail, subject, text);
                         //for deploy
-                        SendMail.sendingEmailUsingSendGrid(userEmail, subject, text);
+                        SendMail.sendingResetEmailUsingSendGrid(userEmail, subject, username, link);
                         request.setAttribute("status", "Email sent. please check your email for instruction to reset your password.");
                     } catch (Exception ex) {
                         Logger.getLogger(ForgotPasswordServlet.class.getName()).log(Level.SEVERE, null, ex);
