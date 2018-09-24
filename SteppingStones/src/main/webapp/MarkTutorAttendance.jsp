@@ -23,7 +23,7 @@
 </style>
 <div class="col-lg-10">
     <div style="text-align: center;margin: 10px;"><span class="tab_active" style="font-size: 14px">Attendance Taking</span></div>
-    <table id="tutorAttendanceTable" class="table table-bordered table-striped" style="width:100%; font-size: 14px">
+    <table id="tutorAttendanceTable" class="table table-bordered" style="background-color: #cdcddf; width:100%; font-size: 14px">
         <thead>
             <tr>
                 <th></th>
@@ -39,6 +39,7 @@
     </div>
 </div>
 </div>
+</div>
 <%@include file="footer.jsp"%>
 <script src='https://code.jquery.com/jquery-3.3.1.js'></script>
 <script src='https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js'></script>
@@ -47,12 +48,12 @@
 
 <script type="text/javascript">
     function format(rowData, tutorID) {
-        return '<table id=' + tutorID + ' class="table table-bordered table-striped" style="width: 100%;">'
+        return '<table id=' + tutorID + ' class="table table-bordered" style="background-color: #dddde9; width: 100%;">'
                 + '<thead><tr><th></th><th style="text-align: center">Class</th><th style="text-align: center">Level</th><th style="text-align: center">Subject</th><th style="text-align: center">Attendance</th></tr></thead></table>';
     }
 
     function formatLessonList(rowData, classID) {
-        return '<table id=' + classID + ' class="table table-bordered table-striped" style="width: 100%;">'
+        return '<table id=' + classID + ' class="table table-bordered table" style="background-color: #ececf3; width: 100%;">'
                 + '<thead><tr><th style="text-align: center">Lesson Date</th><th style="text-align: center">Present?</th>'
                 + '</tr></thead></table>';
     }

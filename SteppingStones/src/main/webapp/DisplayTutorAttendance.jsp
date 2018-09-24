@@ -23,7 +23,7 @@
 </style>
 <div class="col-lg-10">
     <div style="text-align: center;margin: 10px;"><span class="tab_active" style="font-size: 14px">Your Attendance</span></div>
-    <table id="tutorAttendance" class="table table-bordered table-striped" style="width:100%; font-size: 14px">
+    <table id="tutorAttendance" class="table table-bordered" style="background-color: #cdcddf; width:100%; font-size: 14px">
         <thead>
             <tr>
                 <th></th>
@@ -49,7 +49,7 @@
 
 <script type="text/javascript">
     function format(rowData, classID) {
-        return '<table id=' + classID + ' class="table table-bordered" style="background-color: #a0e7a0; width: 100%;">'
+        return '<table id=' + classID + ' class="table table-bordered" style="background-color: #dddde9; width: 100%;">'
                 + '<thead><tr><th style="text-align: center">Lesson</th><th style="text-align: center">Present?</th></tr></thead></table>';
     }
 

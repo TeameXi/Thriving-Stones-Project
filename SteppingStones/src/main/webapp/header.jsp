@@ -141,7 +141,6 @@
                                     <li><a href="CreateStudent.jsp">Create Student</a></li>
                                     <li><a href="DisplayStudents.jsp">View Students</a></li>
                                     <li><a href="AutoPromote.jsp">Auto Promote</a></li>
-                                    <li><a href="StudentAttendances.jsp">Student Attendances</a></li>
                                     <li><a href="AdminMarkAttendance.jsp">Mark Student Attendances</a></li>
                                 </ul>
                             </li>
