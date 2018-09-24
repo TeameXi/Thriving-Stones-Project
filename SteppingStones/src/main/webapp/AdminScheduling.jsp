@@ -64,7 +64,6 @@
         <div class="dhx_cal_data"></div>       
     </div>
 </div>
-</div>
 
 <div class="modal fade" id="editOptions" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
@@ -320,9 +319,6 @@
         </div>       
     </div>
 </div>
-
-
-
 <%@include file="footer.jsp"%>
 <script>
     function refreshSchedule(levelID) {

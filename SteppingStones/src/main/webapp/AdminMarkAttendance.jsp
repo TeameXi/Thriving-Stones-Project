@@ -1,6 +1,5 @@
 <%@include file="protect_branch_admin.jsp"%>
 <%@include file="header.jsp"%>
-<%@include file="footer.jsp"%>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.dataTables.min.css">
 <style type="text/css">
@@ -40,7 +39,6 @@
         <button class="btn btn-default" id="collaspe">Collapse All</button>
     </div>
 </div>
-</div>
 
 <div class="modal fade" id="lessonAttendance" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
@@ -71,7 +69,8 @@
         </div>
     </div>       
 </div>
-</div>
+<%@include file="footer.jsp"%>
+<script src='https://code.jquery.com/jquery-3.3.1.js'></script>
 <script src='https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js'></script>
 <script src='https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js'></script>
 <script src='https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js'></script>
