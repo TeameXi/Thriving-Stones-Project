@@ -49,10 +49,11 @@ public class StudentDAO {
             String sql = "insert ignore into student(student_name, phone, email, school, reg_fees, outstanding_reg_fees, required_amount, outstanding_amount, level_id, branch_id)"
                     + " value(?, ?, ?, ?, ?, ? ,?, ?, ?, ?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
+            System.out.println(stmt);
             stmt.setString(1, studentName);
             stmt.setInt(2, phone);
-            stmt.setString(3, school);
-            stmt.setString(4, stuEmail);
+            stmt.setString(3, stuEmail);
+            stmt.setString(4, school);
             stmt.setDouble(5, regFees);
             stmt.setDouble(6, regFees);
             stmt.setDouble(7, 0);

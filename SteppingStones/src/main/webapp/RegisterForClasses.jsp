@@ -124,7 +124,7 @@
             <%
                     for (Class cls : enrolledClasses) {
                         out.println("<tr><td>"+cls.getSubject()+"</td>");
-                        out.println("<td>"+cls.getClassTime()+" ( "+cls.getClassDay()+" )"+"</td>");
+                        out.println("<td>"+ cls.getStartTime() + "-" + cls.getEndTime() +" ( "+cls.getClassDay()+" )"+"</td>");
                         out.println("<td>"+cls.getStartDate()+"</td>");
                         out.println("<td>"+cls.getMthlyFees()+"</td>");
                         out.println("</tr>");
@@ -172,7 +172,7 @@
                                         <input type="hidden" name="studentID" value="${student_id}"></td>
                     <%
                             out.println("<td>"+cls.getSubject()+"</td>");
-                            out.println("<td>"+cls.getClassTime()+" ( "+cls.getClassDay()+" )"+"</td>");
+                            out.println("<td>"+cls.getStartTime()+ "-" + cls.getEndTime() + " ( "+cls.getClassDay()+" )"+"</td>");
                             out.println("<td>"+cls.getStartDate()+"</td>");
                             out.println("<td>"+cls.getMthlyFees()+"</td>");
                             out.println("<td>");

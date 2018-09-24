@@ -18,8 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 import model.GeneratePassword;
 import model.ParentChildRelDAO;
 import model.ParentDAO;
-import model.SendMail;
-import model.SendSMS;
 import model.StudentDAO;
 import model.UsersDAO;
 
