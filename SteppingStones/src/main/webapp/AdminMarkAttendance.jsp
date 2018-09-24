@@ -1,5 +1,6 @@
 <%@include file="protect_branch_admin.jsp"%>
 <%@include file="header.jsp"%>
+<%@include file="footer.jsp"%>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.dataTables.min.css">
 <style type="text/css">
@@ -71,19 +72,18 @@
     </div>       
 </div>
 </div>
-<script src='https://code.jquery.com/jquery-3.3.1.js'></script>
 <script src='https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js'></script>
 <script src='https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js'></script>
 <script src='https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js'></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <script type="text/javascript">
     function format(rowData, classID) {
-        return '<table id=' + classID + ' class="table table-bordered table-striped" style="width: 100%;">'
+        return '<table id=' + classID + ' class="table table-bordered" style="background-color: #a0e7a0; width: 100%;">'
                 + '<thead><tr><th></th><th style="text-align: center">Student Name</th><th style="text-align: center">Phone No.</th><th style="text-align: center">Attendance</th></tr></thead></table>';
     }
 
     function formatLessonList(rowData, studentID) {
-        return '<table id=' + studentID + ' class="table table-bordered table-striped" style="width: 100%;">'
+        return '<table id=' + studentID + ' class="table table-bordered" style="background-color: #e7e7a0; width: 100%;">'
                 + '<thead><tr><th style="text-align: center">Lesson Date</th><th style="text-align: center">Present?</th>'
                 + '</tr></thead></table>';
     }
