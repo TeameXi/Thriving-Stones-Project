@@ -65,7 +65,7 @@
                     ArrayList<Class> classes = ClassDAO.listAllClassesByTutorID(user_id, branch_id);
                     for (Class cls : classes) {
 
-                        out.println("<tr><td class='details-control'></td><td>" + cls.getClassID() + "</td><td>" + cls.getLevel() + "</td><td>" + cls.getSubject() + "</td><td>" + cls.getClassTime() + " ( " + cls.getClassDay() + " )");
+                        out.println("<tr><td class='details-control'></td><td>" + cls.getClassID() + "</td><td>" + cls.getLevel() + "</td><td>" + cls.getSubject() + "</td><td>" + cls.getStartTime() + "-" + cls.getEndTime() + " ( " + cls.getClassDay() + " )");
                         request.setAttribute("ClassID", cls.getClassID());
                     }
                 %>
