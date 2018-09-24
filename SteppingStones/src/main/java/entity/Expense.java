@@ -13,11 +13,19 @@ public class Expense {
     private String item;
     private double amount;
     private String date;
+    private int tutorID;
+    private String description;
     
     public Expense(String item, double amount, String date){
         this.item = item;
         this.amount = amount;
         this.date = date;
+    }
+    
+    public Expense(int tutorID, String description, double amount){
+        this.tutorID = tutorID;
+        this.description = description;
+        this.amount = amount;
     }
     
     public String getItem() {
