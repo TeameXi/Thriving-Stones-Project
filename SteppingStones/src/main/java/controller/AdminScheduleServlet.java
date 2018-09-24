@@ -185,10 +185,9 @@ public class AdminScheduleServlet extends HttpServlet {
                 ClassDAO c = new ClassDAO();
                 Lesson lesson = LessonDAO.getLessonByID(lessonID);
                 Class cls = c.getClassByID(lesson.getClassid());
-                
+
                 boolean overlap = c.retrieveOverlappingClassesForTutor(tutorID, startTime, endTime, lesson.getClassid(), start.getDayOfWeek());
                 boolean status = false;
-                
 
                 if (!overlap) {
                     LinkedList<DateTime> weeklyLessons = new LinkedList<>();
@@ -225,11 +224,11 @@ public class AdminScheduleServlet extends HttpServlet {
                 int lessonID = Integer.parseInt(request.getParameter("lessonID"));
 
                 boolean status = new LessonDAO().deleteLesson(lessonID);
-               
+
                 JSONObject obj = new JSONObject();
                 obj.put("status", status);
                 String json = obj.toString();
-             
+
                 out.println(json);
             } else if (action.equals("deleteClass")) {
                 boolean status = false;
@@ -294,7 +293,7 @@ public class AdminScheduleServlet extends HttpServlet {
 
                 JSONArray subjectOptions = new JSONArray();
                 ArrayList<Subject> subjects = new SubjectDAO().retrieveSubjectsByLevel(levelID);
-                
+
                 for (Subject s : subjects) {
                     JSONObject obj = new JSONObject();
                     obj.put("id", s.getSubjectId());
@@ -320,6 +319,7 @@ public class AdminScheduleServlet extends HttpServlet {
                 String endTime = request.getParameter("endTime");
                 String recurring = request.getParameter("recurring");
                 String reminder = request.getParameter("reminder");
+                String type = request.getParameter("classType");
 
                 DateTimeFormatter pattern = DateTimeFormat.forPattern("yyyy-MM-dd");
                 DateTime start = pattern.parseDateTime(startDate);
@@ -332,10 +332,10 @@ public class AdminScheduleServlet extends HttpServlet {
                 boolean overlap = c.retrieveOverlappingClassesForTutor(tutorID, startTime, endTime, 0, start.getDayOfWeek());
                 boolean insertLesson = false;
                 boolean insertClass = false;
+                int recur = 0;
+                int payment = 0;
 
                 if (!overlap) {
-                    int recur = 0;
-                    int payment = 0;
                     int day = start.getDayOfWeek();
                     String dayOfWeek = "";
 
@@ -365,44 +365,50 @@ public class AdminScheduleServlet extends HttpServlet {
                     }
 
                     double fees = s.retrieveSubjectFees(subjectID, levelID, branchID);
-                    int classID = c.createClass(levelID, subjectID, fees, payment, startTime, endTime, dayOfWeek, startDate, endDate, branchID, tutorID);
+                    int classID = c.createClass(type, levelID, subjectID, fees, payment, startTime, endTime, dayOfWeek, startDate, endDate, branchID, tutorID);
 
                     if (classID != 0) {
-                        insertClass = true;
-                        LinkedList<DateTime> weeklyLessons = new LinkedList<>();
-                        boolean reachedDay = false;
+                        if (recur != 0) {
+                            insertClass = true;
+                            LinkedList<DateTime> weeklyLessons = new LinkedList<>();
+                            boolean reachedDay = false;
 
-                        while (start.isBefore(end)) {
-                            if (start.getDayOfWeek() == day) {
-                                if(!holidayDates.contains(pattern.print(start))){
-                                    weeklyLessons.add(start);
-                                    reachedDay = true;
+                            while (start.isBefore(end)) {
+                                if (start.getDayOfWeek() == day) {
+                                    if (!holidayDates.contains(pattern.print(start))) {
+                                        weeklyLessons.add(start);
+                                        reachedDay = true;
+                                    }
+                                }
+
+                                if (reachedDay) {
+                                    start = start.plusWeeks(1);
                                 }
                             }
 
-                            if (reachedDay) {
-                                start = start.plusWeeks(1);
+                            for (DateTime t : weeklyLessons) {
+                                String lessonStart = pattern.print(t) + " " + startTime;
+                                String lessonEnd = pattern.print(t) + " " + endTime;
+                                insertLesson = l.createLesson(classID, tutorID, lessonStart, lessonEnd);
                             }
                         }
-
-                        for (DateTime t : weeklyLessons) {
-                            String lessonStart = pattern.print(t) + " " + startTime;
-                            String lessonEnd = pattern.print(t) + " " + endTime;
-                            insertLesson = l.createLesson(classID, tutorID, lessonStart, lessonEnd);
-                        }
+                    } else {
+                        insertClass = false;
                     }
                 }
                 JSONObject obj = new JSONObject();
-                
-                if(insertLesson && insertClass){
+
+                if (recur != 0 && insertLesson && insertClass) {
                     obj.put("status", true);
-                }else{
+                } else if (recur == 0 && insertClass) {
+                    obj.put("status", true);
+                } else {
                     obj.put("status", false);
                 }
-                
+
                 String json = obj.toString();
                 out.println(json);
-            }else if(action.equals("retrieveByLevel")){
+            } else if (action.equals("retrieveByLevel")) {
                 int branchID = Integer.parseInt(request.getParameter("branchID"));
                 int levelID = Integer.parseInt(request.getParameter("levelID"));
                 JSONArray array = new JSONArray();

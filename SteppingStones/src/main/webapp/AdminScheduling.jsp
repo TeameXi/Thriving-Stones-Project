@@ -290,6 +290,15 @@
                         </select>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="form-inline">
+                        <label class = "form-control-label">Class Type :</label>
+                        <select class="form-control" id="class_type" style="width: 30%; margin-left: 10px; margin-top: 10px; text-align: center;">
+                            <option value="P">Premium</option>
+                            <option value="N">Normal</option>
+                        </select>
+                    </div>
+                </div>
                 <div class="row" style="margin-top: 10px;">
                     <div class="form-inline">
                         <label class = "form-control-label">Recurring :</label>
@@ -430,13 +439,14 @@
                     subject = $("#subject").val();
                     recurring = $("#recurring").val();
                     reminder = $("#reminder").val();
+                    classType = $("#class_type").val();
                     action = 'create';
 
                     $.ajax({
                         type: 'POST',
                         url: 'AdminScheduleServlet',
                         dataType: 'JSON',
-                        data: {branchID: branchID, reminder: reminder, recurring: recurring, endDate: endDate, holidays: holidays.toString(), action: action, startDate: startDate, endTime: end, startTime: startTime, levelID: level, subjectID: subject, tutorID: tutor},
+                        data: {classType: classType, branchID: branchID, reminder: reminder, recurring: recurring, endDate: endDate, holidays: holidays.toString(), action: action, startDate: startDate, endTime: end, startTime: startTime, levelID: level, subjectID: subject, tutorID: tutor},
                         success: function (data) {
                             if (data.status) {
                                 action = 'retrieve';

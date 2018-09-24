@@ -328,11 +328,11 @@ public class ClassDAO {
         }
     }
 
-    public static int createClass(int level, int subject,double mthlyFees, int hasReminderForFees, String startTime, String endTime, String classDay, String startDate, String endDate, int branch, int tutorId) {
+    public static int createClass(String classType,int level, int subject,double mthlyFees, int hasReminderForFees, String startTime, String endTime, String classDay, String startDate, String endDate, int branch, int tutorId) {
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            String sql = "INSERT into CLASS (level_id, subject_id,fees,has_reminder_for_fees,start_time, end_time, class_day, start_date, end_date,branch_id,tutor_id)"
-                    + "VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+            String sql = "INSERT into CLASS (level_id, subject_id,fees,has_reminder_for_fees,start_time, end_time, class_day, start_date, end_date,branch_id,tutor_id, class_type)"
+                    + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
             System.out.println(sql);
@@ -347,6 +347,7 @@ public class ClassDAO {
             stmt.setString(9, endDate);
             stmt.setInt(10, branch);
             stmt.setInt(11, tutorId);
+            stmt.setString(12, classType);
             stmt.executeUpdate();
             conn.commit();
             ResultSet rs = stmt.getGeneratedKeys();
