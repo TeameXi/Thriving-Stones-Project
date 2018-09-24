@@ -81,7 +81,7 @@ public class TutorPaymentServlet extends HttpServlet {
                     JSONObject obj = new JSONObject();
 
                     obj.put("id", c.getClassID());
-                    obj.put("date", c.getClassDay() + " " + c.getClassTime());
+                    obj.put("date", c.getClassDay() + " " + c.getStartTime() + "-" + c.getEndTime());
                     obj.put("level", c.getLevel());
                     obj.put("subject", c.getSubject());
                     obj.put("hourly_rate", TutorDAO.getHourlyPay(tutorID, LevelDAO.retrieveLevelID(c.getLevel()), SubjectDAO.retrieveSubjectID(c.getSubject())));

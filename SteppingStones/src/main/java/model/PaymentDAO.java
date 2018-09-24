@@ -390,14 +390,14 @@ public class PaymentDAO {
                 String paymentDate = rs.getString("payment_date");
                 String paymentType = rs.getString("payment_type");
                 double paidAmount = rs.getDouble("amount_paid");
-                Revenue revenue = new Revenue(studentName, paymentType, noOfLessons, paymentDate, paidAmount);
+                //Revenue revenue = new Revenue(studentName, paymentType, noOfLessons, paymentDate, paidAmount);
                 ArrayList<Revenue> revenueArray = new ArrayList<>();
 
                 if (revenueData.containsKey(levelSubject)) {  //check whether the map contains the Key
                     revenueArray = revenueData.get(levelSubject);  //yes, replace old value with new value
-                    revenueArray.add(revenue);
+                    //revenueArray.add(revenue);
                 } else {
-                    revenueArray.add(revenue); //no, add key and value into the list
+                    //revenueArray.add(revenue); //no, add key and value into the list
                 }
                 revenueData.put(levelSubject, revenueArray);
             }
@@ -428,14 +428,14 @@ public class PaymentDAO {
                 String studentName = StudentDAO.retrieveStudentName(studentID);
                 double depositPaid = depositFees - outstandingDeposit - activatedAmount;
                 
-                Deposit deposit = new Deposit(studentName, depositPaid, depositPaymentDate, depositActivationDate, activatedAmount);
+                //Deposit deposit = new Deposit(studentName, depositPaid, depositPaymentDate, depositActivationDate, activatedAmount);
                 ArrayList<Deposit> depositArray = new ArrayList<>();
 
                 if (depositData.containsKey(levelSubject)) {  //check whether the map contains the Key
                     depositArray = depositData.get(levelSubject);  //yes, replace old value with new value
-                    depositArray.add(deposit);
+                    //depositArray.add(deposit);
                 } else {
-                    depositArray.add(deposit); //no, add key and value into the list
+                    //depositArray.add(deposit); //no, add key and value into the list
                 }
                 depositData.put(levelSubject, depositArray);
             }

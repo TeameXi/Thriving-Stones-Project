@@ -6,7 +6,8 @@ public class Class {
     private String level;
     private String subject;
     private int term;
-    private String classTime;
+    private String startTime;
+    private String endTime;
     private String classDay;
     private double mthlyFees;
     private int hasReminderForFees;
@@ -19,11 +20,12 @@ public class Class {
     private String holidayDate;
     private String type;
 
-    public Class(int classID,String level, int subjectID, String classTime, String classDay, double mthlyFees, String startDate, String endDate,String holidayDate,int tutorID) {
+    public Class(int classID,String level, int subjectID, String startTime, String endTime, String classDay, double mthlyFees, String startDate, String endDate,String holidayDate,int tutorID) {
         this.classID = classID;
         this.level = level;
         this.subjectID = subjectID;
-        this.classTime = classTime;
+        this.startTime = startTime;
+        this.endTime = endTime;
         this.classDay = classDay;
         this.mthlyFees = mthlyFees;
         this.startDate = startDate;
@@ -32,12 +34,13 @@ public class Class {
         this.tutorID = tutorID;
     }
 
-    public Class(int classID, String level, String subject, int term, String classTime, String classDay, double mthlyFees, String startDate, String endDate, String type) {
+    public Class(int classID, String level, String subject, int term, String startTime, String endTime, String classDay, double mthlyFees, String startDate, String endDate, String type) {
         this.classID = classID;
         this.level = level;
         this.subject = subject;
         this.term = term;
-        this.classTime = classTime;
+        this.startTime = startTime;
+        this.endTime = endTime;
         this.classDay = classDay;
         this.mthlyFees = mthlyFees;
         this.startDate = startDate;
@@ -45,10 +48,11 @@ public class Class {
         this.type = type;
     }
     
-    public Class(int classID, int subjectID, String classTime, String classDay, double mthlyFees, String startDate, String endDate, int tutorID, String type) {
+    public Class(int classID, int subjectID, String startTime, String endTime, String classDay, double mthlyFees, String startDate, String endDate, int tutorID, String type) {
         this.classID = classID;
         this.subjectID = subjectID;
-        this.classTime = classTime;
+        this.startTime = startTime;
+        this.endTime = endTime;
         this.classDay = classDay;
         this.mthlyFees = mthlyFees;
         this.startDate = startDate;
@@ -115,13 +119,13 @@ public class Class {
     public void setSubject(String newSubject) {
         this.subject = newSubject;
     }
-
-    public String getClassTime() {
-        return this.classTime;
+    
+    public String getStartTime(){
+        return startTime;
     }
-
-    public void setClassTime(String newClassTime) {
-        this.classTime = newClassTime;
+    
+    public String getEndTime(){
+        return endTime;
     }
 
     public String getClassDay() {
@@ -162,7 +166,7 @@ public class Class {
 
     @Override
     public String toString() {
-        return this.classID + "&" + this.level + "&" + this.subject + "&" + this.classTime + "&" + this.classDay + "&" + this.mthlyFees + "&" + this.startDate + "&" + this.endDate;
+        return this.classID + "&" + this.level + "&" + this.subject + "&" + this.startTime + "-" + this.endTime + "&" + this.classDay + "&" + this.mthlyFees + "&" + this.startDate + "&" + this.endDate;
     }
 
     /**

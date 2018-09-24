@@ -57,7 +57,7 @@ public class MarkStudentAttendanceServlet extends HttpServlet {
                 for (Class c : classes) {
                     JSONObject obj = new JSONObject();
                     obj.put("id", c.getClassID());
-                    obj.put("class", c.getClassDay() + " " + c.getClassTime());
+                    obj.put("class", c.getClassDay() + " " + c.getStartTime() + "-" + c.getEndTime());
                     obj.put("level", c.getLevel());
                     obj.put("subject", c.getSubject());
                     array.put(obj);

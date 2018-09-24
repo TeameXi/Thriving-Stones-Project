@@ -285,7 +285,7 @@
                         %>
                         <td width="40%">
                             <div class="progress-group">
-                                <span class="progress-text"><%=clss.getSubject()%>  (<%=clss.getClassDay()%>  <%=clss.getClassTime()%>)</span>
+                                <span class="progress-text"><%=clss.getSubject()%>  (<%=clss.getClassDay()%>  <%=clss.getStartTime() + "-" + clss.getEndTime()%>)</span>
                                 <span class="progress-number"><b><%=studentClassDAO.retrieveNumberOfStudentByClass(clss.getClassID())%></b></span>
 
                                 <div class="progress sm">
@@ -302,7 +302,7 @@
                         %>    
                             <td width="40%">
                                 <div class="progress-group">
-                                    <span class="progress-text"><%=clss.getSubject()%>  (<%=clss.getClassDay()%>  <%=clss.getClassTime()%>)</span>
+                                    <span class="progress-text"><%=clss.getSubject()%>  (<%=clss.getClassDay()%>  <%=clss.getStartTime() + "-" + clss.getEndTime()%>)</span>
                                     <span class="progress-number"><b><%=studentClassDAO.retrieveNumberOfStudentByClass(clss.getClassID())%></b></span>
 
                                     <div class="progress sm">

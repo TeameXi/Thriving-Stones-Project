@@ -75,7 +75,7 @@ public class TutorAttendanceServlet extends HttpServlet {
                 for (Class c : classes) {
                     JSONObject obj = new JSONObject();
                     obj.put("id", c.getClassID());
-                    obj.put("date", c.getClassDay() + " " + c.getClassTime());
+                    obj.put("date", c.getClassDay() + " " +  c.getStartTime() + "-" + c.getEndTime());
                     obj.put("attendance", lessonDAO.retrieveNumberTutorAttendancePerClass(c.getClassID(), tutorID) + "%");
                     obj.put("level", c.getLevel());
                     obj.put("subject", c.getSubject());
@@ -133,7 +133,7 @@ public class TutorAttendanceServlet extends HttpServlet {
                 for(Class c: classes){
                     JSONObject obj = new JSONObject();
                     obj.put("id", c.getClassID());
-                    obj.put("name", c.getClassDay() + " " + c.getClassTime());
+                    obj.put("name", c.getClassDay() + " " +  c.getStartTime() + "-" + c.getEndTime());
                     obj.put("size", classDAO.retrieveStudentsByClass(c.getClassID()).size());
                     obj.put("level", c.getLevel());
                     obj.put("subject", c.getSubject());

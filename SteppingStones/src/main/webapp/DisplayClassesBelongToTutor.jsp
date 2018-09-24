@@ -125,7 +125,7 @@
     </div>       
 </div>
 </div>
-
+<%@include file="footer.jsp"%>
 <script>
     $(document).ready(function () {
         tutorID = <%=user.getRespectiveID()%>

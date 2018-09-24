@@ -67,16 +67,17 @@ public class LessonDAO {
         return false;
     }
 
-    public boolean createLesson(int classid, int tutorid, Timestamp lessonDateTime) {
+    public boolean createLesson(int classid, int tutorid, String startDate, String endDate) {
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            String sql = "INSERT into LESSON (class_id, lesson_date_time, tutor_id, tutor_attended)"
-                    + "VALUES (?,?,?,?)";
+            String sql = "INSERT into LESSON (class_id, start_date, end_date, tutor_id, tutor_attended)"
+                    + "VALUES (?,?,?,?,?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, classid);
-            stmt.setTimestamp(2, lessonDateTime);
-            stmt.setInt(3, tutorid);
-            stmt.setInt(4, 0);
+            stmt.setString(2, startDate);
+            stmt.setString(3, endDate);
+            stmt.setInt(4, tutorid);
+            stmt.setInt(5, 0);
             stmt.executeUpdate();
             conn.commit();
             return true;
@@ -379,16 +380,18 @@ public class LessonDAO {
         return noOfLessons;
     }
     
-    public boolean updateLessonDate(int lessonID, String editedDate){
-        String sql = "update lesson set edited_date = ? where lesson_id = ?";
+    public boolean updateLessonDate(int lessonID, int tutorID, String changedStart, String changedEnd){
+        String sql = "update lesson set start_date = ?, end_date = ?, replacement_tutor_id = ? where lesson_id = ?";
         
         try(Connection conn = ConnectionManager.getConnection()){
             PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1, editedDate);
-            stmt.setInt(2, lessonID);
+            stmt.setString(1, changedStart);
+            stmt.setString(2, changedEnd);
+            stmt.setInt(3, tutorID);
+            stmt.setInt(4, lessonID);
             
             int rowsUpdated = stmt.executeUpdate();
-            
+            System.out.println(rowsUpdated + " cool");
             if(rowsUpdated > 0){
                 return true;
             }
@@ -431,5 +434,61 @@ public class LessonDAO {
         }
         return deletedStatus;
     }
-
+    
+    public boolean retrieveOverlappingLessonsForTutor(int tutorID, String start, String end, int lessonID){
+        String sql = "select * from lesson where tutor_id = ? and (start_date between ? and ? or ? between start_date and end_date) and lesson_id <> ?";
+        System.out.println(sql);
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, tutorID);
+            stmt.setString(2, start);
+            stmt.setString(3, end);
+            stmt.setString(4, start);
+            stmt.setInt(5, lessonID);
+            
+            ResultSet rs = stmt.executeQuery();
+            if(rs.next()){
+                return true;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(LessonDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+    
+    public boolean deleteLessons(int classID){
+        String sql = "delete from lesson where class_id = ?";
+        
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, classID);
+            
+            int rows = stmt.executeUpdate();
+            
+            if(rows > 0){
+                return true;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(LessonDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+    
+    public boolean deleteLesson(int lessonID){
+        String sql = "delete from lesson where lesson_id = ?";
+        
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, lessonID);
+            
+            int rows = stmt.executeUpdate();
+            
+            if(rows > 0){
+                return true;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(LessonDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
 }
