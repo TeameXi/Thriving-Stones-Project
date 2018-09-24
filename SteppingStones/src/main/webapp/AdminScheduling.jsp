@@ -328,6 +328,7 @@
     function refreshSchedule(levelID) {
         $("#btn .btn").removeClass('active');
         $("#" + levelID).addClass('active');
+        selectedLevelID = levelID;
         action = 'retrieveByLevel';
         $.ajax({
             type: 'POST',
@@ -354,6 +355,7 @@
 
     $(document).ready(function () {
         $('#0').addClass('active');
+        selectedLevelID = 0;
         branchID = <%=branch_id%>
         action = 'retrieve';
 
@@ -371,7 +373,7 @@
             type: 'POST',
             url: 'AdminScheduleServlet',
             dataType: 'JSON',
-            data: {branchID: branchID, action: action},
+            data: {branchID: branchID, action: action, selectedLevel: selectedLevelID},
             success: function (data) {
                 scheduler.parse(data.data, "json");
             }
@@ -455,7 +457,7 @@
                                     type: 'POST',
                                     url: 'AdminScheduleServlet',
                                     dataType: 'JSON',
-                                    data: {branchID: branchID, action: action},
+                                    data: {branchID: branchID, action: action, selectedLevel: selectedLevelID},
                                     success: function (data) {
                                         scheduler.parse(data.data, "json");
                                     }
@@ -520,7 +522,7 @@
                                     type: 'POST',
                                     url: 'AdminScheduleServlet',
                                     dataType: 'JSON',
-                                    data: {branchID: branchID, action: action},
+                                    data: {branchID: branchID, action: action, selectedLevel: selectedLevelID},
                                     success: function (data) {
                                         scheduler.parse(data.data, "json");
                                     }
@@ -588,7 +590,7 @@
                                     type: 'POST',
                                     url: 'AdminScheduleServlet',
                                     dataType: 'JSON',
-                                    data: {branchID: branchID, action: action},
+                                    data: {branchID: branchID, action: action, selectedLevel: selectedLevelID},
                                     success: function (data) {
                                         scheduler.parse(data.data, "json");
                                     }
@@ -624,7 +626,7 @@
                         type: 'POST',
                         url: 'AdminScheduleServlet',
                         dataType: 'JSON',
-                        data: {branchID: branchID, action: action},
+                        data: {branchID: branchID, action: action, selectedLevel: selectedLevelID},
                         success: function (data) {
                             scheduler.parse(data.data, "json");
                         }
@@ -648,7 +650,7 @@
                         type: 'POST',
                         url: 'AdminScheduleServlet',
                         dataType: 'JSON',
-                        data: {branchID: branchID, action: action},
+                        data: {branchID: branchID, action: action, selectedLevel: selectedLevelID},
                         success: function (data) {
                             scheduler.parse(data.data, "json");
                         }

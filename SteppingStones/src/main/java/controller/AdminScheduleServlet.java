@@ -56,9 +56,16 @@ public class AdminScheduleServlet extends HttpServlet {
             String action = request.getParameter("action");
 
             if (action.equals("retrieve")) {
+                int selectedLevel = Integer.parseInt(request.getParameter("selectedLevel"));
                 int branchID = Integer.parseInt(request.getParameter("branchID"));
                 JSONArray array = new JSONArray();
-                ArrayList<Class> classes = ClassDAO.listAllClasses(branchID);
+                ArrayList<Class> classes = new ArrayList<>();
+                
+                if(selectedLevel == 0){
+                    classes = ClassDAO.listAllClasses(branchID);
+                }else{
+                    classes = ClassDAO.getClassesByLevel(selectedLevel, branchID);
+                }
 
                 for (Class c : classes) {
                     ArrayList<Lesson> lessons = LessonDAO.retrieveAllLessonLists(c.getClassID());
@@ -209,11 +216,11 @@ public class AdminScheduleServlet extends HttpServlet {
 
                     if (deleted) {
                         for (DateTime d : weeklyLessons) {
-                            String start_date = d.toString() + " " + startTime;
-                            String end_date = d.toString() + " " + endTime;
-                            l.createLesson(cls.getClassID(), tutorID, startDate, end_date);
+                            String start_date = pattern.print(d) + " " + startTime;
+                            String end_date = pattern.print(d) + " " + endTime;
+                            l.createLesson(cls.getClassID(), tutorID, start_date, end_date);
                         }
-                        status = c.updateClass(tutorID, LevelDAO.retrieveLevelID(cls.getLevel()), SubjectDAO.retrieveSubjectID(cls.getSubject()), startTime, endTime, startDate, endDate);
+                        status = c.updateClass(tutorID, LevelDAO.retrieveLevelID(cls.getLevel()), SubjectDAO.retrieveSubjectID(cls.getSubject()), startTime, endTime, pattern.print(start), pattern.print(end));
                     }
                 }
                 JSONObject obj = new JSONObject();
@@ -365,7 +372,7 @@ public class AdminScheduleServlet extends HttpServlet {
                     }
 
                     double fees = s.retrieveSubjectFees(subjectID, levelID, branchID);
-                    int classID = c.createClass(type, levelID, subjectID, fees, payment, startTime, endTime, dayOfWeek, startDate, endDate, branchID, tutorID);
+                    int classID = c.createClass(type, levelID, subjectID, fees, payment, startTime, endTime, dayOfWeek, pattern.print(start), pattern.print(end), branchID, tutorID);
 
                     if (classID != 0) {
                         if (recur != 0) {
