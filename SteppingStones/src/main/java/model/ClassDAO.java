@@ -33,14 +33,15 @@ public class ClassDAO {
                 int classID = rs.getInt("class_id");
                 int subjectID = rs.getInt("subject_id");
                 int term = rs.getInt("term");
-                String classTime = rs.getString("timing");
+                String startTime = rs.getString("start_time");
+                String endTime = rs.getString("end_time");
                 String classDay = rs.getString("class_day");
                 String startDate = rs.getString("start_date");
                 String endDate = rs.getString("end_date");
                 int mthlyFees = rs.getInt("fees");
                 String subject = SubjectDAO.retrieveSubject(subjectID);
                 String type = rs.getString("class_type");
-                Class cls = new Class(classID, level, subject, term, classTime, classDay, mthlyFees, startDate, endDate, type);
+                Class cls = new Class(classID, level, subject, term, startTime, endTime, classDay, mthlyFees, startDate, endDate, type);
                 classList.add(cls);
             }
         } catch (SQLException e) {
@@ -60,7 +61,8 @@ public class ClassDAO {
                 int levelID = rs.getInt("level_id");
                 int subjectID = rs.getInt("subject_id");
                 int term = rs.getInt("term");
-                String classTime = rs.getString("timing");
+                String startTime = rs.getString("start_time");
+                String endTime = rs.getString("end_time");
                 String classDay = rs.getString("class_day");
                 String startDate = rs.getString("start_date");
                 String endDate = rs.getString("end_date");
@@ -68,7 +70,8 @@ public class ClassDAO {
                 String subject = SubjectDAO.retrieveSubject(subjectID);
                 String level = LevelDAO.retrieveLevel(levelID);
                 String type = rs.getString("class_type");
-                cls = new Class(classID, level, subject, term, classTime, classDay, mthlyFees, startDate, endDate, type);
+                cls = new Class(classID, level, subject, term, startTime, endTime, classDay, mthlyFees, startDate, endDate, type);
+                cls.setSubjectID(subjectID);
             }
         } catch (SQLException e) {
             System.out.print(e.getMessage());
@@ -88,7 +91,8 @@ public class ClassDAO {
                 int subjectID = rs.getInt("subject_id");
                 int levelID = rs.getInt("level_id");
                 int term = rs.getInt("term");
-                String classTime = rs.getString("timing");
+                String startTime = rs.getString("start_time");
+                String endTime = rs.getString("end_time");
                 String classDay = rs.getString("class_day");
                 String startDate = rs.getString("start_date");
                 String endDate = rs.getString("end_date");
@@ -96,7 +100,7 @@ public class ClassDAO {
                 String subject = SubjectDAO.retrieveSubject(subjectID);
                 String level = LevelDAO.retrieveLevel(levelID);
                 String type = rs.getString("class_type");
-                Class cls = new Class(classID, level, subject, term, classTime, classDay, mthlyFees, startDate, endDate, type);
+                Class cls = new Class(classID, level, subject, term, startTime, endTime, classDay, mthlyFees, startDate, endDate, type);
                 classList.add(cls);
             }
         } catch (SQLException e) {
@@ -117,7 +121,8 @@ public class ClassDAO {
                 int subjectID = rs.getInt("subject_id");
                 int levelID = rs.getInt("level_id");
                 int term = rs.getInt("term");
-                String classTime = rs.getString("timing");
+                String startTime = rs.getString("start_time");
+                String endTime = rs.getString("end_time");
                 String classDay = rs.getString("class_day");
                 String startDate = rs.getString("start_date");
                 String endDate = rs.getString("end_date");
@@ -125,7 +130,7 @@ public class ClassDAO {
                 String subject = SubjectDAO.retrieveSubject(subjectID);
                 String level = LevelDAO.retrieveLevel(levelID);
                 String type = rs.getString("class_type");
-                Class cls = new Class(classID, level, subject, term, classTime, classDay, mthlyFees, startDate, endDate, type);
+                Class cls = new Class(classID, level, subject, term, startTime, endTime, classDay, mthlyFees, startDate, endDate, type);
                 classList.add(cls);
             }
         } catch (SQLException e) {
@@ -147,7 +152,8 @@ public class ClassDAO {
                 int classID = rs.getInt("class_id");
                 int subjectID = rs.getInt("subject_id");
                 int levelID = rs.getInt("level_id");
-                String classTime = rs.getString("timing");
+                String startTime = rs.getString("start_time");
+                String endTime = rs.getString("end_time");
                 String classDay = rs.getString("class_day");
                 String startDate = rs.getString("start_date");
                 String endDate = rs.getString("end_date");
@@ -155,7 +161,7 @@ public class ClassDAO {
                 String level = LevelDAO.retrieveLevel(levelID);
                 String holidayDate = rs.getString("holiday_date");
                 int tutorID =rs.getInt("tutor_id");
-                Class cls = new Class(classID, level, subjectID, classTime, classDay, mthlyFees, startDate, endDate, holidayDate,tutorID);
+                Class cls = new Class(classID, level, subjectID, startTime, endTime, classDay, mthlyFees, startDate, endDate, holidayDate,tutorID);
                 classList.add(cls);
             }
         }catch(SQLException e){
@@ -177,7 +183,8 @@ public class ClassDAO {
                 int classID = rs.getInt("class_id");
                 int subjectID = rs.getInt("subject_id");
                 int level_id = rs.getInt("level_id");
-                String classTime = rs.getString("timing");
+                String startTime = rs.getString("start_time");
+                String endTime = rs.getString("end_time");
                 String classDay = rs.getString("class_day");
                 String startDate = rs.getString("start_date");
                 String endDate = rs.getString("end_date");
@@ -185,7 +192,7 @@ public class ClassDAO {
                 String level = LevelDAO.retrieveLevel(level_id);
                 String holidayDate = rs.getString("holiday_date");
                 int tutorID =rs.getInt("tutor_id");
-                Class cls = new Class(classID, level, subjectID, classTime, classDay, mthlyFees, startDate, endDate, holidayDate,tutorID);
+                Class cls = new Class(classID, level, subjectID, startTime, endTime, classDay, mthlyFees, startDate, endDate, holidayDate,tutorID);
                 classList.add(cls);
             }
         }catch(SQLException e){
@@ -208,7 +215,8 @@ public class ClassDAO {
                 int subjectID = rs.getInt("subject_id");
                 int levelID = rs.getInt("level_id");
                 int term = rs.getInt("term");
-                String classTime = rs.getString("timing");
+                String startTime = rs.getString("start_time");
+                String endTime = rs.getString("end_time");
                 String classDay = rs.getString("class_day");
                 String startDate = rs.getString("start_date");
                 String endDate = rs.getString("end_date");
@@ -216,7 +224,7 @@ public class ClassDAO {
                 String subject = SubjectDAO.retrieveSubject(subjectID);
                 String level = LevelDAO.retrieveLevel(levelID);
                 String type = rs.getString("class_type");
-                Class cls = new Class(classID, level, subject, term, classTime, classDay, mthlyFees, startDate, endDate, type);
+                Class cls = new Class(classID, level, subject, term, startTime, endTime, classDay, mthlyFees, startDate, endDate, type);
                 classList.add(cls);
             }
         } catch (SQLException e) {
@@ -238,7 +246,8 @@ public class ClassDAO {
                 int subjectID = rs.getInt("subject_id");
                 int levelID = rs.getInt("level_id");
                 int term = rs.getInt("term");
-                String classTime = rs.getString("timing");
+                String startTime = rs.getString("start_time");
+                String endTime = rs.getString("end_time");
                 String classDay = rs.getString("class_day");
                 String startDate = rs.getString("start_date");
                 String endDate = rs.getString("end_date");
@@ -246,7 +255,7 @@ public class ClassDAO {
                 String subject = SubjectDAO.retrieveSubject(subjectID);
                 String level = LevelDAO.retrieveLevel(levelID);
                 String type = rs.getString("class_type");
-                Class cls = new Class(classID, level, subject, term, classTime, classDay, mthlyFees, startDate, endDate, type);
+                Class cls = new Class(classID, level, subject, term, startTime, endTime, classDay, mthlyFees, startDate, endDate, type);
                 classList.add(cls);
             }
         } catch (SQLException e) {
@@ -270,7 +279,8 @@ public class ClassDAO {
                 int subjectID = rs.getInt("subject_id");
                 int levelID = rs.getInt("level_id");
                 int term = rs.getInt("term");
-                String classTime = rs.getString("timing");
+                String startTime = rs.getString("start_time");
+                String endTime = rs.getString("end_time");
                 String classDay = rs.getString("class_day");
                 String startDate = rs.getString("start_date");
                 String endDate = rs.getString("end_date");
@@ -278,7 +288,7 @@ public class ClassDAO {
                 String subject = SubjectDAO.retrieveSubject(subjectID);
                 String level = LevelDAO.retrieveLevel(levelID);
                 String type = rs.getString("class_type");
-                Class cls = new Class(classID, level, subject, term, classTime, classDay, mthlyFees, startDate, endDate, type);
+                Class cls = new Class(classID, level, subject, term, startTime, endTime, classDay, mthlyFees, startDate, endDate, type);
                 classList.add(cls);
             }
         } catch (SQLException e) {
@@ -287,10 +297,10 @@ public class ClassDAO {
         return classList;
     }
 
-    public int insertClass(int level, int subject, int term, int hasReminderForFees, int branch, String classTime, String classDay, double mthlyFees, String startDate, String endDate) {
+    public int insertClass(int level, int subject, int term, int hasReminderForFees, int branch, String startTime, String endTime, String classDay, double mthlyFees, String startDate, String endDate) {
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            String sql = "INSERT into CLASS (level_id, subject_id, term, fees, has_reminder_for_fees, timing, class_day, start_date, end_date, branch_id)"
+            String sql = "INSERT into CLASS (level_id, subject_id, term, fees, has_reminder_for_fees, start_time, end_time, class_day, start_date, end_date, branch_id)"
                     + "VALUES (?,?,?,?,?,?,?,?,?,?)";
             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             stmt.setInt(1, level);
@@ -298,11 +308,12 @@ public class ClassDAO {
             stmt.setInt(3, term);
             stmt.setDouble(4, mthlyFees);
             stmt.setInt(5, hasReminderForFees);
-            stmt.setString(6, classTime);
-            stmt.setString(7, classDay);
-            stmt.setString(8, startDate);
-            stmt.setString(9, endDate);
-            stmt.setInt(10, branch);
+            stmt.setString(6, startTime);
+            stmt.setString(7, endTime);
+            stmt.setString(8, classDay);
+            stmt.setString(9, startDate);
+            stmt.setString(10, endDate);
+            stmt.setInt(11, branch);
             stmt.executeUpdate();
             conn.commit();
             ResultSet rs = stmt.getGeneratedKeys();
@@ -317,11 +328,11 @@ public class ClassDAO {
         }
     }
 
-    public static int createClass(int level, int subject,double mthlyFees, int hasReminderForFees, String classTime, String classDay, String startDate, String endDate, int branch, int tutorId) {
+    public static int createClass(int level, int subject,double mthlyFees, int hasReminderForFees, String startTime, String endTime, String classDay, String startDate, String endDate, int branch, int tutorId) {
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            String sql = "INSERT into CLASS (level_id, subject_id,fees,has_reminder_for_fees,timing, class_day, start_date, end_date,branch_id,tutor_id)"
-                    + "VALUES (?,?,?,?,?,?,?,?,?,?)";
+            String sql = "INSERT into CLASS (level_id, subject_id,fees,has_reminder_for_fees,start_time, end_time, class_day, start_date, end_date,branch_id,tutor_id)"
+                    + "VALUES (?,?,?,?,?,?,?,?,?,?,?)";
             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
             System.out.println(sql);
@@ -329,12 +340,13 @@ public class ClassDAO {
             stmt.setInt(2, subject);
             stmt.setDouble(3, mthlyFees);
             stmt.setInt(4, hasReminderForFees);
-            stmt.setString(5, classTime);
-            stmt.setString(6, classDay);
-            stmt.setString(7, startDate);
-            stmt.setString(8, endDate);
-            stmt.setInt(9, branch);
-            stmt.setInt(10, tutorId);
+            stmt.setString(5, startTime);
+            stmt.setString(6, endTime);
+            stmt.setString(7, classDay);
+            stmt.setString(8, startDate);
+            stmt.setString(9, endDate);
+            stmt.setInt(10, branch);
+            stmt.setInt(11, tutorId);
             stmt.executeUpdate();
             conn.commit();
             ResultSet rs = stmt.getGeneratedKeys();
@@ -349,14 +361,18 @@ public class ClassDAO {
         }
     }
 
-    public boolean updateClass(String level, String subject, String timing) {
-        String sql = "update class set timing = ? where level_id = ? and subject_id = ?";
+    public boolean updateClass(int tutorID, int level, int subject, String startTime, String endTime, String startDate, String endDate) {
+        String sql = "update class set start_time = ?, end_time = ?, start_date = ?, end_date = ?, tutor_id = ? where level_id = ? and subject_id = ?";
         System.out.println(sql);
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1, timing);
-            stmt.setInt(2, Integer.parseInt(level));
-            stmt.setInt(3, Integer.parseInt(subject));
+            stmt.setString(1, startTime);
+            stmt.setString(2, endTime);
+            stmt.setString(3, startDate);
+            stmt.setString(4, endDate);
+            stmt.setInt(5, tutorID);
+            stmt.setInt(6, level);
+            stmt.setInt(7, subject);
             System.out.println(stmt);
 
             stmt.executeUpdate();
@@ -379,7 +395,8 @@ public class ClassDAO {
                 int classID = rs.getInt("class_id");
                 int subjectID = rs.getInt("subject_id");
                 int term = rs.getInt("term");
-                String classTime = rs.getString("timing");
+                String startTime = rs.getString("start_time");
+                String endTime = rs.getString("end_time");
                 String classDay = rs.getString("class_day");
                 String startDate = rs.getString("start_date");
                 String endDate = rs.getString("end_date");
@@ -387,7 +404,7 @@ public class ClassDAO {
                 String subject = SubjectDAO.retrieveSubject(subjectID);
                 String level = LevelDAO.retrieveLevel(levelID);
                 String type = rs.getString("class_type");
-                Class cls = new Class(classID, level, subject, term, classTime, classDay, mthlyFees, startDate, endDate, type);
+                Class cls = new Class(classID, level, subject, term, startTime, endTime, classDay, mthlyFees, startDate, endDate, type);
                 classList.add(cls);
             }
         } catch (SQLException e) {
@@ -408,14 +425,15 @@ public class ClassDAO {
             while (rs.next()) {
                 int classID = rs.getInt("class_id");
                 int subjectID = rs.getInt("subject_id");
-                String classTime = rs.getString("timing");
+                String startTime = rs.getString("start_time");
+                String endTime = rs.getString("end_time");
                 String classDay = rs.getString("class_day");
                 String startDate = rs.getString("start_date");
                 String endDate = rs.getString("end_date");
                 int mthlyFees = rs.getInt("fees");
                 String subject = SubjectDAO.retrieveSubject(subjectID);
                 String type = rs.getString("class_type");
-                Class cls = new Class(classID, level, subject, term, classTime, classDay, mthlyFees, startDate, endDate, type);
+                Class cls = new Class(classID, level, subject, term, startTime, endTime, classDay, mthlyFees, startDate, endDate, type);
                 classList.add(cls);
             }
         } catch (SQLException e) {
@@ -437,14 +455,15 @@ public class ClassDAO {
             while (rs.next()) {
                 int classID = rs.getInt("class_id");
                 int subjectID = rs.getInt("subject_id");
-                String classTime = rs.getString("timing");
+                String startTime = rs.getString("start_time");
+                String endTime = rs.getString("end_time");
                 String classDay = rs.getString("class_day");
                 String startDate = rs.getString("start_date");
                 String endDate = rs.getString("end_date");
                 int mthlyFees = rs.getInt("fees");
                 int tutorID = rs.getInt("tutor_id");
                 String type = rs.getString("class_type");
-                Class cls = new Class(classID, subjectID, classTime, classDay, mthlyFees, startDate, endDate, tutorID, type);
+                Class cls = new Class(classID, subjectID, startTime, endTime, classDay, mthlyFees, startDate, endDate, tutorID, type);
                 classList.add(cls);
             }
         } catch (SQLException e) {
@@ -465,16 +484,17 @@ public class ClassDAO {
             while (rs.next()) {
                 int classID = rs.getInt("class_id");
                 int subjectID = rs.getInt("subject_id");
-                String classTime = rs.getString("timing");
+                String startTime = rs.getString("start_time");
+                String endTime = rs.getString("end_time");
                 String classDay = rs.getString("class_day");
                 String startDate = rs.getString("start_date");
                 String endDate = rs.getString("end_date");
                 int mthlyFees = rs.getInt("fees");
                 String subject = SubjectDAO.retrieveSubject(subjectID);
                 String type = rs.getString("class_type");
-                Class cls = new Class(classID, level, subject, term, classTime, classDay, mthlyFees, startDate, endDate, type);
+                Class cls = new Class(classID, level, subject, term, startTime, endTime, classDay, mthlyFees, startDate, endDate, type);
 
-                String key = classTime + "-" + classDay;
+                String key = startTime + "-" + endTime + "-" + classDay;
                 ArrayList<Class> tempClassLists = classMap.get(key);
                 if (tempClassLists == null) {
                     tempClassLists = new ArrayList<>();
@@ -557,5 +577,45 @@ public class ClassDAO {
             System.out.print(e.getMessage());
         }
         return lvlSubject;
+    }
+    
+    public boolean retrieveOverlappingClassesForTutor(int tutorID, String start, String end, int classID, int day){
+        String sql = "select * from class where tutor_id = ? and dayofweek(start_date) = ? and (start_time between ? and ? or ? between start_time and end_time) and class_id <> ?";
+        System.out.println(sql);
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, tutorID);
+            stmt.setInt(2, day);
+            stmt.setString(3, start);
+            stmt.setString(4, end);
+            stmt.setString(5, start);
+            stmt.setInt(6, classID);
+            
+            ResultSet rs = stmt.executeQuery();
+            if(rs.next()){
+                return true;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(LessonDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+    
+    public boolean deleteClass(int classID){
+        String sql = "delete from class where class_id = ?";
+        
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, classID);
+            
+            int rows = stmt.executeUpdate();
+            
+            if(rows > 0){
+                return true;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ClassDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
     }
 }

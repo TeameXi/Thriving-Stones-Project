@@ -5,6 +5,7 @@
  */
 package controller;
 
+import entity.Level;
 import entity.Student;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -49,15 +50,27 @@ public class AutoPromoteServlet extends HttpServlet {
             }
             out.println(branchID);
             String[] level = request.getParameterValues("level");
-            out.println(level.length);
+            boolean contains = Arrays.asList(level).contains("0");
             ArrayList<Student> allSelectedStudents = new ArrayList<Student>();
            
-            if(level != null){
+            if(level != null && !contains){
                 for(String lvl: level){
-                    int levelID = Integer.parseInt(lvl);
+                    int levelID = Integer.parseInt(lvl);                    
                     int totalNumber = StudentDAO.retrieveNumberOfStudentByLevel(levelID);
                     if(totalNumber > 0){
                        ArrayList<Student> students = StudentDAO.listAllStudentsByLimit(branchID, levelID, 0, totalNumber);
+                       allSelectedStudents.addAll(students); 
+                       status = true;
+                    }
+                }   
+            }
+            if(level != null && contains){
+                ArrayList<Level> allLevels = LevelDAO.retrieveAllLevelLists();
+                for(int i=0; i<allLevels.size(); i++ ){
+                    Level lvl = allLevels.get(i);                
+                    int totalNumber = StudentDAO.retrieveNumberOfStudentByLevel(lvl.getLevel_id());
+                    if(totalNumber > 0){
+                       ArrayList<Student> students = StudentDAO.listAllStudentsByLimit(branchID, lvl.getLevel_id(), 0, totalNumber);
                        allSelectedStudents.addAll(students); 
                        status = true;
                     }

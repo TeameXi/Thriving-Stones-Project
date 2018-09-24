@@ -76,7 +76,7 @@ public class TutorScheduleServlet extends HttpServlet {
                 obj.put("endDate", lesson.endDate());
                 obj.put("tutor", new TutorDAO().retrieveSpecificTutorById(lesson.getTutorid()).getName());
                 obj.put("classSize", new StudentClassDAO().retrieveNumberOfStudentByClass(lesson.getClassid()));
-                obj.put("className", new ClassDAO().getClassByID(lesson.getClassid()).getClassDay() + " " + new ClassDAO().getClassByID(lesson.getClassid()).getClassTime());
+                obj.put("className", new ClassDAO().getClassByID(lesson.getClassid()).getClassDay() + " " + new ClassDAO().getClassByID(lesson.getClassid()).getStartTime() + "-" + new ClassDAO().getClassByID(lesson.getClassid()).getEndTime());
                 obj.put("editedDate", new LessonDAO().retrieveUpdatedLessonDate(lessonID));
                 System.out.println(new LessonDAO().retrieveUpdatedLessonDate(lessonID) + " HALPPPPPPP");
                 String json = obj.toString();
@@ -120,7 +120,7 @@ public class TutorScheduleServlet extends HttpServlet {
                 int lessonID = Integer.parseInt(request.getParameter("lessonID"));
                 String editedDate = request.getParameter("editedDate");
                 
-                boolean status = new LessonDAO().updateLessonDate(lessonID, editedDate);
+                boolean status = true; //new LessonDAO().updateLessonDate(lessonID, editedDate);
                 
                 JSONObject obj = new JSONObject().put("data", status);
                 String json = obj.toString();

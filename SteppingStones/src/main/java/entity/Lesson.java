@@ -77,8 +77,16 @@ public class Lesson {
         return startDate.toString();
     }
     
+    public Timestamp getStart(){
+        return startDate;
+    }
+    
     public String endDate(){
         return endDate.toString();
+    }
+    
+    public Timestamp getEnd(){
+        return endDate;
     }
     
     public Timestamp getUpdated() {

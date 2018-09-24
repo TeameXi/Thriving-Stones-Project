@@ -51,9 +51,9 @@ public class RetrieveClassesByLevelServlet extends HttpServlet {
                     int classID = c.getClassID();
                     String name;
                     if(c.getType().equals("P")){
-                        name = c.getSubject() + " (" + c.getClassDay() + " " + c.getClassTime() + ")" + " - Premium Class";
+                        name = c.getSubject() + " (" + c.getClassDay() + " " + c.getStartTime()+ "-" + c.getEndTime() + ")" + " - Premium Class";
                     }else{
-                        name = c.getSubject() + " (" + c.getClassDay() + " " + c.getClassTime() + ")";
+                        name = c.getSubject() + " (" + c.getClassDay() + " " + c.getStartTime()+ "-" + c.getEndTime() + ")";
                     }
                     
                     JSONObject obj = new JSONObject();

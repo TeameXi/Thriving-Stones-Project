@@ -127,7 +127,7 @@
                                 </ul>
                             </li>
                             
-                            <li><a href="CreateClassesSchedule.jsp"><i class="zmdi zmdi-calendar"></i>Scheduling Classes</a></li>
+                            <li><a href="AdminScheduling.jsp"><i class="zmdi zmdi-calendar"></i>Scheduling Classes</a></li>
                          
                             
                     

@@ -244,4 +244,48 @@ public class SubjectDAO {
 
         return lvlWithSubLists;
     }
+    
+    public ArrayList<Subject> retrieveSubjectsByLevel(int levelID){
+        ArrayList<Subject> subjects = new ArrayList<>();
+        
+        String sql = "select * from subject where subject_id in (select subject_id from lvl_sub_rel where level_id = ?)";
+        
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, levelID);
+            
+            ResultSet rs = stmt.executeQuery();
+            
+            while(rs.next()){
+                Subject subject = new Subject(rs.getInt(1), rs.getString(2));
+                subjects.add(subject);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(SubjectDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return subjects;
+    }
+    
+    public double retrieveSubjectFees(int subjectID, int levelID, int branchID){
+        double fees = 0;
+        String sql = "select cost from lvl_sub_rel where subject_id = ? and level_id = ? and branch_id = ?";
+        
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, subjectID);
+            stmt.setInt(2, levelID);
+            stmt.setInt(3, branchID);
+            
+            ResultSet rs = stmt.executeQuery();
+            
+            while(rs.next()){
+                fees = rs.getDouble(1);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(SubjectDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return fees;
+    }
 }
