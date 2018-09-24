@@ -50,15 +50,11 @@ public class MarkStudentAttendanceServlet extends HttpServlet {
             if (action.equals("retrieve")) {
                 int tutorID = Integer.parseInt(request.getParameter("tutorID"));
                 int branchID = Integer.parseInt(request.getParameter("branchID"));
-                
+
                 JSONArray array = new JSONArray();
                 ArrayList<Class> classes = null;
-                
-                if(tutorID != 0){
-                    classes = ClassDAO.retrieveAllClassesOfTutor(tutorID, branchID);
-                }else {
-                    classes = ClassDAO.listAllClasses(branchID);
-                }
+
+                classes = ClassDAO.retrieveAllClassesOfTutor(tutorID, branchID);
 
                 for (Class c : classes) {
                     JSONObject obj = new JSONObject();
@@ -71,20 +67,20 @@ public class MarkStudentAttendanceServlet extends HttpServlet {
                 JSONObject toReturn = new JSONObject().put("data", array);
                 String json = toReturn.toString();
                 out.println(json);
-            }else if(action.equals("retrieveStudents")){
+            } else if (action.equals("retrieveStudents")) {
                 int classID = Integer.parseInt(request.getParameter("classID"));
                 JSONArray array = new JSONArray();
                 ClassDAO classes = new ClassDAO();
                 ArrayList<Student> students = classes.retrieveStudentsByClass(classID);
-                
+
                 AttendanceDAO attendance = new AttendanceDAO();
-                
-                for(Student s: students){
+
+                for (Student s : students) {
                     JSONObject obj = new JSONObject();
                     obj.put("id", s.getStudentID());
                     obj.put("name", s.getName());
                     obj.put("phone", s.getPhone());
-                    
+
                     DecimalFormat df = new DecimalFormat("#.##");
                     double attendancePercentage = (attendance.retrieveNumberOfStudentAttendances(s.getStudentID(), classID) / LessonDAO.retrieveAllLessonLists(classID).size()) * 100;
                     obj.put("attendance", df.format(attendancePercentage) + "%");
@@ -93,54 +89,54 @@ public class MarkStudentAttendanceServlet extends HttpServlet {
                 JSONObject toReturn = new JSONObject().put("data", array);
                 String json = toReturn.toString();
                 out.println(json);
-            }else if(action.equals("retrieveLessons")){
+            } else if (action.equals("retrieveLessons")) {
                 int classID = Integer.parseInt(request.getParameter("classID"));
                 int studentID = Integer.parseInt(request.getParameter("studentID"));
-                
+
                 ArrayList<Lesson> lessons = LessonDAO.retrieveAllLessonLists(classID);
                 AttendanceDAO attendance = new AttendanceDAO();
-                
+
                 JSONArray array = new JSONArray();
-                
-                for(int i = 0; i < lessons.size(); i++){
+
+                for (int i = 0; i < lessons.size(); i++) {
                     Lesson l = lessons.get(i);
                     JSONObject obj = new JSONObject();
                     String date = l.getStartDate();
                     obj.put("id", l.getLessonid());
                     obj.put("date", date.substring(0, date.indexOf(" ")));
-                    
-                    if(attendance.retrieveStudentAttendances(studentID, l.getLessonid())){
+
+                    if (attendance.retrieveStudentAttendances(studentID, l.getLessonid())) {
                         obj.put("attended", "Present");
                     }
-                    
+
                     array.put(obj);
                 }
                 JSONObject toReturn = new JSONObject().put("data", array);
                 String json = toReturn.toString();
                 out.println(json);
-            }else if(action.equals("mark")){
+            } else if (action.equals("mark")) {
                 int classID = Integer.parseInt(request.getParameter("classID"));
                 int studentID = Integer.parseInt(request.getParameter("studentID"));
                 int tutorID = Integer.parseInt(request.getParameter("tutorID"));
                 int lessonID = Integer.parseInt(request.getParameter("lessonID"));
-                
+
                 AttendanceDAO attendance = new AttendanceDAO();
                 boolean status = attendance.updateStudentAttendance(studentID, lessonID, classID, tutorID, true);
                 String percentage = attendance.retrieveNumberOfStudentAttendances(studentID, classID) + "%";
-                
+
                 JSONObject toReturn = new JSONObject().put("data", status);
                 toReturn.put("attendance", percentage);
                 String json = toReturn.toString();
                 out.println(json);
-            }else if(action.equals("retrieveModal")){
+            } else if (action.equals("retrieveModal")) {
                 int classID = Integer.parseInt(request.getParameter("classID"));
-                
+
                 ArrayList<Lesson> lessons = LessonDAO.retrieveAllLessonLists(classID);
                 AttendanceDAO attendance = new AttendanceDAO();
-                
+
                 JSONArray array = new JSONArray();
-                
-                for(int i = 0; i < lessons.size(); i++){
+
+                for (int i = 0; i < lessons.size(); i++) {
                     Lesson l = lessons.get(i);
                     JSONObject obj = new JSONObject();
                     String date = l.getStartDate();
@@ -152,39 +148,39 @@ public class MarkStudentAttendanceServlet extends HttpServlet {
                 JSONObject toReturn = new JSONObject().put("data", array);
                 String json = toReturn.toString();
                 out.println(json);
-            }else if(action.equals("retrieveLessonDetails")){
+            } else if (action.equals("retrieveLessonDetails")) {
                 int lessonID = Integer.parseInt(request.getParameter("lessonID"));
                 System.out.println("hereeeee");
                 Lesson l = LessonDAO.getLessonByID(lessonID);
                 ArrayList<Student> students = new ClassDAO().retrieveStudentsByClass(l.getClassid());
                 JSONArray array = new JSONArray();
                 AttendanceDAO attendance = new AttendanceDAO();
-                
-                for(Student s: students){
+
+                for (Student s : students) {
                     JSONObject obj = new JSONObject();
                     obj.put("id", s.getStudentID());
                     obj.put("name", s.getName());
                     obj.put("phone", s.getPhone());
-                    
-                    if(attendance.retrieveStudentAttendances(s.getStudentID(), l.getLessonid())){
+
+                    if (attendance.retrieveStudentAttendances(s.getStudentID(), l.getLessonid())) {
                         obj.put("attended", "Present");
                     }
-                    
+
                     array.put(obj);
                 }
                 JSONObject toReturn = new JSONObject().put("data", array);
                 String json = toReturn.toString();
                 out.println(json);
-            }else if(action.equals("markLessonModal")){
+            } else if (action.equals("markLessonModal")) {
                 int classID = Integer.parseInt(request.getParameter("classID"));
                 int studentID = Integer.parseInt(request.getParameter("studentID"));
                 int tutorID = Integer.parseInt(request.getParameter("tutorID"));
                 int lessonID = Integer.parseInt(request.getParameter("lessonID"));
-                
+
                 AttendanceDAO attendance = new AttendanceDAO();
                 boolean status = attendance.updateStudentAttendance(studentID, lessonID, classID, tutorID, true);
                 int attendanceNum = attendance.retrieveNumberOfStudentsAttended(lessonID);
-                
+
                 JSONObject toReturn = new JSONObject().put("data", status);
                 toReturn.put("attendance", attendanceNum);
                 String json = toReturn.toString();
