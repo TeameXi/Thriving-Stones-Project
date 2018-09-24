@@ -89,15 +89,12 @@ public class CreateTutorServlet extends HttpServlet {
             boolean userStatus = userDAO.addUser(tempUser);
             status = userStatus;
             if(userStatus){
-                String href = request.getHeader("origin") + request.getContextPath() + "/Login.jsp";
                 String subject = "Stepping Stones Tuition Center Tutor's Account Creation";
-                String text = "Your account has been created.\n\nBelow is the username and password to access your account: \nUsername: " + username
-                        + "\nPassword: " + password + "\n\nYou can Login via " + href;
                 if (email != null && !email.equals("")) {
                     //for local
                     //SendMail.sendingEmail(email, subject, text);
                     //for deploy
-                    SendMail.sendingEmailUsingSendGrid(email, subject, text);
+                    SendMail.sendingEmailUsingSendGrid(email, subject, username, password);
                 }
             }
             

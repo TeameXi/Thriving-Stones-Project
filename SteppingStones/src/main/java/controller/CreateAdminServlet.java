@@ -77,15 +77,12 @@ public class CreateAdminServlet extends HttpServlet {
                 Users tempUser = new Users(username, password, "admin", status, branch_id);
                 boolean userStatus = userDAO.addUser(tempUser);
                 if(userStatus){
-                    String href = request.getHeader("origin")+request.getContextPath()+"/Login.jsp";
                     String subject = "Stepping Stones Tuition Center Branch Admin's Account Creation";
-                    String text = "Your account has been created.(Admin Account for " + branchDao.retrieveBranchById(branch_id).getName() + ")\n\nBelow is the username and password to access your account: \nUsername: " + username
-                            + "\nPassword: " + password + "\n\nYou can Login via "+href; 
                     if(adminEmail != null && !adminEmail.equals("")){
                         //for local
                         //SendMail.sendingEmail(adminEmail, subject, text);
                         //for deploy
-                        SendMail.sendingEmailUsingSendGrid(text, subject, text);
+                        SendMail.sendingEmailUsingSendGrid(adminEmail, subject, username, password);
                     }
                     request.setAttribute("status", "Admin created successfully!");
                     dispatcher = request.getRequestDispatcher("DisplayAdmins.jsp");

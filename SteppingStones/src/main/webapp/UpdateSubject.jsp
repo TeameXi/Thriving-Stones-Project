@@ -22,8 +22,7 @@
     }
 </style>
 <div class="col-lg-10">
-    <div style="text-align: center;margin: 10px;"><span class="tab_active" style="font-size: 14px">Update Subject Fees</span></div>
-    <div role="alert" id="errorMsg"></div>
+    <div id="header" style="text-align: center;margin: 10px;"><span class="tab_active" style="font-size: 14px">Update Subject Fees</span></div>
     <table id="subjectTable" class="table table-bordered table-striped" style="width:100%; font-size: 14px">
         <thead>
             <tr>
@@ -173,11 +172,9 @@
                         data: {subjectID: subjectID, action: action, levelID: levelID, branchID: branchID, fees: fees},
                         success: function (data) {
                             if (data) {
-                                $('#errorMsg').addClass("alert alert-success");
-                                $('#errorMsg').text('Successfully updated subject fees!');
+                                $("<div id='errorMsg' class='alert alert-success'>Sucessfully updated subject fees!</div>").insertAfter($("#header"));
                             } else {
-                                $('#errorMsg').addClass("alert alert-danger");
-                                $('#errorMsg').text('Fail to update subject fees!');
+                                $("<div id='errorMsg' class='alert alert-success'>Oops! Something went wrong!</div>").insertAfter($("#header"));
                             }
                             $("#errorMsg").fadeTo(2000, 0).slideUp(2000, function () {
                                 $(this).remove();
