@@ -1,6 +1,5 @@
 <%@include file="protect_tutor.jsp"%>
 <%@include file="header.jsp"%>
-<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.dataTables.min.css">
 <style type="text/css">
@@ -44,14 +43,13 @@
 </div>
 </div>
 <%@include file="footer.jsp"%>
-<script src='https://code.jquery.com/jquery-3.3.1.js'></script>
 <script src='https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js'></script>
 <script src='https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js'></script>
 <script src='https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js'></script>
 
 <script type="text/javascript">
     function format(rowData, classID) {
-        return '<table id=' + classID + ' class="table table-bordered table-striped" style="width: 100%;">'
+        return '<table id=' + classID + ' class="table table-bordered" style="background-color: #a0e7a0; width: 100%;">'
                 + '<thead><tr><th style="text-align: center">Lesson</th><th style="text-align: center">Present?</th></tr></thead></table>';
     }
 

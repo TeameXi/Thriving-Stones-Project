@@ -52,7 +52,13 @@ public class MarkStudentAttendanceServlet extends HttpServlet {
                 int branchID = Integer.parseInt(request.getParameter("branchID"));
                 
                 JSONArray array = new JSONArray();
-                ArrayList<Class> classes = ClassDAO.retrieveAllClassesOfTutor(tutorID, branchID);
+                ArrayList<Class> classes = null;
+                
+                if(tutorID != 0){
+                    classes = ClassDAO.retrieveAllClassesOfTutor(tutorID, branchID);
+                }else {
+                    classes = ClassDAO.listAllClasses(branchID);
+                }
 
                 for (Class c : classes) {
                     JSONObject obj = new JSONObject();

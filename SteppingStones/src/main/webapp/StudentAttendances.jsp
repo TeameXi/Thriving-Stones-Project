@@ -71,7 +71,6 @@
     </div>       
 </div>
 </div>
-<%@include file="footer.jsp"%>
 <script src='https://code.jquery.com/jquery-3.3.1.js'></script>
 <script src='https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js'></script>
 <script src='https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js'></script>
@@ -79,12 +78,12 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <script type="text/javascript">
     function format(rowData, classID) {
-        return '<table id=' + classID + ' class="table table-bordered table-striped" style="width: 100%;">'
+        return '<table id=' + classID + ' class="table table-bordered" style="background-color: #a0e7a0; width: 100%;">'
                 + '<thead><tr><th></th><th style="text-align: center">Student Name</th><th style="text-align: center">Phone No.</th><th style="text-align: center">Attendance</th></tr></thead></table>';
     }
 
     function formatLessonList(rowData, studentID) {
-        return '<table id=' + studentID + ' class="table table-bordered table-striped" style="width: 100%;">'
+        return '<table id=' + studentID + ' class="table table-bordered" style="background-color: #e7e7a0; width: 100%;">'
                 + '<thead><tr><th style="text-align: center">Lesson Date</th><th style="text-align: center">Present?</th>'
                 + '</tr></thead></table>';
     }
@@ -96,7 +95,7 @@
     }
 
     $(document).ready(function () {
-        adminID = <%=user.getRespectiveID()%>
+        tutorID = 0;
         branchID = <%=branch_id%>
         action = 'retrieve';
 
@@ -106,8 +105,9 @@
             "aLengthMenu": [[5, 10, 25, -1], [5, 10, 25, "All"]],
             'ajax': {
                 "type": "POST",
-                "url": "AdminStudentAttendancesServlet",
+                "url": "MarkStudentAttendanceServlet",
                 "data": {
+                    "tutorID": tutorID,
                     "branchID": branchID,
                     "action": action
                 }
@@ -169,7 +169,7 @@
                     "iDisplayLength": 5,
                     'ajax': {
                         "type": "POST",
-                        "url": "AdminStudentAttendancesServlet",
+                        "url": "MarkStudentAttendanceServlet",
                         "data": {
                             "classID": classID,
                             "action": action
@@ -210,7 +210,7 @@
                             "iDisplayLength": 5,
                             'ajax': {
                                 "type": "POST",
-                                "url": "AdminStudentAttendancesServlet",
+                                "url": "MarkStudentAttendanceServlet",
                                 "data": {
                                     "lessonID": lessonID,
                                     "action": action
@@ -233,7 +233,7 @@
                                     "targets": 2,
                                     "data": null,
                                     "orderable": false,
-                                    "defaultContent": '',
+                                    "defaultContent": '<button class="btn btn-default">Present</button>',
                                     "className": 'student-text'
                                 }
                             ],
@@ -243,6 +243,24 @@
                                 {"data": "attended"}
                             ],
                             "order": [[1, 'asc']]
+                        });
+                        $('#lessonModal tbody').on('click', 'button', function () {
+                            studentID = lessonModal.row($(this).parents('tr')).data().id;
+                            rowIndex = lessonModal.row($(this).parents('tr')).index();
+                            columnIndex = lessonModal.cell($(this).closest('td')).index().column;
+                            action = 'markLessonModal';
+                            $.ajax({
+                                type: 'POST',
+                                url: 'MarkStudentAttendanceServlet',
+                                dataType: 'JSON',
+                                data: {classID: classID, lessonID: lessonID, studentID: studentID, tutorID: tutorID, action: action},
+                                success: function (data) {
+                                    if (data) {
+                                        lessonModal.cell(rowIndex, columnIndex).data('Present').draw();
+                                        lessonAttendanceTable.cell(lesson_row.index(), 2).data(data.attendance).draw();
+                                    }
+                                }
+                            });
                         });
                         lesson_tr.addClass('shown');
                     }
@@ -267,7 +285,7 @@
                     "iDisplayLength": 5,
                     'ajax': {
                         "type": "POST",
-                        "url": "AdminStudentAttendancesServlet",
+                        "url": "MarkStudentAttendanceServlet",
                         "data": {
                             "classID": classID,
                             "action": action
@@ -324,7 +342,7 @@
                             "iDisplayLength": 5,
                             'ajax': {
                                 "type": "POST",
-                                "url": "AdminStudentAttendancesServlet",
+                                "url": "MarkStudentAttendanceServlet",
                                 "data": {
                                     "classID": classID,
                                     "action": action,
@@ -341,7 +359,7 @@
                                 {
                                     "targets": 1,
                                     "data": null,
-                                    "defaultContent": '',
+                                    "defaultContent": '<button class="btn btn-default">Present</button>',
                                     "className": 'student-text'
                                 }
                             ],
