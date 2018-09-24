@@ -20,9 +20,13 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import entity.Class;
 import entity.Student;
+import java.util.HashMap;
 import model.AttendanceDAO;
 import model.StudentClassDAO;
 import model.TutorDAO;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 /**
  *
@@ -77,7 +81,11 @@ public class TutorScheduleServlet extends HttpServlet {
                 obj.put("tutor", new TutorDAO().retrieveSpecificTutorById(lesson.getTutorid()).getName());
                 obj.put("classSize", new StudentClassDAO().retrieveNumberOfStudentByClass(lesson.getClassid()));
                 obj.put("className", new ClassDAO().getClassByID(lesson.getClassid()).getClassDay() + " " + new ClassDAO().getClassByID(lesson.getClassid()).getStartTime() + "-" + new ClassDAO().getClassByID(lesson.getClassid()).getEndTime());
-                obj.put("editedDate", new LessonDAO().retrieveUpdatedLessonDate(lessonID));
+                
+                HashMap<String, String> map = new LessonDAO().retrieveUpdatedLessonDate(lessonID);
+                obj.put("changedStart", map.get("start"));
+                obj.put("changedEnd", map.get("end"));
+                
                 System.out.println(new LessonDAO().retrieveUpdatedLessonDate(lessonID) + " HALPPPPPPP");
                 String json = obj.toString();
                 out.println(json);
@@ -118,9 +126,14 @@ public class TutorScheduleServlet extends HttpServlet {
                 out.println(json);
             }else if (action.equals("updateLessonDate")){
                 int lessonID = Integer.parseInt(request.getParameter("lessonID"));
-                String editedDate = request.getParameter("editedDate");
+                String startDate = request.getParameter("startDate");
+                String endDate = request.getParameter("endDate");
                 
-                boolean status = true; //new LessonDAO().updateLessonDate(lessonID, editedDate);
+                DateTimeFormatter pattern = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+                DateTime startFormat = pattern.parseDateTime(startDate);
+                DateTime endFormat = pattern.parseDateTime(endDate);
+                
+                boolean status = new LessonDAO().updateLessonDateTutor(lessonID,pattern.print(startFormat), pattern.print(endFormat));
                 
                 JSONObject obj = new JSONObject().put("data", status);
                 String json = obj.toString();

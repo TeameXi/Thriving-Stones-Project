@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -391,7 +392,6 @@ public class LessonDAO {
             stmt.setInt(4, lessonID);
             
             int rowsUpdated = stmt.executeUpdate();
-            System.out.println(rowsUpdated + " cool");
             if(rowsUpdated > 0){
                 return true;
             }
@@ -401,8 +401,28 @@ public class LessonDAO {
         return false;
     }
     
-    public String retrieveUpdatedLessonDate(int lessonID){
-        String sql = "select edited_date from lesson where lesson_id = ?";
+    public boolean updateLessonDateTutor(int lessonID, String changedStart, String changedEnd){
+        String sql = "update lesson set changed_start_date = ?, changed_end_date = ? where lesson_id = ?";
+        
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, changedStart);
+            stmt.setString(2, changedEnd);
+            stmt.setInt(3, lessonID);
+            
+            int rowsUpdated = stmt.executeUpdate();
+            if(rowsUpdated > 0){
+                return true;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(LessonDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+    
+    public HashMap<String, String> retrieveUpdatedLessonDate(int lessonID){
+        String sql = "select changed_start_date, changed_end_date from lesson where lesson_id = ?";
+        HashMap<String, String> editedDates = new HashMap<>();
         
         try(Connection conn = ConnectionManager.getConnection()){
             PreparedStatement stmt = conn.prepareStatement(sql);
@@ -411,12 +431,13 @@ public class LessonDAO {
             ResultSet rs = stmt.executeQuery();
             
             while(rs.next()){
-                return rs.getString(1);
+                editedDates.put("start", rs.getString(1));
+                editedDates.put("end", rs.getString(2));
             }
         } catch (SQLException ex) {
             Logger.getLogger(LessonDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return "";
+        return editedDates;
     }
     
     public static boolean deleteAttendancebyID(int studentID) {

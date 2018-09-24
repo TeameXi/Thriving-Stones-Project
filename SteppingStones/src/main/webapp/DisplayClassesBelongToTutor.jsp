@@ -5,13 +5,13 @@
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.dataTables.min.css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<script src='https://code.jquery.com/jquery-3.3.1.js'></script>
+<%@include file="footer.jsp"%>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.css" rel="stylesheet">
 <script src='https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js'></script>
 <script src='https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js'></script>
 <script src='https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js'></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.css" rel="stylesheet">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <%@include file="header.jsp"%>
 
@@ -86,21 +86,21 @@
                     </div><br/>
                 </div><br/>
 
-                <div class="row">
-                    <div class = "col-sm-4" style="display: inline-block">
-                        <label class = "form-control-label">Edit Lesson Date :</label>
-                        
-                        <input type="text" class="form-control" id="datetimepicker" style="text-align: center;">
-                        
-                        
-                    </div>
-                    <div class="col-sm-4">
-                        <button class="btn btn-default" style="margin-top:25px" id="alter_date">Edit</button>
+                <div class="row" style="margin-left: 5px;">
+                    <label class = "form-control-label">Edit Lesson Date :</label>
+                    <div class="form-inline">
+                        <input type="text" class="form-control" id="datetimepicker" style="text-align: center; width: 40%;" placeholder="Start Time">
+                        <input type="text" class="form-control" id="datetimepicker1" style="text-align: center; width: 40%;" placeholder="End Time">
+                        <button class="btn btn-default" id="alter_date">Edit</button>
                     </div>
                     <br/>
                     <script type="text/javascript">
                         $('#datetimepicker').datetimepicker({
-                            format: 'YYYY-MM-DD hh:mm:ss'
+                            format: 'YYYY-MM-DD HH:mm:ss'
+                        });
+                        
+                        $('#datetimepicker1').datetimepicker({
+                            format: 'YYYY-MM-DD HH:mm:ss'
                         });
                     </script>
                 </div><br/>
@@ -125,7 +125,6 @@
     </div>       
 </div>
 </div>
-<%@include file="footer.jsp"%>
 <script>
     $(document).ready(function () {
         tutorID = <%=user.getRespectiveID()%>
@@ -167,13 +166,14 @@
                         $("#view_class_size").val(data.classSize);
                         $("#view_tutor").val(data.tutor);
                         $("#view_lesson_attendance").val(data.attendance);
-                        $("#datetimepicker").val(data.editedDate);
+                        $("#datetimepicker").val(data.changedStart);
+                        $("#datetimepicker1").val(data.changedEnd);
                     }
                 });
 
                 action = 'retrieveStudents';
 
-                table = $("#studentAttendanceTable").DataTable({
+                table = $('#studentAttendanceTable').DataTable({
                     destroy: true,
                     "dom": 'tpr',
                     "iDisplayLength": 5,
@@ -225,16 +225,17 @@
                         }
                     });
                 });
-                
-                $('#alter_date').on('click', function(){
-                    lessonDate = $('#datetimepicker').val();
+
+                $('#alter_date').on('click', function () {
+                    startDate = $('#datetimepicker').val();
+                    endDate = $('#datetimepicker').val();
                     action = 'updateLessonDate';
-                    
+
                     $.ajax({
                         type: 'POST',
                         url: 'TutorScheduleServlet',
                         dataType: 'JSON',
-                        data: {lessonID: id, action: action, editedDate: lessonDate},
+                        data: {lessonID: id, action: action, startDate: startDate, endDate: endDate},
                         success: function (data) {
                         }
                     });
