@@ -68,6 +68,24 @@
             </div>
             <div class="modal-body">
                 <div class="row">
+                    <div class="form-inline">
+                        <label class = "form-control-label" style="margin-left: 10px;">Class Timing :</label>
+                        <input type="text" class="form-control" id="timing_details" style="text-align: center; width: 30%; margin-left: 10px;" readOnly="true">
+                    </div>
+                </div><br/>
+                <div class="row">
+                    <div class="form-inline">
+                        <label class = "form-control-label" style="margin-left: 10px;">Level :</label>
+                        <input type="text" class="form-control" id="level_details" style="text-align: center; width: 30%; margin-left: 10px;" readOnly="true">
+                    </div>
+                </div><br/>
+                <div class="row">
+                    <div class="form-inline">
+                        <label class = "form-control-label" style="margin-left: 10px;">Subject :</label>
+                        <input type="text" class="form-control" id="subject_details" style="text-align: center; width: 30%; margin-left: 10px;" readOnly="true">
+                    </div>
+                </div><br/>
+                <div class="row">
                     <div style="text-align: center;">
                         <label>Do you want to edit the details of a single lesson or the entire class?</label>
                     </div>
@@ -99,30 +117,38 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body" style="text-align: center;">
+                <div class="modal-body" style="margin-left: 10px;">
                     <div id="error" role="alert"></div>
                     <div class="row">
-                        <label class = "form-control-label">Lesson Start Timing :</label>
-                        <input type="text" class="form-control" id="datetimepicker" style="text-align: center; width: 30%; margin-left: 210px;">
-                        <script type="text/javascript">
-                            $('#datetimepicker').datetimepicker({
-                                format: 'YYYY-MM-DD HH:mm:ss'
-                            });
-                        </script>
+                        <div class="form-inline">
+                            <label class = "form-control-label">Lesson Start Time :</label>
+                            <input type="text" class="form-control" id="datetimepicker" style="text-align: center; width: 30%; margin-left: 10px;">
+                            <script type="text/javascript">
+                                $('#datetimepicker').datetimepicker({
+                                    format: 'YYYY-MM-DD HH:mm:ss',
+                                    defaultDate: $('#datetimepicker').val()
+                                });
+                            </script>
+                        </div>
                     </div><br/>
                     <div class="row">
-                        <label class = "form-control-label">Lesson End Timing :</label>
-                        <input type="text" class="form-control" id="datetimepicker1" style="text-align: center; width: 30%; margin-left: 210px;">
-                        <script type="text/javascript">
-                            $('#datetimepicker1').datetimepicker({
-                                format: 'YYYY-MM-DD HH:mm:ss'
-                            });
-                        </script>
+                        <div class="form-inline">
+                            <label class = "form-control-label">Lesson End Time :</label>
+                            <input type="text" class="form-control" id="datetimepicker1" style="text-align: center; width: 30%; margin-left: 10px;">
+                            <script type="text/javascript">
+                                $('#datetimepicker1').datetimepicker({
+                                    format: 'YYYY-MM-DD HH:mm:ss',
+                                    defaultDate: $('#datetimepicker1').val()
+                                });
+                            </script>
+                        </div>
                     </div><br/>
                     <div class="row">
-                        <label class = "form-control-label">Replacement Tutor :</label>
-                        <select class="form-control" id="replacementTutor" style="width: 40%; margin-left: 180px; text-align: center;">
-                        </select>
+                        <div class="form-inline">
+                            <label class = "form-control-label">Replacement Tutor :</label>
+                            <select class="form-control" id="replacementTutor" style="width: 40%; margin-left: 10px; text-align: center;">
+                            </select>
+                        </div>
                     </div>
                 </div>  
 
@@ -143,47 +169,51 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body" style="text-align: center;">
+                <div class="modal-body">
                     <div id="err" role="alert"></div>
-                    <div class="row">
+                    <div class="row form-inline" style="margin-left: 10px;">
                         <label class = "form-control-label">Start Timing :</label>
-                        <input type="text" class="form-control" id="start_time" style="text-align: center; width: 30%; margin-left: 210px;">
+                        <input type="text" class="form-control" id="start_time" style="text-align: center; width: 30%; margin-left: 10px;">
                         <script type="text/javascript">
                             $('#start_time').datetimepicker({
-                                format: 'HH:mm:ss'
+                                format: 'HH:mm:ss',
+                                defaultDate: $('#start_time').val()
                             });
                         </script>
                     </div><br/>
-                    <div class="row">
+                    <div class="row form-inline" style="margin-left: 10px;">
                         <label class = "form-control-label">End Timing :</label>
-                        <input type="text" class="form-control" id="end_time" style="text-align: center; width: 30%; margin-left: 210px;">
+                        <input type="text" class="form-control" id="end_time" style="text-align: center; width: 30%; margin-left: 10px;">
                         <script type="text/javascript">
                             $('#end_time').datetimepicker({
-                                format: 'HH:mm:ss'
+                                format: 'HH:mm:ss',
+                                defaultDate: $('#end_time').val()
                             });
                         </script>
                     </div><br/>
-                    <div class="row">
+                    <div class="row form-inline" style="margin-left: 10px;">
                         <label class = "form-control-label">Start Date :</label>
-                        <input type="text" class="form-control" id="start_date" style="text-align: center; width: 30%; margin-left: 210px;">
+                        <input type="text" class="form-control" id="start_date" style="text-align: center; width: 30%; margin-left: 10px;">
                         <script type="text/javascript">
                             $('#start_date').datetimepicker({
-                                format: 'YYYY-MM-DD'
+                                format: 'YYYY-MM-DD',
+                                defaultDate: $('#start_date').val()
                             });
                         </script>
                     </div><br/>
-                    <div class="row">
+                    <div class="row form-inline" style="margin-left: 10px;">
                         <label class = "form-control-label">End Date :</label>
-                        <input type="text" class="form-control" id="end_date" style="text-align: center; width: 30%; margin-left: 210px;">
+                        <input type="text" class="form-control" id="end_date" style="text-align: center; width: 30%; margin-left: 10px;">
                         <script type="text/javascript">
                             $('#end_date').datetimepicker({
-                                format: 'YYYY-MM-DD'
+                                format: 'YYYY-MM-DD',
+                                defaultDate: $('#end_date').val()
                             });
                         </script>
                     </div><br/>
-                    <div class="row">
+                    <div class="row form-inline" style="margin-left: 10px;">
                         <label class = "form-control-label">Replacement Tutor :</label>
-                        <select class="form-control" id="replacementClassTutor" style="width: 40%; margin-left: 180px; text-align: center;">
+                        <select class="form-control" id="replacementClassTutor" style="width: 40%; margin-left: 10px; text-align: center;">
                         </select>
                     </div>
                 </div>  
@@ -236,7 +266,8 @@
                         <input type="text" class="form-control" id="create_start_date" style="text-align: center; width: 30%; margin-left: 10px;">
                         <script type="text/javascript">
                             $('#create_start_date').datetimepicker({
-                                format: 'YYYY-MM-DD'
+                                format: 'YYYY-MM-DD',
+                                defaultDate: $("#create_start_date").val()
                             });
                         </script>
                     </div>
@@ -247,7 +278,8 @@
                         <input type="text" class="form-control" id="create_end_date" style="text-align: center; width: 30%; margin-left: 10px;">
                         <script type="text/javascript">
                             $('#create_end_date').datetimepicker({
-                                format: 'YYYY-MM-DD'
+                                format: 'YYYY-MM-DD',
+                                defaultDate: $("#create_end_date").val()
                             });
                         </script>
                     </div>
@@ -354,8 +386,10 @@
         scheduler.config.readonly_form = true;
         scheduler.config.readonly = true;
         scheduler.config.prevent_cache = true;
-        scheduler.config.xml_date = "%Y-%m-%d %H:%i:%s";
+        scheduler.config.xml_date = '%Y-%m-%d %H:%i:%s';
         scheduler.init('scheduler_here', new Date(), "month");
+        
+        var formatFunc = scheduler.date.date_to_str("%Y-%m-%d %H:%i:%s");
 
         $.ajax({
             type: 'POST',
@@ -369,19 +403,44 @@
 
         scheduler.attachEvent("onClick", function (id, e) {
             lessonID = id;
+            $("#editOptions").on('shown.bs.modal', function(){
+                action = 'editOptions';
+                
+                $.ajax({
+                    type: 'POST',
+                    url: 'AdminScheduleServlet',
+                    dataType: 'JSON',
+                    data: {action: action, lessonID: lessonID},
+                    success: function (data) {
+                        $("#timing_details").val(data.timing);
+                        $("#level_details").val(data.level);
+                        $("#subject_details").val(data.subject);
+                    }
+                });
+            });
             $("#editOptions").modal('show');
         });
 
-        scheduler.attachEvent("onEmptyClick", function (id, e) {
+        scheduler.attachEvent("onEmptyClick", function (date, e) {
+            selectedDate = formatFunc(date).split(" ")[0];
+            startTime = '10:00:00';
+            endTime = '11:30:00';
+           
             $("#classCreation").on('shown.bs.modal', function () {
                 action = 'retrieveOptions';
-
+                
                 $.ajax({
                     type: 'POST',
                     url: 'AdminScheduleServlet',
                     dataType: 'JSON',
                     data: {branchID: branchID, action: action},
                     success: function (data) {
+                        $("#create_start_date").val(selectedDate);
+                        $("#create_end_date").val(selectedDate);
+                        
+                        $("#create_start_time").val(startTime);
+                        $("#create_end_time").val(endTime);
+                        
                         for (var i = 0; i < data.level.length; i++) {
                             $("#level").append('<option value="' + data.level[i].id + '">' + data.level[i].name + '</option>');
                         }
@@ -389,7 +448,9 @@
                         for (var i = 0; i < data.tutor.length; i++) {
                             $("#assign_tutor").append('<option value="' + data.tutor[i].id + '">' + data.tutor[i].name + '</option>');
                         }
-
+                        
+                        $("#subject").empty();
+                        
                         for (var i = 0; i < data.subject.length; i++) {
                             $("#subject").append('<option value="' + data.subject[i].id + '">' + data.subject[i].name + '</option>');
                         }
@@ -405,6 +466,7 @@
                         dataType: 'JSON',
                         data: {levelID: levelID, action: action},
                         success: function (data) {
+                            $("#subject").empty();  
                             for (var i = 0; i < data.subject.length; i++) {
                                 $("#subject").append('<option value="' + data.subject[i].id + '">' + data.subject[i].name + '</option>');
                             }
@@ -412,7 +474,8 @@
                     });
                 });
 
-                $('#createClass').on('click', function () {
+                $('#createClass').on('click', function (e) {
+                    e.preventDefault();
                     holidays = [];
                     index = 0;
                     $.each($('.holidays'), function () {
@@ -420,6 +483,7 @@
                         holidays[index] = $(this).val();
                         index++;
                     });
+                    
                     startDate = $("#create_start_date").val();
                     endDate = $("#create_end_date").val();
                     startTime = $("#create_start_time").val();
@@ -455,7 +519,7 @@
                             } else {
                                 $('#classErr').addClass("alert alert-danger");
                                 $('#classErr').text("Oops! Something went wrong!")
-                                $("#classError").fadeTo(2000, 0).slideUp(2000, function () {
+                                $("#classErr").fadeTo(2000, 0).slideUp(2000, function () {
                                     $(this).remove();
                                 });
                             }

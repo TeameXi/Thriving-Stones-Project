@@ -6,25 +6,11 @@ public class Lesson {
     private int classid;
     private int tutorid;
     private int tutorAttended;
-    private Timestamp lessonDateTime;
     private Timestamp updated;
-    private Timestamp startDate;
-    private Timestamp endDate;
-
-    public Lesson(int classid, Timestamp lessonDateTime) {
-        this.classid = classid;
-        this.lessonDateTime = lessonDateTime;
-    }
-
-    public Lesson(int lessonid, int classid, int tutorid, int tutorAttended, Timestamp lessonDateTime) {
-        this.lessonid = lessonid;
-        this.classid = classid;
-        this.tutorid = tutorid;
-        this.tutorAttended = tutorAttended;
-        this.lessonDateTime = lessonDateTime;
-    }
+    private String startDate;
+    private String endDate;
     
-    public Lesson(int lessonid, int classid, int tutorid, int tutorAttended, Timestamp startDate, Timestamp endDate) {
+    public Lesson(int lessonid, int classid, int tutorid, int tutorAttended, String startDate, String endDate) {
         this.lessonid = lessonid;
         this.classid = classid;
         this.tutorid = tutorid;
@@ -64,28 +50,12 @@ public class Lesson {
     public void setTutorAttended(int tutorAttended) {
         this.tutorAttended = tutorAttended;
     }
-
-    public Timestamp getLessonDateTime() {
-        return lessonDateTime;
-    }
-
-    public void setLessonDateTime(Timestamp lessonDateTime) {
-        this.lessonDateTime = lessonDateTime;
-    }
     
     public String getStartDate(){
-        return startDate.toString();
-    }
-    
-    public Timestamp getStart(){
         return startDate;
     }
     
-    public String endDate(){
-        return endDate.toString();
-    }
-    
-    public Timestamp getEnd(){
+    public String getEndDate(){
         return endDate;
     }
     

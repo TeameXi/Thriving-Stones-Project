@@ -61,7 +61,7 @@ public class TutorScheduleServlet extends HttpServlet {
                     obj.put("id", l.getLessonid());
                     Class c = ClassDAO.getClassByID(l.getClassid());
                     obj.put("start_date", l.getStartDate());
-                    obj.put("end_date", l.endDate());
+                    obj.put("end_date", l.getEndDate());
                     obj.put("text", c.getLevel() + " " + c.getSubject());
                     array.put(obj);
                 }
@@ -77,7 +77,7 @@ public class TutorScheduleServlet extends HttpServlet {
                 System.out.println(new AttendanceDAO().retrieveNumberOfStudentsAttended(lessonID));
                 obj.put("id", lessonID);
                 obj.put("startDate", lesson.getStartDate());
-                obj.put("endDate", lesson.endDate());
+                obj.put("endDate", lesson.getEndDate());
                 obj.put("tutor", new TutorDAO().retrieveSpecificTutorById(lesson.getTutorid()).getName());
                 obj.put("classSize", new StudentClassDAO().retrieveNumberOfStudentByClass(lesson.getClassid()));
                 obj.put("className", new ClassDAO().getClassByID(lesson.getClassid()).getClassDay() + " " + new ClassDAO().getClassByID(lesson.getClassid()).getStartTime() + "-" + new ClassDAO().getClassByID(lesson.getClassid()).getEndTime());

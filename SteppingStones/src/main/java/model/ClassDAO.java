@@ -53,23 +53,24 @@ public class ClassDAO {
     public static Class getClassByID(int classID) {
         Class cls = null;
         try (Connection conn = ConnectionManager.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement("select * from class where class_id = ?");
+            PreparedStatement stmt = conn.prepareStatement("select level_id, subject_id, term, start_time, end_time, class_day, fees, start_date, end_date, class_type from class where class_id = ?");
             stmt.setInt(1, classID);
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                int levelID = rs.getInt("level_id");
-                int subjectID = rs.getInt("subject_id");
-                int term = rs.getInt("term");
-                String startTime = rs.getString("start_time");
-                String endTime = rs.getString("end_time");
-                String classDay = rs.getString("class_day");
-                String startDate = rs.getString("start_date");
-                String endDate = rs.getString("end_date");
-                int mthlyFees = rs.getInt("fees");
+                int levelID = rs.getInt(1);
+                int subjectID = rs.getInt(2);
+                int term = rs.getInt(3);
+                String startTime = rs.getString(4);
+                String endTime = rs.getString(5);
+                String classDay = rs.getString(6);
+                String startDate = rs.getString(8);
+                String endDate = rs.getString(9);
+                System.out.println(startDate);
+                int mthlyFees = rs.getInt(7);
                 String subject = SubjectDAO.retrieveSubject(subjectID);
                 String level = LevelDAO.retrieveLevel(levelID);
-                String type = rs.getString("class_type");
+                String type = rs.getString(10);
                 cls = new Class(classID, level, subject, term, startTime, endTime, classDay, mthlyFees, startDate, endDate, type);
                 cls.setSubjectID(subjectID);
             }
@@ -328,11 +329,11 @@ public class ClassDAO {
         }
     }
 
-    public static int createClass(String classType,int level, int subject,double mthlyFees, int hasReminderForFees, String startTime, String endTime, String classDay, String startDate, String endDate, int branch, int tutorId) {
+    public static int createClass(String classType,int level, int subject,double mthlyFees, int hasReminderForFees, String startTime, String endTime, String classDay, String startDate, String endDate, int branch, int tutorId, String holidays) {
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            String sql = "INSERT into CLASS (level_id, subject_id,fees,has_reminder_for_fees,start_time, end_time, class_day, start_date, end_date,branch_id,tutor_id, class_type)"
-                    + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
+            String sql = "INSERT into CLASS (level_id, subject_id,fees,has_reminder_for_fees,start_time, end_time, class_day, start_date, end_date,branch_id,tutor_id, class_type, holiday_date)"
+                    + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
             System.out.println(sql);
@@ -348,6 +349,7 @@ public class ClassDAO {
             stmt.setInt(10, branch);
             stmt.setInt(11, tutorId);
             stmt.setString(12, classType);
+            stmt.setString(13, holidays);
             stmt.executeUpdate();
             conn.commit();
             ResultSet rs = stmt.getGeneratedKeys();

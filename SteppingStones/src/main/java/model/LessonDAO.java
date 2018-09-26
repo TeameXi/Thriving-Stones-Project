@@ -42,7 +42,7 @@ public class LessonDAO {
         }
     }
 
-    public static boolean updateTutorForOneLesson(int classId,int tutorId,Timestamp lessonStartDate,Timestamp lessonEndDate) {
+    public static boolean updateTutorForOneLesson(int classId, int tutorId, Timestamp lessonStartDate, Timestamp lessonEndDate) {
         try (Connection conn = ConnectionManager.getConnection();) {
             String sql = "update lesson set tutor_id = ? where class_id = ? and start_date = ? and end_date=?";
             PreparedStatement stmt = conn.prepareStatement(sql);
@@ -50,17 +50,16 @@ public class LessonDAO {
             stmt.setInt(2, classId);
             stmt.setTimestamp(3, lessonStartDate);
             stmt.setTimestamp(4, lessonEndDate);
-            
+
             System.out.println(sql);
-            System.out.println("Class: "+classId);
-            System.out.println("Tutor: "+tutorId);
+            System.out.println("Class: " + classId);
+            System.out.println("Tutor: " + tutorId);
             System.out.println(lessonStartDate);
-             System.out.println(lessonEndDate);
-           
+            System.out.println(lessonEndDate);
 
             int num = stmt.executeUpdate();
-            if(num > 0){
-               return true;
+            if (num > 0) {
+                return true;
             }
         } catch (Exception e) {
 
@@ -68,24 +67,33 @@ public class LessonDAO {
         return false;
     }
 
-    public boolean createLesson(int classid, int tutorid, String startDate, String endDate) {
+    public boolean createLesson(int classid, int tutorid, String startDate, String endDate, int reminder, String type) {
+        String sql = "";
+        if (type.equals("P")) {
+            sql = "INSERT into LESSON (class_id, start_date, end_date, tutor_id, tutor_attended, tutor_payment_status, reminder_term)"
+                    + "VALUES (?,?,?,?,?,?,?)";
+        } else {
+            sql = "INSERT into LESSON (class_id, start_date, end_date, tutor_id, tutor_attended, tutor_payment_status, reminder_status)"
+                    + "VALUES (?,?,?,?,?,?,?)";
+        }
         try (Connection conn = ConnectionManager.getConnection();) {
-            conn.setAutoCommit(false);
-            String sql = "INSERT into LESSON (class_id, start_date, end_date, tutor_id, tutor_attended)"
-                    + "VALUES (?,?,?,?,?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, classid);
             stmt.setString(2, startDate);
             stmt.setString(3, endDate);
             stmt.setInt(4, tutorid);
             stmt.setInt(5, 0);
-            stmt.executeUpdate();
-            conn.commit();
-            return true;
+            stmt.setInt(6, 0);
+            stmt.setInt(7, reminder);
+            int rows = stmt.executeUpdate();
+            System.out.println(rows);
+            if (rows > 0) {
+                return true;
+            }
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            return false;
         }
+        return false;
     }
 
     public static ArrayList<Lesson> retrieveAllLessonLists(int classid) {
@@ -98,7 +106,7 @@ public class LessonDAO {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                Lesson lesson = new Lesson(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getTimestamp(5), rs.getTimestamp(6));
+                Lesson lesson = new Lesson(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getString(5), rs.getString(6));
                 lessons.add(lesson);
             }
         } catch (Exception e) {
@@ -119,7 +127,7 @@ public class LessonDAO {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                Lesson lesson = new Lesson(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getTimestamp(5), rs.getTimestamp(6));
+                Lesson lesson = new Lesson(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getString(5), rs.getString(6));
                 lessons.add(lesson);
             }
         } catch (Exception e) {
@@ -139,29 +147,7 @@ public class LessonDAO {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                Lesson lesson = new Lesson(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getTimestamp(5), rs.getTimestamp(6));
-                lessons.add(lesson);
-            }
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-
-        return lessons;
-    }
-
-    public ArrayList<Lesson> retrieveAllLessonListsDateRange(Timestamp startDate, Timestamp endDate) {
-        ArrayList<Lesson> lessons = new ArrayList<>();
-        String sql = "select lesson_id, class_id, tutor_id, tutor_attended, lesson_date_time from lesson where lesson_date_time between ? and ?";
-
-        try (Connection conn = ConnectionManager.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setTimestamp(1, startDate);
-            stmt.setTimestamp(2, endDate);
-
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                Lesson lesson = new Lesson(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getTimestamp(5));
+                Lesson lesson = new Lesson(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getString(5), rs.getString(6));
                 lessons.add(lesson);
             }
         } catch (Exception e) {
@@ -183,8 +169,8 @@ public class LessonDAO {
                 int classid = rs.getInt("class_id");
                 int tutorid = rs.getInt("tutor_id");
                 int tutorAttended = rs.getInt("tutor_attended");
-                Timestamp startTime = rs.getTimestamp("start_date");
-                Timestamp endTime = rs.getTimestamp("end_date");
+                String startTime = rs.getString("start_date");
+                String endTime = rs.getString("end_date");
 
                 les = new Lesson(lessonid, classid, tutorid, tutorAttended, startTime, endTime);
             }
@@ -340,26 +326,6 @@ public class LessonDAO {
         return status;
     }
 
-    public static ArrayList<Lesson> retrieveAllLessonListsBeforeCurr(int classid) {
-        ArrayList<Lesson> lessons = new ArrayList<>();
-        String sql = "select lesson_id, class_id, tutor_id, tutor_attended, start_date, end_date from lesson where class_id = ? and start_date < CURDATE()";
-        System.out.println(sql);
-        try (Connection conn = ConnectionManager.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setInt(1, classid);
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                Lesson lesson = new Lesson(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getTimestamp(5), rs.getTimestamp(6));
-                lessons.add(lesson);
-            }
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-
-        return lessons;
-    }
-
     public static int retrieveNoOfLessonForFirstInstallment(int classID, String joinDate) {
         int noOfLessons = 0;
         String sql = "select count(lesson_id) as noOfLessons from lesson where class_id = ? and date(start_date) >= ? and "
@@ -380,19 +346,19 @@ public class LessonDAO {
 
         return noOfLessons;
     }
-    
-    public boolean updateLessonDate(int lessonID, int tutorID, String changedStart, String changedEnd){
+
+    public boolean updateLessonDate(int lessonID, int tutorID, String changedStart, String changedEnd) {
         String sql = "update lesson set start_date = ?, end_date = ?, replacement_tutor_id = ? where lesson_id = ?";
-        
-        try(Connection conn = ConnectionManager.getConnection()){
+
+        try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, changedStart);
             stmt.setString(2, changedEnd);
             stmt.setInt(3, tutorID);
             stmt.setInt(4, lessonID);
-            
+
             int rowsUpdated = stmt.executeUpdate();
-            if(rowsUpdated > 0){
+            if (rowsUpdated > 0) {
                 return true;
             }
         } catch (SQLException ex) {
@@ -400,18 +366,18 @@ public class LessonDAO {
         }
         return false;
     }
-    
-    public boolean updateLessonDateTutor(int lessonID, String changedStart, String changedEnd){
+
+    public boolean updateLessonDateTutor(int lessonID, String changedStart, String changedEnd) {
         String sql = "update lesson set changed_start_date = ?, changed_end_date = ? where lesson_id = ?";
-        
-        try(Connection conn = ConnectionManager.getConnection()){
+
+        try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, changedStart);
             stmt.setString(2, changedEnd);
             stmt.setInt(3, lessonID);
-            
+
             int rowsUpdated = stmt.executeUpdate();
-            if(rowsUpdated > 0){
+            if (rowsUpdated > 0) {
                 return true;
             }
         } catch (SQLException ex) {
@@ -419,18 +385,18 @@ public class LessonDAO {
         }
         return false;
     }
-    
-    public HashMap<String, String> retrieveUpdatedLessonDate(int lessonID){
+
+    public HashMap<String, String> retrieveUpdatedLessonDate(int lessonID) {
         String sql = "select changed_start_date, changed_end_date from lesson where lesson_id = ?";
         HashMap<String, String> editedDates = new HashMap<>();
-        
-        try(Connection conn = ConnectionManager.getConnection()){
+
+        try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, lessonID);
-            
+
             ResultSet rs = stmt.executeQuery();
-            
-            while(rs.next()){
+
+            while (rs.next()) {
                 editedDates.put("start", rs.getString(1));
                 editedDates.put("end", rs.getString(2));
             }
@@ -439,7 +405,7 @@ public class LessonDAO {
         }
         return editedDates;
     }
-    
+
     public static boolean deleteAttendancebyID(int studentID) {
         boolean deletedStatus = false;
         try (Connection conn = ConnectionManager.getConnection();) {
@@ -455,20 +421,20 @@ public class LessonDAO {
         }
         return deletedStatus;
     }
-    
-    public boolean retrieveOverlappingLessonsForTutor(int tutorID, String start, String end, int lessonID){
+
+    public boolean retrieveOverlappingLessonsForTutor(int tutorID, String start, String end, int lessonID) {
         String sql = "select * from lesson where tutor_id = ? and (start_date between ? and ? or ? between start_date and end_date) and lesson_id <> ?";
         System.out.println(sql);
-        try(Connection conn = ConnectionManager.getConnection()){
+        try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, tutorID);
             stmt.setString(2, start);
             stmt.setString(3, end);
             stmt.setString(4, start);
             stmt.setInt(5, lessonID);
-            
+
             ResultSet rs = stmt.executeQuery();
-            if(rs.next()){
+            if (rs.next()) {
                 return true;
             }
         } catch (SQLException ex) {
@@ -476,17 +442,17 @@ public class LessonDAO {
         }
         return false;
     }
-    
-    public boolean deleteLessons(int classID){
+
+    public boolean deleteLessons(int classID) {
         String sql = "delete from lesson where class_id = ?";
-        
-        try(Connection conn = ConnectionManager.getConnection()){
+
+        try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, classID);
-            
+
             int rows = stmt.executeUpdate();
-            
-            if(rows > 0){
+
+            if (rows > 0) {
                 return true;
             }
         } catch (SQLException ex) {
@@ -494,17 +460,17 @@ public class LessonDAO {
         }
         return false;
     }
-    
-    public boolean deleteLesson(int lessonID){
+
+    public boolean deleteLesson(int lessonID) {
         String sql = "delete from lesson where lesson_id = ?";
-        
-        try(Connection conn = ConnectionManager.getConnection()){
+
+        try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, lessonID);
-            
+
             int rows = stmt.executeUpdate();
-            
-            if(rows > 0){
+
+            if (rows > 0) {
                 return true;
             }
         } catch (SQLException ex) {
