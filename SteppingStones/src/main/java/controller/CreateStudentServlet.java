@@ -43,6 +43,7 @@ public class CreateStudentServlet extends HttpServlet {
 
         String studentName = request.getParameter("studentName");
         String lvl = request.getParameter("lvl");
+        String stream = request.getParameter("stream");
         String school = request.getParameter("school");
         String relationship = request.getParameter("relationship");
         
@@ -81,7 +82,7 @@ public class CreateStudentServlet extends HttpServlet {
             stuEmail = null;
         }
         
-        int insertStudent = StudentDAO.insertStudent(studentName, phone,stuEmail, levelID, branchID, regFees, school);
+        int insertStudent = StudentDAO.insertStudent(studentName, phone,stuEmail, levelID, branchID, regFees, school, stream);
 //        System.out.println("Insert Student " + insertStudent);
 //        System.out.println("StuEmail" + stuEmail);
 //        System.out.println(phone);

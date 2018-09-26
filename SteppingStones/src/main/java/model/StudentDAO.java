@@ -42,24 +42,25 @@ public class StudentDAO {
 //        return 0;
 //    }
     
-    public static int insertStudent(String studentName, int phone, String stuEmail, int level_id, int branch_id, double regFees, String school) {
+    public static int insertStudent(String studentName, int phone, String stuEmail, int level_id, int branch_id, double regFees, String school, String stream) {
 
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            String sql = "insert ignore into student(student_name, phone, email, school, reg_fees, outstanding_reg_fees, required_amount, outstanding_amount, level_id, branch_id)"
-                    + " value(?, ?, ?, ?, ?, ? ,?, ?, ?, ?)";
+            String sql = "insert ignore into student(student_name, phone, email, school, stream, reg_fees, outstanding_reg_fees, required_amount, outstanding_amount, level_id, branch_id)"
+                    + " value(?, ?, ?, ?, ?, ? ,?, ?, ?, ?, ?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
             System.out.println(stmt);
             stmt.setString(1, studentName);
             stmt.setInt(2, phone);
             stmt.setString(3, stuEmail);
             stmt.setString(4, school);
-            stmt.setDouble(5, regFees);
+            stmt.setString(5, stream);
             stmt.setDouble(6, regFees);
-            stmt.setDouble(7, 0);
+            stmt.setDouble(7, regFees);
             stmt.setDouble(8, 0);
-            stmt.setInt(9, level_id);
-            stmt.setInt(10, branch_id);
+            stmt.setDouble(9, 0);
+            stmt.setInt(10, level_id);
+            stmt.setInt(11, branch_id);
             stmt.executeUpdate();
             conn.commit();
             ResultSet rs = stmt.getGeneratedKeys();
@@ -351,10 +352,11 @@ public class StudentDAO {
                 String address = rs.getString("address");
                 String email = rs.getString("email");
                 String school = rs.getString("school");
+                String stream = rs.getString("stream");
                 double reqAmt = rs.getDouble("required_amount");
                 double outstandingAmt = rs.getDouble("outstanding_amount");
                 String level = LevelDAO.retrieveLevel(levelID);
-                stu = new Student(studentID, studentNRIC, name, BOD, gender, level, branchID, phone, address, email, school, reqAmt, outstandingAmt);
+                stu = new Student(studentID, studentNRIC, name, BOD, gender, level, branchID, phone, address, email, school, stream, reqAmt, outstandingAmt);
             }
         } catch (SQLException e) {
             System.out.print(e.getMessage());

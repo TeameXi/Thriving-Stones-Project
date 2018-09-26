@@ -5,12 +5,12 @@
  */
 package entity;
 
-
 /**
  *
  * @author DEYU
  */
 public class Student {
+
     private int studentID;
     private String studentNRIC;
     private String name;
@@ -22,10 +22,12 @@ public class Student {
     private String address;
     private String email;
     private String school;
+    private String stream;
     private double reqAmt;
     private double outstandingAmt;
 
-    public Student(int studentID, String studentNRIC, String name, String BOD, String gender, String level, int branch_id, int phone, String address, String email, String school, double reqAmt, double outstandingAmt) {
+    public Student(int studentID, String studentNRIC, String name, String BOD, String gender, String level, int branch_id, int phone,
+            String address, String email, String school, String stream, double reqAmt, double outstandingAmt) {
         this.studentID = studentID;
         this.studentNRIC = studentNRIC;
         this.name = name;
@@ -37,12 +39,13 @@ public class Student {
         this.address = address;
         this.email = email;
         this.school = school;
+        this.stream = stream;
         this.reqAmt = reqAmt;
         this.outstandingAmt = outstandingAmt;
     }
-    
-                  
-    public Student(int studentID, String studentNRIC, String name, String BOD, String gender, String level, int branch_id, int phone, String address, String email, double reqAmt, double outstandingAmt){
+
+    public Student(int studentID, String studentNRIC, String name, String BOD, String gender, String level, int branch_id, 
+            int phone, String address, String email, double reqAmt, double outstandingAmt) {
         this.studentID = studentID;
         this.studentNRIC = studentNRIC;
         this.name = name;
@@ -64,103 +67,117 @@ public class Student {
         this.email = email;
     }
 
-    
-    
-    public Student(int studentID, String name, int phone, String level){
+    public Student(int studentID, String name, int phone, String level) {
         this.studentID = studentID;
         this.name = name;
         this.level = level;
         this.phone = phone;
     }
     
+    public String getSchool(){
+        return school;
+    }
+    
+    public String getStream(){
+        return stream;
+    }
+    
+    public void setSchool(String school) {
+        this.school = school;
+    }
+    
+    public void setStream(String stream) {
+        this.stream = stream;
+    }
+    
     public int getStudentID() {
         return studentID;
     }
-    
-    public void setStudentID(int newStudentID){
+
+    public void setStudentID(int newStudentID) {
         this.studentID = newStudentID;
     }
-    
+
     public String getStudentNRIC() {
         return studentNRIC;
     }
-    
-    public void setStudentNRIC(String newStudentNRIC){
+
+    public void setStudentNRIC(String newStudentNRIC) {
         this.studentNRIC = newStudentNRIC;
     }
-    
-    public String getName(){
+
+    public String getName() {
         return name;
     }
-    
-    public void setName(String newStudentName){
+
+    public void setName(String newStudentName) {
         this.name = newStudentName;
     }
-    
-    public String getBOD(){
+
+    public String getBOD() {
         return BOD;
     }
-    
-    public void setBOD(String newBOD){
+
+    public void setBOD(String newBOD) {
         this.BOD = newBOD;
     }
-    
-    public String getGender(){
+
+    public String getGender() {
         return gender;
     }
-    
-    public String getLevel(){
+
+    public String getLevel() {
         return level;
     }
-    
-    public void setLevel(String newLevel){
+
+    public void setLevel(String newLevel) {
         this.level = newLevel;
     }
-    
-    public int getBranchlID(){
+
+    public int getBranchlID() {
         return branch_id;
     }
 
-    public String getAddress(){
+    public String getAddress() {
         return address;
     }
-    
-    public void setAddress(String newAddress){
+
+    public void setAddress(String newAddress) {
         this.address = newAddress;
     }
-    
-    public int getPhone(){
+
+    public int getPhone() {
         return phone;
     }
-    
-    public void setPhone(int newPhone){
+
+    public void setPhone(int newPhone) {
         this.phone = newPhone;
     }
-    
-    public String getEmail(){
+
+    public String getEmail() {
         return email;
     }
-    
-    public void setEmail(String newEmail){
+
+    public void setEmail(String newEmail) {
         this.email = newEmail;
     }
-    
-    public double getReqAmt(){
+
+    public double getReqAmt() {
         return reqAmt;
     }
-    
-    public void setReqAmt(double newReqAmt){
+
+    public void setReqAmt(double newReqAmt) {
         this.reqAmt = newReqAmt;
     }
-    
-    public double getOutstandingAmt(){
+
+    public double getOutstandingAmt() {
         return outstandingAmt;
     }
-    
-    public void setOutstandingAmt(double newOutstandingAmt){
+
+    public void setOutstandingAmt(double newOutstandingAmt) {
         this.outstandingAmt = newOutstandingAmt;
     }
-    
+
     /*
     private String studentID;
     private String name;
