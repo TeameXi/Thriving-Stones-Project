@@ -237,7 +237,7 @@
 
                 <div class="row">
                     <div class = "col-sm-4">
-                        <p class = "form-control-label">Image :</p>
+                        <p class = "form-control-label">Qualification :</p>
                     </div>
                     <div class = "col-sm-8">
                         <p><div id="view_image_container">No Image</div></p>
@@ -337,10 +337,10 @@
 
                 <div class="row">
                     <div class = "col-sm-4">
-                        <p class = "form-control-label">Image :</p>
+                        <p class = "form-control-label">Qualification :</p>
                     </div>
                     <div class = "col-sm-8">
-                        <p><div id="image_container"></div><input type='file' class = "form-control" id="tutor_image" value =""/><div style="color:red;" id="imageError"></div></p>
+                        <p><input type='text' class = "form-control" id="qualification" value =""/></p>
                     </div>
                 </div><br/>
 
@@ -394,16 +394,6 @@
 <script>
 $(document).ready(function () {
 
-    $('#tutor_image').on("change",function(){
-        var fileExtension = ['jpeg', 'jpg','png'];
-        if ($.inArray($(this).val().split('.').pop().toLowerCase(), fileExtension) == -1) {
-            $('#imageError').html("Only image(jpg,png,jpeg) are allowed.");
-        }else{
-            $('#imageError').html("");
-        }
-
-    });
-
     $('#dob').datetimepicker({
         format: 'DD-MM-YYYY'
     });
@@ -430,8 +420,8 @@ $(document).ready(function () {
                     $("#view_address").text(data["address"]);
                 }
 
-                if (data['image_url'] !== "") {
-                    $("#view_image_container").html("<img style='width:100px;padding:10px;' src='" + data['image_url'] + "'></img>");
+                if (data['qualification'] !== "") {
+                    $("#qualification").val(data['qualification']);
                 }
 
                 if (data["birth_date"] !== "") {
@@ -460,11 +450,10 @@ $(document).ready(function () {
         $("#tutor_nric").attr('readonly', false);
         $("#tutor_nric").val("");
         $("#dob").val("");
-        $('#tutor_image').val("");
+        $('#qualification').val("");
 
         $("#dob").attr('readonly', false);
 
-        $('#imageError').html("");
         $.ajax({
             url: 'RetrieveTutorServlet',
             dataType: 'JSON',
@@ -482,8 +471,8 @@ $(document).ready(function () {
                 $("#address").val(data["address"]);
 
 
-                if (data['image_url'] !== null) {
-                    $("#image_container").html("<img style='width:100px;padding:10px;' src='" + data['image_url'] + "'></img>");
+                if (data['qualication'] !== null) {
+                    $("#qualification").val(data['qualification']);
                 }
 
                 if (data["birth_date"] !== "") {
@@ -566,10 +555,8 @@ function editTutor() {
         nric = $("#tutor_nric").val();
         phone = $("#phone").val();
         address = $("#address").val();
-        file_name = "";
-        if($("#tutor_image").get(0).files.length !== 0){
-            file_name = $("#tutor_image").prop("files")[0]["name"];
-        }
+
+        qualification = $("#qualication").val();
         dob = $("#dob").val();
         gender = $("#gender").val();
         email = $("#email").val();
@@ -580,7 +567,7 @@ function editTutor() {
             type: 'POST',
             url: 'UpdateTutorServlet',
             dataType: 'JSON',
-            data: {tutorID: id,nric:nric,phone:phone,address:address,image:file_name,dob:dob,gender:gender,email:email},
+            data: {tutorID: id,nric:nric,phone:phone,address:address,image:qualification,dob:dob,gender:gender,email:email},
             success: function (data) {
                 if (data === 1) {
                     $("#name_" + id).text(name);

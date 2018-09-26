@@ -76,8 +76,7 @@
         if(num == 1 || num == 2){
             html = d;
         }else{
-            html = '<div class="row"><div class="col-md-1"></div><div class="col-md-10"><h4 class="centered">Existing Tutor Hourly Pay Rate</h4><div class="statusMsg"></div>';
-            
+            html ="<div id='existingTutorWrapper'></div>";
             if(existingTutorData.length > 0){
                 html += existingTutorFormat(existingTutorData,levelID,subjectID,branchID);
             }
@@ -121,7 +120,8 @@
     
     function existingTutorFormat(existingTutorData,levelID,subjectID,branchID){
         var existingContainerHtml = "";
-
+        existingContainerHtml = '<div class="row"><div class="col-md-1"></div><div class="col-md-10"><h4 class="centered">Existing Tutor Hourly Pay Rate</h4><div class="statusMsg"></div>';
+           
         existingContainerHtml += "<table class='table' id='existingTutorTable'><thead><th>tutorID</th><th>Existing Tutor</th><th>payRate</th><th class='tabledit-toolbar-column'></th></thead><tbody>";
         for(i = 0 ; i < existingTutorData.length;i++){
             existingContainerHtml +=
@@ -328,7 +328,6 @@
 
                                         $('#submitPayRateBtn').prop('disabled', true);
                                         $('#submitPayRateBtn').attr("disabled", "disabled"); 
-                                        console.log("dd");
                                         
                                         tutor_id = $('select[name="tutorDropdown[]"]').map(function () {
                                             return $(this).val();
@@ -350,24 +349,31 @@
                                             tutorPayArr[i] = tutorPayObj;
                                         }
                                         
-                                        $.ajax({
-                                            url: 'CreateTutorHourlyRate',
-                                            data: {pay_rate_arr: JSON.stringify(tutorPayArr)},
-                                            dataType: "json",
-                                            success: function (data) {
-                                                if(data === 1){
-                                                    html = '<div class="alert alert-success col-md-12"><strong>Success!</strong> Update grades successfully</div>';
-                                                  
-                                                }else{
-                                                    html = '<div class="alert alert-danger col-md-12"><strong>Sorry!</strong> Something went wrong</div>';   
-                                                }
-                                                $(".statusMsg").html(html);
-                                                $('.statusMsg').fadeIn().delay(1000).fadeOut();
-                                                setTimeout(function(){
-                                                    window.location.reload(1);
-                                                 }, 2000);
-                                            }
-                                        });
+                                        console.log(tutorPayArr);
+                                           // Existing Tutor
+                                        if($("#existingTutorTable").length){
+                                            
+                                        }else{
+                                            new_table = existingTutorFormat(tutorPayArr,levelID,subjectID,branchID);
+                                            $('#existingTutorWrapper').html(new_table);
+                                        }
+                                        
+//                                        $.ajax({
+//                                            url: 'CreateTutorHourlyRate',
+//                                            data: {pay_rate_arr: JSON.stringify(tutorPayArr)},
+//                                            dataType: "json",
+//                                            success: function (data) {
+//                                                if(data === 1){
+//                                                    html = '<div class="alert alert-success col-md-12"><strong>Success!</strong> Update grades successfully</div>';
+//                                                    c
+//                                                }else{
+//                                                    html = '<div class="alert alert-danger col-md-12"><strong>Sorry!</strong> Something went wrong</div>';   
+//                                                }
+//                                                $(".statusMsg").html(html);
+//                                                $('.statusMsg').fadeIn().delay(1000).fadeOut();
+//                                              
+//                                            }
+//                                        });
                                         
                                         
                                   });

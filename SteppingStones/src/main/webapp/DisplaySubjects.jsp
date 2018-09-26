@@ -71,15 +71,15 @@
                         String part2 = parts[1];
                         if(part1.equals("Primary")){
                             if(primary.equals("")){
-                                primary = primary + "Primary " + part2;
+                                primary = primary + "Primary <span id='P_"+id+"_"+part2+"'>" + part2+"</span>";
                             }else{
-                                primary = primary + ", " +  part2;
+                                primary = primary + "<span id='CP_"+id+"_"+part2+"'>,</span><span id='P_"+id+"_"+part2+"'>" +  part2+"</span>";
                             }
                         }else{
                             if(secondary.equals("")){
-                                secondary = secondary + "Secondary " +  part2;
+                                secondary = secondary + "Secondary <span id='S_"+id+"_"+part2+"'>" +  part2+"</span>";
                             }else{
-                                secondary = secondary + ", " +  part2;
+                                secondary = secondary + "<span id='CS_"+id+"_"+part2+"'>,</span><span id='S_"+id+"_"+part2+"'>" +  part2+"</span>";
                             }
 
                         }
@@ -214,9 +214,6 @@
     });
     
     function deleteLevel(subjectId, branchId, levelId){
-        console.log(subjectId);
-        console.log(levelId);
-        console.log(branchId);
         $("#confirm").prop('onclick', null).off('click');
         $("#confirm").click(function () {
             deleteLevelQueryAjax(subjectId,levelId, branchId);
@@ -225,6 +222,7 @@
     
     function deleteLevelQueryAjax(subject_id,level_id, branch_id){
         $("#level_delete_confirmation").modal('hide');
+        $("#lvl_wrapper_"+level_id).remove();
         $.ajax({
             type: 'POST',
             url: 'DeleteLevelServlet',
@@ -236,7 +234,27 @@
                     $("#lvl_wrapper_"+level_id).remove();
                     
                     html = '<div class="alert alert-success col-md-12"><strong>Success!</strong> Deleted Level from Subject successfully</div>';
-                    setTimeout(function(){location.href="DisplaySubjects.jsp"} , 1000);  
+                    if(level_id > 6){
+                        span_lvl_name = "S_"+subject_id+"_"+(level_id-6);
+                        if(level_id === 10){
+                            prev_span = $('#'+span_lvl_name).prev();
+                            prev_span.remove(); 
+                        }else{
+                            span_comma_name ="CS_"+subject_id+"_"+(level_id-5);
+                            $("#"+span_comma_name).remove();
+                        }
+                        $('#'+span_lvl_name).remove();
+                    }else{
+                        span_lvl_name = "P_"+subject_id+"_"+(level_id);
+                        if(level_id === 6){
+                            prev_span = $('#'+span_lvl_name).prev();
+                            prev_span.remove();
+                        }else{
+                            span_comma_name ="CP_"+subject_id+"_"+(level_id+1);
+                            $("#"+span_comma_name).remove();
+                        }
+                        $('#'+span_lvl_name).remove();
+                    }
                 } else {
                     html = '<div class="alert alert-danger col-md-12"><strong>Sorry!</strong> Something went wrong</div>';
                 }
@@ -287,7 +305,8 @@
                 } else {
                     html = '<div class="alert alert-danger col-md-12"><strong>Sorry!</strong> Something went wrong</div>';
                 }
-
+                
+                
                 $("#errorMsg").html(html);
                 $('#errorMsg').fadeIn().delay(1000).fadeOut();
             }
@@ -314,6 +333,8 @@
                 } else {
                     html = '<div class="alert alert-danger col-md-12"><strong>Sorry!</strong> Something went wrong</div>';
                 }
+                
+                
 
                 $("#errorMsg").html(html);
                 $('#errorMsg').fadeIn().delay(2000).fadeOut();
