@@ -1,4 +1,3 @@
-Note : Student Records will not be added if (student name,academic level,parent's mobile) is not entered. Either Student's valid mobile phone or Student's valid email is also required.,,,,,,,,,,,,,,,,
-Student NRIC,Student Name,Phone,Address,Birth Date (DD-MM-YYYY),Gender (F/M),Email,School,Academic Level,Parent Name,Relationship,Parent Nationality,Parent Company,Parent Designation,Parent Mobile,Parent Email,Registration fee ($),Outstanding Registration Fee ($),Student Status (Existing (E)/New (N))
-S1234567D,Anthony,97832115,-,14/1/88,M,xxx@gmail.com,school A,Secondary 1,Alan,Father,Singaporean,-,-,98765432,alan@gmail.com,20,0,E
-S1234567D,Anthony,97832115,-,14/1/88,M,xxx@gmail.com,School B,Secondary 1,Alan,Father,Singaporean,-,-,98765442,alan@gmail.com,20,0,E
+Note : Student Records will not be added if (student name,academic level,parent's mobile) is not entered. Either Student's valid mobile phone or Student's valid email is also required. Data will be added from line 3 onwards.,,,,,,,,,,,,,,,,
+Student NRIC,Student Name,Phone,Address,Birth Date (DD-MM-YYYY),Gender (F/M),Email,School,Academic Level,Stream,Parent Name,Relationship,Parent Nationality,Parent Company,Parent Designation,Parent Mobile,Parent Email,Registration fee ($),Outstanding Registration Fee ($),Student Status (Existing (E)/New (N))
+S1234567D,Anthony,97832115,-,14/1/88,M,xxx@gmail.com,school A,Secondary 1,Express,Alan,Father,Singaporean,-,-,98765432,alan@gmail.com,20,0,E

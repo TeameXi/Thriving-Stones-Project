@@ -56,7 +56,7 @@ public class UploadStudentServlet extends HttpServlet {
             String acad_level[] = request.getParameterValues("con_acadlevel[]");
             String passwords[] = request.getParameterValues("con_pwd[]");
             String school[] = request.getParameterValues("con_school[]");
-            
+            String stream[] = request.getParameterValues("con_streams[]");
             String parentNames[] = request.getParameterValues("con_parentName[]");
             String nationality[] = request.getParameterValues("con_nationality[]");
             String company[] = request.getParameterValues("con_company[]");
@@ -165,7 +165,7 @@ public class UploadStudentServlet extends HttpServlet {
                 
                 studentLists.add("('" + studNrics[i] + "','" + studNames[i].trim() + "'," + phone + ",'" + addresses[i] + "','" + birth_dates[i] + 
                         "','" + genders[i] + "','" + emails[i] + "','" + registrationFee[i] +  "','" + 
-                        outstandingRegistrationFee[i] +  "','" + level + "'," + branch_id + ",'" + school[i] +"')");
+                        outstandingRegistrationFee[i] +  "','" + level + "'," + branch_id + ",'" + school[i] + "','" + stream[i] +"')");
                 
                 
                 studentNameLists.add(studNames[i].trim());
@@ -372,15 +372,12 @@ public class UploadStudentServlet extends HttpServlet {
     }// </editor-fold>
 
     private String changeLevelString(String level){
-        if(level.trim().length() != 2){
-            return level;
-        }else{
-            if(level.charAt(0) == 'P' || level.charAt(0) == 'p'){
-                return "Primary " + level.charAt(1);
-            }else if(level.charAt(0) == 'S' || level.charAt(0) == 's'){
-                return "Secondary " + level.charAt(1);
-            }
+        if(level.charAt(0) == 'P' || level.charAt(0) == 'p'){
+            return "Primary " + level.charAt(level.length() -1);
+        }else if(level.charAt(0) == 'S' || level.charAt(0) == 's'){
+            return "Secondary " + level.charAt(level.length()-1);
         }
+        
         return "";
     }
 }
