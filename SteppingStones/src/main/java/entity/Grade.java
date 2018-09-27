@@ -76,8 +76,33 @@ public class Grade {
         this.CA2_school_base = CA2_school_base;
         this.SA2_school_top = SA2_school_top;
         this.SA2_school_base = SA2_school_base;
-        
        
+    }
+    
+    
+    // With Ration Grade
+    public Grade(String studentName,int studentId,int class_id,
+            int CA1_tuition_top,int CA1_tuition_base,double CA1_tuition_grade,
+            int SA1_tuition_top,int SA1_tuition_base,double SA1_tuition_grade,
+            int CA2_tuition_top,int CA2_tuition_base,double CA2_tuition_grade,
+            int SA2_tuition_top,int SA2_tuition_base,double SA2_tuition_grade,
+            int CA1_school_top,int CA1_school_base,double CA1_school_grade,
+            int SA1_school_top,int SA1_school_base,double SA1_school_grade,
+            int CA2_school_top,int CA2_school_base,double CA2_school_grade,
+            int SA2_school_top,int SA2_school_base,double SA2_school_grade){
+        this.studentName = studentName;
+        this.studentId = studentId;
+        this.class_id = class_id;
+        
+        this.CA1_tuition_top = CA1_tuition_top;this.CA1_tuition_base = CA1_tuition_base;this.CA1_tuition_grade = CA1_tuition_grade;
+        this.SA1_tuition_top = SA1_tuition_top;this.SA1_tuition_base = SA1_tuition_base;this.SA1_tuition_grade = SA1_tuition_grade;
+        this.CA2_tuition_top = CA2_tuition_top;this.CA2_tuition_base = CA2_tuition_base;this.CA2_tuition_grade = CA2_tuition_grade;
+        this.SA2_tuition_top = SA2_tuition_top;this.SA2_tuition_base = SA2_tuition_base;this.SA2_tuition_grade = SA2_tuition_grade;
+        
+        this.CA1_school_top = CA1_school_top;this.CA1_school_base = CA1_school_base;this.CA1_school_grade = CA1_school_grade;
+        this.SA1_school_top = SA1_school_top;this.SA1_school_base = SA1_school_base;this.SA1_school_grade = SA1_school_grade;
+        this.CA2_school_top = CA2_school_top;this.CA2_school_base = CA2_school_base;this.CA2_school_grade = CA2_school_grade;
+        this.SA2_school_top = SA2_school_top;this.SA2_school_base = SA2_school_base;this.SA2_school_grade = SA2_school_grade;
     }
 
     /**

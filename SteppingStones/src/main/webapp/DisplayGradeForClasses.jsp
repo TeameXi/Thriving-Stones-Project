@@ -43,6 +43,15 @@
         margin-left:10px;
         height:28px;
     }
+    
+    #improvementLbl{
+        color: salmon;
+    }
+    
+    .remarkContainer{
+        background-color: #fff;
+    }
+/*    #child_table tr:nth-child(even) {background: #FFF}*/
 
 
 </style>
@@ -151,53 +160,82 @@
 
             var tbody = '';
             $.each(data, function (i, d) {
-                CA1_0_arr = d.CA1_0.split("/");
-                SA1_0_arr = d.SA1_0.split("/");
-                CA2_0_arr = d.CA2_0.split("/");
-                SA2_0_arr = d.SA2_0.split("/");
+               
+                CA1_0_arr = d.CA1_0;
+                SA1_0_arr = d.SA1_0;
+                CA2_0_arr = d.CA2_0;
+                SA2_0_arr = d.SA2_0;
+                
+                CA1_1_arr = d.CA1_1;
+                SA1_1_arr = d.SA1_1;
+                CA2_1_arr = d.CA2_1;
+                SA2_1_arr = d.SA2_1;
+                
+                // SA1 after CA1
+                SA1_1_improvement_rate = d.SA1_1_improvement_rate+"%";
+                if(SA1_1_improvement_rate === "0%"){
+                    SA1_1_improvement_rate = "Nil";
+                }
+                SA1_0_improvement_rate = d.SA1_0_improvement_rate+"%";
+                if(SA1_0_improvement_rate === "0%"){
+                    SA1_0_improvement_rate = "Nil";
+                }
+                
+                // CA2 after SA1
+                CA2_1_improvement_rate = d.CA2_1_improvement_rate+"%";
+                if(CA2_1_improvement_rate === "0%"){
+                    CA2_1_improvement_rate = "Nil";
+                }
+                
+                CA2_0_improvement_rate = d.CA2_0_improvement_rate+"%";
+                if(CA2_0_improvement_rate === "0%"){
+                    CA2_0_improvement_rate = "Nil";
+                }
+                
+                SA2_1_improvement_rate = d.SA2_1_improvement_rate+"%";
+                if(SA2_1_improvement_rate === "0%"){
+                    SA2_1_improvement_rate = "Nil";
+                }
+                
+                SA2_0_improvement_rate = d.SA2_0_improvement_rate+"%";
+                if(SA2_0_improvement_rate === "0%"){
+                    SA2_0_improvement_rate = "Nil";
+                }
+                
 
-                CA1_0_top = parseInt(CA1_0_arr[0]);
-                CA1_0_base = parseInt(CA1_0_arr[1]);
-
-                SA1_0_top = parseInt(SA1_0_arr[0]);
-                SA1_0_base = parseInt(SA1_0_arr[1]);
-
-                CA2_0_top = parseInt(CA2_0_arr[0]);
-                CA2_0_base = parseInt(CA2_0_arr[1]);
-
-                SA2_0_top = parseInt(SA2_0_arr[0]);
-                SA2_0_base = parseInt(SA2_0_arr[1]);
-
-                CA1_1_arr = d.CA1_1.split("/");
-                SA1_1_arr = d.SA1_1.split("/");
-                CA2_1_arr = d.CA2_1.split("/");
-                SA2_1_arr = d.SA2_1.split("/");
-
-                CA1_1_top = parseInt(CA1_1_arr[0]);
-                CA1_1_base = parseInt(CA1_1_arr[1]);
-
-                SA1_1_top = parseInt(SA1_1_arr[0]);
-                SA1_1_base = parseInt(SA1_1_arr[1]);
-
-                CA2_1_top = parseInt(CA2_1_arr[0]);
-                CA2_1_base = parseInt(CA2_1_arr[1]);
-
-                SA2_1_top = parseInt(SA2_1_arr[0]);
-                SA2_1_base = parseInt(SA2_1_arr[1]);
-
-                tbody += '<tr><th scope="row"><input type="hidden" name="studentId[]" value="' + d.studentId + '" />' + d.studentName + '</th>' +
-                        '<td><input class="form-control numberField" type="number" name="CA1_1_top[]" value="' + CA1_1_top + '"></input><hr/><input class="form-control numberField" type="number" name="CA1_1_base[]" value="' + CA1_1_base + '" min="1"></input></td>' +
-                        '<td><input class="form-control numberField" type="number" name="CA1_0_top[]" value="' + CA1_0_top + '"></input><hr/><input class="form-control numberField" type="number" name="CA1_0_base[]" value="' + CA1_0_base + '" min="1"></input></td>' +
-                        '<td><input class="form-control numberField" type="number" name="SA1_1_top[]" value="' + SA1_1_top + '"></input><hr/><input class="form-control numberField" type="number" name="SA1_1_base[]" value="' + SA1_1_base + '" min="1"></input></td>' +
-                        '<td><input class="form-control numberField" type="number" name="SA1_0_top[]" value="' + SA1_0_top + '"></input><hr/><input class="form-control numberField" type="number" name="SA1_0_base[]" value="' + SA1_0_base + '" min="1"></input></td>' +
-                        '<td><input class="form-control numberField" type="number" name="CA2_1_top[]" value="' + CA2_1_top + '"></input><hr/><input class="form-control numberField" type="number" name="CA2_1_base[]" value="' + CA2_1_base + '" min="1"></input></td>' +
-                        '<td><input class="form-control numberField" type="number" name="CA2_0_top[]" value="' + CA2_0_top + '"></input><hr/><input class="form-control numberField" type="number" name="CA2_0_base[]" value="' + CA2_0_base + '" min="1"></input></td>' +
-                        '<td><input class="form-control numberField" type="number" name="SA2_1_top[]" value="' + SA2_1_top + '"></input><hr/><input class="form-control numberField" type="number" name="SA2_1_base[]" value="' + SA2_1_base + '" min="1"></input></td>' +
-                        '<td><input class="form-control numberField" type="number" name="SA2_0_top[]" value="' + SA2_0_top + '"></input><hr/><input class="form-control numberField" type="number" name="SA2_0_base[]" value="' + SA2_0_base + '" min="1"></input></td>';
+                tbody += '<tr><th scope="row">' + d.studentName + '</th>' +
+                        '<td>' + CA1_1_arr+ '</td>' +
+                        '<td>' + CA1_0_arr + '</td>' +
+//                          '<td>' + CA1_1_arr+ '</td>' +
+//                        '<td>' + CA1_0_arr + '</td>' +
+//                          '<td>' + CA1_1_arr+ '</td>' +
+//                        '<td>' + CA1_0_arr + '</td>' +
+//                          '<td>' + CA1_1_arr+ '</td>' +
+//                        '<td>' + CA1_0_arr + '</td>';
+                        '<td>' + SA1_1_arr + '</td>' +
+                        '<td>' + SA1_0_arr + '</td>' +
+                        '<td>' + CA2_1_arr + '</td>' +
+                        '<td>' + CA2_0_arr + '</td>' +
+                        '<td>' + SA2_1_arr + '</td>' +
+                        '<td>' + SA2_0_arr + '</td>';
+                
+                tbody += '<tr class="remarkContainer"><th id="improvementLbl">% Improvement</th>'+
+                        '<td>'+"Nil"+'</td>'+
+                        '<td>'+"Nil"+'</td>'+
+                        '<td>'+SA1_1_improvement_rate +'</td>'+
+                        '<td>'+SA1_0_improvement_rate+'</td>'+
+                        '<td>'+CA2_1_improvement_rate+'</td>'+
+                        '<td>'+CA2_0_improvement_rate+'</td>'+
+                        '<td>'+SA2_1_improvement_rate+'</td>'+
+                        '<td>'+SA2_0_improvement_rate+'</td>'+
+                        '</tr>';
+                
+                tbody += '<tr class="remarkContainer"><td>Comment</td><td colspan="2">-</td><td colspan="2"></td><td colspan="2"></td><td colspan="2"></td></tr>';
+      
 
             });
 
-            htmlTable += '<form class="dynamicTable"><table class="table table-bordered" style="background-color:#e7e7e7">' + thead + tbody + '</table><input type="button"  id="UpdateGradeBtn" class="btn btn-default" value="Update Changes"></input></form>';
+            htmlTable += '<form class="dynamicTable"><table id="child_table" class="table table-bordered" style="background-color:#e7e7e7">' + thead + tbody + '</table></form>';
 
             return htmlTable;
         }
@@ -208,7 +246,7 @@
         function format(callback, data) {
 
             $.ajax({
-                url: 'RetrieveStudentsWithGradesForSpecificClass',
+                url: 'RetrieveStudentsWithGradesForSpecificClassForDisplay',
                 data: {class_id: data["ID"]},
                 dataType: "json",
                 complete: function (response) {

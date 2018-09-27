@@ -169,5 +169,51 @@ public class StudentGradeDAO {
         }
         return studentList;
     }
+      
+    public static ArrayList<Grade> listGradesFromSpecificClassIncludingRatio(int classID){
+        ArrayList<Grade> studentList = new ArrayList<>();
+        try (Connection conn = ConnectionManager.getConnection();) {
+            String sql = "select s.student_id,student_name from student s, class_student_rel cs where s.student_id = cs.student_id and class_id = ?;";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, classID);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){
+                int studentId = rs.getInt(1);
+                String studentName = rs.getString("student_name");
+                
+                String select_grade_sql = "select CA1_tuition_top,CA1_tuition_base,CA1_tuition_grade,SA1_tuition_top,SA1_tuition_base,SA1_tuition_grade,CA2_tuition_top,CA2_tuition_base,CA2_tuition_grade,SA2_tuition_top,SA2_tuition_base,SA2_tuition_grade,CA1_school_top,CA1_school_base,CA1_school_grade,SA1_school_top,SA1_school_base,SA1_school_grade,CA2_school_top,CA2_school_base,CA2_school_grade,SA2_school_top,SA2_school_base,SA2_school_grade from grade where student_id = ? and class_id = ?";
+                PreparedStatement stmt2 = conn.prepareStatement(select_grade_sql);
+                stmt2.setInt(1, studentId);
+                stmt2.setInt(2,classID);
+                
+                int CA1_tuition_top = 0;int CA1_tuition_base = 100;double CA1_tuition_grade = 0;
+                int SA1_tuition_top = 0;int SA1_tuition_base = 100;double SA1_tuition_grade = 0;
+                int CA2_tuition_top = 0;int CA2_tuition_base = 100;double CA2_tuition_grade = 0;
+                int SA2_tuition_top = 0;int SA2_tuition_base = 100;double SA2_tuition_grade = 0;
+                int CA1_school_top = 0;int CA1_school_base = 100;double CA1_school_grade = 0;
+                int SA1_school_top = 0;int SA1_school_base = 100;double SA1_school_grade = 0;
+                int CA2_school_top = 0;int CA2_school_base = 100;double CA2_school_grade = 0;
+                int SA2_school_top = 0;int SA2_school_base = 100;double SA2_school_grade = 0;
+                ResultSet rs2 = stmt2.executeQuery();
+
+                if(rs2.next()){
+                    CA1_tuition_top = rs2.getInt("CA1_tuition_top");CA1_tuition_base=rs2.getInt("CA1_tuition_base");CA1_tuition_grade = rs2.getDouble("CA1_tuition_grade");
+                    SA1_tuition_top = rs2.getInt("SA1_tuition_top");SA1_tuition_base=rs2.getInt("SA1_tuition_base");SA1_tuition_grade = rs2.getDouble("SA1_tuition_grade");
+                    CA2_tuition_top = rs2.getInt("CA2_tuition_top");CA2_tuition_base=rs2.getInt("CA2_tuition_base");CA2_tuition_grade = rs2.getDouble("CA2_tuition_grade");
+                    SA2_tuition_top = rs2.getInt("SA2_tuition_top");SA2_tuition_base=rs2.getInt("SA2_tuition_base");SA2_tuition_grade = rs2.getDouble("SA2_tuition_grade");
+                    CA1_school_top =  rs2.getInt("CA1_school_top");CA1_school_base = rs2.getInt("CA1_school_base");CA1_school_grade = rs2.getDouble("CA1_school_grade");
+                    SA1_school_top =  rs2.getInt("SA1_school_top");SA1_school_base = rs2.getInt("SA1_school_base");SA1_school_grade = rs2.getDouble("SA1_school_grade");
+                    CA2_school_top =  rs2.getInt("CA2_school_top");CA2_school_base = rs2.getInt("CA2_school_base");CA2_school_grade = rs2.getDouble("CA2_school_grade");
+                    SA2_school_top =  rs2.getInt("SA2_school_top");SA2_school_base = rs2.getInt("SA2_school_base");SA2_school_grade = rs2.getDouble("SA2_school_grade");
+                }
+                
+                Grade g = new Grade(studentName,studentId,classID,CA1_tuition_top,CA1_tuition_base,CA1_tuition_grade,SA1_tuition_top,SA1_tuition_base,SA1_tuition_grade,CA2_tuition_top,CA2_tuition_base,CA2_tuition_grade,SA2_tuition_top,SA2_tuition_base,SA2_tuition_grade,CA1_school_top,CA1_school_base,CA1_school_grade,SA1_school_top,SA1_school_base,SA1_school_grade,CA2_school_top,CA2_school_base,CA2_school_grade,SA2_school_top,SA2_school_base,SA2_school_grade);
+                studentList.add(g);
+            } 
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return studentList;
+    }
 
 }
