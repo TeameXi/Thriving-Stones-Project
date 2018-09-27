@@ -104,6 +104,8 @@ public class AdminMarkStudentAttendanceServlet extends HttpServlet {
                     
                     if(attendance.retrieveStudentAttendances(studentID, l.getLessonid())){
                         obj.put("attended", "Present");
+                    }else if(attendance.retrieveStudentAttendanceAbsent(studentID, l.getLessonid())){
+                        obj.put("attended", "Absent");
                     }
                     
                     array.put(obj);
@@ -118,6 +120,19 @@ public class AdminMarkStudentAttendanceServlet extends HttpServlet {
                 
                 AttendanceDAO attendance = new AttendanceDAO();
                 boolean status = attendance.updateStudentAttendance(studentID, lessonID, classID, 0, true);
+                String percentage = attendance.retrieveNumberOfStudentAttendances(studentID, classID) + "%";
+                
+                JSONObject toReturn = new JSONObject().put("data", status);
+                toReturn.put("attendance", percentage);
+                String json = toReturn.toString();
+                out.println(json);
+            }else if(action.equals("markAbsent")){
+                int classID = Integer.parseInt(request.getParameter("classID"));
+                int studentID = Integer.parseInt(request.getParameter("studentID"));
+                int lessonID = Integer.parseInt(request.getParameter("lessonID"));
+                
+                AttendanceDAO attendance = new AttendanceDAO();
+                boolean status = attendance.updateStudentAttendance(studentID, lessonID, classID, 0, false);
                 String percentage = attendance.retrieveNumberOfStudentAttendances(studentID, classID) + "%";
                 
                 JSONObject toReturn = new JSONObject().put("data", status);
@@ -160,6 +175,8 @@ public class AdminMarkStudentAttendanceServlet extends HttpServlet {
                     
                     if(attendance.retrieveStudentAttendances(s.getStudentID(), l.getLessonid())){
                         obj.put("attended", "Present");
+                    }else if(attendance.retrieveStudentAttendanceAbsent(s.getStudentID(), l.getLessonid())){
+                        obj.put("attended", "Absent");
                     }
                     
                     array.put(obj);
@@ -175,6 +192,20 @@ public class AdminMarkStudentAttendanceServlet extends HttpServlet {
                 
                 AttendanceDAO attendance = new AttendanceDAO();
                 boolean status = attendance.updateStudentAttendance(studentID, lessonID, classID, 0, true);
+                int attendanceNum = attendance.retrieveNumberOfStudentsAttended(lessonID);
+                
+                JSONObject toReturn = new JSONObject().put("data", status);
+                toReturn.put("attendance", attendanceNum);
+                String json = toReturn.toString();
+                out.println(json);
+            }else if(action.equals("markLessonModalAbsent")){
+                int classID = Integer.parseInt(request.getParameter("classID"));
+                int studentID = Integer.parseInt(request.getParameter("studentID"));
+                //int tutorID = Integer.parseInt(request.getParameter("tutorID"));
+                int lessonID = Integer.parseInt(request.getParameter("lessonID"));
+                
+                AttendanceDAO attendance = new AttendanceDAO();
+                boolean status = attendance.updateStudentAttendance(studentID, lessonID, classID, 0, false);
                 int attendanceNum = attendance.retrieveNumberOfStudentsAttended(lessonID);
                 
                 JSONObject toReturn = new JSONObject().put("data", status);
