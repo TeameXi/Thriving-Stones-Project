@@ -84,6 +84,25 @@ public class AttendanceDAO {
         }
         return false;
     }
+    public boolean retrieveStudentAttendanceAbsent(int studentID, int lessonID){
+        String sql = "select student_attended from student_attendance where "
+                +"student_id = ? and lesson_id = ?";
+        
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, studentID);
+            stmt.setInt(2, lessonID);
+            
+            ResultSet rs = stmt.executeQuery();
+            
+            while(rs.next()){
+                return true;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(AttendanceDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
     
     public int retrieveNumberOfStudentsAttended(int lessonID){
         String sql = "select count(distinct student_id) from student_attendance where lesson_id = ?";

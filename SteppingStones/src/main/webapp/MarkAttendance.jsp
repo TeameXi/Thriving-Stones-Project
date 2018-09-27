@@ -233,7 +233,7 @@
                                     "targets": 2,
                                     "data": null,
                                     "orderable": false,
-                                    "defaultContent": '<button class="btn btn-default">Present</button>',
+                                    "defaultContent": '<button id="_present" class="btn btn-default _present">Present</button> <button id="_absent" class="btn btn-default _absent">Absent</button>',
                                     "className": 'student-text'
                                 }
                             ],
@@ -244,7 +244,7 @@
                             ],
                             "order": [[1, 'asc']]
                         });
-                        $('#lessonModal tbody').on('click', 'button', function () {
+                        $('#lessonModal tbody').on('click', '._present', function () {
                             studentID = lessonModal.row($(this).parents('tr')).data().id;
                             rowIndex = lessonModal.row($(this).parents('tr')).index();
                             columnIndex = lessonModal.cell($(this).closest('td')).index().column;
@@ -257,6 +257,24 @@
                                 success: function (data) {
                                     if (data) {
                                         lessonModal.cell(rowIndex, columnIndex).data('Present').draw();
+                                        lessonAttendanceTable.cell(lesson_row.index(), 2).data(data.attendance).draw();
+                                    }
+                                }
+                            });
+                        });
+                        $('#lessonModal tbody').on('click', '._absent', function () {
+                            studentID = lessonModal.row($(this).parents('tr')).data().id;
+                            rowIndex = lessonModal.row($(this).parents('tr')).index();
+                            columnIndex = lessonModal.cell($(this).closest('td')).index().column;
+                            action = 'markLessonModalAbsent';
+                            $.ajax({
+                                type: 'POST',
+                                url: 'MarkStudentAttendanceServlet',
+                                dataType: 'JSON',
+                                data: {classID: classID, lessonID: lessonID, studentID: studentID, tutorID: tutorID, action: action},
+                                success: function (data) {
+                                    if (data) {
+                                        lessonModal.cell(rowIndex, columnIndex).data('Absent').draw();
                                         lessonAttendanceTable.cell(lesson_row.index(), 2).data(data.attendance).draw();
                                     }
                                 }
@@ -359,7 +377,7 @@
                                 {
                                     "targets": 1,
                                     "data": null,
-                                    "defaultContent": '<button class="btn btn-default">Present</button>',
+                                    "defaultContent": '<button id="'+ studentID+'_present" class="btn btn-default">Present</button> <button id="'+ studentID+'_absent" class="btn btn-default">Absent</button>',
                                     "className": 'student-text'
                                 }
                             ],
@@ -368,7 +386,7 @@
                                 {"data": "attended"}
                             ]
                         });
-                        $('#' + studentID + ' tbody').on('click', 'button', function () {
+                        $('#' + studentID + ' tbody').on('click', '#' +studentID+'_present', function () {
                             lessonID = lessonTable.row($(this).parents('tr')).data().id;
                             rowIndex = lessonTable.row($(this).parents('tr')).index();
                             columnIndex = lessonTable.cell($(this).closest('td')).index().column;
@@ -381,6 +399,24 @@
                                 success: function (data) {
                                     if (data) {
                                         lessonTable.cell(rowIndex, columnIndex).data('Present').draw();
+                                        childTable.cell(childRow.index(), 3).data(data.attendance).draw();
+                                    }
+                                }
+                            });
+                        });
+                        $('#' + studentID + ' tbody').on('click', '#' +studentID+'_absent', function () {
+                            lessonID = lessonTable.row($(this).parents('tr')).data().id;
+                            rowIndex = lessonTable.row($(this).parents('tr')).index();
+                            columnIndex = lessonTable.cell($(this).closest('td')).index().column;
+                            action = 'markAbsent';
+                            $.ajax({
+                                type: 'POST',
+                                url: 'MarkStudentAttendanceServlet',
+                                dataType: 'JSON',
+                                data: {classID: classID, lessonID: lessonID, studentID: studentID, tutorId: tutorID, action: action},
+                                success: function (data) {
+                                    if (data) {
+                                        lessonTable.cell(rowIndex, columnIndex).data('Absent').draw();
                                         childTable.cell(childRow.index(), 3).data(data.attendance).draw();
                                     }
                                 }

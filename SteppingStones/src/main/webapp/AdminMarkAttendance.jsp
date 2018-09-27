@@ -1,15 +1,7 @@
 <%@include file="protect_branch_admin.jsp"%>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.dataTables.min.css">
-<script src='https://code.jquery.com/jquery-3.3.1.js'></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.css" rel="stylesheet">
-<script src='https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js'></script>
-<script src='https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js'></script>
-<script src='https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js'></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
 <%@include file="header.jsp"%>
 <%@include file="footer.jsp"%>
 <style type="text/css">
@@ -78,6 +70,16 @@
         </div>
     </div>       
 </div>
+<script src='https://code.jquery.com/jquery-3.3.1.js'></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.css" rel="stylesheet">
+<script src='https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js'></script>
+<script src='https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js'></script>
+<script src='https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js'></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
 <script type="text/javascript">
     function format(rowData, classID) {
         return '<table id=' + classID + ' class="table table-bordered" style="background-color: #dddde9; width: 100%;">'
@@ -235,7 +237,7 @@
                                     "targets": 2,
                                     "data": null,
                                     "orderable": false,
-                                    "defaultContent": '<button class="btn btn-default">Present</button>',
+                                    "defaultContent": '<button id="_present" class="btn btn-default _present">Present</button> <button id="_absent" class="btn btn-default _absent">Absent</button>',
                                     "className": 'student-text'
                                 }
                             ],
@@ -246,7 +248,7 @@
                             ],
                             "order": [[1, 'asc']]
                         });
-                        $('#lessonModal tbody').on('click', 'button', function () {
+                        $('#lessonModal tbody').on('click', '._present', function () {
                             studentID = lessonModal.row($(this).parents('tr')).data().id;
                             rowIndex = lessonModal.row($(this).parents('tr')).index();
                             columnIndex = lessonModal.cell($(this).closest('td')).index().column;
@@ -259,6 +261,24 @@
                                 success: function (data) {
                                     if (data) {
                                         lessonModal.cell(rowIndex, columnIndex).data('Present').draw();
+                                        lessonAttendanceTable.cell(lesson_row.index(), 2).data(data.attendance).draw();
+                                    }
+                                }
+                            });
+                        });
+                        $('#lessonModal tbody').on('click', '._absent', function () {
+                            studentID = lessonModal.row($(this).parents('tr')).data().id;
+                            rowIndex = lessonModal.row($(this).parents('tr')).index();
+                            columnIndex = lessonModal.cell($(this).closest('td')).index().column;
+                            action = 'markLessonModalAbsent';
+                            $.ajax({
+                                type: 'POST',
+                                url: 'AdminMarkStudentAttendanceServlet',
+                                dataType: 'JSON',
+                                data: {classID: classID, lessonID: lessonID, studentID: studentID, action: action},
+                                success: function (data) {
+                                    if (data) {
+                                        lessonModal.cell(rowIndex, columnIndex).data('Absent').draw();
                                         lessonAttendanceTable.cell(lesson_row.index(), 2).data(data.attendance).draw();
                                     }
                                 }
@@ -361,7 +381,7 @@
                                 {
                                     "targets": 1,
                                     "data": null,
-                                    "defaultContent": '<button class="btn btn-default">Present</button>',
+                                    "defaultContent": '<button id="'+ studentID+'_present" class="btn btn-default">Present</button> <button id="'+ studentID+'_absent" class="btn btn-default">Absent</button>',
                                     "className": 'student-text'
                                 }
                             ],
@@ -370,7 +390,7 @@
                                 {"data": "attended"}
                             ]
                         });
-                        $('#' + studentID + ' tbody').on('click', 'button', function () {
+                        $('#' + studentID + ' tbody').on('click', '#' +studentID+'_present', function () {
                             lessonID = lessonTable.row($(this).parents('tr')).data().id;
                             rowIndex = lessonTable.row($(this).parents('tr')).index();
                             columnIndex = lessonTable.cell($(this).closest('td')).index().column;
@@ -383,6 +403,24 @@
                                 success: function (data) {
                                     if (data) {
                                         lessonTable.cell(rowIndex, columnIndex).data('Present').draw();
+                                        childTable.cell(childRow.index(), 3).data(data.attendance).draw();
+                                    }
+                                }
+                            });
+                        });
+                        $('#' + studentID + ' tbody').on('click', '#' +studentID+'_absent', function () {
+                            lessonID = lessonTable.row($(this).parents('tr')).data().id;
+                            rowIndex = lessonTable.row($(this).parents('tr')).index();
+                            columnIndex = lessonTable.cell($(this).closest('td')).index().column;
+                            action = 'markAbsent';
+                            $.ajax({
+                                type: 'POST',
+                                url: 'AdminMarkStudentAttendanceServlet',
+                                dataType: 'JSON',
+                                data: {classID: classID, lessonID: lessonID, studentID: studentID, action: action},
+                                success: function (data) {
+                                    if (data) {
+                                        lessonTable.cell(rowIndex, columnIndex).data('Absent').draw();
                                         childTable.cell(childRow.index(), 3).data(data.attendance).draw();
                                     }
                                 }
