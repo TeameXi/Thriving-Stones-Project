@@ -308,7 +308,7 @@ public class AdminScheduleServlet extends HttpServlet {
 
                         ArrayList<Integer> reminders = new ArrayList<>();
                         ArrayList<Integer> premiumReminders = new ArrayList<>();
-                        System.out.println("reminder " + reminder);
+
                         if (reminder == 1) {
                             reminders.add(3);
                             reminders.add(7);
@@ -331,7 +331,7 @@ public class AdminScheduleServlet extends HttpServlet {
                                 premiumReminders.add(44);
                             }
                         }
-                        System.out.println(reminders.size() + " YASSSS");
+
                         int numLesson = 0;
                         ArrayList<Lesson> toBeAdded = new ArrayList<>();
 
@@ -344,7 +344,7 @@ public class AdminScheduleServlet extends HttpServlet {
                             if (!overlap) {
                                 if (type.equals("N")) {
                                     if (reminders.contains(numLesson)) {
-                                        System.out.println("HEREEEEEEE");
+
                                         toBeAdded.add(new Lesson(cls.getClassID(), tutorID, lessonStart, lessonEnd, numLesson));
                                     } else {
                                         toBeAdded.add(new Lesson(cls.getClassID(), tutorID, lessonStart, lessonEnd, 0));
@@ -373,7 +373,6 @@ public class AdminScheduleServlet extends HttpServlet {
                                 if (les.getReminderTerm() != 0 && les.getReminderStatus() != 0) {
                                     l.createLesson(les.getClassid(), tutorID, les.getStartDate(), les.getEndDate(), les.getReminderTerm(), les.getReminderStatus(), type);
                                 } else if (les.getReminderStatus() != 0) {
-                                    System.out.println(les.getReminderStatus() + " CORRECTTTT");
                                     l.createLesson(les.getClassid(), tutorID, les.getStartDate(), les.getEndDate(), les.getReminderStatus(), 0, type);
                                 } else if (les.getReminderTerm() != 0) {
                                     l.createLesson(les.getClassid(), tutorID, les.getStartDate(), les.getEndDate(), 0, les.getReminderTerm(), type);
@@ -415,8 +414,9 @@ public class AdminScheduleServlet extends HttpServlet {
 
                 boolean deleteClass = c.deleteClass(cls.getClassID());
                 boolean deleteLessons = l.deleteLessons(cls.getClassID());
+                boolean deleteRelations = c.deleteClassStudentRel(cls.getClassID());
 
-                if (deleteClass && deleteLessons) {
+                if (deleteClass && deleteLessons && deleteRelations) {
                     status = true;
                 }
 

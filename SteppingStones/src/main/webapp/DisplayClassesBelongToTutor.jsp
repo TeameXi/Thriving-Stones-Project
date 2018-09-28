@@ -5,7 +5,7 @@
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.dataTables.min.css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<%@include file="footer.jsp"%>
+<%@include file="header.jsp"%>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
 <script src='https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js'></script>
 <script src='https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js'></script>
@@ -13,7 +13,7 @@
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.css" rel="stylesheet">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-<%@include file="header.jsp"%>
+<%@include file="footer.jsp"%>
 
 <style type="text/css" media="screen">
     html, body{
@@ -226,9 +226,10 @@
                     });
                 });
 
-                $('#alter_date').on('click', function () {
+                $('#alter_date').on('click', function (e) {
+                    e.stopImmediatePropagation();
                     startDate = $('#datetimepicker').val();
-                    endDate = $('#datetimepicker').val();
+                    endDate = $('#datetimepicker1').val();
                     action = 'updateLessonDate';
 
                     $.ajax({
@@ -237,6 +238,7 @@
                         dataType: 'JSON',
                         data: {lessonID: id, action: action, startDate: startDate, endDate: endDate},
                         success: function (data) {
+                            alert(data.message);
                         }
                     });
                 });

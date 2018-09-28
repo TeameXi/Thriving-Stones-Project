@@ -29,7 +29,7 @@
                <div class="col-md-5">
                   <!-- Logo -->
                   <div class="logo">
-                    <a href="index.html"><img src="${pageContext.request.contextPath}/styling/img/logo_white.png"></img></a>
+                    <a href="Dashboard.jsp"><img src="${pageContext.request.contextPath}/styling/img/logo_white.png"></img></a>
                   </div>
                </div>
                <div class="col-md-5"></div>
@@ -190,7 +190,7 @@
                                 <!-- Sub menu -->
                                 <ul>
                                     <li><a href="${pageContext.request.contextPath}/CreateTuitionGrade.jsp">Add or Update Grades</a></li>
-                                    <li><a href="RetrieveUpdateStudentGrade.jsp">Retrieve Grades</a></li>
+                                    <li><a href="DisplayGradeForClasses.jsp">View Grades</a></li>
                                 </ul>
                             </li>
                     <%

@@ -74,19 +74,16 @@ public class TutorScheduleServlet extends HttpServlet {
                 Lesson lesson = LessonDAO.getLessonByID(lessonID);
                 JSONObject obj = new JSONObject();
                 obj.put("attendance", new AttendanceDAO().retrieveNumberOfStudentsAttended(lessonID));
-                System.out.println(new AttendanceDAO().retrieveNumberOfStudentsAttended(lessonID));
                 obj.put("id", lessonID);
-                obj.put("startDate", lesson.getStartDate());
-                obj.put("endDate", lesson.getEndDate());
+                obj.put("startDate", lesson.getStartDate().substring(0, lesson.getStartDate().length() - 2));
+                obj.put("endDate", lesson.getEndDate().substring(0, lesson.getEndDate().length() - 2));
                 obj.put("tutor", new TutorDAO().retrieveSpecificTutorById(lesson.getTutorid()).getName());
                 obj.put("classSize", new StudentClassDAO().retrieveNumberOfStudentByClass(lesson.getClassid()));
                 obj.put("className", new ClassDAO().getClassByID(lesson.getClassid()).getClassDay() + " " + new ClassDAO().getClassByID(lesson.getClassid()).getStartTime() + "-" + new ClassDAO().getClassByID(lesson.getClassid()).getEndTime());
-                
                 HashMap<String, String> map = new LessonDAO().retrieveUpdatedLessonDate(lessonID);
                 obj.put("changedStart", map.get("start"));
                 obj.put("changedEnd", map.get("end"));
                 
-                System.out.println(new LessonDAO().retrieveUpdatedLessonDate(lessonID) + " HALPPPPPPP");
                 String json = obj.toString();
                 out.println(json);
             }else if(action.equals("retrieveStudents")){
@@ -128,14 +125,40 @@ public class TutorScheduleServlet extends HttpServlet {
                 int lessonID = Integer.parseInt(request.getParameter("lessonID"));
                 String startDate = request.getParameter("startDate");
                 String endDate = request.getParameter("endDate");
+                LessonDAO l = new LessonDAO();
+                Lesson lesson = l.getLessonByID(lessonID);
                 
-                DateTimeFormatter pattern = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
-                DateTime startFormat = pattern.parseDateTime(startDate);
-                DateTime endFormat = pattern.parseDateTime(endDate);
+                JSONObject obj = new JSONObject();
                 
-                boolean status = new LessonDAO().updateLessonDateTutor(lessonID,pattern.print(startFormat), pattern.print(endFormat));
+                if(startDate == null || startDate.isEmpty()){
+                    obj.put("message", "Please enter a start date!");
+                }
                 
-                JSONObject obj = new JSONObject().put("data", status);
+                if(endDate == null || endDate.isEmpty()){
+                    obj.put("message", "Please enter an end date!");
+                }
+                
+                if(obj.length() == 0){
+                    DateTimeFormatter pattern = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+                    DateTime startFormat = pattern.parseDateTime(startDate);
+                    DateTime endFormat = pattern.parseDateTime(endDate);
+
+                    if(startFormat.isEqual(endFormat) || startFormat.isAfter(endFormat)){
+                        obj.put("message", "Please select a valid timing!");
+                    }
+                    
+                    if(obj.length() == 0){
+                        boolean overlap = l.retrieveOverlappingLessonsForTutor(lesson.getTutorid(), pattern.print(startFormat), pattern.print(endFormat), lesson.getClassid());
+
+                        if(!overlap){
+                            boolean status = l.updateLessonDateTutor(lessonID,pattern.print(startFormat), pattern.print(endFormat));
+                            obj.put("message", "Lesson successfully updated!");
+                        }else{
+                            obj.put("message", "You have another class at that timing!");
+                        }
+                    }
+                }
+                
                 String json = obj.toString();
                 out.println(json);
             }

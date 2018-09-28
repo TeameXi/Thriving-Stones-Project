@@ -625,4 +625,22 @@ public class ClassDAO {
         }
         return false;
     }
+    
+    public boolean deleteClassStudentRel(int classID){
+        String sql = "delete from class_student_rel where class_id = ?";
+        
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, classID);
+            
+            int rows = stmt.executeUpdate();
+            
+            if(rows > 0){
+                return true;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ClassDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
 }

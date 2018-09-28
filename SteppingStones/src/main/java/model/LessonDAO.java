@@ -420,8 +420,10 @@ public class LessonDAO {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                editedDates.put("start", rs.getString(1));
-                editedDates.put("end", rs.getString(2));
+                String start = rs.getString(1);
+                String end = rs.getString(2);
+                editedDates.put("start", start.substring(2,start.length()-2));
+                editedDates.put("end", end.substring(0, end.length()-2));
             }
         } catch (SQLException ex) {
             Logger.getLogger(LessonDAO.class.getName()).log(Level.SEVERE, null, ex);

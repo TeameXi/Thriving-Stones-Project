@@ -358,22 +358,21 @@
                                             $('#existingTutorWrapper').html(new_table);
                                         }
                                         
-//                                        $.ajax({
-//                                            url: 'CreateTutorHourlyRate',
-//                                            data: {pay_rate_arr: JSON.stringify(tutorPayArr)},
-//                                            dataType: "json",
-//                                            success: function (data) {
-//                                                if(data === 1){
-//                                                    html = '<div class="alert alert-success col-md-12"><strong>Success!</strong> Update grades successfully</div>';
-//                                                    c
-//                                                }else{
-//                                                    html = '<div class="alert alert-danger col-md-12"><strong>Sorry!</strong> Something went wrong</div>';   
-//                                                }
-//                                                $(".statusMsg").html(html);
-//                                                $('.statusMsg').fadeIn().delay(1000).fadeOut();
-//                                              
-//                                            }
-//                                        });
+                                        $.ajax({
+                                            url: 'CreateTutorHourlyRate',
+                                            data: {pay_rate_arr: JSON.stringify(tutorPayArr)},
+                                            dataType: "json",
+                                            success: function (data) {
+                                                if(data === 1){
+                                                    html = '<div class="alert alert-success col-md-12"><strong>Success!</strong> Update grades successfully</div>';
+                                                }else{
+                                                    html = '<div class="alert alert-danger col-md-12"><strong>Sorry!</strong> Something went wrong</div>';   
+                                                }
+                                                $(".statusMsg").html(html);
+                                                $('.statusMsg').fadeIn().delay(1000).fadeOut();
+                                                location.reload();
+                                            }
+                                        });
                                         
                                         
                                   });
