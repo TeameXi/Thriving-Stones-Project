@@ -17,12 +17,16 @@
     .student-text{
         text-align: center;
     }
-    
+
     .btn-primary.active {
         background: red !important;
     }
     .btn-primary[disabled]:hover {
         background: red !important;
+    }
+
+    .modal {
+        overflow-y:auto;
     }
 </style>
 <div class="col-md-10" id="btn">
@@ -107,123 +111,122 @@
             </div>
         </div>       
     </div>
+</div>
 
-    <div class="modal fade" id="editLesson" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <span class="pc_title centered">Edit Lesson</span>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body" style="margin-left: 10px;">
-                    <div id="error" role="alert"></div>
-                    <div class="row">
-                        <div class="form-inline">
-                            <label class = "form-control-label">Lesson Start Time :</label>
-                            <input type="text" class="form-control" id="datetimepicker" style="text-align: center; width: 30%; margin-left: 10px;">
-                            <script type="text/javascript">
-                                $('#datetimepicker').datetimepicker({
-                                    format: 'YYYY-MM-DD HH:mm:ss',
-                                    defaultDate: $('#datetimepicker').val()
-                                });
-                            </script>
-                        </div>
-                    </div><br/>
-                    <div class="row">
-                        <div class="form-inline">
-                            <label class = "form-control-label">Lesson End Time :</label>
-                            <input type="text" class="form-control" id="datetimepicker1" style="text-align: center; width: 30%; margin-left: 10px;">
-                            <script type="text/javascript">
-                                $('#datetimepicker1').datetimepicker({
-                                    format: 'YYYY-MM-DD HH:mm:ss',
-                                    defaultDate: $('#datetimepicker1').val()
-                                });
-                            </script>
-                        </div>
-                    </div><br/>
-                    <div class="row">
-                        <div class="form-inline">
-                            <label class = "form-control-label">Replacement Tutor :</label>
-                            <select class="form-control" id="replacementTutor" style="width: 40%; margin-left: 10px; text-align: center;">
-                            </select>
-                        </div>
+<div class="modal fade" id="editLesson" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="pc_title centered">Edit Lesson</span>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="margin-left: 10px;">
+                <div class="row">
+                    <div class="form-inline">
+                        <label class = "form-control-label">Lesson Start Time :</label>
+                        <input type="text" class="form-control" id="datetimepicker" style="text-align: center; width: 30%; margin-left: 10px;">
+                        <script type="text/javascript">
+                            $('#datetimepicker').datetimepicker({
+                                format: 'YYYY-MM-DD HH:mm:ss',
+                                defaultDate: $('#datetimepicker').val()
+                            });
+                        </script>
                     </div>
-                </div>  
-
-                <div class="modal-footer spaced-top-small centered">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                    <button id="save" class="btn btn-default">Save Changes</button>
-                </div>
-            </div>       
-        </div>
-    </div>
-
-    <div class="modal fade" id="editClass" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <span class="pc_title centered">Edit Class</span>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div id="err" role="alert"></div>
-                    <div class="row form-inline" style="margin-left: 10px;">
-                        <label class = "form-control-label">Start Timing :</label>
-                        <input type="text" class="form-control" id="start_time" style="text-align: center; width: 30%; margin-left: 10px;">
+                </div><br/>
+                <div class="row">
+                    <div class="form-inline">
+                        <label class = "form-control-label">Lesson End Time :</label>
+                        <input type="text" class="form-control" id="datetimepicker1" style="text-align: center; width: 30%; margin-left: 10px;">
                         <script type="text/javascript">
-                            $('#start_time').datetimepicker({
-                                format: 'HH:mm:ss',
-                                defaultDate: $('#start_time').val()
+                            $('#datetimepicker1').datetimepicker({
+                                format: 'YYYY-MM-DD HH:mm:ss',
+                                defaultDate: $('#datetimepicker1').val()
                             });
                         </script>
-                    </div><br/>
-                    <div class="row form-inline" style="margin-left: 10px;">
-                        <label class = "form-control-label">End Timing :</label>
-                        <input type="text" class="form-control" id="end_time" style="text-align: center; width: 30%; margin-left: 10px;">
-                        <script type="text/javascript">
-                            $('#end_time').datetimepicker({
-                                format: 'HH:mm:ss',
-                                defaultDate: $('#end_time').val()
-                            });
-                        </script>
-                    </div><br/>
-                    <div class="row form-inline" style="margin-left: 10px;">
-                        <label class = "form-control-label">Start Date :</label>
-                        <input type="text" class="form-control" id="start_date" style="text-align: center; width: 30%; margin-left: 10px;">
-                        <script type="text/javascript">
-                            $('#start_date').datetimepicker({
-                                format: 'YYYY-MM-DD',
-                                defaultDate: $('#start_date').val()
-                            });
-                        </script>
-                    </div><br/>
-                    <div class="row form-inline" style="margin-left: 10px;">
-                        <label class = "form-control-label">End Date :</label>
-                        <input type="text" class="form-control" id="end_date" style="text-align: center; width: 30%; margin-left: 10px;">
-                        <script type="text/javascript">
-                            $('#end_date').datetimepicker({
-                                format: 'YYYY-MM-DD',
-                                defaultDate: $('#end_date').val()
-                            });
-                        </script>
-                    </div><br/>
-                    <div class="row form-inline" style="margin-left: 10px;">
+                    </div>
+                </div><br/>
+                <div class="row">
+                    <div class="form-inline">
                         <label class = "form-control-label">Replacement Tutor :</label>
-                        <select class="form-control" id="replacementClassTutor" style="width: 40%; margin-left: 10px; text-align: center;">
+                        <select class="form-control" id="replacementTutor" style="width: 40%; margin-left: 10px; text-align: center;">
                         </select>
                     </div>
-                </div>  
-
-                <div class="modal-footer spaced-top-small centered">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                    <button id="saveClass" class="btn btn-default">Save Changes</button>
                 </div>
-            </div>       
-        </div>
+            </div>  
+
+            <div class="modal-footer spaced-top-small centered">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button id="save" class="btn btn-default">Save Changes</button>
+            </div>
+        </div>       
+    </div>
+</div>
+
+<div class="modal fade" id="editClass" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="pc_title centered">Edit Class</span>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="err" role="alert"></div>
+                <div class="row form-inline" style="margin-left: 10px;">
+                    <label class = "form-control-label">Start Timing :</label>
+                    <input type="text" class="form-control" id="start_time" style="text-align: center; width: 30%; margin-left: 10px;">
+                    <script type="text/javascript">
+                        $('#start_time').datetimepicker({
+                            format: 'HH:mm:ss',
+                            defaultDate: $('#start_time').val()
+                        });
+                    </script>
+                </div><br/>
+                <div class="row form-inline" style="margin-left: 10px;">
+                    <label class = "form-control-label">End Timing :</label>
+                    <input type="text" class="form-control" id="end_time" style="text-align: center; width: 30%; margin-left: 10px;">
+                    <script type="text/javascript">
+                        $('#end_time').datetimepicker({
+                            format: 'HH:mm:ss',
+                            defaultDate: $('#end_time').val()
+                        });
+                    </script>
+                </div><br/>
+                <div class="row form-inline" style="margin-left: 10px;">
+                    <label class = "form-control-label">Start Date :</label>
+                    <input type="text" class="form-control" id="start_date" style="text-align: center; width: 30%; margin-left: 10px;">
+                    <script type="text/javascript">
+                        $('#start_date').datetimepicker({
+                            format: 'YYYY-MM-DD',
+                            defaultDate: $('#start_date').val()
+                        });
+                    </script>
+                </div><br/>
+                <div class="row form-inline" style="margin-left: 10px;">
+                    <label class = "form-control-label">End Date :</label>
+                    <input type="text" class="form-control" id="end_date" style="text-align: center; width: 30%; margin-left: 10px;">
+                    <script type="text/javascript">
+                        $('#end_date').datetimepicker({
+                            format: 'YYYY-MM-DD',
+                            defaultDate: $('#end_date').val()
+                        });
+                    </script>
+                </div><br/>
+                <div class="row form-inline" style="margin-left: 10px;">
+                    <label class = "form-control-label">Replacement Tutor :</label>
+                    <select class="form-control" id="replacementClassTutor" style="width: 40%; margin-left: 10px; text-align: center;">
+                    </select>
+                </div>
+            </div>  
+
+            <div class="modal-footer spaced-top-small centered">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button id="saveClass" class="btn btn-default">Save Changes</button>
+            </div>
+        </div>       
     </div>
 </div>
 
@@ -237,7 +240,6 @@
                 </button>
             </div>
             <div class="modal-body" style="margin-left: 20px;">
-                <div id="classErr" role="alert"></div>
                 <div class="row">
                     <div class="form-inline">
                         <label class = "form-control-label">Start Timing :</label>
@@ -343,6 +345,23 @@
         </div>       
     </div>
 </div>
+<div class="modal fade" id="error" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="pc_title centered">Oopz! Something went wrong!</span>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="errorBody">
+            </div>  
+            <div class="modal-footer spaced-top-small centered">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>       
+    </div>
+</div>
 <%@include file="footer.jsp"%>
 <script>
     function refreshSchedule(levelID) {
@@ -388,7 +407,7 @@
         scheduler.config.prevent_cache = true;
         scheduler.config.xml_date = '%Y-%m-%d %H:%i:%s';
         scheduler.init('scheduler_here', new Date(), "month");
-        
+
         var formatFunc = scheduler.date.date_to_str("%Y-%m-%d %H:%i:%s");
 
         $.ajax({
@@ -403,9 +422,9 @@
 
         scheduler.attachEvent("onClick", function (id, e) {
             lessonID = id;
-            $("#editOptions").on('shown.bs.modal', function(){
+            $("#editOptions").on('shown.bs.modal', function () {
                 action = 'editOptions';
-                
+
                 $.ajax({
                     type: 'POST',
                     url: 'AdminScheduleServlet',
@@ -421,14 +440,22 @@
             $("#editOptions").modal('show');
         });
 
+        $("#classCreation").on('hidden.bs.modal', function () {
+            $(this).removeData('bs.modal');
+        });
+        
+
         scheduler.attachEvent("onEmptyClick", function (date, e) {
             selectedDate = formatFunc(date).split(" ")[0];
             startTime = '10:00:00';
             endTime = '11:30:00';
-           
-            $("#classCreation").on('shown.bs.modal', function () {
+
+            $("#classCreation").one('shown.bs.modal', function () {
                 action = 'retrieveOptions';
-                
+
+                $('#recurring').prop('checked', false);
+                $('#reminder').prop('checked', false);
+
                 $.ajax({
                     type: 'POST',
                     url: 'AdminScheduleServlet',
@@ -437,20 +464,22 @@
                     success: function (data) {
                         $("#create_start_date").val(selectedDate);
                         $("#create_end_date").val(selectedDate);
-                        
+
                         $("#create_start_time").val(startTime);
                         $("#create_end_time").val(endTime);
-                        
+
+                        $("#level").empty();
                         for (var i = 0; i < data.level.length; i++) {
                             $("#level").append('<option value="' + data.level[i].id + '">' + data.level[i].name + '</option>');
                         }
 
+                        $("#assign_tutor").empty();
                         for (var i = 0; i < data.tutor.length; i++) {
                             $("#assign_tutor").append('<option value="' + data.tutor[i].id + '">' + data.tutor[i].name + '</option>');
                         }
-                        
+
                         $("#subject").empty();
-                        
+
                         for (var i = 0; i < data.subject.length; i++) {
                             $("#subject").append('<option value="' + data.subject[i].id + '">' + data.subject[i].name + '</option>');
                         }
@@ -466,7 +495,7 @@
                         dataType: 'JSON',
                         data: {levelID: levelID, action: action},
                         success: function (data) {
-                            $("#subject").empty();  
+                            $("#subject").empty();
                             for (var i = 0; i < data.subject.length; i++) {
                                 $("#subject").append('<option value="' + data.subject[i].id + '">' + data.subject[i].name + '</option>');
                             }
@@ -475,7 +504,6 @@
                 });
 
                 $('#createClass').on('click', function (e) {
-                    e.preventDefault();
                     holidays = [];
                     index = 0;
                     $.each($('.holidays'), function () {
@@ -484,6 +512,8 @@
                         index++;
                     });
                     
+                    e.stopImmediatePropagation();
+
                     startDate = $("#create_start_date").val();
                     endDate = $("#create_end_date").val();
                     startTime = $("#create_start_time").val();
@@ -514,16 +544,38 @@
                                         scheduler.parse(data.data, "json");
                                     }
                                 });
+
                                 $("#classCreation").modal('hide');
 
                             } else {
-                                $('#classErr').addClass("alert alert-danger");
-                                $('#classErr').text("Oops! Something went wrong!")
-                                $("#classErr").fadeTo(2000, 0).slideUp(2000, function () {
-                                    $(this).remove();
-                                });
-                            }
+                                $('#error').on('shown.bs.modal', function () {
+                                    $('#errorBody').empty();
+                                    if (data.hasOwnProperty('start_time_error')) {
+                                        $('#errorBody').append('<div style="margin-bottom: 10px;font-size: 15px; text-align:center; color:red;"><span class="glyphicon glyphicon-remove"></span><span class="pc_title centered">  ' + data.start_time_error + '</span></div>');
+                                    }
 
+                                    if (data.hasOwnProperty('end_time_error')) {
+                                        $('#errorBody').append('<div style="margin-bottom: 10px; font-size: 15px; text-align:center; color:red;"><span class="glyphicon glyphicon-remove"></span><span class="pc_title centered">  ' + data.end_time_error + '</span></div>');
+                                    } else if (data.hasOwnProperty('invalid_timing')) {
+                                        $('#errorBody').append('<div style="margin-bottom: 10px; font-size: 15px; text-align:center; color:red;"><span class="glyphicon glyphicon-remove"></span><span class="pc_title centered">  ' + data.invalid_timing + '</span></div>');
+                                    }
+
+                                    if (data.hasOwnProperty('start_date_error')) {
+                                        $('#errorBody').append('<div style="margin-bottom: 10px;font-size: 15px; text-align:center; color:red;"><span class="glyphicon glyphicon-remove"></span><span class="pc_title centered">  ' + data.start_date_error + '</span></div>');
+                                    }
+
+                                    if (data.hasOwnProperty('end_date_error')) {
+                                        $('#errorBody').append('<div style="margin-bottom: 10px; font-size: 15px; text-align:center; color:red;"><span class="glyphicon glyphicon-remove"></span><span class="pc_title centered">  ' + data.end_date_error + '</span></div>');
+                                    } else if (data.hasOwnProperty('invalid_date')) {
+                                        $('#errorBody').append('<div style="margin-bottom: 10px; font-size: 15px; text-align:center; color:red;"><span class="glyphicon glyphicon-remove"></span><span class="pc_title centered">  ' + data.invalid_date + '</span></div>');
+                                    }
+
+                                    if (data.hasOwnProperty('overlap')) {
+                                        $('#errorBody').append('<div style="margin-bottom: 10px; font-size: 15px; text-align:center; color:red;"><span class="glyphicon glyphicon-remove"></span><span class="pc_title centered">  ' + data.overlap + '</span></div>');
+                                    }
+                                });
+                                $('#error').modal('show');
+                            }
                         }
                     });
                 });
@@ -532,7 +584,7 @@
             $("#classCreation").modal('show');
         });
 
-        $("#editOccurrence").on('click', function (id, e) {
+        $("#editOccurrence").off('click').on('click', function (id, e) {
             $('#editLesson').on('shown.bs.modal', function () {
                 action = 'retrieveLesson';
 
@@ -545,6 +597,7 @@
                         $("#datetimepicker").val(data.start);
                         $("#datetimepicker1").val(data.end);
                         tutor = data.tutor;
+                        $("#replacementTutor").empty();
                         for (var i = 0; i < data.tutors.length; i++) {
                             if (data.tutors[i].id === tutor) {
                                 $("#replacementTutor").append("<option value='" + data.tutors[i].id + "' selected>" + data.tutors[i].name + "</option>");
@@ -555,11 +608,13 @@
                     }
                 });
 
-                $('#save').on('click', function () {
+                $('#save').on('click', function (e) {
                     start = $('#datetimepicker').val();
                     end = $('#datetimepicker1').val();
                     tutor = $('#replacementTutor').val();
                     action = 'updateLesson';
+                    
+                    e.stopImmediatePropagation();
 
                     $.ajax({
                         type: 'POST',
@@ -582,11 +637,23 @@
                                 $("#editLesson").modal('hide');
 
                             } else {
-                                $('#error').addClass("alert alert-danger");
-                                $('#error').text("Oops! Something went wrong!")
-                                $("#error").fadeTo(2000, 0).slideUp(2000, function () {
-                                    $(this).remove();
+                                $('#error').on('shown.bs.modal', function () {
+                                    $('#errorBody').empty();
+                                    if (data.hasOwnProperty('start')) {
+                                        $('#errorBody').append('<div style="margin-bottom: 10px;font-size: 15px; text-align:center; color:red;"><span class="glyphicon glyphicon-remove"></span><span class="pc_title centered">  ' + data.start + '</span></div>');
+                                    }
+
+                                    if (data.hasOwnProperty('end')) {
+                                        $('#errorBody').append('<div style="margin-bottom: 10px; font-size: 15px; text-align:center; color:red;"><span class="glyphicon glyphicon-remove"></span><span class="pc_title centered">  ' + data.end + '</span></div>');
+                                    } else if (data.hasOwnProperty('invalid_timing')) {
+                                        $('#errorBody').append('<div style="margin-bottom: 10px; font-size: 15px; text-align:center; color:red;"><span class="glyphicon glyphicon-remove"></span><span class="pc_title centered">  ' + data.invalid_timing + '</span></div>');
+                                    }
+
+                                    if (data.hasOwnProperty('invalid_tutor')) {
+                                        $('#errorBody').append('<div style="margin-bottom: 10px; font-size: 15px; text-align:center; color:red;"><span class="glyphicon glyphicon-remove"></span><span class="pc_title centered">  ' + data.invalid_tutor + '</span></div>');
+                                    }
                                 });
+                                $('#error').modal('show');
                             }
 
                         }
@@ -611,6 +678,7 @@
                         $("#start_time").val(data.startTime);
                         $("#end_time").val(data.end);
                         tutor = data.tutor;
+                        $("#replacementClassTutor").empty();
                         for (var i = 0; i < data.tutors.length; i++) {
                             if (data.tutors[i].id === tutor) {
                                 $("#replacementClassTutor").append("<option value='" + data.tutors[i].id + "' selected>" + data.tutors[i].name + "</option>");
@@ -620,15 +688,17 @@
                         }
                     }
                 });
-
-                $('#saveClass').on('click', function () {
+                
+                $('#saveClass').on('click', function (e) {
                     startTime = $('#start_time').val();
                     endTime = $('#end_time').val();
                     startDate = $('#start_date').val();
                     endDate = $('#end_date').val();
                     tutor = $('#replacementClassTutor').val();
                     action = 'updateClass';
-
+                    
+                    e.stopImmediatePropagation();
+                    
                     $.ajax({
                         type: 'POST',
                         url: 'AdminScheduleServlet',
@@ -650,11 +720,33 @@
                                 $("#editClass").modal('hide');
 
                             } else {
-                                $('#err').addClass("alert alert-danger");
-                                $('#err').text("Oops! Something went wrong!");
-                                $("#err").fadeTo(2000, 0).slideUp(2000, function () {
-                                    $(this).remove();
+                                $('#error').on('shown.bs.modal', function () {
+                                    $('#errorBody').empty();
+                                    if (data.hasOwnProperty('start_time_error')) {
+                                        $('#errorBody').append('<div style="margin-bottom: 10px;font-size: 15px; text-align:center; color:red;"><span class="glyphicon glyphicon-remove"></span><span class="pc_title centered">  ' + data.start_time_error + '</span></div>');
+                                    }
+
+                                    if (data.hasOwnProperty('end_time_error')) {
+                                        $('#errorBody').append('<div style="margin-bottom: 10px; font-size: 15px; text-align:center; color:red;"><span class="glyphicon glyphicon-remove"></span><span class="pc_title centered">  ' + data.end_time_error + '</span></div>');
+                                    } else if (data.hasOwnProperty('invalid_timing')) {
+                                        $('#errorBody').append('<div style="margin-bottom: 10px; font-size: 15px; text-align:center; color:red;"><span class="glyphicon glyphicon-remove"></span><span class="pc_title centered">  ' + data.invalid_timing + '</span></div>');
+                                    }
+                                    
+                                    if (data.hasOwnProperty('start_date_error')) {
+                                        $('#errorBody').append('<div style="margin-bottom: 10px;font-size: 15px; text-align:center; color:red;"><span class="glyphicon glyphicon-remove"></span><span class="pc_title centered">  ' + data.start_date_error + '</span></div>');
+                                    }
+
+                                    if (data.hasOwnProperty('end_date_error')) {
+                                        $('#errorBody').append('<div style="margin-bottom: 10px; font-size: 15px; text-align:center; color:red;"><span class="glyphicon glyphicon-remove"></span><span class="pc_title centered">  ' + data.end_date_error + '</span></div>');
+                                    } else if (data.hasOwnProperty('invalid_date')) {
+                                        $('#errorBody').append('<div style="margin-bottom: 10px; font-size: 15px; text-align:center; color:red;"><span class="glyphicon glyphicon-remove"></span><span class="pc_title centered">  ' + data.invalid_date + '</span></div>');
+                                    }
+
+                                    if (data.hasOwnProperty('invalid_tutor')) {
+                                        $('#errorBody').append('<div style="margin-bottom: 10px; font-size: 15px; text-align:center; color:red;"><span class="glyphicon glyphicon-remove"></span><span class="pc_title centered">  ' + data.invalid_tutor + '</span></div>');
+                                    }
                                 });
+                                $('#error').modal('show');
                             }
 
                         }

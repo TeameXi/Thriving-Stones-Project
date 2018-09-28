@@ -331,10 +331,9 @@ public class ClassDAO {
 
     public static int createClass(String classType,int level, int subject,double mthlyFees, int hasReminderForFees, String startTime, String endTime, String classDay, String startDate, String endDate, int branch, int tutorId, String holidays) {
         try (Connection conn = ConnectionManager.getConnection();) {
-            conn.setAutoCommit(false);
             String sql = "INSERT into CLASS (level_id, subject_id,fees,has_reminder_for_fees,start_time, end_time, class_day, start_date, end_date,branch_id,tutor_id, class_type, holiday_date)"
                     + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
-            PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement stmt = conn.prepareStatement(sql);
 
             System.out.println(sql);
             stmt.setInt(1, level);
@@ -350,18 +349,22 @@ public class ClassDAO {
             stmt.setInt(11, tutorId);
             stmt.setString(12, classType);
             stmt.setString(13, holidays);
-            stmt.executeUpdate();
-            conn.commit();
-            ResultSet rs = stmt.getGeneratedKeys();
-            int generatedKey = 0;
-            if (rs.next()) {
-                generatedKey = rs.getInt(1);
+            
+            int rows = stmt.executeUpdate();
+            
+            if(rows > 0){
+                sql = "select last_insert_id()";
+                stmt = conn.prepareStatement(sql);
+                
+                ResultSet rs = stmt.executeQuery();
+                while(rs.next()){
+                    return rs.getInt(1);
+                }
             }
-            return generatedKey;
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            return 0;
         }
+        return 0;
     }
 
     public boolean updateClass(int tutorID, int level, int subject, String startTime, String endTime, String startDate, String endDate) {
@@ -593,7 +596,7 @@ public class ClassDAO {
             stmt.setString(4, end);
             stmt.setString(5, start);
             stmt.setInt(6, classID);
-            
+            System.out.println(stmt);
             ResultSet rs = stmt.executeQuery();
             if(rs.next()){
                 return true;

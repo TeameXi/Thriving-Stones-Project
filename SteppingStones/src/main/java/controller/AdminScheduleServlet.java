@@ -66,12 +66,10 @@ public class AdminScheduleServlet extends HttpServlet {
                 } else {
                     classes = ClassDAO.getClassesByLevel(selectedLevel, branchID);
                 }
-                
-                System.out.println(classes + " YAY");
-                
+
                 for (Class c : classes) {
                     ArrayList<Lesson> lessons = LessonDAO.retrieveAllLessonLists(c.getClassID());
-                    
+
                     for (Lesson l : lessons) {
                         JSONObject obj = new JSONObject();
                         obj.put("id", l.getLessonid());
@@ -83,7 +81,6 @@ public class AdminScheduleServlet extends HttpServlet {
                 }
                 JSONObject toReturn = new JSONObject().put("data", array);
                 String json = toReturn.toString();
-                System.out.println(json);
                 out.println(json);
             } else if (action.equals("retrieveLesson")) {
                 int lessonID = Integer.parseInt(request.getParameter("lessonID"));
@@ -95,19 +92,35 @@ public class AdminScheduleServlet extends HttpServlet {
                 Class cls = ClassDAO.getClassByID(lesson.getClassid());
                 ArrayList<Tutor> tutors = TutorHourlyRateDAO.tutorListInPayTable(branchID, cls.getSubjectID(), LevelDAO.retrieveLevelID(cls.getLevel()));
 
+                int lessonTutor = 0;
+
+                JSONObject defaultTutor = new JSONObject();
+                if (new LessonDAO().retrieveReplacementTutor(lessonID) == 0) {
+                    Tutor defaultT = new TutorDAO().retrieveSpecificTutorById(lesson.getTutorid());
+                    lessonTutor = lesson.getTutorid();
+                    defaultTutor.put("id", defaultT.getTutorId());
+                    defaultTutor.put("name", defaultT.getName());
+                    tutorList.put(defaultTutor);
+                } else {
+                    Tutor defaultT = new TutorDAO().retrieveSpecificTutorById(new LessonDAO().retrieveReplacementTutor(lessonID));
+                    lessonTutor = defaultT.getTutorId();
+                    defaultTutor.put("id", defaultT.getTutorId());
+                    defaultTutor.put("name", defaultT.getName());
+                    tutorList.put(defaultTutor);
+                }
+
                 for (Tutor t : tutors) {
-                    boolean overlap = false;
                     String start = lesson.getStartDate();
                     String end = lesson.getEndDate();
-                    if (lesson.getTutorid() != t.getTutorId()) {
-                        overlap = new LessonDAO().retrieveOverlappingLessonsForTutor(t.getTutorId(), start, end, lessonID);
-                    }
+                    if (lessonTutor != t.getTutorId()) {
+                        boolean overlap = new LessonDAO().retrieveOverlappingLessonsForTutor(t.getTutorId(), start, end, lessonID);
 
-                    if (!overlap) {
-                        JSONObject obj = new JSONObject();
-                        obj.put("id", t.getTutorId());
-                        obj.put("name", t.getName());
-                        tutorList.put(obj);
+                        if (!overlap) {
+                            JSONObject obj = new JSONObject();
+                            obj.put("id", t.getTutorId());
+                            obj.put("name", t.getName());
+                            tutorList.put(obj);
+                        }
                     }
                 }
 
@@ -118,7 +131,7 @@ public class AdminScheduleServlet extends HttpServlet {
                 JSONObject obj = new JSONObject();
                 obj.put("start", pattern.print(startFormat));
                 obj.put("end", pattern.print(endFormat));
-                obj.put("tutor", new TutorDAO().retrieveSpecificTutorById(lesson.getTutorid()).getTutorId());
+                obj.put("tutor", lesson.getTutorid());
                 obj.put("tutors", tutorList);
                 String json = obj.toString();
                 out.println(json);
@@ -127,24 +140,53 @@ public class AdminScheduleServlet extends HttpServlet {
                 int tutorID = Integer.parseInt(request.getParameter("tutor"));
                 String start = request.getParameter("start");
                 String end = request.getParameter("end");
-                LessonDAO l = new LessonDAO();
-                Lesson lesson = LessonDAO.getLessonByID(lessonID);
-
-                boolean overlap = l.retrieveOverlappingLessonsForTutor(tutorID, start, end, lessonID);
-                boolean status = false;
-
-                if (tutorID == lesson.getTutorid()) {
-                    tutorID = 0;
-                }
-
-                if (!overlap) {
-                    status = l.updateLessonDate(lessonID, tutorID, start, end);
-                }
 
                 JSONObject obj = new JSONObject();
-                obj.put("status", status);
-                String json = obj.toString();
-                out.println(json);
+                if (start == null || start.isEmpty()) {
+                    obj.put("start", "Please select a start time!");
+                }
+
+                if (end == null || end.isEmpty()) {
+                    obj.put("end", "Please select an end time!");
+                }
+
+                if (start != null && !start.isEmpty() && end != null && !end.isEmpty()) {
+                    DateTimeFormatter pattern = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+                    DateTime startFormat = pattern.parseDateTime(start);
+                    DateTime endFormat = pattern.parseDateTime(end);
+
+                    if (startFormat.isAfter(endFormat)) {
+                        obj.put("invalid_timing", "Please select an end timing that occurs after the start timing!");
+                    }
+                }
+
+                if (obj.length() != 0) {
+                    obj.put("status", false);
+
+                    out.println(obj.toString());
+                } else {
+
+                    LessonDAO l = new LessonDAO();
+                    Lesson lesson = LessonDAO.getLessonByID(lessonID);
+
+                    boolean overlap = l.retrieveOverlappingLessonsForTutor(tutorID, start, end, lessonID);
+
+                    boolean status = false;
+
+                    if (tutorID == lesson.getTutorid()) {
+                        tutorID = 0;
+                    }
+
+                    if (!overlap) {
+                        status = l.updateLessonDate(lessonID, tutorID, start, end);
+                    } else {
+                        obj.put("invalid_tutor", "The tutor selected is not available in the specified timing.");
+                    }
+
+                    obj.put("status", status);
+                    String json = obj.toString();
+                    out.println(json);
+                }
             } else if (action.equals("retrieveClass")) {
                 int lessonID = Integer.parseInt(request.getParameter("lessonID"));
                 int branchID = Integer.parseInt(request.getParameter("branchID"));
@@ -155,22 +197,37 @@ public class AdminScheduleServlet extends HttpServlet {
                 Class cls = ClassDAO.getClassByID(lesson.getClassid());
                 ArrayList<Tutor> tutors = TutorHourlyRateDAO.tutorListInPayTable(branchID, cls.getSubjectID(), LevelDAO.retrieveLevelID(cls.getLevel()));
 
+                JSONObject defaultTutor = new JSONObject();
+                int lessonTutor = 0;
+                if (new LessonDAO().retrieveReplacementTutor(lessonID) == 0) {
+                    Tutor defaultT = new TutorDAO().retrieveSpecificTutorById(lesson.getTutorid());
+                    lessonTutor = lesson.getTutorid();
+                    defaultTutor.put("id", defaultT.getTutorId());
+                    defaultTutor.put("name", defaultT.getName());
+                    tutorList.put(defaultTutor);
+                } else {
+                    Tutor defaultT = new TutorDAO().retrieveSpecificTutorById(new LessonDAO().retrieveReplacementTutor(lessonID));
+                    lessonTutor = defaultT.getTutorId();
+                    defaultTutor.put("id", defaultT.getTutorId());
+                    defaultTutor.put("name", defaultT.getName());
+                    tutorList.put(defaultTutor);
+                }
+
                 for (Tutor t : tutors) {
-                    boolean overlap = false;
                     String start = cls.getStartTime();
                     String end = cls.getEndTime();
                     String start_date = cls.getStartDate();
                     DateTimeFormatter pattern = DateTimeFormat.forPattern("yyyy-MM-dd");
                     DateTime startFormat = pattern.parseDateTime(start_date);
-                    if (lesson.getTutorid() != t.getTutorId()) {
-                        overlap = new ClassDAO().retrieveOverlappingClassesForTutor(t.getTutorId(), start, end, lesson.getClassid(), startFormat.getDayOfWeek());
-                    }
+                    if (lessonTutor != t.getTutorId()) {
+                        boolean overlap = new ClassDAO().retrieveOverlappingClassesForTutor(t.getTutorId(), start, end, lesson.getClassid(), startFormat.getDayOfWeek());
 
-                    if (!overlap) {
-                        JSONObject obj = new JSONObject();
-                        obj.put("id", t.getTutorId());
-                        obj.put("name", t.getName());
-                        tutorList.put(obj);
+                        if (!overlap) {
+                            JSONObject obj = new JSONObject();
+                            obj.put("id", t.getTutorId());
+                            obj.put("name", t.getName());
+                            tutorList.put(obj);
+                        }
                     }
                 }
 
@@ -179,7 +236,7 @@ public class AdminScheduleServlet extends HttpServlet {
                 obj.put("endDate", cls.getEndDate());
                 obj.put("end", cls.getEndTime());
                 obj.put("startTime", cls.getStartTime());
-                obj.put("tutor", new TutorDAO().retrieveSpecificTutorById(lesson.getTutorid()).getTutorId());
+                obj.put("tutor", cls.getTutorID());
                 obj.put("tutors", tutorList);
                 String json = obj.toString();
                 out.println(json);
@@ -191,90 +248,132 @@ public class AdminScheduleServlet extends HttpServlet {
                 String startDate = request.getParameter("startDate");
                 String endDate = request.getParameter("endDate");
 
-                DateTimeFormatter pattern = DateTimeFormat.forPattern("yyyy-MM-dd");
-                DateTime start = pattern.parseDateTime(startDate);
-                DateTime end = pattern.parseDateTime(endDate);
+                JSONObject obj = new JSONObject();
 
-                LessonDAO l = new LessonDAO();
-                ClassDAO c = new ClassDAO();
-                Lesson lesson = LessonDAO.getLessonByID(lessonID);
-                Class cls = c.getClassByID(lesson.getClassid());
-                String type = cls.getType();
-                int reminder = cls.getHasReminderForFees();
+                if (startTime == null || startTime.isEmpty()) {
+                    obj.put("start_time_error", "Please enter a start time!");
+                }
 
-                boolean overlap = c.retrieveOverlappingClassesForTutor(tutorID, startTime, endTime, lesson.getClassid(), start.getDayOfWeek());
-                boolean status = false;
+                if (endTime == null || endTime.isEmpty()) {
+                    obj.put("end_time_error", "Please enter an end time!");
+                }
 
-                if (!overlap) {
-                    LinkedList<DateTime> weeklyLessons = new LinkedList<>();
-                    int day = start.getDayOfWeek();
-                    boolean reachedDay = false;
+                if (startDate == null || startDate.isEmpty()) {
+                    obj.put("start_date_error", "Please enter a start date!");
+                }
 
-                    while (start.isBefore(end)) {
-                        if (start.getDayOfWeek() == day) {
-                            weeklyLessons.add(start);
-                            reachedDay = true;
-                        }
+                if (endDate == null || endDate.isEmpty()) {
+                    obj.put("end_date_error", "Please enter an end date!");
+                }
 
-                        if (reachedDay) {
-                            start = start.plusWeeks(1);
-                        }
+                if (obj.length() == 0) {
+                    DateTimeFormatter pattern = DateTimeFormat.forPattern("HH:mm:ss");
+                    DateTime start_time = pattern.parseDateTime(startTime);
+                    DateTime end_time = pattern.parseDateTime(endTime);
+
+                    DateTimeFormatter date = DateTimeFormat.forPattern("yyyy-MM-dd");
+                    DateTime start_date = date.parseDateTime(startDate);
+                    DateTime end_date = date.parseDateTime(endDate);
+
+                    if (start_time.isEqual(end_time) || start_time.isAfter(end_time)) {
+                        obj.put("invalid_timing", "The end timing has to be after the start timing!");
                     }
 
-                    boolean deleted = l.deleteLessons(cls.getClassID());
+                    if (start_date.isEqual(end_date) || start_date.isAfter(end_date)) {
+                        obj.put("invalid_date", "The end date has to be after the start date!");
+                    }
 
-                    if (reminder == 1) {
-                        ArrayList<Integer> reminders = new ArrayList<>();
+                    if (obj.length() == 0) {
+                        LessonDAO l = new LessonDAO();
+                        ClassDAO c = new ClassDAO();
+                        Lesson lesson = LessonDAO.getLessonByID(lessonID);
+                        Class cls = c.getClassByID(lesson.getClassid());
+                        String type = cls.getType();
+                        int reminder = cls.getHasReminderForFees();
 
-                        if (type.equals("N")) {
-                            reminders.add(3);
-                            reminders.add(7);
-                            reminders.add(10);
-                            reminders.add(13);
-                            reminders.add(17);
-                            reminders.add(20);
-                            reminders.add(23);
-                            reminders.add(27);
-                            reminders.add(30);
-                            reminders.add(33);
-                            reminders.add(37);
-                            reminders.add(40);
-                            reminders.add(43);
-                        } else {
-                            reminders.add(11);
-                            reminders.add(22);
-                            reminders.add(33);
-                            reminders.add(44);
+                        LinkedList<DateTime> weeklyLessons = new LinkedList<>();
+                        int day = start_date.getDayOfWeek();
+                        boolean reachedDay = false;
+
+                        while (start_date.isBefore(end_date)) {
+                            if (start_date.getDayOfWeek() == day) {
+                                weeklyLessons.add(start_date);
+                                reachedDay = true;
+                            }
+
+                            if (reachedDay) {
+                                start_date = start_date.plusWeeks(1);
+                            }
                         }
 
-                        if (deleted) {
-                            int numLesson = 0;
-                            for (DateTime d : weeklyLessons) {
-                                numLesson++;
-                                String start_date = pattern.print(d) + " " + startTime;
-                                String end_date = pattern.print(d) + " " + endTime;
+                        ArrayList<Integer> reminders = new ArrayList<>();
+                        if (reminder == 1) {
+                            if (type.equals("N")) {
+                                reminders.add(3);
+                                reminders.add(7);
+                                reminders.add(10);
+                                reminders.add(13);
+                                reminders.add(17);
+                                reminders.add(20);
+                                reminders.add(23);
+                                reminders.add(27);
+                                reminders.add(30);
+                                reminders.add(33);
+                                reminders.add(37);
+                                reminders.add(40);
+                                reminders.add(43);
+                            } else {
+                                reminders.add(11);
+                                reminders.add(22);
+                                reminders.add(33);
+                                reminders.add(44);
+                            }
+                        }
 
+                        int numLesson = 0;
+                        ArrayList<Lesson> toBeAdded = new ArrayList<>();
+
+                        for (DateTime d : weeklyLessons) {
+                            numLesson++;
+                            String lessonStart = date.print(d) + " " + pattern.print(start_time);
+                            String lessonEnd = date.print(d) + " " + pattern.print(end_time);
+
+                            boolean overlap = l.retrieveOverlappingLessonsForTutor(tutorID, lessonStart, lessonEnd, 0);
+                            if (!overlap) {
                                 if (reminders.contains(numLesson)) {
-                                    l.createLesson(cls.getClassID(), tutorID, start_date, end_date, numLesson, type);
+                                    if (type.equals("P")) {
+                                        toBeAdded.add(new Lesson(cls.getClassID(), tutorID, lessonStart, numLesson, lessonEnd));
+                                    } else {
+                                        toBeAdded.add(new Lesson(cls.getClassID(), tutorID, lessonStart, lessonEnd, numLesson));
+                                    }
                                 } else {
-                                    l.createLesson(cls.getClassID(), tutorID, start_date, end_date, 0, type);
+                                    if (type.equals("P")) {
+                                        toBeAdded.add(new Lesson(cls.getClassID(), tutorID, lessonStart, 0, lessonEnd));
+                                    } else {
+                                        toBeAdded.add(new Lesson(cls.getClassID(), tutorID, lessonStart, lessonEnd, 0));
+                                    }
                                 }
                             }
-                            status = c.updateClass(tutorID, LevelDAO.retrieveLevelID(cls.getLevel()), SubjectDAO.retrieveSubjectID(cls.getSubject()), startTime, endTime, pattern.print(start), pattern.print(end));
+                        }
+
+                        if (weeklyLessons.size() == toBeAdded.size()) {
+                            l.deleteLessons(cls.getClassID());
+                            for (Lesson les : toBeAdded) {
+                                l.createLesson(les.getClassid(), tutorID, les.getStartDate(), les.getEndDate(), reminder, type);
+                            }
+                            c.updateClass(tutorID, LevelDAO.retrieveLevelID(cls.getLevel()), cls.getSubjectID(), pattern.print(start_time), pattern.print(end_time), date.print(start_date), date.print(end_date));
+                            obj.put("status", true);
+                        } else {
+                            obj.put("invalid_tutor", "The tutor is not available at this timing!");
+                            obj.put("status", false);
                         }
                     } else {
-                        for (DateTime d : weeklyLessons) {
-                            String start_date = pattern.print(d) + " " + startTime;
-                            String end_date = pattern.print(d) + " " + endTime;
-                            l.createLesson(cls.getClassID(), tutorID, start_date, end_date, 0, type);
-                        }
-                        status = c.updateClass(tutorID, LevelDAO.retrieveLevelID(cls.getLevel()), SubjectDAO.retrieveSubjectID(cls.getSubject()), startTime, endTime, pattern.print(start), pattern.print(end));
+                        obj.put("status", false);
                     }
+                } else {
+                    obj.put("status", false);
                 }
-                JSONObject obj = new JSONObject();
-                obj.put("status", status);
-                String json = obj.toString();
-                out.println(json);
+                out.println(obj.toString());
             } else if (action.equals("delete")) {
                 int lessonID = Integer.parseInt(request.getParameter("lessonID"));
 
@@ -361,7 +460,6 @@ public class AdminScheduleServlet extends HttpServlet {
                 String json = toReturn.toString();
                 out.println(json);
             } else if (action.equals("create")) {
-                boolean status = false;
                 String holidays = request.getParameter("holidays");
 
                 if (holidays == null) {
@@ -381,138 +479,213 @@ public class AdminScheduleServlet extends HttpServlet {
                 String reminder = request.getParameter("reminder");
                 String type = request.getParameter("classType");
 
-                DateTimeFormatter pattern = DateTimeFormat.forPattern("yyyy-MM-dd");
-                DateTime start = pattern.parseDateTime(startDate);
-                DateTime end = pattern.parseDateTime(endDate);
-
-                ClassDAO c = new ClassDAO();
-                LessonDAO l = new LessonDAO();
-                SubjectDAO s = new SubjectDAO();
-                boolean overlap = c.retrieveOverlappingClassesForTutor(tutorID, startTime, endTime, 0, start.getDayOfWeek() - 1);
-                boolean insertLesson = false;
-                boolean insertClass = false;
-                int recur = 0;
-                int payment = 0;
-
-                if (!overlap) {
-                    int day = start.getDayOfWeek();
-                    String dayOfWeek = "";
-                    switch (day) {
-                        case 1:
-                            dayOfWeek = "Mon";
-                            break;
-                        case 2:
-                            dayOfWeek = "Tue";
-                            break;
-                        case 3:
-                            dayOfWeek = "Wed";
-                            break;
-                        case 4:
-                            dayOfWeek = "Thur";
-                            break;
-                        case 5:
-                            dayOfWeek = "Fri";
-                            break;
-                        case 6:
-                            dayOfWeek = "Sat";
-                            break;
-                        case 7:
-                            dayOfWeek = "Sun";
-                            break;
-                        default:
-                            break;
-                    }
-                    if (recurring.equals("on")) {
-                        recur = 1;
-                    }
-
-                    if (reminder.equals("on")) {
-                        payment = 1;
-                    }
-
-                    double fees = s.retrieveSubjectFees(subjectID, levelID, branchID);
-                    int classID = c.createClass(type, levelID, subjectID, fees, payment, startTime, endTime, dayOfWeek, pattern.print(start), pattern.print(end), branchID, tutorID, holidays);
-                    ArrayList<Integer> reminders = new ArrayList<>();
-
-                    if (type.equals("N")) {
-                        reminders.add(3);
-                        reminders.add(7);
-                        reminders.add(10);
-                        reminders.add(13);
-                        reminders.add(17);
-                        reminders.add(20);
-                        reminders.add(23);
-                        reminders.add(27);
-                        reminders.add(30);
-                        reminders.add(33);
-                        reminders.add(37);
-                        reminders.add(40);
-                        reminders.add(43);
-                    } else {
-                        reminders.add(11);
-                        reminders.add(22);
-                        reminders.add(33);
-                        reminders.add(44);
-                    }
-
-                    if (classID != 0) {
-                        if (recur != 0) {
-                            insertClass = true;
-                            int numLesson = 0;
-                            LinkedList<DateTime> weeklyLessons = new LinkedList<>();
-                            boolean reachedDay = false;
-
-                            while (start.isBefore(end)) {
-                                if (start.getDayOfWeek() == day) {
-                                    if (!holidayDates.contains(pattern.print(start))) {
-                                        weeklyLessons.add(start);
-                                        reachedDay = true;
-                                    }
-                                }
-
-                                if (reachedDay) {
-                                    start = start.plusWeeks(1);
-                                }
-                            }
-                            for (DateTime t : weeklyLessons) {
-                                int reminder_status = 0;
-                                numLesson++;
-                                String lessonStart = pattern.print(t) + " " + startTime;
-                                String lessonEnd = pattern.print(t) + " " + endTime;
-                                
-                                if (reminders.contains(numLesson)) {
-                                    insertLesson = l.createLesson(classID, tutorID, lessonStart, lessonEnd, numLesson, type);
-                                } else {
-                                    insertLesson = l.createLesson(classID, tutorID, lessonStart, lessonEnd, 0, type);
-                                }
-                            }
-                            
-                        }else{
-                            String lessonStart = pattern.print(pattern.parseDateTime(startDate)) + " " + startTime;
-                            String lessonEnd = pattern.print(pattern.parseDateTime(startDate)) + " " + endTime;
-                            insertLesson = l.createLesson(classID, tutorID, lessonStart, lessonEnd, 0, type);
-                        }
-                    } else {
-                        insertClass = false;
-                    }
-                }
                 JSONObject obj = new JSONObject();
 
-                if (recur != 0 && insertLesson && insertClass) {
-                    obj.put("status", true);
-                } else if (recur == 0 && insertClass) {
-                    obj.put("status", true);
-                } else {
-                    obj.put("status", false);
+                if (startTime == null || startTime.isEmpty()) {
+                    obj.put("start_time_error", "Please enter a start time!");
                 }
 
-                String json = obj.toString();
-                out.println(json);
+                if (endTime == null || endTime.isEmpty()) {
+                    obj.put("end_time_error", "Please enter an end time!");
+                }
+
+                if (startDate == null || startDate.isEmpty()) {
+                    obj.put("start_date_error", "Please enter a start date!");
+                }
+
+                if (endDate == null || endDate.isEmpty()) {
+                    obj.put("end_date_error", "Please enter an end date!");
+                }
+
+                if (type == null || type.isEmpty()) {
+                    obj.put("type_error", "Please select a class type!");
+                }
+
+                if (obj.length() == 0) {
+                    DateTimeFormatter pattern = DateTimeFormat.forPattern("HH:mm:ss");
+                    DateTime start_time = pattern.parseDateTime(startTime);
+                    DateTime end_time = pattern.parseDateTime(endTime);
+
+                    DateTimeFormatter date = DateTimeFormat.forPattern("yyyy-MM-dd");
+                    DateTime start_date = date.parseDateTime(startDate);
+                    DateTime end_date = date.parseDateTime(endDate);
+
+                    if (start_time.isEqual(end_time) || start_time.isAfter(end_time)) {
+                        obj.put("invalid_timing", "The end timing has to be after the start timing!");
+                    }
+
+                    if (start_date.isEqual(end_date) || start_date.isAfter(end_date)) {
+                        obj.put("invalid_date", "The end date has to be after the start date!");
+                    }
+
+                    if (obj.length() == 0) {
+                        ClassDAO c = new ClassDAO();
+                        LessonDAO l = new LessonDAO();
+                        SubjectDAO s = new SubjectDAO();
+
+                        boolean insertLesson = false;
+                        boolean insertClass = false;
+                        int recur = 0;
+                        int payment = 0;
+
+                        int day = start_date.getDayOfWeek();
+
+                        String dayOfWeek = "";
+                        switch (day) {
+                            case 1:
+                                dayOfWeek = "Mon";
+                                break;
+                            case 2:
+                                dayOfWeek = "Tue";
+                                break;
+                            case 3:
+                                dayOfWeek = "Wed";
+                                break;
+                            case 4:
+                                dayOfWeek = "Thur";
+                                break;
+                            case 5:
+                                dayOfWeek = "Fri";
+                                break;
+                            case 6:
+                                dayOfWeek = "Sat";
+                                break;
+                            case 7:
+                                dayOfWeek = "Sun";
+                                break;
+                            default:
+                                break;
+                        }
+                        if (recurring.equals("on")) {
+                            recur = 1;
+                        }
+
+                        if (reminder.equals("on")) {
+                            payment = 1;
+                        }
+                        int dayInserted = 0;
+                        
+                        if(day == 7){
+                            dayInserted = 1;
+                        }else{
+                            dayInserted = day + 1;
+                        }
+
+                        double fees = s.retrieveSubjectFees(subjectID, levelID, branchID);
+                        boolean overlap = c.retrieveOverlappingClassesForTutor(tutorID, pattern.print(start_time), pattern.print(end_time), levelID, dayInserted);
+
+                        if (!overlap) {
+                            int classID = c.createClass(type, levelID, subjectID, fees, payment, pattern.print(start_time), pattern.print(end_time), dayOfWeek, date.print(start_date), date.print(end_date), branchID, tutorID, holidays);
+
+                            ArrayList<Integer> reminders = new ArrayList<>();
+
+                            if (type.equals("N")) {
+                                reminders.add(3);
+                                reminders.add(7);
+                                reminders.add(10);
+                                reminders.add(13);
+                                reminders.add(17);
+                                reminders.add(20);
+                                reminders.add(23);
+                                reminders.add(27);
+                                reminders.add(30);
+                                reminders.add(33);
+                                reminders.add(37);
+                                reminders.add(40);
+                                reminders.add(43);
+                            } else {
+                                reminders.add(11);
+                                reminders.add(22);
+                                reminders.add(33);
+                                reminders.add(44);
+                            }
+
+                            if (classID != 0) {
+                                if (recur != 0) {
+                                    insertClass = true;
+                                    int numLesson = 0;
+                                    LinkedList<DateTime> weeklyLessons = new LinkedList<>();
+                                    boolean reachedDay = false;
+                                    
+                                    while (start_date.isBefore(end_date)) {
+                                        if (start_date.getDayOfWeek() == day) {
+                                            if (!holidayDates.contains(date.print(start_date))) {
+                                                weeklyLessons.add(start_date);
+                                                reachedDay = true;
+                                            }
+                                        }
+
+                                        if (reachedDay) {
+                                            start_date = start_date.plusWeeks(1);
+                                        }
+                                    }
+
+                                    ArrayList<Lesson> les = new ArrayList<>();
+
+                                    for (DateTime t : weeklyLessons) {
+                                        int reminder_status = 0;
+                                        numLesson++;
+                                        String lessonStart = date.print(t) + " " + startTime;
+                                        String lessonEnd = date.print(t) + " " + endTime;
+
+                                        if (type.equals("N")) {
+                                            if (reminders.contains(numLesson)) {
+                                                les.add(new Lesson(classID, tutorID, lessonStart, lessonEnd, numLesson));
+                                            } else {
+                                                les.add(new Lesson(classID, tutorID, lessonStart, lessonEnd, 0));
+                                            }
+                                        } else {
+                                            if (reminders.contains(numLesson)) {
+                                                les.add(new Lesson(classID, tutorID, lessonStart, numLesson, lessonEnd));
+                                            } else {
+                                                les.add(new Lesson(classID, tutorID, lessonStart, 0, lessonEnd));
+                                            }
+                                        }
+                                    }
+
+                                    if (weeklyLessons.size() == les.size()) {
+                                        for (Lesson le : les) {
+                                            l.createLesson(le.getClassid(), tutorID, le.getStartDate(), le.getEndDate(), payment, type);
+                                        }
+                                        obj.put("status", true);
+                                    } else {
+                                        obj.put("overlap", "The tutor is not available at this timing!");
+                                        obj.put("status", false);
+                                    }
+                                } else {
+                                    String lessonStart = date.print(start_date) + " " + startTime;
+                                    String lessonEnd = date.print(end_date) + " " + endTime;
+                                    l.createLesson(classID, tutorID, lessonStart, lessonEnd, 0, type);
+                                    obj.put("status", true);
+                                }
+                            } else {
+                                obj.put("status", false);
+                            }
+                        } else {
+                            obj.put("overlap", "The tutor is not available at this timing!");
+                            obj.put("status", false);
+                        }
+
+                        String json = obj.toString();
+                        out.println(json);
+                    } else {
+                        obj.put("overlap", "The selected tutor is not available at this timing!");
+                        out.println(obj.toString());
+                    }
+                } else {
+                    out.println(obj.toString());
+                }
+
             } else if (action.equals("retrieveByLevel")) {
                 int branchID = Integer.parseInt(request.getParameter("branchID"));
                 int levelID = Integer.parseInt(request.getParameter("levelID"));
                 JSONArray array = new JSONArray();
-                ArrayList<Class> classes = ClassDAO.getClassesByLevel(levelID, branchID);
+                ArrayList<Class> classes = null;
+                if (levelID != 0) {
+                    classes = ClassDAO.getClassesByLevel(levelID, branchID);
+                } else {
+                    classes = ClassDAO.listAllClasses(branchID);
+                }
 
                 for (Class c : classes) {
                     ArrayList<Lesson> lessons = LessonDAO.retrieveAllLessonLists(c.getClassID());
@@ -529,14 +702,14 @@ public class AdminScheduleServlet extends HttpServlet {
                 JSONObject toReturn = new JSONObject().put("data", array);
                 String json = toReturn.toString();
                 out.println(json);
-            }else if(action.equals("editOptions")){
+            } else if (action.equals("editOptions")) {
                 int lessonID = Integer.parseInt(request.getParameter("lessonID"));
-                
+
                 Lesson lesson = LessonDAO.getLessonByID(lessonID);
                 Class cls = ClassDAO.getClassByID(lesson.getClassid());
                 String lessonStart = lesson.getStartDate().split(" ")[1];
                 String lessonEnd = lesson.getEndDate().split(" ")[1];
-                
+
                 JSONObject obj = new JSONObject();
                 obj.put("timing", lessonStart.substring(0, lessonStart.length() - 2) + "-" + lessonEnd.substring(0, lessonEnd.length() - 2));
                 obj.put("level", cls.getLevel());

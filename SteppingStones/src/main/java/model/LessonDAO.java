@@ -423,15 +423,16 @@ public class LessonDAO {
     }
 
     public boolean retrieveOverlappingLessonsForTutor(int tutorID, String start, String end, int lessonID) {
-        String sql = "select * from lesson where tutor_id = ? and (start_date between ? and ? or ? between start_date and end_date) and lesson_id <> ?";
+        String sql = "select * from lesson where (tutor_id = ? or replacement_tutor_id = ?) and (start_date between ? and ? or ? between start_date and end_date) and lesson_id <> ?";
         System.out.println(sql);
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, tutorID);
-            stmt.setString(2, start);
-            stmt.setString(3, end);
-            stmt.setString(4, start);
-            stmt.setInt(5, lessonID);
+            stmt.setInt(2, tutorID);
+            stmt.setString(3, start);
+            stmt.setString(4, end);
+            stmt.setString(5, start);
+            stmt.setInt(6, lessonID);
 
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
@@ -497,5 +498,24 @@ public class LessonDAO {
         }
 
         return lessons;
+    }
+    
+    public int retrieveReplacementTutor(int lessonID){
+        String sql = "select replacement_tutor_id from lesson where lesson_id = ?";
+        
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareCall(sql);
+            stmt.setInt(1, lessonID);
+            
+            ResultSet rs = stmt.executeQuery();
+            
+            while(rs.next()){
+                return rs.getInt(1);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(LessonDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return 0;
     }
 }
