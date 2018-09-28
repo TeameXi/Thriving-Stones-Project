@@ -81,4 +81,16 @@ public class Lesson {
         return updated;
     }
     
+    public int getReminderStatus(){
+        return reminder_status;
+    }
+    
+    public int getReminderTerm(){
+        return reminder_term;
+    }
+    
+    public void setReminderTerm(int reminder_term){
+        this.reminder_term = reminder_term;
+    }
+    
 }

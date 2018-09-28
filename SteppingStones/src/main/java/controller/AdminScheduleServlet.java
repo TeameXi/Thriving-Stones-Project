@@ -113,7 +113,7 @@ public class AdminScheduleServlet extends HttpServlet {
                     String start = lesson.getStartDate();
                     String end = lesson.getEndDate();
                     if (lessonTutor != t.getTutorId()) {
-                        boolean overlap = new LessonDAO().retrieveOverlappingLessonsForTutor(t.getTutorId(), start, end, lessonID);
+                        boolean overlap = new LessonDAO().retrieveOverlappingLessonsForTutor(t.getTutorId(), start, end, cls.getClassID());
 
                         if (!overlap) {
                             JSONObject obj = new JSONObject();
@@ -169,7 +169,7 @@ public class AdminScheduleServlet extends HttpServlet {
                     LessonDAO l = new LessonDAO();
                     Lesson lesson = LessonDAO.getLessonByID(lessonID);
 
-                    boolean overlap = l.retrieveOverlappingLessonsForTutor(tutorID, start, end, lessonID);
+                    boolean overlap = l.retrieveOverlappingLessonsForTutor(tutorID, start, end, lesson.getClassid());
 
                     boolean status = false;
 
@@ -290,7 +290,7 @@ public class AdminScheduleServlet extends HttpServlet {
                         Class cls = c.getClassByID(lesson.getClassid());
                         String type = cls.getType();
                         int reminder = cls.getHasReminderForFees();
-
+                        DateTime defaultS = start_date;
                         LinkedList<DateTime> weeklyLessons = new LinkedList<>();
                         int day = start_date.getDayOfWeek();
                         boolean reachedDay = false;
@@ -307,29 +307,31 @@ public class AdminScheduleServlet extends HttpServlet {
                         }
 
                         ArrayList<Integer> reminders = new ArrayList<>();
+                        ArrayList<Integer> premiumReminders = new ArrayList<>();
+                        System.out.println("reminder " + reminder);
                         if (reminder == 1) {
-                            if (type.equals("N")) {
-                                reminders.add(3);
-                                reminders.add(7);
-                                reminders.add(10);
-                                reminders.add(13);
-                                reminders.add(17);
-                                reminders.add(20);
-                                reminders.add(23);
-                                reminders.add(27);
-                                reminders.add(30);
-                                reminders.add(33);
-                                reminders.add(37);
-                                reminders.add(40);
-                                reminders.add(43);
-                            } else {
-                                reminders.add(11);
-                                reminders.add(22);
-                                reminders.add(33);
-                                reminders.add(44);
+                            reminders.add(3);
+                            reminders.add(7);
+                            reminders.add(10);
+                            reminders.add(13);
+                            reminders.add(17);
+                            reminders.add(20);
+                            reminders.add(23);
+                            reminders.add(27);
+                            reminders.add(30);
+                            reminders.add(33);
+                            reminders.add(37);
+                            reminders.add(40);
+                            reminders.add(43);
+
+                            if (type.equals("P")) {
+                                premiumReminders.add(11);
+                                premiumReminders.add(22);
+                                premiumReminders.add(33);
+                                premiumReminders.add(44);
                             }
                         }
-
+                        System.out.println(reminders.size() + " YASSSS");
                         int numLesson = 0;
                         ArrayList<Lesson> toBeAdded = new ArrayList<>();
 
@@ -338,20 +340,29 @@ public class AdminScheduleServlet extends HttpServlet {
                             String lessonStart = date.print(d) + " " + pattern.print(start_time);
                             String lessonEnd = date.print(d) + " " + pattern.print(end_time);
 
-                            boolean overlap = l.retrieveOverlappingLessonsForTutor(tutorID, lessonStart, lessonEnd, 0);
+                            boolean overlap = l.retrieveOverlappingLessonsForTutor(tutorID, lessonStart, lessonEnd, cls.getClassID());
                             if (!overlap) {
-                                if (reminders.contains(numLesson)) {
-                                    if (type.equals("P")) {
-                                        toBeAdded.add(new Lesson(cls.getClassID(), tutorID, lessonStart, numLesson, lessonEnd));
-                                    } else {
+                                if (type.equals("N")) {
+                                    if (reminders.contains(numLesson)) {
+                                        System.out.println("HEREEEEEEE");
                                         toBeAdded.add(new Lesson(cls.getClassID(), tutorID, lessonStart, lessonEnd, numLesson));
-                                    }
-                                } else {
-                                    if (type.equals("P")) {
-                                        toBeAdded.add(new Lesson(cls.getClassID(), tutorID, lessonStart, 0, lessonEnd));
                                     } else {
                                         toBeAdded.add(new Lesson(cls.getClassID(), tutorID, lessonStart, lessonEnd, 0));
                                     }
+                                } else {
+                                    Lesson less = null;
+                                    if (reminders.contains(numLesson)) {
+                                        less = new Lesson(cls.getClassID(), tutorID, lessonStart, lessonEnd, numLesson);
+                                    } else {
+                                        less = new Lesson(cls.getClassID(), tutorID, lessonStart, lessonEnd, 0);
+                                    }
+
+                                    if (premiumReminders.contains(numLesson)) {
+                                        less.setReminderTerm(numLesson);
+                                    } else {
+                                        less.setReminderTerm(0);
+                                    }
+                                    toBeAdded.add(less);
                                 }
                             }
                         }
@@ -359,9 +370,18 @@ public class AdminScheduleServlet extends HttpServlet {
                         if (weeklyLessons.size() == toBeAdded.size()) {
                             l.deleteLessons(cls.getClassID());
                             for (Lesson les : toBeAdded) {
-                                l.createLesson(les.getClassid(), tutorID, les.getStartDate(), les.getEndDate(), reminder, type);
+                                if (les.getReminderTerm() != 0 && les.getReminderStatus() != 0) {
+                                    l.createLesson(les.getClassid(), tutorID, les.getStartDate(), les.getEndDate(), les.getReminderTerm(), les.getReminderStatus(), type);
+                                } else if (les.getReminderStatus() != 0) {
+                                    System.out.println(les.getReminderStatus() + " CORRECTTTT");
+                                    l.createLesson(les.getClassid(), tutorID, les.getStartDate(), les.getEndDate(), les.getReminderStatus(), 0, type);
+                                } else if (les.getReminderTerm() != 0) {
+                                    l.createLesson(les.getClassid(), tutorID, les.getStartDate(), les.getEndDate(), 0, les.getReminderTerm(), type);
+                                } else {
+                                    l.createLesson(les.getClassid(), tutorID, les.getStartDate(), les.getEndDate(), 0, 0, type);
+                                }
                             }
-                            c.updateClass(tutorID, LevelDAO.retrieveLevelID(cls.getLevel()), cls.getSubjectID(), pattern.print(start_time), pattern.print(end_time), date.print(start_date), date.print(end_date));
+                            c.updateClass(tutorID, LevelDAO.retrieveLevelID(cls.getLevel()), cls.getSubjectID(), pattern.print(start_time), pattern.print(end_time), date.print(defaultS), date.print(end_date));
                             obj.put("status", true);
                         } else {
                             obj.put("invalid_tutor", "The tutor is not available at this timing!");
@@ -564,10 +584,10 @@ public class AdminScheduleServlet extends HttpServlet {
                             payment = 1;
                         }
                         int dayInserted = 0;
-                        
-                        if(day == 7){
+
+                        if (day == 7) {
                             dayInserted = 1;
-                        }else{
+                        } else {
                             dayInserted = day + 1;
                         }
 
@@ -578,26 +598,27 @@ public class AdminScheduleServlet extends HttpServlet {
                             int classID = c.createClass(type, levelID, subjectID, fees, payment, pattern.print(start_time), pattern.print(end_time), dayOfWeek, date.print(start_date), date.print(end_date), branchID, tutorID, holidays);
 
                             ArrayList<Integer> reminders = new ArrayList<>();
+                            ArrayList<Integer> premiumReminders = new ArrayList<>();
 
-                            if (type.equals("N")) {
-                                reminders.add(3);
-                                reminders.add(7);
-                                reminders.add(10);
-                                reminders.add(13);
-                                reminders.add(17);
-                                reminders.add(20);
-                                reminders.add(23);
-                                reminders.add(27);
-                                reminders.add(30);
-                                reminders.add(33);
-                                reminders.add(37);
-                                reminders.add(40);
-                                reminders.add(43);
-                            } else {
-                                reminders.add(11);
-                                reminders.add(22);
-                                reminders.add(33);
-                                reminders.add(44);
+                            reminders.add(3);
+                            reminders.add(7);
+                            reminders.add(10);
+                            reminders.add(13);
+                            reminders.add(17);
+                            reminders.add(20);
+                            reminders.add(23);
+                            reminders.add(27);
+                            reminders.add(30);
+                            reminders.add(33);
+                            reminders.add(37);
+                            reminders.add(40);
+                            reminders.add(43);
+
+                            if (type.equals("P")) {
+                                premiumReminders.add(11);
+                                premiumReminders.add(22);
+                                premiumReminders.add(33);
+                                premiumReminders.add(44);
                             }
 
                             if (classID != 0) {
@@ -606,7 +627,7 @@ public class AdminScheduleServlet extends HttpServlet {
                                     int numLesson = 0;
                                     LinkedList<DateTime> weeklyLessons = new LinkedList<>();
                                     boolean reachedDay = false;
-                                    
+
                                     while (start_date.isBefore(end_date)) {
                                         if (start_date.getDayOfWeek() == day) {
                                             if (!holidayDates.contains(date.print(start_date))) {
@@ -635,17 +656,33 @@ public class AdminScheduleServlet extends HttpServlet {
                                                 les.add(new Lesson(classID, tutorID, lessonStart, lessonEnd, 0));
                                             }
                                         } else {
+                                            Lesson less = null;
                                             if (reminders.contains(numLesson)) {
-                                                les.add(new Lesson(classID, tutorID, lessonStart, numLesson, lessonEnd));
+                                                less = new Lesson(classID, tutorID, lessonStart, lessonEnd, numLesson);
                                             } else {
-                                                les.add(new Lesson(classID, tutorID, lessonStart, 0, lessonEnd));
+                                                less = new Lesson(classID, tutorID, lessonStart, lessonEnd, 0);
                                             }
+
+                                            if (premiumReminders.contains(numLesson)) {
+                                                less.setReminderTerm(numLesson);
+                                            } else {
+                                                less.setReminderTerm(0);
+                                            }
+                                            les.add(less);
                                         }
                                     }
 
                                     if (weeklyLessons.size() == les.size()) {
                                         for (Lesson le : les) {
-                                            l.createLesson(le.getClassid(), tutorID, le.getStartDate(), le.getEndDate(), payment, type);
+                                            if (le.getReminderTerm() != 0 && le.getReminderStatus() != 0) {
+                                                l.createLesson(le.getClassid(), tutorID, le.getStartDate(), le.getEndDate(), le.getReminderTerm(), le.getReminderStatus(), type);
+                                            } else if (le.getReminderStatus() != 0) {
+                                                l.createLesson(le.getClassid(), tutorID, le.getStartDate(), le.getEndDate(), le.getReminderStatus(), 0, type);
+                                            } else if (le.getReminderTerm() != 0) {
+                                                l.createLesson(le.getClassid(), tutorID, le.getStartDate(), le.getEndDate(), 0, le.getReminderTerm(), type);
+                                            } else {
+                                                l.createLesson(le.getClassid(), tutorID, le.getStartDate(), le.getEndDate(), 0, 0, type);
+                                            }
                                         }
                                         obj.put("status", true);
                                     } else {
@@ -655,7 +692,7 @@ public class AdminScheduleServlet extends HttpServlet {
                                 } else {
                                     String lessonStart = date.print(start_date) + " " + startTime;
                                     String lessonEnd = date.print(end_date) + " " + endTime;
-                                    l.createLesson(classID, tutorID, lessonStart, lessonEnd, 0, type);
+                                    l.createLesson(classID, tutorID, lessonStart, lessonEnd, 0, 0, type);
                                     obj.put("status", true);
                                 }
                             } else {

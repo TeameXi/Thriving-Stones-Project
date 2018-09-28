@@ -53,7 +53,7 @@ public class ClassDAO {
     public static Class getClassByID(int classID) {
         Class cls = null;
         try (Connection conn = ConnectionManager.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement("select level_id, subject_id, term, start_time, end_time, class_day, fees, start_date, end_date, class_type from class where class_id = ?");
+            PreparedStatement stmt = conn.prepareStatement("select level_id, subject_id, term, start_time, end_time, class_day, fees, start_date, end_date, class_type, has_reminder_for_fees from class where class_id = ?");
             stmt.setInt(1, classID);
             ResultSet rs = stmt.executeQuery();
 
@@ -72,6 +72,7 @@ public class ClassDAO {
                 String level = LevelDAO.retrieveLevel(levelID);
                 String type = rs.getString(10);
                 cls = new Class(classID, level, subject, term, startTime, endTime, classDay, mthlyFees, startDate, endDate, type);
+                cls.setHasReminderForFees(rs.getInt(11));
                 cls.setSubjectID(subjectID);
             }
         } catch (SQLException e) {
