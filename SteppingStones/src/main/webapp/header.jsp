@@ -50,7 +50,7 @@
                                     }
                                 %>
                               <li><a href="ResetPassword.jsp">Update Password</a></li>
-                              <li><a href="Logout.jsp">Logout</a></li>
+                              <li><a href="${pageContext.request.contextPath}/LogoutServlet">Logout</a></li>
                             </ul>
                           </li>
                         </ul>
