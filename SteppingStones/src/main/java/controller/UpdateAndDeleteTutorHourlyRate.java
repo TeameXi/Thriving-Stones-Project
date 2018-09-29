@@ -39,7 +39,6 @@ public class UpdateAndDeleteTutorHourlyRate extends HttpServlet {
             String ids = request.getParameter("tutorID");
             String pay = request.getParameter("payRate");
             
-            
             int tutorId = 0;
             int levelId = 0;
             int subjectId=0;
@@ -58,18 +57,18 @@ public class UpdateAndDeleteTutorHourlyRate extends HttpServlet {
             if(!pay.equals("")){
                 payRate = Double.parseDouble(pay);
             }
-            System.out.println(tutorId+":"+levelId+":"+subjectId);
+            //System.out.println(tutorId+":"+levelId+":"+subjectId);
             if(tutorId ==0 || levelId == 0 || subjectId == 0 || branchId == 0 || payRate == 0){
                 out.println(-1);
             }else{
                 switch(action){
                     case "edit":
-//                        boolean updateStatus = TutorHourlyRateDAO.updateTutorPayRate(tutorId, levelId, subjectId, branchId,payRate);
-//                        if(updateStatus){
-//                            out.println(1);
-//                        }else{
-//                            out.println(-1);
-//                        }
+                        boolean updateStatus = TutorHourlyRateDAO.updateTutorPayRate(tutorId, levelId, subjectId, branchId,payRate);
+                        if(updateStatus){
+                            out.println(1);
+                        }else{
+                            out.println(-1);
+                        }
                         break;
                     case "delete":
                         out.println(2);
