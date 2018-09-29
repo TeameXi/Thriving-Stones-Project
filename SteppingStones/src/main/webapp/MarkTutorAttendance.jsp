@@ -200,7 +200,7 @@
                                 {
                                     "targets": 1,
                                     "data": null,
-                                    "defaultContent": '<button class="btn btn-default">Present</button>',
+                                    "defaultContent": '<button class="btn btn-default _present">Present</button> <button class="btn btn-default _absent">Absent</button>',
                                     "className": 'tutor-text'
                                 }
                             ],
@@ -210,7 +210,7 @@
                             ]
                         });
 
-                        $('#' + classID + ' tbody').on('click', 'button', function () {
+                        $('#' + classID + ' tbody').on('click', '._present', function () {
                             lessonID = lessonTable.row($(this).parents('tr')).data().id;
                             rowIndex = lessonTable.row($(this).parents('tr')).index();
                             columnIndex = lessonTable.cell($(this).closest('td')).index().column;
@@ -223,7 +223,27 @@
                                 data: {lessonID: lessonID, action: action, classID: classID, tutorID: tutorID},
                                 success: function (data) {
                                     if (data.data) {
-                                        lessonTable.cell(rowIndex, columnIndex).data('Present').draw();
+                                        lessonTable.cell(rowIndex, columnIndex).data('Present' + ' <button class="btn btn-default _absent">Absent</button>').draw();
+                                        childTable.cell(childRow.index(), 4).data(data.attendance).draw();
+                                        table.cell(row.index(), 3).data(data.overall).draw();
+                                    }
+                                }
+                            });
+                        });
+                        $('#' + classID + ' tbody').on('click', '._absent', function () {
+                            lessonID = lessonTable.row($(this).parents('tr')).data().id;
+                            rowIndex = lessonTable.row($(this).parents('tr')).index();
+                            columnIndex = lessonTable.cell($(this).closest('td')).index().column;
+                            action = 'markAbsent';
+
+                            $.ajax({
+                                type: 'POST',
+                                url: 'TutorAttendanceServlet',
+                                dataType: 'JSON',
+                                data: {lessonID: lessonID, action: action, classID: classID, tutorID: tutorID},
+                                success: function (data) {
+                                    if (data.data) {
+                                        lessonTable.cell(rowIndex, columnIndex).data('Absent' + ' <button class="btn btn-default _present">Present</button>').draw();
                                         childTable.cell(childRow.index(), 4).data(data.attendance).draw();
                                         table.cell(row.index(), 3).data(data.overall).draw();
                                     }
