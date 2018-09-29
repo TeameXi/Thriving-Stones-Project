@@ -260,7 +260,7 @@
                                 data: {classID: classID, lessonID: lessonID, studentID: studentID, action: action},
                                 success: function (data) {
                                     if (data) {
-                                        lessonModal.cell(rowIndex, columnIndex).data('Present').draw();
+                                        lessonModal.cell(rowIndex, columnIndex).data('Present' + '<button id="_absent" class="btn btn-default _absent">Absent</button>').draw();
                                         lessonAttendanceTable.cell(lesson_row.index(), 2).data(data.attendance).draw();
                                     }
                                 }
@@ -278,7 +278,7 @@
                                 data: {classID: classID, lessonID: lessonID, studentID: studentID, action: action},
                                 success: function (data) {
                                     if (data) {
-                                        lessonModal.cell(rowIndex, columnIndex).data('Absent').draw();
+                                        lessonModal.cell(rowIndex, columnIndex).data('Absent' + '<button id="_present" class="btn btn-default _present">Present</button>').draw();
                                         lessonAttendanceTable.cell(lesson_row.index(), 2).data(data.attendance).draw();
                                     }
                                 }
@@ -402,7 +402,7 @@
                                 data: {classID: classID, lessonID: lessonID, studentID: studentID, action: action},
                                 success: function (data) {
                                     if (data) {
-                                        lessonTable.cell(rowIndex, columnIndex).data('Present').draw();
+                                        lessonTable.cell(rowIndex, columnIndex).data('Present' + ' <button id="'+ studentID+'_absent" class="btn btn-default">Absent</button>').draw();
                                         childTable.cell(childRow.index(), 3).data(data.attendance).draw();
                                     }
                                 }
@@ -420,7 +420,7 @@
                                 data: {classID: classID, lessonID: lessonID, studentID: studentID, action: action},
                                 success: function (data) {
                                     if (data) {
-                                        lessonTable.cell(rowIndex, columnIndex).data('Absent').draw();
+                                        lessonTable.cell(rowIndex, columnIndex).data('Absent' + ' <button id="'+ studentID+'_present" class="btn btn-default">Present</button>').draw();
                                         childTable.cell(childRow.index(), 3).data(data.attendance).draw();
                                     }
                                 }

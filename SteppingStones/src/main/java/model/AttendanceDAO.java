@@ -19,20 +19,44 @@ import java.util.logging.Logger;
  */
 public class AttendanceDAO {
     public boolean updateStudentAttendance(int studentID, int lessonID, int classID, int tutorID, boolean attended){
-        String sql = "insert into student_attendance(lesson_id, student_id, student_attended, tutor_marked) values(?, ?, ?, ?)";
-        
+        String sqlr = "select student_attended from student_attendance where "
+                +"student_id = ? and lesson_id = ?";
         try(Connection conn = ConnectionManager.getConnection()){
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setInt(1, lessonID);
-            stmt.setInt(2, studentID);
-            stmt.setBoolean(3, attended);
-            stmt.setInt(4, tutorID);
+            boolean exist = false;
+            PreparedStatement stmt = conn.prepareStatement(sqlr);
+            stmt.setInt(1, studentID);
+            stmt.setInt(2, lessonID);
             
-            int rows = stmt.executeUpdate();
+            ResultSet rs = stmt.executeQuery();
             
-            if(rows > 0) {
-                return true;
+            while(rs.next()){
+                exist = true;
             }
+            if(!exist){
+                String sqli = "insert into student_attendance(lesson_id, student_id, student_attended, tutor_marked) values(?, ?, ?, ?)";
+                PreparedStatement stmti = conn.prepareStatement(sqli);
+                stmti.setInt(1, lessonID);
+                stmti.setInt(2, studentID);
+                stmti.setBoolean(3, attended);
+                stmti.setInt(4, tutorID);
+
+                int rows = stmti.executeUpdate();
+
+                if(rows > 0) {
+                    return true;
+                }
+            }else{
+                String sqlu = "update student_attendance set student_attended = ? where lesson_id = ? and student_id = ?";
+                PreparedStatement stmtu = conn.prepareStatement(sqlu);
+                stmtu.setBoolean(1, attended);
+                stmtu.setInt(2, lessonID);
+                stmtu.setInt(3, studentID);
+                int num = stmtu.executeUpdate();
+                if (num != 0) {
+                    return true;
+                }
+            }
+            
         } catch (SQLException ex) {
             Logger.getLogger(AttendanceDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
