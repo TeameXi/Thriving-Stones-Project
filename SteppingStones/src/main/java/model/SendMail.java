@@ -304,7 +304,7 @@ public class SendMail {
                 + "</table>");
         Mail mail = new Mail(from, subject, to, content);
 
-        SendGrid sg = new SendGrid("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");
+        SendGrid sg = new SendGrid("");
 
         Request request = new Request();
         try {
@@ -573,7 +573,7 @@ public class SendMail {
                 + "</table>");
         Mail mail = new Mail(from, subject, to, content);
 
-        SendGrid sg = new SendGrid("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");
+        SendGrid sg = new SendGrid("");
 
         Request request = new Request();
         try {
