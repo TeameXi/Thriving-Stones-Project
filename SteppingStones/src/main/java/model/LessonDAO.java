@@ -230,7 +230,24 @@ public class LessonDAO {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                return rs.getBoolean(1);
+                return (1 == rs.getInt(1));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(LessonDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+    public boolean retrieveAttendanceForLessonAbsent(int lessonID) {
+        String sql = "select tutor_attended from lesson where lesson_id = ?";
+
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, lessonID);
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                return ((-1) == (rs.getInt(1)));
             }
         } catch (SQLException ex) {
             Logger.getLogger(LessonDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -269,7 +286,7 @@ public class LessonDAO {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                if (rs.getBoolean(1)) {
+                if ((1 == rs.getInt(1))) {
                     attended += 1;
                 }
             }

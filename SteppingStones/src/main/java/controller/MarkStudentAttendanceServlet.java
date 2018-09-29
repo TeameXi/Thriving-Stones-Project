@@ -106,9 +106,9 @@ public class MarkStudentAttendanceServlet extends HttpServlet {
                     obj.put("date", date.substring(0, date.indexOf(" ")));
 
                     if (attendance.retrieveStudentAttendances(studentID, l.getLessonid())) {
-                        obj.put("attended", "Present");
+                        obj.put("attended", "Present" + " <button id=\""+ studentID+"_absent\" class=\"btn btn-default\">Absent</button>");
                     }else if(attendance.retrieveStudentAttendanceAbsent(studentID, l.getLessonid())){
-                        obj.put("attended", "Absent");
+                        obj.put("attended", "Absent" + " <button id=\""+ studentID+"_present\" class=\"btn btn-default\">Present</button>");
                     }
 
                     array.put(obj);
@@ -178,9 +178,9 @@ public class MarkStudentAttendanceServlet extends HttpServlet {
                     obj.put("phone", s.getPhone());
 
                     if (attendance.retrieveStudentAttendances(s.getStudentID(), l.getLessonid())) {
-                        obj.put("attended", "Present");
+                        obj.put("attended", "Present" + " <button id=\"_absent\" class=\"btn btn-default _absent\">Absent</button>");
                     }else if(attendance.retrieveStudentAttendanceAbsent(s.getStudentID(), l.getLessonid())){
-                        obj.put("attended", "Absent");
+                        obj.put("attended", "Absent" + " <button id=\"_present\" class=\"btn btn-default _present\">Present</button>");
                     }
 
                     array.put(obj);

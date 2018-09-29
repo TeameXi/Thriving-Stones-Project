@@ -100,7 +100,10 @@ public class TutorAttendanceServlet extends HttpServlet {
                     obj.put("date", date.substring(0, date.indexOf(" ")));
                     
                     if(lessonDAO.retrieveAttendanceForLesson(l.getLessonid())){
-                        obj.put("attended", "Present");
+                        obj.put("attended", "Present" + " <button class=\"btn btn-default _absent\">Absent</button>" );
+                    }else if(lessonDAO.retrieveAttendanceForLessonAbsent(l.getLessonid())){
+                        obj.put("attended", "Absent" + " <button class=\"btn btn-default _present\">Present</button>");
+                        
                     }
                     
                     array.put(obj);
@@ -115,6 +118,18 @@ public class TutorAttendanceServlet extends HttpServlet {
                 int tutorID = Integer.parseInt(request.getParameter("tutorID"));
                 
                 boolean status = LessonDAO.updateTutorAttendance(lessonID, 1);
+                String attendance = new LessonDAO().retrieveNumberTutorAttendancePerClass(classID, tutorID) + "%";
+                
+                JSONObject toReturn = new JSONObject().put("data", status);
+                toReturn.put("attendance", attendance);
+                String json = toReturn.toString();
+                out.println(json);
+            }else if(action.equals("markAbsent")){
+                int lessonID = Integer.parseInt(request.getParameter("lessonID"));
+                int classID = Integer.parseInt(request.getParameter("classID"));
+                int tutorID = Integer.parseInt(request.getParameter("tutorID"));
+                
+                boolean status = LessonDAO.updateTutorAttendance(lessonID, -1);
                 String attendance = new LessonDAO().retrieveNumberTutorAttendancePerClass(classID, tutorID) + "%";
                 
                 JSONObject toReturn = new JSONObject().put("data", status);
