@@ -150,6 +150,23 @@ public class StudentClassDAO {
         }
         return deletedStatus;
     }
+    
+    public static boolean deleteStudentClassRel(int studentID, int classID) {
+        boolean deletedStatus = false;
+        try (Connection conn = ConnectionManager.getConnection();) {
+            conn.setAutoCommit(false);
+            String sql = "delete from class_student_rel where student_id = ? and class_id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, studentID);
+            stmt.setInt(2, classID);
+            stmt.executeUpdate();
+            conn.commit();
+            deletedStatus = true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return deletedStatus;
+    }
 
     public static Map<Integer, String> retrieveStudentClassSub(int studentID) {
         Map<Integer, String> classSub = new HashMap<>();

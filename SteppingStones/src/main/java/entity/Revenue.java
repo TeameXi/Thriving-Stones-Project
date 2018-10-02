@@ -9,26 +9,19 @@ package entity;
  *
  * @author DEYU
  */
-//Revenue need to delete deposit or not??
 public class Revenue {
     private String studentName;
+    private String type;
     private int noOfLessons;
     private String paymentDate;
-    private double monthlyFees;
-    private double regFees;
-    private double deposit;
-    private String depositPaymentDate;
-    private String depositActivationDate;
+    private double amount;
     
-    public Revenue(String studentName, int noOfLessons, String paymentDate, double monthlyFees, double regFees, double deposit, String depositPaymentDate, String depositActivationDate){
+    public Revenue(String studentName, String type, int noOfLessons, String paymentDate, double amount){
         this.studentName = studentName;
+        this.type = type;
         this.noOfLessons = noOfLessons;
         this.paymentDate = paymentDate;
-        this.monthlyFees = monthlyFees;
-        this.regFees = regFees;
-        this.deposit = deposit;
-        this.depositPaymentDate = depositPaymentDate;
-        this.depositActivationDate = depositActivationDate;
+        this.amount = amount;
     }
     
     public String getStudentName() {
@@ -43,24 +36,12 @@ public class Revenue {
         return this.paymentDate;
     }
     
-    public double getMonthlyFees() {
-        return this.monthlyFees;
+    public double getAmount() {
+        return this.amount;
     }
     
-    public double getRegFees() {
-        return this.regFees;
-    }
-    
-    public double getDeposit() {
-        return this.deposit;
-    }
-    
-    public String getDepositPaymentDate() {
-        return this.depositPaymentDate;
-    }
-    
-    public String getDepositActivationDate() {
-        return this.depositActivationDate;
+    public String getType() {
+        return this.type;
     }
     
     public void setStudentName(String studentName) {
@@ -75,23 +56,11 @@ public class Revenue {
         this.paymentDate = paymentDate;
     }
     
-    public void setMonthlyFees(double monthlyFees) {
-        this.monthlyFees = monthlyFees;
+    public void setAmount(double amount) {
+        this.amount = amount;
     }
     
-    public void setRegFees(double regFees) {
-        this.regFees = regFees;
-    }
-    
-    public void setDeposit(double deposit) {
-        this.deposit = deposit;
-    } 
-    
-    public void setDepositPaymentDate(String depositPaymentDate) {
-        this.depositPaymentDate = depositPaymentDate;
-    }
-    
-    public void setDepositActivationDate(String depositActivationDate) {
-        this.depositActivationDate = depositActivationDate;
+    public void setDepositActivationDate(String type) {
+        this.type = type;
     }
 }

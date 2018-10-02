@@ -10,16 +10,22 @@ package entity;
  * @author DEYU
  */
 public class Deposit {
+    private String studentName;
     private double deposit;
     private String depositPaymentDate;
     private String depositActivationDate;
     private double activatedAmount;
     
-    public Deposit(double deposit, String depositPaymentDate, String depositActivationDate, double activatedAmount){
+    public Deposit(String studentName, double deposit, String depositPaymentDate, String depositActivationDate, double activatedAmount){
+        this.studentName = studentName;
         this.deposit = deposit;
         this.depositPaymentDate = depositPaymentDate;
         this.depositActivationDate = depositActivationDate;
         this.activatedAmount = activatedAmount;
+    }
+    
+    public String getStudentName() {
+        return this.studentName;
     }
     
     public double getDeposit() {
@@ -36,6 +42,10 @@ public class Deposit {
     
     public double getActivatedAmount() {
         return this.activatedAmount;
+    }
+    
+    public void setStudentName(String studentName) {
+        this.studentName = studentName;
     }
     
     public void setDeposit(double deposit) {

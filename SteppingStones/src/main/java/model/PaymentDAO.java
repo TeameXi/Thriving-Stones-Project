@@ -9,6 +9,7 @@ import connection.ConnectionManager;
 import entity.Payment;
 import entity.Class;
 import entity.Deposit;
+import entity.Expense;
 import entity.Revenue;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -188,10 +189,15 @@ public class PaymentDAO {
                 int classID = rs.getInt("class_id");
                 Class cls = ClassDAO.getClassByID(classID);
                 String subject = cls.getSubject();
+                if(cls.getType().equals("P")){
+                    subject = cls.getSubject() + "(Premium)";
+                }
                 double depositAmount = rs.getDouble("deposit_fees");
                 double outstandingDeposit = rs.getDouble("outstanding_deposit");
                 double firstInstallment = rs.getDouble("first_installment");
                 double outstandingFirstInstallment = rs.getDouble("outstanding_first_installment");
+                
+                System.out.println("Payment DAO depo" + depositAmount + " out depo "+ outstandingDeposit + " first " + firstInstallment + "first out" + outstandingFirstInstallment );
                 String dueDate = rs.getString("due_date");
                 if(outstandingDeposit > 0){
                     Payment p = new Payment("Deposit", subject, dueDate, depositAmount, outstandingDeposit, classID, 0);
@@ -219,6 +225,9 @@ public class PaymentDAO {
                 int classID = rs.getInt("class_id");
                 Class cls = ClassDAO.getClassByID(classID);
                 String subject = cls.getSubject();
+                if(cls.getType().equals("P")){
+                    subject = cls.getSubject() + "(Premium)";
+                }
                 double chargeAmount = rs.getDouble("amount_charged");
                 double outstandingCharge = rs.getDouble("outstanding_charge");
                 String dueDate = rs.getString("payment_due_date");
@@ -390,19 +399,19 @@ public class PaymentDAO {
                 String paymentDate = rs.getString("payment_date");
                 String paymentType = rs.getString("payment_type");
                 double paidAmount = rs.getDouble("amount_paid");
-                //Revenue revenue = new Revenue(studentName, paymentType, noOfLessons, paymentDate, paidAmount);
+                Revenue revenue = new Revenue(studentName, paymentType, noOfLessons, paymentDate, paidAmount);
                 ArrayList<Revenue> revenueArray = new ArrayList<>();
 
-                if (revenueData.containsKey(levelSubject)) {  //check whether the map contains the Key
-                    revenueArray = revenueData.get(levelSubject);  //yes, replace old value with new value
-                    //revenueArray.add(revenue);
+                if (revenueData.containsKey(levelSubject)) {  
+                    revenueArray = revenueData.get(levelSubject);  
+                    revenueArray.add(revenue);
                 } else {
-                    //revenueArray.add(revenue); //no, add key and value into the list
+                    revenueArray.add(revenue);
                 }
                 revenueData.put(levelSubject, revenueArray);
             }
         } catch (SQLException e) {
-            System.out.println("Error in retrieveAllRevenueData method");
+            System.out.println("Error in retrieveAllRevenueData method" + e.getMessage());
         }
         return revenueData;
     }
@@ -426,23 +435,40 @@ public class PaymentDAO {
                 double activatedAmount = rs.getDouble("deposit_activated_amount");
                 String levelSubject = ClassDAO.retrieveClassLevelSubject(classID);
                 String studentName = StudentDAO.retrieveStudentName(studentID);
-                double depositPaid = depositFees - outstandingDeposit - activatedAmount;
+                double remainingDeposit = depositFees - outstandingDeposit - activatedAmount;
                 
-                //Deposit deposit = new Deposit(studentName, depositPaid, depositPaymentDate, depositActivationDate, activatedAmount);
+                Deposit deposit = new Deposit(studentName, remainingDeposit, depositPaymentDate, depositActivationDate, activatedAmount);
                 ArrayList<Deposit> depositArray = new ArrayList<>();
 
-                if (depositData.containsKey(levelSubject)) {  //check whether the map contains the Key
-                    depositArray = depositData.get(levelSubject);  //yes, replace old value with new value
-                    //depositArray.add(deposit);
+                if (depositData.containsKey(levelSubject)) {  
+                    depositArray = depositData.get(levelSubject);  
+                    depositArray.add(deposit);
                 } else {
-                    //depositArray.add(deposit); //no, add key and value into the list
+                    depositArray.add(deposit); 
                 }
                 depositData.put(levelSubject, depositArray);
             }
         } catch (SQLException e) {
-            System.out.println("Error in retrieveAllDepositData method");
+            System.out.println("Error in retrieveAllDepositData method" + e.getMessage());
         }
         return depositData;
+    }
+    
+    public static boolean deleteStudentClassPaymentReminder(int studentID, int classID) {
+        boolean deletedStatus = false;
+        try (Connection conn = ConnectionManager.getConnection();) {
+            conn.setAutoCommit(false);
+            String sql = "delete from payment_reminder where student_id = ? and class_id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, studentID);
+            stmt.setInt(2, classID);
+            stmt.executeUpdate();
+            conn.commit();
+            deletedStatus = true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return deletedStatus;
     }
     
 }

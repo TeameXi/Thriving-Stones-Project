@@ -39,7 +39,7 @@
 </style>
 
 <div class="col-md-10">
-
+<div class="row" id="errorMsg"></div>
     <div style="text-align: center;margin: 20px;"><span class="tab_active">Register For Classes </span></h5></div>
     <div class="row">
         <div class="col-md-2"></div>
@@ -50,7 +50,7 @@
 
                 <div class="form-group">
                     <label class="col-lg-2 control-label">Student</label>  
-                    <div class="col-lg-7 inputGroupContainer">
+                    <div class="col-lg-8 inputGroupContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-account-box"></i></span>
                                 <%  
@@ -92,28 +92,30 @@
                     out.println("<div id='errorMsg' class='alert alert-success col-md-12'><strong>"+paymentStatus+"</strong></div>");
                 }
 
-                ArrayList<Class> classes = (ArrayList<Class>) request.getAttribute("classes");
+                ArrayList<Class> premiumClasses = (ArrayList<Class>) request.getAttribute("premiumClasses");
+                ArrayList<Class> normalClasses = (ArrayList<Class>) request.getAttribute("normalClasses");
                 ArrayList<Class> enrolledClasses = (ArrayList<Class>) request.getAttribute("enrolledClasses");
                 String level = (String) request.getAttribute("level");
                 String studentName = (String) request.getAttribute("studentName");
 
-                int student_id = (Integer) request.getAttribute("student_id");
+                Integer student_id = (Integer) request.getAttribute("student_id");
  
-                if (classes != null) {
+                if (premiumClasses != null || normalClasses != null) {
                     request.setAttribute("studentName", studentName);
             %>
-                    Student Name: <label> <%out.println(studentName);%></label><br>
-                    Level: <label> <%out.println(level);%></label><br><br>
-                    
-            
+                    Student Name: <label> <%out.println(studentName);%></label>
+                    &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;Level: <label> <%out.println(level);%></label><br><br>
+                 <input type="hidden" name="studentiiD" value="${student_id}"id="studentiiD">  
             <%
                 if (enrolledClasses.size() > 0) {
             %>
+            
             <label>Currently Enrolled Classes:</label><br>
                 <div class="table-responsive-sm">
                     <table id="enrolledClassesTable" class="table display responsive nowrap" style="width:100%">
                         <thead class="thead-light">
                             <tr>
+                                <th scope="col"> </th>
                                 <th scope="col">Class</th>
                                 <th scope="col">Class Timing</th>
                                 <th scope="col">Starting Date</th>
@@ -123,8 +125,31 @@
                         <tbody>
             <%
                     for (Class cls : enrolledClasses) {
-                        out.println("<tr><td>"+cls.getSubject()+"</td>");
-                        out.println("<td>"+ cls.getStartTime() + "-" + cls.getEndTime() +" ( "+cls.getClassDay()+" )"+"</td>");
+            %>
+
+            <tr><td><span class="survey-completes">
+                <a href="#small" onclick="deleteStudentClass('<%=cls.getClassID()%>')" data-toggle="modal"><i class="zmdi zmdi-delete"></i></a>
+            </span></td>
+<div class="modal fade bs-modal-sm" id="small" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <span class="pc_title centered">Alert</span>
+            </div>
+            <div class="modal-body smaller-fonts centered">Are you sure you want to delete the student from the lass?</div>
+            <div class="modal-footer centered">
+                <a id="confirm_btn"><button type="button" class="small_button pw_button del_button autowidth">Yes, Remove</button></a>
+                <button type="button" class="small_button del_button pw_button autowidth" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+            <%
+                        out.println("<td>"+cls.getSubject()+"</td>");
+                        out.println("<td>"+ cls.getStartTime().substring(0, 5) + "-" + cls.getEndTime().substring(0, 5) +" ("+cls.getClassDay()+")"+"</td>");
                         out.println("<td>"+cls.getStartDate()+"</td>");
                         out.println("<td>"+cls.getMthlyFees()+"</td>");
                         out.println("</tr>");
@@ -137,14 +162,14 @@
                 }
             %>
             
-            
-            
-                            
-            <%
-                if(classes.size() > 0){
-            %> 
-            <form action="RegisterForClassesServlet" method="post" id="registrationform">
+           <form action="RegisterForClassesServlet" method="post" id="registrationform">  
+            <input type="hidden" name="studentID" value="${student_id}">
             <input type="hidden" value="<%=branch_id%>" name="branch_id"/>
+            <%
+                if(normalClasses.size() > 0){
+            %> 
+            
+            
             <div class="table-responsive-sm">
                 <table id="registerClassesTable" class="table display responsive nowrap" style="width:100%">
                     <thead class="thead-light">
@@ -158,51 +183,92 @@
                         </tr>
                     </thead>
                     <tbody>
-                    <br><label>Register for Classes:</label> <br>                 
+                    <label>Register for Normal Classes:</label> <br>                 
                     <%
-                        //out.println("<table class='table table-bordered'>");
-                        //out.println("<thead class='table_title'><tr><th></th><th>Class</th><th>Class Timing</th><th>Starting Date</th><th>Monthly Fees</th><th>Join Date</th></tr></thead><tbody>");
-                 
-                        for (Class cls : classes) {
-                            request.setAttribute("value", cls.getClassID());
-                            String clsStartDate = cls.getStartDate();
+                        for (Class norCls : normalClasses) {
+                            request.setAttribute("value", norCls.getClassID());
+                            String norClsStartDate = norCls.getStartDate();
                     %>
-                                <tr><td><input type= "checkbox" name ="classValue" value = "${value}">
-                                        <input type='hidden' name='clsStartDate' value="<%=clsStartDate%>">
-                                        <input type="hidden" name="studentID" value="${student_id}"></td>
+                                <tr><td><input type= "checkbox" name ="normalClassValue" value = "${value}">
+                                        <input type='hidden' name='normalClsStartDate' value="<%=norClsStartDate%>"></td>
                     <%
-                            out.println("<td>"+cls.getSubject()+"</td>");
-                            out.println("<td>"+cls.getStartTime()+ "-" + cls.getEndTime() + " ( "+cls.getClassDay()+" )"+"</td>");
-                            out.println("<td>"+cls.getStartDate()+"</td>");
-                            out.println("<td>"+cls.getMthlyFees()+"</td>");
+                            out.println("<td>"+norCls.getSubject()+"</td>");
+                            out.println("<td>"+norCls.getStartTime().substring(0, 5)+ "-" + norCls.getEndTime().substring(0, 5) + " ("+norCls.getClassDay()+")"+"</td>");
+                            out.println("<td>"+norCls.getStartDate()+"</td>");
+                            out.println("<td>"+norCls.getMthlyFees()+"</td>");
                             out.println("<td>");
                             %>
-                            <input name="<%=cls.getClassID()%>" type='text' class='form-control join_date'  placeholder='YYYY-MM-DD'> 
+                            <input name="<%=norCls.getClassID()%>" type='text' class='form-control n_join_date'  placeholder='YYYY-MM-DD'> 
                             <%
                             out.println("</td>");
                             out.println("</tr>");    
                                    
                         }
-                        //out.println("</tbody></table>");
+                    %>
+                    </tbody> 
+                        </table>
+                    </div>                                
+            <%
+                }
+                if(premiumClasses.size() > 0){
+            %>
+            <div class="table-responsive-sm">
+                <table id="registerClassesTable" class="table display responsive nowrap" style="width:100%">
+                    <thead class="thead-light">
+                        <tr>
+                            <th scope="col"> </th>
+                            <th scope="col">Class</th>
+                            <th scope="col">Class Timing</th>
+                            <th scope="col">Starting Date</th>
+                            <th scope="col">Monthly Fees</th>
+                            <th scope="col">Join Date</th>
+                            <th scope="col">Payment Per Term/Month</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <label>Register for Premium Classes:</label> <br>                 
+                    <%
+                        for (Class preCls : premiumClasses) {
+                            request.setAttribute("preValue", preCls.getClassID());
+                            String preClsStartDate = preCls.getStartDate();
+                    %>
+                                <tr><td><input type= "checkbox" name ="premiumClassValue" value = "${preValue}">
+                                        <input type='hidden' name='premiumClsStartDate' value="<%=preClsStartDate%>"></td>
+                    <%
+                            out.println("<td>"+preCls.getSubject()+"</td>");
+                            out.println("<td>"+preCls.getStartTime().substring(0, 5)+ "-" + preCls.getEndTime().substring(0, 5) + " ("+preCls.getClassDay()+")"+"</td>");
+                            out.println("<td>"+preCls.getStartDate()+"</td>");
+                            out.println("<td>"+preCls.getMthlyFees()+"</td>");
+                            String paymentType = preCls.getClassID()+"_paymentType";
+                            %>
+                                    <td><input name="<%=preCls.getClassID()%>" type='text' class='form-control p_join_date'  placeholder='YYYY-MM-DD'></td>
+                                    
+                                    <td><select name=<%=paymentType%> class="form-control" id="paymentType">
+                                            <option value="term">Pay Per Term</option>
+                                            <option value="month">Pay Per Month</option></td>
+                            <%
+                            out.println("</tr>");               
+                        }
                     %>
                     </tbody> 
                         </table>
                     </div>
-                    
-                                <br/>
-                                <div class="form-group">
-                                    <div>
-                                        <button type="submit" class="btn btn-default" name="select" value="select">Register Class</button>
-                                    </div>
-                                </div>
-
-                            </form>
+            <%     
+                }
+                if(premiumClasses.size() == 0 && normalClasses.size() == 0){
+                    out.println("<label>No class available to register.</label><br><br>");
+                }
+            %>  
+            <div class="form-group">
+                <div>
+                    <button type="submit" class="btn btn-default" name="select" value="select">Register Class</button>
+                </div>
+            </div>    
             <%
-                    }else{
-                        out.println("<label>No class available to register.</label><br><br>");
-                    }
                 }
             %>
+            
+            </form>
         </div>
     </div>
 
@@ -227,10 +293,48 @@
            $('#errorMsg').fadeIn().delay(3000).fadeOut();
         }
         
-        $('.join_date').datetimepicker({
+        $('.n_join_date').datetimepicker({
+            format: 'YYYY-MM-DD'
+        });
+        
+        $('.p_join_date').datetimepicker({
             format: 'YYYY-MM-DD'
         });
     });
+    
+    function deleteStudentClass(class_id) {
+        console.log(class_id);
+        $("#confirm_btn").prop('onclick', null).off('click');
+        $("#confirm_btn").click(function () {
+            deleteStudentQueryAjax(class_id);
+        });
+    }
+    
+    function deleteStudentQueryAjax(class_id) {
+        var studentID = $("#studentiiD").val();
+        console.log(class_id);
+        console.log("What" + studentID);
+        $('#small').modal('hide');
+        $.ajax({
+            type: 'POST',
+            url: 'DeleteStudentFromClassServlet',
+            dataType: 'JSON',
+            data: {classID: class_id, studentID: studentID},
+            success: function (data) {
+                console.log(data);
+                if (data === 1) {
+                    $("#sid_" + studentID).remove();
+                    html = '<div class="alert alert-success col-md-5"><strong>Successfully Deleted!</strong> Deleted Student from class successfully</div>';
+                } else {
+                    html = '<div class="alert alert-danger col-md-5"><strong>Sorry!</strong> Something went wrong</div>';
+                }
+                $("#errorMsg").html(html);
+                $('#errorMsg').fadeIn().delay(4000).fadeOut();
+                location.reload();
+            }
+        });
+    }
+    
     $(document).ready(function () {
         $('#enrolledClassesTable').dataTable( {
             "paging":   false,
