@@ -48,7 +48,10 @@ public class RetrieveTutorServlet extends HttpServlet {
                 String fullname = tu.getName();
                 int phone = tu.getPhone();
                 String address = tu.getAddress();
-                String qualication = tu.getQualification();
+                String qualification = tu.getQualification();
+                if(qualification == null || qualification.isEmpty()){
+                    qualification = "";
+                }
                 String birth_date = tu.getBirth_date();
                 String gender = tu.getGender();
                 String email = tu.getEmail();
@@ -59,7 +62,7 @@ public class RetrieveTutorServlet extends HttpServlet {
                 obj.put("fullname",fullname); 
                 obj.put("phone",phone);
                 obj.put("address",address);
-                obj.put("qualication",qualication);
+                obj.put("qualification",qualification);
                 obj.put("birth_date",birth_date);
                 obj.put("gender",gender);
                 obj.put("email",email);

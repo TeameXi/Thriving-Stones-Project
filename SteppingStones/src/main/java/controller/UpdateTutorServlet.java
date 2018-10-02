@@ -5,7 +5,6 @@
  */
 package controller;
 
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -16,6 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.TutorDAO;
+import org.json.JSONObject;
 
 /**
  *
@@ -38,31 +38,40 @@ public class UpdateTutorServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         Map<String, Object> updates = new HashMap<>();
 
+        TutorDAO tutorDao = new TutorDAO();
+        JSONObject obj = new JSONObject();
+
         try (PrintWriter out = response.getWriter()) {
             String tutorID = request.getParameter("tutorID");
-            if(tutorID != ""){
+            if (tutorID != "") {
                 int id = Integer.parseInt(tutorID);
                 String nric = request.getParameter("nric");
- 
+
                 int phone = 0;
-                if(request.getParameter("phone")!= ""){
+                if (request.getParameter("phone") != "") {
                     phone = Integer.parseInt(request.getParameter("phone"));
                 }
                 String address = request.getParameter("address");
-                String image = request.getParameter("image");
                 String dob = request.getParameter("dob");
                 String gender = request.getParameter("gender").trim();
                 String email = request.getParameter("email");
+                String qualification = request.getParameter("qualification").trim();
 
-                TutorDAO tutorDao = new TutorDAO();
-                boolean status = tutorDao.updateTutor(id,nric,phone,address,image,dob,gender,email);
-                if(status){
-                    out.println(1);
-                }else{
-                    out.println(0);
+                boolean status = tutorDao.updateTutor(id, nric, phone, address, qualification, dob, gender, email);
+
+                if (status) {
+                    obj.put("status", 1);
+                    obj.put("name", tutorDao.retrieveSpecificTutorById(Integer.parseInt(tutorID)).getName());
+                    out.println(obj.toString());
+                } else {
+                    obj.put("status", 0);
+                    obj.put("name", tutorDao.retrieveSpecificTutorById(Integer.parseInt(tutorID)).getName());
+                    out.println(obj.toString());
                 }
-            }else{
-                out.println(0);
+            } else {
+                obj.put("status", 0);
+                obj.put("name", tutorDao.retrieveSpecificTutorById(Integer.parseInt(tutorID)).getName());
+                out.println(obj.toString());
             }
 
         }

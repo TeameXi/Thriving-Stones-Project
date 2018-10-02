@@ -19,8 +19,7 @@
 <div class="col-md-10">
     <div style="margin: 20px;"><h4>Tutor Lists</h4></div>
     <div class="row" id="errorMsg"></div>
-    <%       
-        String tutor_creation_status = (String) request.getAttribute("creation_status");
+    <%        String tutor_creation_status = (String) request.getAttribute("creation_status");
         if (tutor_creation_status != null) {
             if (tutor_creation_status == "true") {
                 out.println("<div id='creation_status' class='row alert alert-danger col-md-12'><strong>Something Went wrong!</strong> </div>");
@@ -28,13 +27,12 @@
                 out.println("<div id='creation_status' class='row alert alert-success col-md-12'><strong>Tutor record is inserted !</strong> </div>");
             }
         }
-        
 
-        ArrayList<Tutor>duplicatedUsers= (ArrayList)session.getAttribute("existingUserLists");
-        if(duplicatedUsers != null){
-            if(duplicatedUsers.size() > 0){
+        ArrayList<Tutor> duplicatedUsers = (ArrayList) session.getAttribute("existingUserLists");
+        if (duplicatedUsers != null) {
+            if (duplicatedUsers.size() > 0) {
                 String temp = duplicatedUsers.get(0).getName();
-                for(int i = 1; i < duplicatedUsers.size(); i++){
+                for (int i = 1; i < duplicatedUsers.size(); i++) {
                     temp = temp + ", " + duplicatedUsers.get(i).getName();
                 }
                 out.println("<div id='creation_status' class='row alert alert-danger col-md-12'>The following tutors <strong>(" + temp + ")</strong> already exist;</div>");
@@ -44,29 +42,29 @@
     %> 
 
 
-     <div class="row  spaced-top">
+    <div class="row  spaced-top">
         <div class="col-sm-6">
             <form id="searchTutor"> 
-        	<input class="form-control advanced_targeting_class" type="text" id="filter" placeholder="Tutor Name" style="width:237px; display:inline-block; margin-right:10px">
+                <input class="form-control advanced_targeting_class" type="text" id="filter" placeholder="Tutor Name" style="width:237px; display:inline-block; margin-right:10px">
                 <input type = "submit" class="btn btn-default" value = "Search"/>
             </form>
-	    </div>
+        </div>
         <div class="col-sm-6">
             <div class="portlet light portlet-fit smaller-fonts" >
                 <span class="sortby_span">
                     Sort By
                     <select class = "form-control" style = "display:inline-block;width:auto;" onchange="updateSort(this)">
-                    <%
-                    if(request.getParameter("sortby") != null){
-                            
-                    }else{ %>
+                        <%
+                        if (request.getParameter("sortby") != null) {
+
+                        } else { %>
                         <option value = "name" selected>Tutor Name</option>
                         <option value = "gender">Gender</option>
-                        <% if(true){ %><option value = "branch">Branch</option><% } %>
+                        <% if (true) { %><option value = "branch">Branch</option><% } %>
                         <option value="latest">Latest</option>
-                    <%
-                    }
-                    %>
+                        <%
+                            }
+                        %>
                     </select>
                 </span>
                 <br style="clear:both">
@@ -80,15 +78,15 @@
     <ul class="surveys grid">
         <%
             TutorDAO tutorDAO = new TutorDAO();
-            ArrayList<Tutor> tutors = (ArrayList<Tutor>)request.getAttribute("tutors");;
+            ArrayList<Tutor> tutors = (ArrayList<Tutor>) request.getAttribute("tutors");;
             int toShow = 8; //change according to no. of record shows
-            if(tutors == null || tutors.isEmpty()){
+            if (tutors == null || tutors.isEmpty()) {
                 tutors = tutorDAO.retrieveAllTutorsByLimit(0, toShow, branch_id);
-            }else{
+            } else {
                 tutors = (ArrayList<Tutor>) request.getAttribute("tutors");
             }
-           
-            if (tutors != null && !tutors.isEmpty()) {              
+
+            if (tutors != null && !tutors.isEmpty()) {
                 for (Tutor tu : tutors) {
                     String dob = tu.getBirth_date();
                     int id = tu.getTutorId();
@@ -136,33 +134,32 @@
 
             %>
     </ul>
-<%
-    String pageId = (String)request.getAttribute("id");
-    int id = 1;
-    if(pageId != null){
-        id = Integer.parseInt(pageId);
-    }
-    int totalpage = tutorDAO.retrieveNumberOfTutorByBranch(branch_id);
-    double total = totalpage/(toShow*1.0);
-    int totalPage = (int)Math.ceil(total);
-%> 
-    <nav aria-label="Page navigation example" class="text-center">
-  <ul class="pagination">
-    <%
-        for(int i = 1; i <= totalPage; i++){
-            if(id != 0 && id == i){
-    %>
-    <li class="page-item active"><a class="page-link" href="PaginationTutorServlet?page=<%=i%>&toShow=<%=toShow%>&branch=<%=branch_id%>"><%=i%></a></li>
-    <%
-            }else{
-    %>
-    <li class="page-item"><a class="page-link" href="PaginationTutorServlet?page=<%=i%>&toShow=<%=toShow%>&branch=<%=branch_id%>"><%=i%></a></li>
-    <%
-            }
+    <%    String pageId = (String) request.getAttribute("id");
+        int id = 1;
+        if (pageId != null) {
+            id = Integer.parseInt(pageId);
         }
-    %>
-</ul> 
-</nav>
+        int totalpage = tutorDAO.retrieveNumberOfTutorByBranch(branch_id);
+        double total = totalpage / (toShow * 1.0);
+        int totalPage = (int) Math.ceil(total);
+    %> 
+    <nav aria-label="Page navigation example" class="text-center">
+        <ul class="pagination">
+            <%
+                for (int i = 1; i <= totalPage; i++) {
+                    if (id != 0 && id == i) {
+            %>
+            <li class="page-item active"><a class="page-link" href="PaginationTutorServlet?page=<%=i%>&toShow=<%=toShow%>&branch=<%=branch_id%>"><%=i%></a></li>
+                <%
+                } else {
+                %>
+            <li class="page-item"><a class="page-link" href="PaginationTutorServlet?page=<%=i%>&toShow=<%=toShow%>&branch=<%=branch_id%>"><%=i%></a></li>
+                <%
+                        }
+                    }
+                %>
+        </ul> 
+    </nav>
 </div>
 </div>
 </div>
@@ -240,7 +237,7 @@
                         <p class = "form-control-label">Qualification :</p>
                     </div>
                     <div class = "col-sm-8">
-                        <p><div id="view_image_container">No Image</div></p>
+                        <p><label id="view_quali">-</label></p>
                     </div>
                 </div><br/>
 
@@ -373,7 +370,7 @@
                     </div>
                 </div><br/>
 
-              
+
 
             </div>  
 
@@ -392,199 +389,194 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.css" rel="stylesheet">
 
 <script>
-$(document).ready(function () {
+                    $(document).ready(function () {
 
-    $('#dob').datetimepicker({
-        format: 'DD-MM-YYYY'
-    });
+                        $('#dob').datetimepicker({
+                            format: 'DD-MM-YYYY'
+                        });
 
-    if ($('#creation_status').length) {
-        $('#creation_status').fadeIn().delay(2000).fadeOut();
-    }
+                        if ($('#creation_status').length) {
+                            $('#creation_status').fadeIn().delay(2000).fadeOut();
+                        }
 
-    $("#viewTutor").on("show.bs.modal", function (e) {
-        var tutor_id = $(e.relatedTarget).data('target-id');
-        $.ajax({
-            url: 'RetrieveTutorServlet',
-            dataType: 'JSON',
-            data: {tutorID: tutor_id},
-            success: function (data) {
-                if(data["nric"] != ""){
-                    $("#view_tutor_nric").text(data["nric"]);
-                }
-                $("#view_tutor_name").text(data["fullname"]);
-                if (data["phone"] !== "") {
-                    $("#view_phone").text(data["phone"]);
-                }
-                if (data["address"] !== "") {
-                    $("#view_address").text(data["address"]);
-                }
+                        $("#viewTutor").on("show.bs.modal", function (e) {
+                            var tutor_id = $(e.relatedTarget).data('target-id');
+                            $.ajax({
+                                url: 'RetrieveTutorServlet',
+                                dataType: 'JSON',
+                                data: {tutorID: tutor_id},
+                                success: function (data) {
+                                    if (data["nric"] != "") {
+                                        $("#view_tutor_nric").text(data["nric"]);
+                                    }
+                                    $("#view_tutor_name").text(data["fullname"]);
+                                    if (data["phone"] !== "") {
+                                        $("#view_phone").text(data["phone"]);
+                                    }
+                                    if (data["address"] !== "") {
+                                        $("#view_address").text(data["address"]);
+                                    }
 
-                if (data['qualification'] !== "") {
-                    $("#qualification").val(data['qualification']);
-                }
+                                    $("#view_quali").text(data.qualification);
 
-                if (data["birth_date"] !== "") {
-                    $("#view_birthDate").text(data["birth_date"]);
-                }
+                                    if (data["birth_date"] !== "") {
+                                        $("#view_birthDate").text(data["birth_date"]);
+                                    }
 
-                if (data["gender"] === "F") {
-                    $("#view_gender").text("Female");
-                } else if (data["gender"] === "M") {
-                    $("#view_gender").text("Male");
-                }
+                                    if (data["gender"] === "F") {
+                                        $("#view_gender").text("Female");
+                                    } else if (data["gender"] === "M") {
+                                        $("#view_gender").text("Male");
+                                    }
 
-                if (data["branch"] !== "") {
-                    $("#branch").val(data["branch"]);
-                }
+                                    if (data["branch"] !== "") {
+                                        $("#branch").val(data["branch"]);
+                                    }
 
-                $("#view_email").text(data["email"]);
+                                    $("#view_email").text(data["email"]);
 
-            }
-        });
+                                }
+                            });
 
-    });
+                        });
 
-    $("#editTutor").on("show.bs.modal", function (e) {
-        var tutor_id = $(e.relatedTarget).data('target-id');
-        $("#tutor_nric").attr('readonly', false);
-        $("#tutor_nric").val("");
-        $("#dob").val("");
-        $('#qualification').val("");
+                        $("#editTutor").on("show.bs.modal", function (e) {
+                            var tutor_id = $(e.relatedTarget).data('target-id');
+                            $("#tutor_nric").attr('readonly', false);
 
-        $("#dob").attr('readonly', false);
+                            $("#dob").attr('readonly', false);
 
-        $.ajax({
-            url: 'RetrieveTutorServlet',
-            dataType: 'JSON',
-            data: {tutorID: tutor_id},
-            success: function (data) {
+                            $.ajax({
+                                url: 'RetrieveTutorServlet',
+                                dataType: 'JSON',
+                                data: {tutorID: tutor_id},
+                                success: function (data) {
 
-                $("#tutor_id").val(data["id"]);
-                if (data["nric"] !== "") {
-                    $("#tutor_nric").val(data["nric"]);
-                    $("#tutor_nric").attr('readonly', true);
-                }
-                $("#tutor_name").val(data["fullname"]);
-                $("#tutor_name").attr('readonly', true);
-                $("#phone").val(data["phone"]);
-                $("#address").val(data["address"]);
+                                    $("#tutor_id").val(data["id"]);
+                                    if (data["nric"] !== "") {
+                                        $("#tutor_nric").val(data["nric"]);
+                                        $("#tutor_nric").attr('readonly', true);
+                                    }
+                                    $("#tutor_name").val(data["fullname"]);
+                                    $("#tutor_name").attr('readonly', true);
+                                    $("#phone").val(data["phone"]);
+                                    $("#address").val(data["address"]);
 
 
-                if (data['qualication'] !== null) {
-                    $("#qualification").val(data['qualification']);
-                }
+                                    if (data.hasOwnProperty('qualification')) {
+                                        $("#qualification").val(data['qualification']);
+                                    }
 
-                if (data["birth_date"] !== "") {
-                    $("#dob").val(data["birth_date"]);
-                    $("#dob").attr('readonly', true);
-                }
+                                    if (data["birth_date"] !== "") {
+                                        $("#dob").val(data["birth_date"]);
+                                        $("#dob").attr('readonly', true);
+                                    }
 
-                if (data["gender"] !== "" && data["gender"] === "F") {
-                    html = "<label>Female</label><input type='hidden' id='gender' value='F'/>";    
-                    $("#gender_container").html(html);
-                }else if(data["gender"] === "M"){
-                    html = "<label>Male</label><input type='hidden' id='gender' value='M' />";
-                    $("#gender_container").html(html);
-                }else{
-                    html = "<select class='form-control' id='gender'><option value=''>Select Gender</option><option value='F'>Female</option><option value='M'>Male</option></select>";
-                    $("#gender_container").html(html);
-                }
+                                    if (data["gender"] !== "" && data["gender"] === "F") {
+                                        html = "<label>Female</label><input type='hidden' id='gender' value='F'/>";
+                                        $("#gender_container").html(html);
+                                    } else if (data["gender"] === "M") {
+                                        html = "<label>Male</label><input type='hidden' id='gender' value='M' />";
+                                        $("#gender_container").html(html);
+                                    } else {
+                                        html = "<select class='form-control' id='gender'><option value=''>Select Gender</option><option value='F'>Female</option><option value='M'>Male</option></select>";
+                                        $("#gender_container").html(html);
+                                    }
 
-                if (data["branch"] !== "") {
-                    $("#branch").val(data["branch"]);
-                }
+                                    if (data["branch"] !== "") {
+                                        $("#branch").val(data["branch"]);
+                                    }
 
-                $("#email").val(data["email"]);
+                                    $("#email").val(data["email"]);
 
-            }
-        });
+                                }
+                            });
 
-    });
-});
+                        });
+                    });
 
-(function () {
-    $(function () {
-        return $('[data-toggle]').on('click', function () {
-            var toggleView;
-            toggleView = $(this).addClass('active').attr('data-toggle');
-            if(toggleView !== "dropdown"){
-                $(this).siblings('[data-toggle]').removeClass('active');
-                if (toggleView !== "modal") {
-                    return $('.surveys').removeClass('grid list').addClass(toggleView);
-                }
-            }
-        });
-    });
-}).call(this);
-
-
-function deleteTutor(tutor_id) {
-    $("#confirm_btn").prop('onclick', null).off('click');
-    $("#confirm_btn").click(function () {
-        deleteTutorQueryAjax(tutor_id);
-    });
-}
+                    (function () {
+                        $(function () {
+                            return $('[data-toggle]').on('click', function () {
+                                var toggleView;
+                                toggleView = $(this).addClass('active').attr('data-toggle');
+                                if (toggleView !== "dropdown") {
+                                    $(this).siblings('[data-toggle]').removeClass('active');
+                                    if (toggleView !== "modal") {
+                                        return $('.surveys').removeClass('grid list').addClass(toggleView);
+                                    }
+                                }
+                            });
+                        });
+                    }).call(this);
 
 
-function deleteTutorQueryAjax(tutor_id) {
-    $('#small').modal('hide');
-    $("#tid_" + tutor_id).remove();
-    $.ajax({
-        type: 'POST',
-        url: 'DeleteTutorServlet',
-        dataType: 'JSON',
-        data: {tutorID: tutor_id},
-        success: function (data) {
-            if (data === 1) {
-                $("#tid_" + tutor_id).remove();
-                html = '<div class="alert alert-success col-md-12"><strong>Success!</strong> Deleted Tutor record successfully</div>';
-            } else {
-                html = '<div class="alert alert-danger col-md-12"><strong>Sorry!</strong> Something went wrong</div>';
-            }
-
-            $("#errorMsg").html(html);
-            $('#errorMsg').fadeIn().delay(1000).fadeOut();
-        }
-    });
-}
+                    function deleteTutor(tutor_id) {
+                        $("#confirm_btn").prop('onclick', null).off('click');
+                        $("#confirm_btn").click(function () {
+                            deleteTutorQueryAjax(tutor_id);
+                        });
+                    }
 
 
-function editTutor() {
-        id = $("#tutor_id").val();
-        nric = $("#tutor_nric").val();
-        phone = $("#phone").val();
-        address = $("#address").val();
+                    function deleteTutorQueryAjax(tutor_id) {
+                        $('#small').modal('hide');
+                        $("#tid_" + tutor_id).remove();
+                        $.ajax({
+                            type: 'POST',
+                            url: 'DeleteTutorServlet',
+                            dataType: 'JSON',
+                            data: {tutorID: tutor_id},
+                            success: function (data) {
+                                if (data === 1) {
+                                    $("#tid_" + tutor_id).remove();
+                                    html = '<div class="alert alert-success col-md-12"><strong>Success!</strong> Deleted Tutor record successfully</div>';
+                                } else {
+                                    html = '<div class="alert alert-danger col-md-12"><strong>Sorry!</strong> Something went wrong</div>';
+                                }
 
-        qualification = $("#qualication").val();
-        dob = $("#dob").val();
-        gender = $("#gender").val();
-        email = $("#email").val();
+                                $("#errorMsg").html(html);
+                                $('#errorMsg').fadeIn().delay(1000).fadeOut();
+                            }
+                        });
+                    }
 
-        $('#editTutor').modal('hide');
 
-        $.ajax({
-            type: 'POST',
-            url: 'UpdateTutorServlet',
-            dataType: 'JSON',
-            data: {tutorID: id,nric:nric,phone:phone,address:address,image:qualification,dob:dob,gender:gender,email:email},
-            success: function (data) {
-                if (data === 1) {
-                    $("#name_" + id).text(name);
-                    $("#email_" + id).text(email);
-                    $("#gender_" + id).text(gender);
-                    $("#phone_" + id).text(phone);
+                    function editTutor() {
+                        id = $("#tutor_id").val();
+                        nric = $("#tutor_nric").val();
+                        phone = $("#phone").val();
+                        address = $("#address").val();
 
-                    html = '<div class="alert alert-success col-md-12"><strong>Success!</strong> Update Tutor record successfully</div>';
-                } else {
-                    html = '<div class="alert alert-danger col-md-12"><strong>Sorry!</strong> Something went wrong</div>';
-                }
+                        qualification = $("#qualification").val();
+                        dob = $("#dob").val();
+                        gender = $("#gender").val();
+                        email = $("#email").val();
 
-                $("#errorMsg").html(html);
-                $('#errorMsg').fadeIn().delay(2000).fadeOut();
-            }
-        });
-    }
+                        $('#editTutor').modal('hide');
+
+                        $.ajax({
+                            type: 'POST',
+                            url: 'UpdateTutorServlet',
+                            dataType: 'JSON',
+                            data: {tutorID: id, nric: nric, phone: phone, address: address, qualification: qualification, dob: dob, gender: gender, email: email},
+                            success: function (data) {
+                                if (data.status === 1) {
+                                    $("#name_" + id).text(data.name);
+                                    $("#email_" + id).text(email);
+                                    $("#gender_" + id).text(gender);
+                                    $("#phone_" + id).text(phone);
+
+                                    html = '<div class="alert alert-success col-md-12"><strong>Success!</strong> Update Tutor record successfully</div>';
+                                } else {
+                                    html = '<div class="alert alert-danger col-md-12"><strong>Sorry!</strong> Something went wrong</div>';
+                                }
+
+                                $("#errorMsg").html(html);
+                                $('#errorMsg').fadeIn().delay(2000).fadeOut();
+                            }
+                        });
+                    }
 
 
 </script>

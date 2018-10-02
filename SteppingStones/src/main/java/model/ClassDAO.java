@@ -302,7 +302,7 @@ public class ClassDAO {
     public int insertClass(int level, int subject, int term, int hasReminderForFees, int branch, String startTime, String endTime, String classDay, double mthlyFees, String startDate, String endDate) {
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            String sql = "INSERT into CLASS (level_id, subject_id, term, fees, has_reminder_for_fees, start_time, end_time, class_day, start_date, end_date, branch_id)"
+            String sql = "INSERT into class (level_id, subject_id, term, fees, has_reminder_for_fees, start_time, end_time, class_day, start_date, end_date, branch_id)"
                     + "VALUES (?,?,?,?,?,?,?,?,?,?)";
             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             stmt.setInt(1, level);
@@ -332,7 +332,7 @@ public class ClassDAO {
 
     public static int createClass(String classType,int level, int subject,double mthlyFees, int hasReminderForFees, String startTime, String endTime, String classDay, String startDate, String endDate, int branch, int tutorId, String holidays) {
         try (Connection conn = ConnectionManager.getConnection();) {
-            String sql = "INSERT into CLASS (level_id, subject_id,fees,has_reminder_for_fees,start_time, end_time, class_day, start_date, end_date,branch_id,tutor_id, class_type, holiday_date)"
+            String sql = "INSERT into class (level_id, subject_id,fees,has_reminder_for_fees,start_time, end_time, class_day, start_date, end_date,branch_id,tutor_id, class_type, holiday_date)"
                     + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
 
