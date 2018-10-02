@@ -83,6 +83,26 @@ public class TutorHourlyRateDAO {
         return false;
     }
     
+    public static Boolean deleteTutorPayRate(int tutor_id,int level_id,int subject_id,int branch_id){
+        String update_pay = "DELETE FROM tutor_hourly_rate WHERE tutor_id=? AND level_id=? AND subject_id=? AND branch_id=? ";
+        try (Connection conn = ConnectionManager.getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(update_pay)) {
+            preparedStatement.setInt(1, tutor_id);
+            preparedStatement.setInt(2,level_id);
+            preparedStatement.setInt(3,subject_id);
+            preparedStatement.setInt(4,branch_id);
+            
+            int num = preparedStatement.executeUpdate();
+            if (num != 0) {
+                return true;
+            }
+
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return false;
+    }
+    
     public static ArrayList<Tutor> tutorListInPayTable(int branch_id,int subject_id,int level_id){
         ArrayList<Tutor> tutorListsWithoutHourlyPay = new ArrayList<>();
         String mysql = "SELECT t.tutor_id,t.tutor_fullname,r.hourly_pay FROM tutor as t, tutor_hourly_rate as r "

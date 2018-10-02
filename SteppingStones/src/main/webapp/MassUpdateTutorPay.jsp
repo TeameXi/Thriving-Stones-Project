@@ -60,6 +60,25 @@
 </div>
 </div>
 </div>
+
+<div class="modal fade bs-modal-sm" id="small" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <span class="pc_title centered">Alert</span>
+            </div>
+            <div class="modal-body smaller-fonts centered">Are you sure you want to delete this item?</div>
+            <div class="modal-footer centered">
+                <a id="confirm_btn"><button type="button" class="small_button pw_button del_button autowidth">Yes, Remove</button></a>
+                <button type="button" class="small_button del_button pw_button autowidth" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
 <%@include file="footer.jsp"%>
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.18/b-1.5.2/b-html5-1.5.2/r-2.2.2/datatables.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
@@ -75,10 +94,10 @@
 <script>
     function format (num,d,existingTutorData,levelID,subjectID,branchID) {
         html = "";
-        if(num == 1 || num == 2){
+        if(num === 1 || num === 2){
             html = d;
         }else{
-            html ="<div id='existingTutorWrapper'></div>";
+            html ="</hr><div id='existingTutorWrapper'></div>";
             if(existingTutorData.length > 0){
                 html += existingTutorFormat(existingTutorData,levelID,subjectID,branchID);
             }
@@ -120,30 +139,73 @@
         return html;
     }
     
+   
+    
     function existingTutorFormat(existingTutorData,levelID,subjectID,branchID){
         var existingContainerHtml = "";
         existingContainerHtml = '<div class="row"><div class="col-md-1"></div><div class="col-md-10"><h4 class="centered">Existing Tutor Hourly Pay Rate</h4><div class="statusMsg"></div>';
            
         existingContainerHtml += "<table class='table' id='existingTutorTable'><thead><th>Existing Tutor</th><th>PayRate</th><th>Action</th></thead><tbody>";
         for(i = 0 ; i < existingTutorData.length;i++){
+            ids = existingTutorData[i].id+':'+levelID+':'+subjectID+':'+branchID;
+            console.log(ids);
             existingContainerHtml +=
-                '<tr id="'+i+'">'+ 
+                '<tr id="'+ids+'">'+ 
                     '<td class="input-disabled">'+existingTutorData[i].name+
                     '</td>'+
-                '<td><a href="#" class="edit_payrate" data-name="payrate"  data-pk="'+existingTutorData[i].id+':'+levelID+':'+subjectID+':'+branchID+'" data-title="Enter Tutor Cost">'+ existingTutorData[i].pay+'</a></td>'+
-                '<td><button class="btn btn-danger btn-sm">Delete</button></td>'+
+                '<td><a href="#" class="edit_payrate" data-name="payrate"  data-pk="'+ids+'" data-title="Enter Tutor Cost">'+ existingTutorData[i].pay+'</a></td>'+
+                '<td><a data-toggle="modal" class="btn btn-danger btn-sm" href="#small" onclick="deleteTutorRate('+"'"+ids+"'"+')" ><i class="zmdi zmdi-delete"></i> Delete</a></td>'+
                 '</tr>';
         }
         existingContainerHtml += '</tbody></table>';
+        
+        
         return existingContainerHtml;
     }
     
+    function deleteTutorRate(tutor_id) {
+        $("#confirm_btn").prop('onclick', null).off('click');
+        $("#confirm_btn").click(function () {
+            deleteTutorRateQueryAjax(tutor_id);
+        });
+        return false;
+    }
 
+    function deleteTutorRateQueryAjax(tutor_id) {
+        $('#small').modal('hide');
+        
+        $.ajax({    
+            type:'POST',
+            url: 'UpdateAndDeleteTutorHourlyRate',
+            data:{ tutorID:tutor_id,action:"delete"},
+            dataType: "json",
+            success: function(response) {
+                if(response === 1){
+                    html = '<br/><div class="alert alert-success col-md-12"><strong>Success!</strong> Delete successfully</div>';
+                    deleteRow(tutor_id); 
+                }else{
+                    html = '<br/><div class="alert alert-danger col-md-12"><strong>Sorry!</strong> Something went wrong</div>';   
+                }
+                $(".statusMsg").html(html);
+                $('.statusMsg').fadeIn().delay(1000).fadeOut();
+            }
+        });
+        
+    }
+   
+    function deleteRow(rowid){   
+        var row = document.getElementById(rowid);
+        var table = row.parentNode;
+        while ( table && table.tagName !== 'TABLE' )
+            table = table.parentNode;
+        if ( !table )
+            return;
+        table.deleteRow(row.rowIndex);
+    }
+    
     
     $(document).ready(function () {
         // Dynamic Added Field
-      
-        
         var table = $('#tutorHourlyRateTable').DataTable({
             "columns": [
                 {
@@ -223,83 +285,93 @@
                                                 data:{ tutorID:params["pk"],action:"edit",
                                                         payRate:params["value"]},
                                                 dataType: "json",
-                                                complete: function(response) {
-                                                    $('#output').html(response.responseText);
-                                                },
-                                                error: function() {
-                                                    $('#output').html('Bummer: there was an error!');
-                                                },
+                                                success: function(response) {
+                                                    console.log(response);
+                                                    if(response === 1){
+                                                        html = '<br/><div class="alert alert-success col-md-12"><strong>Success!</strong> Updated successfully</div>';
+                                                    }else{
+                                                        html = '<br/><div class="alert alert-danger col-md-12"><strong>Sorry!</strong> Something went wrong</div>';   
+                                                    }
+                                                    $(".statusMsg").html(html);
+                                                    $('.statusMsg').fadeIn().delay(1000).fadeOut();
+                                                }
                                             });
                                         },
                                         send: 'always',
                                         type: 'number',
+                                        step:'any',
                                         pk: 1
                                     });
+                                    
+                                 
+      
                                 }
                                 
-                                $('#payrateForm')
-                                    .bootstrapValidator({
-                                       feedbackIcons: {
-                                           valid: 'glyphicon glyphicon-ok',
-                                           invalid: 'glyphicon glyphicon-remove',
-                                           validating: 'glyphicon glyphicon-refresh'
-                                       },
-                                       fields: {
-                                           'payRate[]': {
-                                               validators: {
-                                                   notEmpty: {
-                                                       message: 'Enter number'
-                                                   }
+                                  
+                                
+                            $('#payrateForm')
+                                .bootstrapValidator({
+                                   feedbackIcons: {
+                                       valid: 'glyphicon glyphicon-ok',
+                                       invalid: 'glyphicon glyphicon-remove',
+                                       validating: 'glyphicon glyphicon-refresh'
+                                   },
+                                   fields: {
+                                       'payRate[]': {
+                                           validators: {
+                                               notEmpty: {
+                                                   message: 'Enter number'
                                                }
                                            }
                                        }
-                                   })
-                                    // Add button click handler
-                                    .on('click', '.addButton', function() {
-                                        var $template = $('#optionTemplate'),
-                                            $clone    = $template
-                                                            .clone()
-                                                            .removeClass('hide')
-                                                            .removeAttr('id')
-                                                            .insertBefore($template),
-                                            $option   = $clone.find('[name="payRate[]"]');
+                                   }
+                               })
+                                // Add button click handler
+                                .on('click', '.addButton', function() {
+                                    var $template = $('#optionTemplate'),
+                                        $clone    = $template
+                                                        .clone()
+                                                        .removeClass('hide')
+                                                        .removeAttr('id')
+                                                        .insertBefore($template),
+                                        $option   = $clone.find('[name="payRate[]"]');
 
-                                        // Add new field
-                                        $('#payrateForm').bootstrapValidator('addField', $option);
-                                    })
-                                    // Remove button click handler
-                                    .on('click', '.removeButton', function() {
-                                        var $row    = $(this).parents('.form-group'),
-                                        $option = $row.find('[name="payRate[]"]');
+                                    // Add new field
+                                    $('#payrateForm').bootstrapValidator('addField', $option);
+                                })
+                                // Remove button click handler
+                                .on('click', '.removeButton', function() {
+                                    var $row    = $(this).parents('.form-group'),
+                                    $option = $row.find('[name="payRate[]"]');
 
-                                        // Remove element containing the option
-                                        $row.remove();
+                                    // Remove element containing the option
+                                    $row.remove();
 
-                                        // Remove field
-                                        $('#payrateForm').bootstrapValidator('removeField', $option);
-                                    })
-                                    // Called after adding new field
-                                    .on('added.field.bv', function(e, data) {
-                                        // data.field   --> The field name
-                                        // data.element --> The new field element
-                                        // data.options --> The new field options
+                                    // Remove field
+                                    $('#payrateForm').bootstrapValidator('removeField', $option);
+                                })
+                                // Called after adding new field
+                                .on('added.field.bv', function(e, data) {
+                                    // data.field   --> The field name
+                                    // data.element --> The new field element
+                                    // data.options --> The new field options
 
-                                        if (data.field === 'option[]') {
-                                            if ($('#payrateForm').find(':visible[name="payRate[]"]').length >= MAX_OPTIONS) {
-                                                $('#payrateForm').find('.addButton').attr('disabled', 'disabled');
-                                            }
+                                    if (data.field === 'option[]') {
+                                        if ($('#payrateForm').find(':visible[name="payRate[]"]').length >= MAX_OPTIONS) {
+                                            $('#payrateForm').find('.addButton').attr('disabled', 'disabled');
                                         }
-                                    })
-                                    // Called after removing the field
-                                     .on('removed.field.bv', function(e, data) {
-                                         if (data.field === 'option[]') {
-                                             if ($('#payrateForm').find(':visible[name="option[]"]').length < MAX_OPTIONS) {
-                                                 $('#payrateForm').find('.addButton').removeAttr('disabled');
-                                             }
-                                          }
-                                     })
-                                    //submit
-                                    .on('success.form.bv',function(e){
+                                    }
+                                })
+                                // Called after removing the field
+                                 .on('removed.field.bv', function(e, data) {
+                                     if (data.field === 'option[]') {
+                                         if ($('#payrateForm').find(':visible[name="option[]"]').length < MAX_OPTIONS) {
+                                             $('#payrateForm').find('.addButton').removeAttr('disabled');
+                                         }
+                                      }
+                                 })
+                                //submit
+                                .on('success.form.bv',function(e){
                                         e.preventDefault(); // <----- THIS IS NEEDED
 
                                         $('#submitPayRateBtn').prop('disabled', true);
@@ -377,3 +449,4 @@
         });
     });
 </script>
+

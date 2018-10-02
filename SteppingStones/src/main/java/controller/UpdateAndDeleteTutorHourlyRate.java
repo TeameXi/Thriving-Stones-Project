@@ -37,7 +37,7 @@ public class UpdateAndDeleteTutorHourlyRate extends HttpServlet {
             /* TODO output your page here. You may use following sample code. */
             String action = request.getParameter("action");
             String ids = request.getParameter("tutorID");
-            String pay = request.getParameter("payRate");
+           
             
             int tutorId = 0;
             int levelId = 0;
@@ -54,15 +54,17 @@ public class UpdateAndDeleteTutorHourlyRate extends HttpServlet {
                 }
             }
             
-            if(!pay.equals("")){
-                payRate = Double.parseDouble(pay);
-            }
+         
             //System.out.println(tutorId+":"+levelId+":"+subjectId);
-            if(tutorId ==0 || levelId == 0 || subjectId == 0 || branchId == 0 || payRate == 0){
+            if(tutorId ==0 || levelId == 0 || subjectId == 0 || branchId == 0){
                 out.println(-1);
             }else{
                 switch(action){
                     case "edit":
+                        String pay = request.getParameter("payRate");
+                        if(!pay.equals("")){
+                            payRate = Double.parseDouble(pay);
+                        }
                         boolean updateStatus = TutorHourlyRateDAO.updateTutorPayRate(tutorId, levelId, subjectId, branchId,payRate);
                         if(updateStatus){
                             out.println(1);
@@ -71,7 +73,12 @@ public class UpdateAndDeleteTutorHourlyRate extends HttpServlet {
                         }
                         break;
                     case "delete":
-                        out.println(2);
+                        boolean deleteStatus = TutorHourlyRateDAO.deleteTutorPayRate(tutorId, levelId, subjectId, branchId);
+                        if(deleteStatus){
+                            out.println(1);
+                        }else{
+                            out.println(-1);
+                        }
                         break;
                     default:
                         out.println(-1);

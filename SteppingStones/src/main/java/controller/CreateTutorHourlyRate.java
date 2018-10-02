@@ -52,8 +52,8 @@ public class CreateTutorHourlyRate extends HttpServlet {
                     double payRate = currObj.getDouble("hourly_pay");
                     sqlOneRecord +="("+tutorId+","+levelId+","
                             +subjectId+","+branchId+","+payRate+")";
-                    System.out.println(sqlOneRecord);
-                    System.out.println(subjectId);
+//                    System.out.println(sqlOneRecord);
+//                    System.out.println(subjectId);
                     payRateRecord.add(sqlOneRecord);
                 }
                 
