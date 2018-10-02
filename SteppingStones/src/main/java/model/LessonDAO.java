@@ -334,7 +334,7 @@ public class LessonDAO {
                 ResultSet rs = stmt.executeQuery();
 
                 while (rs.next()) {
-                    if (rs.getBoolean(1)) {
+                    if ((1 == rs.getInt(1))) {
                         attended += 1;
                     }
                 }
