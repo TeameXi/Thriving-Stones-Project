@@ -35,27 +35,24 @@ public class UpdateTutorServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        Map<String, Object> updates = new HashMap<>();
-
         try (PrintWriter out = response.getWriter()) {
             String tutorID = request.getParameter("tutorID");
-            if(tutorID != ""){
+            if(!tutorID.equals("")){
                 int id = Integer.parseInt(tutorID);
                 String nric = request.getParameter("nric");
  
                 int phone = 0;
-                if(request.getParameter("phone")!= ""){
+                if(!request.getParameter("phone").equals("")){
                     phone = Integer.parseInt(request.getParameter("phone"));
                 }
                 String address = request.getParameter("address");
-                String image = request.getParameter("image");
+                String qualification = request.getParameter("qualification");
                 String dob = request.getParameter("dob");
                 String gender = request.getParameter("gender").trim();
                 String email = request.getParameter("email");
 
                 TutorDAO tutorDao = new TutorDAO();
-                boolean status = tutorDao.updateTutor(id,nric,phone,address,image,dob,gender,email);
+                boolean status = tutorDao.updateTutor(id,nric,phone,address,qualification,dob,gender,email);
                 if(status){
                     out.println(1);
                 }else{

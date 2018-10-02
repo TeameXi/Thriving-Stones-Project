@@ -52,8 +52,6 @@ public class UploadTutorServlet extends HttpServlet {
             String birth_dates[] = request.getParameterValues("con_birthdates[]");
             String genders[] = request.getParameterValues("con_genders[]");
             String emails[] = request.getParameterValues("con_emails[]");
-            //String passwords[] = request.getParameterValues("con_pwd[]");
-            String hourlyRate[] = request.getParameterValues("con_rate[]");
             String qualification[] = request.getParameterValues("con_qualification[]");
             int branch_id = 0; 
             if(request.getParameter("branch") != null && request.getParameter("branch") != ""){

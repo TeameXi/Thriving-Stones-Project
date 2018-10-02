@@ -35,14 +35,16 @@ function checkCSVExtension(file_upload_id, error_lbl_id, append_container, optio
 
             if (option === 'tutor') {
                 var header = data[1];
-                if (header.length === 9 && header[0] === "Tutor NRIC" && header[1] === "Full Name"
+                console.log(header[0]);
+                console.log(header.length);
+                if (header.length === 8 && header[0] === "Tutor NRIC" && header[1] === "Full Name"
                         && header[2] === "Phone" && header[3] === "Address"
                         && header[4] === "Birth Date (DD-MM-YYYY)"
-                        && header[5] === "Gender (F/M)" && header[6] === "Email" && header[7] === "Hourly Rate" && header[8] === "Qualification") {
+                        && header[5] === "Gender (F/M)" && header[6] === "Email" && header[7] === "Qualification") {
                     $("#" + append_container).html("");
                     processCSVTutorData(data, append_container, error_el, branch_id);
                 } else {
-                    $(error_el).html("<span style='color:red;'>Invalid Template " + (header[0]) + "</span>");
+                    $(error_el).html("<span style='color:red;'>Invalid Template</span>");
                 }
             } else {
                 var header = data[1];
@@ -92,8 +94,7 @@ function processCSVTutorData(csv_data, append_container, error_el, branch_id) {
         Birth_date = csv_data[i][4];
         Gender = csv_data[i][5];
         Email = csv_data[i][6];
-        Hourly_Rate = csv_data[i][7];
-        Qualification = csv_data[i][8];
+        Qualification = csv_data[i][7];
 
         html += "<div class='row' rel='" + i + "' id='row_con_" + i + "'>" +
                 "<div class='col-sm-1 bold'></div>" +
@@ -101,10 +102,8 @@ function processCSVTutorData(csv_data, append_container, error_el, branch_id) {
                 "<input type='text' name='con_username[]' id='con_username_" + i + "' class='form-control' value='" + Name + "' readonly='readonly'>" +
                 "<input type='hidden' name='con_nric[]' id='con_nric_" + i + "' class='form-control' value = '" + Nric + "'>" +
                 "<input type='hidden' name='con_addresses[]' id='con_addresses_" + i + "' class='form-control' value = '" + Address + "'>" +
-                //"<input type='hidden' name='con_images[]' id='con_images_" + i + "' class='form-control' value = '" + Image + "'>" +
                 "<input type='hidden' name='con_birthdates[]' id='con_birthdates_num_" + i + "' class='form-control' value = '" + Birth_date + "'>" +
                 "<input type='hidden' name='con_genders[]' id='con_genders_num_" + i + "' class='form-control' value = '" + Gender + "'>" +
-                "<input type='hidden' name='con_rate[]' id='con_rate_" + i + "' class='form-control' value = '" + Hourly_Rate + "'>" +
                 "<input type='hidden' name='con_qualification[]' id='con_qualification_" + i + "' class='form-control' value = '" + Qualification + "'>" +
                 "</div>" +
                 "<div class='col-sm-3'>" +
@@ -113,9 +112,6 @@ function processCSVTutorData(csv_data, append_container, error_el, branch_id) {
                 "<div class='col-sm-3'>" +
                 "<input type='text' name='con_emails[]' id='con_emails_num_" + i + "' class='form-control' value='" + Email + "' readonly='readonly'>" +
                 "</div>" +
-                //"<div class='col-sm-2'>" +
-                //"<input type='text' name='con_pwd[]' id='con_pwd_num_" + i + "' class='form-control' value='" + generatePassword(16) + "' readonly='readonly'>" +
-                //"</div>" +
                 "<div class='col-sm-1'></div></div><br/>";
 
 
@@ -160,6 +156,7 @@ function processCSVStudentData(csv_data, append_container, error_el, branch_id) 
 
     }
     for (var i = 2; i < csv_data.length - 1; i++) {
+        console.log(csv_data[i]);
         Nric = csv_data[i][0];
         Name = csv_data[i][1];
         Phone = csv_data[i][2];

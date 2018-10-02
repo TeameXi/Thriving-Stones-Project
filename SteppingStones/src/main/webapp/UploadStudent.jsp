@@ -28,7 +28,7 @@
 
 %> 
 <div class="col-md-10">
-    <div style="text-align: center;margin: 20px;"><a href="CreateStudent.jsp">Add Student </a> / <a class="active" href="UploadStudent.jsp">Upload Students</a></h5></div>
+    <div style="text-align: center;margin: 20px;"><a href="CreateStudent.jsp">Add Student </a> / <span class="tab_active">Upload Students</span></h5></div>
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-5 form" id='upload_container'>

@@ -240,7 +240,7 @@
                         <p class = "form-control-label">Qualification :</p>
                     </div>
                     <div class = "col-sm-8">
-                        <p><div id="view_image_container">No Image</div></p>
+                        <p><label id="view_qualification">-</label></p>
                     </div>
                 </div><br/>
 
@@ -421,7 +421,7 @@ $(document).ready(function () {
                 }
 
                 if (data['qualification'] !== "") {
-                    $("#qualification").val(data['qualification']);
+                    $("#view_qualification").text(data['qualification']);
                 }
 
                 if (data["birth_date"] !== "") {
@@ -455,11 +455,11 @@ $(document).ready(function () {
         $("#dob").attr('readonly', false);
 
         $.ajax({
+      
             url: 'RetrieveTutorServlet',
             dataType: 'JSON',
             data: {tutorID: tutor_id},
             success: function (data) {
-
                 $("#tutor_id").val(data["id"]);
                 if (data["nric"] !== "") {
                     $("#tutor_nric").val(data["nric"]);
@@ -556,18 +556,18 @@ function editTutor() {
         phone = $("#phone").val();
         address = $("#address").val();
 
-        qualification = $("#qualication").val();
+        qualification = $("#qualification").val();
         dob = $("#dob").val();
         gender = $("#gender").val();
         email = $("#email").val();
 
         $('#editTutor').modal('hide');
-
+       
         $.ajax({
             type: 'POST',
             url: 'UpdateTutorServlet',
             dataType: 'JSON',
-            data: {tutorID: id,nric:nric,phone:phone,address:address,image:qualification,dob:dob,gender:gender,email:email},
+            data: {tutorID: id,nric:nric,phone:phone,address:address,qualification:qualification,dob:dob,gender:gender,email:email},
             success: function (data) {
                 if (data === 1) {
                     $("#name_" + id).text(name);
