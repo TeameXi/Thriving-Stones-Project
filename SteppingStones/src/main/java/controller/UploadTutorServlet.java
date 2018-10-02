@@ -140,7 +140,7 @@ public class UploadTutorServlet extends HttpServlet {
                     boolean userStatus = userDAO.addUser(tempUser);
                     if(userStatus){
                         String value = tutor.getEmail() + "&" + password;
-                        emailList.put(tutor.getName().trim(), value);
+                        emailList.put(username, value);
                     }
                 }
             }

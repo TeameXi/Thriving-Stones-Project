@@ -70,7 +70,7 @@ public class LessonDAO {
     public boolean createLesson(int classid, int tutorid, String startDate, String endDate, int reminder_status, int reminder_term, String type) {
         String sql = "";
         if (type.equals("P")) {
-            sql = "INSERT into LESSON (class_id, start_date, end_date, tutor_id, tutor_attended, tutor_payment_status, reminder_term, reminder_status)"
+            sql = "INSERT into lesson (class_id, start_date, end_date, tutor_id, tutor_attended, tutor_payment_status, reminder_term, reminder_status)"
                     + "VALUES (?,?,?,?,?,?,?,?)";
 
             try (Connection conn = ConnectionManager.getConnection();) {
@@ -93,7 +93,7 @@ public class LessonDAO {
                 System.out.println(e.getMessage());
             }
         } else {
-            sql = "INSERT into LESSON (class_id, start_date, end_date, tutor_id, tutor_attended, tutor_payment_status, reminder_status)"
+            sql = "INSERT into lesson (class_id, start_date, end_date, tutor_id, tutor_attended, tutor_payment_status, reminder_status)"
                     + "VALUES (?,?,?,?,?,?,?)";
             
             try (Connection conn = ConnectionManager.getConnection();) {
