@@ -18,9 +18,9 @@ import java.util.logging.Logger;
 
 public class ClassDAO {
 
-    public static ArrayList<Class> getClassesToEnrolled(int level_id, int student_id, int branch_id) {
+    public static HashMap<String, ArrayList<Class>> getClassesToEnrolled(int level_id, int student_id, int branch_id) {
         String level = LevelDAO.retrieveLevel(level_id);
-        ArrayList<Class> classList = new ArrayList();
+        HashMap<String, ArrayList<Class>> classList = new HashMap<>();
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement("select * from class where branch_id = ? and level_id = ? and end_date > curdate() and "
                     + "class_id not in (select class_id from class_student_rel where student_id = ?) order by subject_id");
@@ -42,7 +42,14 @@ public class ClassDAO {
                 String subject = SubjectDAO.retrieveSubject(subjectID);
                 String type = rs.getString("class_type");
                 Class cls = new Class(classID, level, subject, term, startTime, endTime, classDay, mthlyFees, startDate, endDate, type);
-                classList.add(cls);
+                ArrayList<Class> classArray = new ArrayList<>();
+                if (classList.containsKey(type)) {  
+                    classArray = classList.get(type);  
+                    classArray.add(cls);
+                } else {
+                    classArray.add(cls); 
+                }
+                classList.put(type, classArray);
             }
         } catch (SQLException e) {
             System.out.print(e.getMessage());
@@ -302,7 +309,7 @@ public class ClassDAO {
     public int insertClass(int level, int subject, int term, int hasReminderForFees, int branch, String startTime, String endTime, String classDay, double mthlyFees, String startDate, String endDate) {
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            String sql = "INSERT into CLASS (level_id, subject_id, term, fees, has_reminder_for_fees, start_time, end_time, class_day, start_date, end_date, branch_id)"
+            String sql = "INSERT into class (level_id, subject_id, term, fees, has_reminder_for_fees, start_time, end_time, class_day, start_date, end_date, branch_id)"
                     + "VALUES (?,?,?,?,?,?,?,?,?,?)";
             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             stmt.setInt(1, level);
@@ -332,7 +339,7 @@ public class ClassDAO {
 
     public static int createClass(String classType,int level, int subject,double mthlyFees, int hasReminderForFees, String startTime, String endTime, String classDay, String startDate, String endDate, int branch, int tutorId, String holidays) {
         try (Connection conn = ConnectionManager.getConnection();) {
-            String sql = "INSERT into CLASS (level_id, subject_id,fees,has_reminder_for_fees,start_time, end_time, class_day, start_date, end_date,branch_id,tutor_id, class_type, holiday_date)"
+            String sql = "INSERT into class (level_id, subject_id,fees,has_reminder_for_fees,start_time, end_time, class_day, start_date, end_date,branch_id,tutor_id, class_type, holiday_date)"
                     + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
 

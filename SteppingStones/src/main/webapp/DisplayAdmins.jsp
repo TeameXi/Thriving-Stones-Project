@@ -402,7 +402,7 @@ $(document).ready(function () {
                    
                     $("#branch_"+admin_id).text(data["branch"]);
 
-                    html = '<div class="alert alert-success col-md-12"><strong>Success!</strong> Update Tutor record successfully</div>';
+                    html = '<div class="alert alert-success col-md-12"><strong>Success!</strong> Update Admin record successfully</div>';
                 } else {
                     html = '<div class="alert alert-danger col-md-12"><strong>Sorry!</strong> Something went wrong</div>';
                 }
@@ -432,7 +432,7 @@ $(document).ready(function () {
             success: function (data) {
                 if (data === 1) {
                     $("#admin_id_"+admin_id).remove();
-                    html = '<div class="alert alert-success col-md-12"><strong>Success!</strong> Deleted Tutor record successfully</div>';
+                    html = '<div class="alert alert-success col-md-12"><strong>Success!</strong> Deleted Admin record successfully</div>';
                 } else {
                     html = '<div class="alert alert-danger col-md-12"><strong>Sorry!</strong> Something went wrong</div>';
                 }

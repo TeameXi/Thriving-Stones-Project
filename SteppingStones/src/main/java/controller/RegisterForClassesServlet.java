@@ -5,6 +5,7 @@
  */
 package controller;
 
+import com.google.common.collect.ObjectArrays;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.servlet.ServletException;
@@ -43,6 +44,11 @@ public class RegisterForClassesServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        
+        if(request.getParameter("branch_id") == null){
+            response.sendRedirect("RegisterForClasses.jsp");
+            return;
+        }
         int branchID = Integer.parseInt(request.getParameter("branch_id"));
         if(request.getParameter("search") != null){
             String student = (String) request.getParameter("student");
@@ -72,12 +78,24 @@ public class RegisterForClassesServlet extends HttpServlet {
                 request.setAttribute("errorMsg", studentName + " Not Exists in Database, Please Create Student First.");           
             }else{
                 
-                ArrayList<Class> cls = ClassDAO.getClassesToEnrolled(levelID, studentID, branchID);
+                HashMap<String, ArrayList<Class>> cls = ClassDAO.getClassesToEnrolled(levelID, studentID, branchID);
+                ArrayList<Class> normalClasses = new ArrayList<>();
+                ArrayList<Class> premiumClasses = new ArrayList<>();
+                Set<String> keys = cls.keySet();
+                for(String key: keys){
+                    if(key.equals("P")){
+                        premiumClasses = cls.get(key);
+                    }else{
+                        normalClasses = cls.get(key);
+                    } 
+                }
+                
                 ArrayList<Class> enrolledCls = ClassDAO.getStudentEnrolledClass(studentID);
                 request.setAttribute("level", LevelDAO.retrieveLevel(levelID));    
                 request.setAttribute("studentName", studentName);
                 request.setAttribute("student_id", studentID);
-                request.setAttribute("classes", cls);
+                request.setAttribute("normalClasses", normalClasses);
+                request.setAttribute("premiumClasses", premiumClasses);
                 request.setAttribute("enrolledClasses", enrolledCls);
             }
             RequestDispatcher view = request.getRequestDispatcher("RegisterForClasses.jsp");
@@ -85,44 +103,79 @@ public class RegisterForClassesServlet extends HttpServlet {
         }
         
         if(request.getParameter("select") != null){
-            String[] classValues = request.getParameterValues("classValue");
+            String[] normalClassValues = request.getParameterValues("normalClassValue");
+            String[] premiumClassValues = request.getParameterValues("premiumClassValue");
+            
+            String [] classes = null;
+            if(normalClassValues != null && premiumClassValues != null){
+                classes = ObjectArrays.concat(normalClassValues, premiumClassValues, String.class);
+            }else if(normalClassValues == null){
+                classes = premiumClassValues;
+            }else if(premiumClassValues == null){
+                classes = normalClassValues;
+            }
+            
+            //System.out.println("Normal" + Arrays.toString(normalClassValues) + "Premium" + Arrays.toString(premiumClassValues) + "Joined" + Arrays.toString(classes));
+            
             int studentID = 0;
             String studentIDStr = request.getParameter("studentID");
             if(studentIDStr != null && !studentIDStr.isEmpty()){
                 studentID = Integer.parseInt(studentIDStr);
             }
-            //System.out.print(studentID);
 
-            if(classValues != null){
-                for(String classValue: classValues){
+            if(classes != null){
+                for(String classValue: classes){
                     int classID = Integer.parseInt(classValue);
                     String joinDate = request.getParameter(classValue);
+                    String paymentType = request.getParameter(classValue + "_paymentType");
+                    if(paymentType == null){
+                        paymentType = "month";
+                    }
+                    Class cls = ClassDAO.getClassByID(classID);
+                    double monthlyFees = cls.getMthlyFees();                     
+                    HashMap<String, Integer> reminders = null;
+                    double fees = 0;
+                    boolean status = false;
+                    boolean updateOutstandingFees = false;  
+                            
                     if(joinDate == null || joinDate.isEmpty()){
                         joinDate = LessonDAO.getNearestLessonDate(classID);
                     }
-                    Class cls = ClassDAO.getClassByID(classID);
-                    double monthlyFees = cls.getMthlyFees();
-                    boolean status = StudentClassDAO.saveStudentToRegisterClass(classID, studentID, monthlyFees, monthlyFees, joinDate); 
-                    HashMap<String, Integer> reminders = PaymentDAO.getReminders(classID, joinDate);
+
+                    if(paymentType.equals("term")){
+                        fees = monthlyFees * 3;
+                        status = StudentClassDAO.saveStudentToRegisterClass(classID, studentID, 0, 0, joinDate);
+                        reminders = PaymentDAO.getRemindersForPremiumStudent(classID, joinDate);
+                        updateOutstandingFees = true;
+
+                    }else{
+                        fees = monthlyFees;
+                        status = StudentClassDAO.saveStudentToRegisterClass(classID, studentID, monthlyFees, monthlyFees, joinDate);
+                        reminders = PaymentDAO.getReminders(classID, joinDate);
+                        if(status){
+                            Student stu = StudentDAO.retrieveStudentbyID(studentID,branchID);
+                            double totalOutstandingAmt = stu.getOutstandingAmt() + monthlyFees;
+                            updateOutstandingFees = StudentDAO.updateStudentTotalOutstandingFees(studentID, totalOutstandingAmt);
+                            System.out.println("After Deposit Add" + totalOutstandingAmt);
+                        }
+                    }
+         
+//                    System.out.println(joinDate);
+//                    System.out.println("Reminder "  +reminders);
+//                    System.out.println("Fees "  +fees);
+                    
                     Set<String> keys = reminders.keySet();
                     boolean paymentStauts = false;
                     if(!reminders.isEmpty()){
                         for(String reminderDate: keys){
                             int noOfLessons = reminders.get(reminderDate);
-                            paymentStauts = PaymentDAO.insertPaymentReminderWithAmount(classID, studentID, reminderDate, noOfLessons, monthlyFees);
+                            paymentStauts = PaymentDAO.insertPaymentReminderWithAmount(classID, studentID, reminderDate, noOfLessons, fees);
                         }
                     }else{
                         paymentStauts = true;
                     }
-
-                    boolean updateOutstandingFees = false;
-                    if(status){
-                        Student stu = StudentDAO.retrieveStudentbyID(studentID,branchID);
-                        double totalOutstandingAmt = stu.getOutstandingAmt() + monthlyFees;
-                        updateOutstandingFees = StudentDAO.updateStudentTotalOutstandingFees(studentID, totalOutstandingAmt);
-                        System.out.println("After Deposit Add" + totalOutstandingAmt);
-                    }
                     
+                    System.out.println("status " + status + "paymentStatus " + paymentStauts + "OutstandingFees " + updateOutstandingFees);
                     if(!status || !paymentStauts || !updateOutstandingFees){
                         request.setAttribute("errorMsg", "Something Went Wrong with Registration.");
                         RequestDispatcher view = request.getRequestDispatcher("RegisterForClasses.jsp");
