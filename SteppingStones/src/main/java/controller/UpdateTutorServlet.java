@@ -5,7 +5,6 @@
  */
 package controller;
 
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -16,6 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.TutorDAO;
+import org.json.JSONObject;
 
 /**
  *
@@ -35,13 +35,17 @@ public class UpdateTutorServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
+
         try (PrintWriter out = response.getWriter()) {
             String tutorID = request.getParameter("tutorID");
-            if(!tutorID.equals("")){
+            if (tutorID != "") {
+
                 int id = Integer.parseInt(tutorID);
                 String nric = request.getParameter("nric");
- 
+
                 int phone = 0;
+
                 if(!request.getParameter("phone").equals("")){
                     phone = Integer.parseInt(request.getParameter("phone"));
                 }
@@ -58,10 +62,7 @@ public class UpdateTutorServlet extends HttpServlet {
                 }else{
                     out.println(0);
                 }
-            }else{
-                out.println(0);
             }
-
         }
     }
 
