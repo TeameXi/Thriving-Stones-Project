@@ -77,7 +77,7 @@ public class RetrieveTutorHourlyRate extends HttpServlet {
                     JSONObject tObj = new JSONObject();
                     tObj.put("id", t.getTutorId());
                     tObj.put("name", t.getName());
-                    tObj.put("pay",t.getPay());
+                    tObj.put("hourly_pay",t.getPay());
                     
                     existingtutorJSONPayLists.put(tObj);
                 }

@@ -45,7 +45,7 @@ public class CreateTutorHourlyRate extends HttpServlet {
                 for(int i =0; i < tutorPayArr.length(); i++){
                     String sqlOneRecord = "";
                     JSONObject currObj = tutorPayArr.getJSONObject(i);
-                    int tutorId = currObj.getInt("tutor_id");
+                    int tutorId = currObj.getInt("id");
                     int levelId = currObj.getInt("level_id");
                     int subjectId = currObj.getInt("subject_id");
                     int branchId = currObj.getInt("branch_id");
