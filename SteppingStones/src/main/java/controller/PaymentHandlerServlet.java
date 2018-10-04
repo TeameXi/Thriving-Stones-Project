@@ -58,7 +58,6 @@ public class PaymentHandlerServlet extends HttpServlet {
             String type = paymentType[i];
             int classID = Integer.parseInt(classIDs[i]);
             Class cls = ClassDAO.getClassByID(classID);
-            System.out.println("ClassID" +classID + "class" + cls + " type" + cls.getType());
             String dueDate = paymentDueDates[i];
             double paymentAmount = 0;
             if (!paymentAmounts[i].isEmpty()) {
@@ -89,9 +88,8 @@ public class PaymentHandlerServlet extends HttpServlet {
                 String joinDate = StudentClassDAO.retrieveJoinDateOfStudentByClass(studentID, classID);
                 System.out.print("JoinDate " + joinDate);
                 if(cls.getType().equals("P")){
-                    //System.out.println("What the hell");
                     noOfLesson = LessonDAO.retrieveNoOfLessonPremium(classID, joinDate);
-                    System.out.println(noOfLesson);
+                    //System.out.println(noOfLesson);
                 }else{
                     noOfLesson = LessonDAO.retrieveNoOfLessonForFirstInstallment(classID, joinDate);
                 }
@@ -126,7 +124,6 @@ public class PaymentHandlerServlet extends HttpServlet {
                     }
                 }
 
-                //System.out.print(noOfLesson);
                 if (paymentAmount != 0) {
                     PaymentDAO.insertPaymentToRevenue(studentID, studentName, noOfLesson, "First Installment", lvlSubject, paymentAmount);
                 }
@@ -163,8 +160,8 @@ public class PaymentHandlerServlet extends HttpServlet {
 
             }
         }
+        
         String from = (String) request.getSession().getAttribute("from");
-        //String from = "registration";
         if (from.equals("registration")) {
             response.sendRedirect("RegisterForClasses.jsp?status=Payment successful.");
             return;

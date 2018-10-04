@@ -218,7 +218,7 @@ public class PaymentDAO {
     
     public static void getStudentTutionFeesData(int studentID, ArrayList<Payment> paymentData){
         try (Connection conn = ConnectionManager.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement("select * from payment_reminder where student_id = 262 and outstanding_charge > 0 "
+            PreparedStatement stmt = conn.prepareStatement("select * from payment_reminder where student_id = ? and outstanding_charge > 0 "
                     + "and (SELECT DATE_ADD(payment_due_date, INTERVAL -7 DAY) as payment_start_date) <= curdate();"); //able to see the charged amount 7 days before due date
             stmt.setInt(1, studentID);
             ResultSet rs = stmt.executeQuery();
