@@ -386,6 +386,27 @@ public class LessonDAO {
 
         return noOfLessons;
     }
+    
+    public static int retrieveNoOfLessonPremium(int classID, String joinDate) {
+        int noOfLessons = 0;
+        String sql = "select count(lesson_id) as noOfLessons from lesson where class_id = ? and date(start_date) >= ? and "
+                + "date(start_date) <= (select date(start_date) from lesson where class_id = ? and date(start_date) > ? and reminder_term != 0 order by start_date limit 1);";
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, classID);
+            stmt.setString(2, joinDate);
+            stmt.setInt(3, classID);
+            stmt.setString(4, joinDate);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                noOfLessons = rs.getInt("noOfLessons");
+            }
+        } catch (Exception e) {
+            System.out.println("Error in retrieveNoOfLessonForFirstInstallment method" + e.getMessage());
+        }
+
+        return noOfLessons;
+    }
 
     public boolean updateLessonDate(int lessonID, int tutorID, String changedStart, String changedEnd) {
         String sql = "update lesson set start_date = ?, end_date = ?, replacement_tutor_id = ? where lesson_id = ?";

@@ -10,26 +10,16 @@ package entity;
  * @author DEYU
  */
 public class Expense {
-    private String item;
     private double amount;
     private String date;
     private int tutorID;
     private String description;
     
-    public Expense(String item, double amount, String date){
-        this.item = item;
-        this.amount = amount;
-        this.date = date;
-    }
-    
-    public Expense(int tutorID, String description, double amount){
+    public Expense(int tutorID, String description, double amount, String date){
         this.tutorID = tutorID;
         this.description = description;
         this.amount = amount;
-    }
-    
-    public String getItem() {
-        return this.item;
+        this.date = date;
     }
     
     public double getAmount(){
@@ -40,8 +30,12 @@ public class Expense {
         return this.date;
     }
     
-    public void setItem(String item) {
-        this.item = item;
+    public int getTutorID(){
+        return this.tutorID;
+    }
+    
+    public String getDescription(){
+        return this.description;
     }
     
     public void setAmount(double amount) {
@@ -50,5 +44,13 @@ public class Expense {
     
     public void setDate(String date) {
         this.date = date;
+    }
+    
+    public void setTutorID(int tutorID) {
+        this.tutorID = tutorID;
+    }
+    
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

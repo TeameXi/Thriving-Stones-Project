@@ -148,7 +148,11 @@
     <!-- /.modal-dialog -->
 </div>
             <%
-                        out.println("<td>"+cls.getSubject()+"</td>");
+                        if(cls.getType().equals("P")){
+                            out.println("<td>"+cls.getSubject()+" (Premium)</td>");
+                        }else{
+                            out.println("<td>"+cls.getSubject()+"</td>");
+                        }
                         out.println("<td>"+ cls.getStartTime().substring(0, 5) + "-" + cls.getEndTime().substring(0, 5) +" ("+cls.getClassDay()+")"+"</td>");
                         out.println("<td>"+cls.getStartDate()+"</td>");
                         out.println("<td>"+cls.getMthlyFees()+"</td>");

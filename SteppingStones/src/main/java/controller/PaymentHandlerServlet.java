@@ -6,12 +6,14 @@
 package controller;
 
 import entity.Student;
+import entity.Class;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.ClassDAO;
 import model.LessonDAO;
 import model.PaymentDAO;
 import model.StudentClassDAO;
@@ -55,6 +57,8 @@ public class PaymentHandlerServlet extends HttpServlet {
         for (int i = 0; i < paymentType.length; i++) {
             String type = paymentType[i];
             int classID = Integer.parseInt(classIDs[i]);
+            Class cls = ClassDAO.getClassByID(classID);
+            System.out.println("ClassID" +classID + "class" + cls + " type" + cls.getType());
             String dueDate = paymentDueDates[i];
             double paymentAmount = 0;
             if (!paymentAmounts[i].isEmpty()) {
@@ -83,8 +87,14 @@ public class PaymentHandlerServlet extends HttpServlet {
             } else if (type.equals("First Installment")) {
 
                 String joinDate = StudentClassDAO.retrieveJoinDateOfStudentByClass(studentID, classID);
-                System.out.print(joinDate);
-                noOfLesson = LessonDAO.retrieveNoOfLessonForFirstInstallment(classID, joinDate);
+                System.out.print("JoinDate " + joinDate);
+                if(cls.getType().equals("P")){
+                    //System.out.println("What the hell");
+                    noOfLesson = LessonDAO.retrieveNoOfLessonPremium(classID, joinDate);
+                    System.out.println(noOfLesson);
+                }else{
+                    noOfLesson = LessonDAO.retrieveNoOfLessonForFirstInstallment(classID, joinDate);
+                }
                 Student stu = StudentDAO.retrieveStudentbyID(studentID);
                 String firstInstallmentStr = request.getParameter("" + classID);
 
@@ -154,6 +164,7 @@ public class PaymentHandlerServlet extends HttpServlet {
             }
         }
         String from = (String) request.getSession().getAttribute("from");
+        //String from = "registration";
         if (from.equals("registration")) {
             response.sendRedirect("RegisterForClasses.jsp?status=Payment successful.");
             return;

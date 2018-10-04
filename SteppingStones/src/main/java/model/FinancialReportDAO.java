@@ -7,9 +7,9 @@ package model;
 
 import entity.Account;
 import entity.BankDeposit;
+import entity.Deposit;
 import entity.Expense;
 import entity.Revenue;
-import entity.Student;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -119,11 +119,11 @@ public class FinancialReportDAO {
     }
     
     public static void summaryDeposit(Row header, XSSFCellStyle styleBold){
-        header.createCell(6).setCellValue("No.");
-        header.createCell(7).setCellValue("Level");
-        header.createCell(8).setCellValue("Student Count");
-        header.createCell(9).setCellValue("Amount ($)");
-        for(int i = 6; i < 10; i++){
+        header.createCell(7).setCellValue("No.");
+        header.createCell(8).setCellValue("Level");
+        header.createCell(9).setCellValue("Student Count");
+        header.createCell(10).setCellValue("Amount ($)");
+        for(int i = 7; i < 11; i++){
             header.getCell(i).setCellStyle(styleBold);
         }
     }
@@ -194,34 +194,86 @@ public class FinancialReportDAO {
             revenueRowNum++;
             for (int i = 0; i < rev.size(); i++) {
                 revenueRow = revenue.createRow(revenueRowNum);
-                int revenueColNum = 0;
-                Cell cell = revenueRow.createCell(revenueColNum++);
-                cell.setCellValue(i+1);
-                
-                cell = revenueRow.createCell(revenueColNum++);
-                cell.setCellValue(rev.get(i).getStudentName());
-                
-                cell = revenueRow.createCell(revenueColNum++);
-                cell.setCellValue(rev.get(i).getNoOfLessons());
+                if(rev.get(i).getType().equals("Deposit")){
+                    int revenueColNum = 0;
+                    Cell cell = revenueRow.createCell(revenueColNum++);
+                    cell.setCellValue(i+1);
 
-                cell = revenueRow.createCell(revenueColNum++);
-                cell.setCellValue(1);
+                    cell = revenueRow.createCell(revenueColNum++);
+                    cell.setCellValue(rev.get(i).getStudentName());
 
-                cell = revenueRow.createCell(revenueColNum++);
-                cell.setCellValue(rev.get(i).getpaymentDate());
-                
-                cell = revenueRow.createCell(revenueColNum++);
-                cell.setCellValue(rev.get(i).getMonthlyFees());
-                monthlyFees += rev.get(i).getMonthlyFees();
-                
-                cell = revenueRow.createCell(revenueColNum++);
-                cell.setCellValue(rev.get(i).getRegFees());
-                regFees += rev.get(i).getRegFees();
-                
-                cell = revenueRow.createCell(revenueColNum++);
-                cell.setCellValue(rev.get(i).getDeposit());
-                deposit += rev.get(i).getDeposit();
+                    cell = revenueRow.createCell(revenueColNum++);
+                    cell.setCellValue(rev.get(i).getNoOfLessons());
 
+                    cell = revenueRow.createCell(revenueColNum++);
+                    cell.setCellValue(1);
+
+                    cell = revenueRow.createCell(revenueColNum++);
+                    cell.setCellValue(rev.get(i).getpaymentDate());
+
+                    cell = revenueRow.createCell(revenueColNum++);
+                    cell.setCellValue("-");
+
+                    cell = revenueRow.createCell(revenueColNum++);
+                    cell.setCellValue("-");
+
+                    cell = revenueRow.createCell(revenueColNum++);
+                    cell.setCellValue(rev.get(i).getAmount());
+                    deposit += rev.get(i).getAmount();
+
+                }else if(rev.get(i).getType().equals("First Installment") || rev.get(i).getType().equals("Tuition Fees")){
+                    int revenueColNum = 0;
+                    Cell cell = revenueRow.createCell(revenueColNum++);
+                    cell.setCellValue(i+1);
+
+                    cell = revenueRow.createCell(revenueColNum++);
+                    cell.setCellValue(rev.get(i).getStudentName());
+
+                    cell = revenueRow.createCell(revenueColNum++);
+                    cell.setCellValue(rev.get(i).getNoOfLessons());
+
+                    cell = revenueRow.createCell(revenueColNum++);
+                    cell.setCellValue(1);
+
+                    cell = revenueRow.createCell(revenueColNum++);
+                    cell.setCellValue(rev.get(i).getpaymentDate());
+
+                    cell = revenueRow.createCell(revenueColNum++);
+                    cell.setCellValue(rev.get(i).getAmount());
+                    monthlyFees += rev.get(i).getAmount();
+
+                    cell = revenueRow.createCell(revenueColNum++);
+                    cell.setCellValue("-");
+
+                    cell = revenueRow.createCell(revenueColNum++);
+                    cell.setCellValue("-");
+                }else if(rev.get(i).getType().equals("Reg Fees")){
+                    int revenueColNum = 0;
+                    Cell cell = revenueRow.createCell(revenueColNum++);
+                    cell.setCellValue(i+1);
+
+                    cell = revenueRow.createCell(revenueColNum++);
+                    cell.setCellValue(rev.get(i).getStudentName());
+
+                    cell = revenueRow.createCell(revenueColNum++);
+                    cell.setCellValue(rev.get(i).getNoOfLessons());
+
+                    cell = revenueRow.createCell(revenueColNum++);
+                    cell.setCellValue(1);
+
+                    cell = revenueRow.createCell(revenueColNum++);
+                    cell.setCellValue(rev.get(i).getpaymentDate());
+
+                    cell = revenueRow.createCell(revenueColNum++);
+                    cell.setCellValue("-");
+
+                    cell = revenueRow.createCell(revenueColNum++);
+                    cell.setCellValue(rev.get(i).getAmount());
+                    regFees += rev.get(i).getAmount();
+
+                    cell = revenueRow.createCell(revenueColNum++);
+                    cell.setCellValue("-"); 
+                }
                 for(int j = 0; j < 8; j++){
                     revenueRow.getCell(j).setCellStyle(style);
                 }
@@ -282,7 +334,7 @@ public class FinancialReportDAO {
                 cell.setCellValue(i+1);
                 
                 cell = expenseRow.createCell(expenseColNum++);
-                cell.setCellValue(exp.get(i).getItem());
+                cell.setCellValue(exp.get(i).getDescription());
                 
                 cell = expenseRow.createCell(expenseColNum++);
                 cell.setCellValue(exp.get(i).getAmount());
@@ -326,7 +378,7 @@ public class FinancialReportDAO {
         return expenseData;
     }
     
-     public static void deposit(XSSFSheet studentDeposit, HashMap<String, ArrayList<Revenue>> data, 
+     public static void deposit(XSSFSheet studentDeposit, HashMap<String, ArrayList<Deposit>> data, 
             XSSFCellStyle styleTitleBold, XSSFCellStyle styleTitleUnderLine, XSSFCellStyle styleBold, XSSFCellStyle style){
         int depositRowNum = 0;
         Row title = studentDeposit.createRow(depositRowNum);
@@ -346,30 +398,39 @@ public class FinancialReportDAO {
             Row header = studentDeposit.createRow(depositRowNum);
             studentDepositCellTitle(header, styleBold);
             
-            ArrayList<Revenue> rev = data.get(key);
+            ArrayList<Deposit> dep = data.get(key);
             double deposit = 0;
+            int deduct = 0;
             depositRowNum++;
-            for (int i = 0; i < rev.size(); i++) {
+            for (int i = 0; i < dep.size(); i++) {
                 depositRow = studentDeposit.createRow(depositRowNum);
                 int depositColNum = 0;
                 Cell cell = depositRow.createCell(depositColNum++);
                 cell.setCellValue(i+1);
                 
                 cell = depositRow.createCell(depositColNum++);
-                cell.setCellValue(rev.get(i).getStudentName());
+                cell.setCellValue(dep.get(i).getStudentName());
                 
                 cell = depositRow.createCell(depositColNum++);
-                cell.setCellValue(rev.get(i).getDeposit());
-                deposit += rev.get(i).getDeposit();
+                if(dep.get(i).getDeposit() != 0){
+                    cell.setCellValue(dep.get(i).getDeposit());
+                    deposit += dep.get(i).getDeposit();
+                }
                 
                 cell = depositRow.createCell(depositColNum++);
-                cell.setCellValue(1);
+                if(dep.get(i).getDeposit() != 0){
+                    cell.setCellValue(1);
+                }else{
+                    deduct++;
+                }
                 
                 cell = depositRow.createCell(depositColNum++);
-                cell.setCellValue(rev.get(i).getDepositPaymentDate());
+                cell.setCellValue(dep.get(i).getDepositPaymentDate());
                 
                 cell = depositRow.createCell(depositColNum++);
-                cell.setCellValue(rev.get(i).getDepositActivationDate());
+                if(dep.get(i).getDepositActivationDate() != null && !dep.get(i).getDepositActivationDate().isEmpty()){
+                    cell.setCellValue("$" + dep.get(i).getActivatedAmount() + " on " + dep.get(i).getDepositActivationDate());
+                }
                 
                 for(int j = 0; j < 6; j++){
                     depositRow.getCell(j).setCellStyle(style);
@@ -377,22 +438,29 @@ public class FinancialReportDAO {
                 depositRowNum++;
             }
             depositRow = studentDeposit.createRow(depositRowNum);
-
+            
+            int studentCount = dep.size() - deduct;
             for(int j = 0; j < 6; j++){
                 Cell cell = depositRow.createCell(j);
                 if(j == 1){
                     cell.setCellValue("Total");
                 }else if(j == 2){
-                    cell.setCellValue(deposit);
+                    if(deposit != 0){
+                        cell.setCellValue(deposit);
+                    }
                 }else if(j == 3){
-                    cell.setCellValue(rev.size());
+                    if(studentCount != 0){
+                        cell.setCellValue(studentCount);
+                    }
                 }
                 cell.setCellStyle(styleBold);
             }
             depositRowNum++;
             
-            Account acc = new Account(rev.size(), deposit);
-            deposits.put(key, acc);
+            if(deposit != 0){
+                Account acc = new Account(studentCount, deposit);
+                deposits.put(key, acc);
+            }
         } 
         
         depositRowNum = 2;
@@ -401,8 +469,8 @@ public class FinancialReportDAO {
         }else{
             title = studentDeposit.createRow(depositRowNum);
         }
-        title.createCell(7).setCellValue("Summary of Deposit");
-        title.getCell(7).setCellStyle(styleTitleBold);
+        title.createCell(8).setCellValue("Summary of Deposit");
+        title.getCell(8).setCellStyle(styleTitleBold);
         
         depositRowNum+=2;
         Row header;
@@ -419,7 +487,7 @@ public class FinancialReportDAO {
         int num = 1;
         for(String key: depositKeys){
             depositRowNum++;
-            int depositColNum = 6;
+            int depositColNum = 7;
             Account acc = deposits.get(key);
             if(studentDeposit.getRow(depositRowNum) != null){
                 depositRow = studentDeposit.getRow(depositRowNum);
@@ -441,7 +509,7 @@ public class FinancialReportDAO {
             cell.setCellValue(acc.getAmount());
             finalAmt += acc.getAmount();
             
-            for(int j = 6; j < 10; j++){
+            for(int j = 7; j < 11; j++){
                 depositRow.getCell(j).setCellStyle(style);
             }
         }
@@ -451,13 +519,13 @@ public class FinancialReportDAO {
         }else{
             depositRow = studentDeposit.createRow(depositRowNum);
         }
-        for(int j = 6; j < 10; j++){
+        for(int j = 7; j < 11; j++){
             Cell cell = depositRow.createCell(j);
-            if(j == 7){
+            if(j == 8){
                 cell.setCellValue("Final Amount");
-            }else if(j == 8){
-                cell.setCellValue(studentCount);
             }else if(j == 9){
+                cell.setCellValue(studentCount);
+            }else if(j == 10){
                 cell.setCellValue(finalAmt);
             }
             cell.setCellStyle(styleBold);
@@ -626,8 +694,9 @@ public class FinancialReportDAO {
         if(balanceSheet.getRow(balanceSheetRowNum) != null){
             title = balanceSheet.getRow(balanceSheetRowNum);
         }else{
-            title = balanceSheet.getRow(balanceSheetRowNum);
+            title = balanceSheet.createRow(balanceSheetRowNum);
         }
+        //System.out.println("Title "  +title);
         title.createCell(8).setCellValue("Bank Statement");
         title.getCell(8).setCellStyle(styleTitleUnderLine);
         
@@ -667,7 +736,16 @@ public class FinancialReportDAO {
         }else{
             title = balanceSheet.createRow(balanceSheetRowNum);
         }
-        double bankExpense = expenses.get("Teachers' Salary") + expenses.get("Bank Expenses");
+        
+        double bankExpense = 0;
+        if(expenses.get("Teachers' Salary") == null && expenses.get("Bank Expenses") != null){
+            bankExpense = expenses.get("Bank Expenses");
+        }else if(expenses.get("Teachers' Salary") != null && expenses.get("Bank Expenses") == null){
+            bankExpense = expenses.get("Teachers' Salary");
+        }else if(expenses.get("Teachers' Salary") != null && expenses.get("Bank Expenses") != null){
+            bankExpense = expenses.get("Teachers' Salary") + expenses.get("Bank Expenses");
+        }
+        
         title.createCell(8).setCellValue("Less: Bank Expense");
         title.getCell(8).setCellStyle(style);
         title.createCell(9).setCellValue(bankExpense);
@@ -685,8 +763,8 @@ public class FinancialReportDAO {
         title.getCell(9).setCellStyle(styleBold);
     }
     
-    public static void FinancialReportGeneration(String filename, HashMap<String, ArrayList<Revenue>> revenueData, HashMap<String, ArrayList<Expense>> expenseData, 
-            ArrayList<BankDeposit> bankDeposit, String accountNum, double openingBalance){
+    public static void FinancialReportGeneration(String filename, HashMap<String, ArrayList<Revenue>> revenueData, HashMap<String, ArrayList<Deposit>> depositData, 
+            HashMap<String, ArrayList<Expense>> expenseData, ArrayList<BankDeposit> bankDeposit, String accountNum, double openingBalance){
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet revenue = workbook.createSheet("Revenue");
         XSSFSheet expense = workbook.createSheet("Expenses");
@@ -700,15 +778,15 @@ public class FinancialReportDAO {
         //System.out.println("Creating excel");
         HashMap<String, Account> revenues = revenue(revenue, revenueData, styleTitleBold, styleTitleUnderLine, styleBold, style);
         HashMap<String, Double> expenses = expense(expense, expenseData, styleTitleBold, styleTitleUnderLine, styleBold, style);
-        deposit(studentDeposit, revenueData, styleTitleBold, styleTitleUnderLine, styleBold, style);
+        deposit(studentDeposit, depositData, styleTitleBold, styleTitleUnderLine, styleBold, style);
+        System.out.println("revenue " + revenues + " deposit" + bankDeposit + " expense " + expenses);
         balanceSheet(balanceSheet, revenues, expenses, bankDeposit, accountNum, openingBalance, styleTitleBold, styleTitleUnderLine, styleBold, style);
         
         for(int i = 0; i < 30; i++){
             revenue.autoSizeColumn(i);
             expense.autoSizeColumn(i);
             studentDeposit.autoSizeColumn(i);
-            balanceSheet.autoSizeColumn(i);
-            
+            balanceSheet.autoSizeColumn(i);  
         }
         
         try {

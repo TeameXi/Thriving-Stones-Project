@@ -190,7 +190,7 @@ public class PaymentDAO {
                 Class cls = ClassDAO.getClassByID(classID);
                 String subject = cls.getSubject();
                 if(cls.getType().equals("P")){
-                    subject = cls.getSubject() + "(Premium)";
+                    subject = cls.getSubject() + " (Premium)";
                 }
                 double depositAmount = rs.getDouble("deposit_fees");
                 double outstandingDeposit = rs.getDouble("outstanding_deposit");
@@ -218,7 +218,8 @@ public class PaymentDAO {
     
     public static void getStudentTutionFeesData(int studentID, ArrayList<Payment> paymentData){
         try (Connection conn = ConnectionManager.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement("select * from payment_reminder where student_id = ? and outstanding_charge > 0  and payment_due_date < curdate();");
+            PreparedStatement stmt = conn.prepareStatement("select * from payment_reminder where student_id = 262 and outstanding_charge > 0 "
+                    + "and (SELECT DATE_ADD(payment_due_date, INTERVAL -7 DAY) as payment_start_date) <= curdate();"); //able to see the charged amount 7 days before due date
             stmt.setInt(1, studentID);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
@@ -452,6 +453,46 @@ public class PaymentDAO {
             System.out.println("Error in retrieveAllDepositData method" + e.getMessage());
         }
         return depositData;
+    }
+    
+    public static HashMap<String, ArrayList<Expense>> retrieveAllExpenseData() {
+        HashMap<String, ArrayList<Expense>> expenseData = new HashMap<>();
+
+        try (Connection conn = ConnectionManager.getConnection()) {
+            String sql = "select * from expense where EXTRACT(MONTH FROM payment_date) = MONTH(curdate())  and EXTRACT(YEAR FROM payment_date) = YEAR(curdate());";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                int tutorID = rs.getInt("tutor_id");
+                String description = rs.getString("description");
+                double amount = rs.getDouble("amount");
+                String paymentDate = rs.getString("payment_date");
+                
+                String category = "";
+                if(tutorID == 0){
+                    category = "Bank Expenses";
+                }else if(tutorID == -1){
+                    category = "Cash Box Expenses";
+                }else{
+                    category = "Teachers' Salary";
+                }
+                
+                Expense expense = new Expense(tutorID, description, amount, paymentDate);
+                ArrayList<Expense> expenseArray = new ArrayList<>();
+
+                if (expenseData.containsKey(category)) {  
+                    expenseArray = expenseData.get(category);  
+                    expenseArray.add(expense);
+                } else {
+                    expenseArray.add(expense); 
+                }
+                expenseData.put(category, expenseArray);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error in retrieveAllExpenseData method" + e.getMessage());
+        }
+        return expenseData;
     }
     
     public static boolean deleteStudentClassPaymentReminder(int studentID, int classID) {
