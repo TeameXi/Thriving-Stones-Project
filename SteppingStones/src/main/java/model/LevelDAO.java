@@ -168,6 +168,7 @@ public class LevelDAO {
         return subjectLists;
     }
     
+    // Update subject cost in subject and class table
     public boolean updateSubjectFees(int branchID, int subjectID, int levelID, float fees){
         String sql = "update lvl_sub_rel set cost = ? where level_id = ? and subject_id = ? and branch_id = ?";
         
@@ -178,14 +179,27 @@ public class LevelDAO {
             stmt.setInt(3, subjectID);
             stmt.setInt(4, branchID);
             
-            int rows = stmt.executeUpdate();
+            int recordsUpdated = stmt.executeUpdate();
             
-            if(rows > 0){
-                return true;
+            
+            if(recordsUpdated > 0){
+                recordsUpdated = 0;
+                sql = "UPDATE class set fees = ? WHERE level_id = ? and subject_id = ? and branch_id = ?";
+                stmt = conn.prepareStatement(sql);
+                stmt.setFloat(1, fees);
+                stmt.setInt(2, levelID);
+                stmt.setInt(3, subjectID);
+                stmt.setInt(4, branchID);
+                recordsUpdated = stmt.executeUpdate();
+                
+                if(recordsUpdated > 0){
+                    return true;
+                }
             }
         } catch (SQLException ex) {
             Logger.getLogger(LevelDAO.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         return false;
     }
+    
 }
