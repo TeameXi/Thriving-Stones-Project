@@ -50,7 +50,7 @@
 
             <div class="col-sm-2 nopadding">
                 <div class="form-group">
-                    <input type="text" class="form-control payment_date" id="date" name="date[]" value="" placeholder="Payment Date">
+                    <input type="date" class="form-control payment_date" id="date" name="date[]" value="" placeholder="Payment Date">
                 </div>
             </div>
             <div class="col-sm-1"></div>
@@ -100,7 +100,7 @@ function add_fields() {
 	divtest.setAttribute("class", "form-group remove"+room);
 	var rdiv = 'remove'+room;
         divtest.innerHTML = '<div class="col-sm-2 nopadding"><div class="form-group"><select class="form-control" id="type" name="type[]"><option value="">Cheque/Bank Transfer</option><option value="Cheque">Cheque</option><option value="Bank Transfer">Bank Transfer</option></select></div></div><div class="col-sm-1"></div>\n\
-                <div class="col-sm-2 nopadding"><div class="form-group"><input type="text" class="form-control payment_date" id="date" name="date[]" value="" placeholder="Payment Date"></div></div><div class="col-sm-1"></div>\n\
+                <div class="col-sm-2 nopadding"><div class="form-group"><input type="date" class="form-control payment_date" id="date" name="date[]" value="" placeholder="Payment Date"></div></div><div class="col-sm-1"></div>\n\
                 <div class="col-sm-2 nopadding"><div class="form-group"> <input type="text" class="form-control" id="from" name="from[]" value="" placeholder="From"></div></div><div class="col-sm-1"></div>\n\
                 <div class="col-sm-2 nopadding"><div class="form-group"> <input type="text" class="form-control" id="amount" name="amount[]" value="" placeholder="Amount ($)"></div></div> \n\
                 <div class="input-group-btn"><button class="btn btn-danger" type="button" onclick="remove_added_fields('+ room +');"> <span class="glyphicon glyphicon-minus" aria-hidden="true"></span></button></div>';
