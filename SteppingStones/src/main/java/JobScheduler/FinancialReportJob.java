@@ -48,15 +48,8 @@ public class FinancialReportJob implements Runnable {
         String AccountExcel = temp + File.separator + "Account_" + month + ".xlsx";
         HashMap<String, ArrayList<Revenue>> revenue = PaymentDAO.retrieveAllRevenueData();
         HashMap<String, ArrayList<Deposit>> deposit = PaymentDAO.retrieveAllDepositData();
-        HashMap<String, ArrayList<Expense>> expense = PaymentDAO.retrieveAllExpenseData();  
-        
-        ArrayList<BankDeposit> bankDeposit = new ArrayList<>();
-        BankDeposit d1 = new BankDeposit("Transfer", "1/9/2018", "Deyu", 300);
-        bankDeposit.add(d1);
-        BankDeposit d2 = new BankDeposit("Cheque", "13/9/2018", "LOL", 225);
-        bankDeposit.add(d2);
-        BankDeposit d3 = new BankDeposit("Transfer", "25/9/2018", "GG", 180);
-        bankDeposit.add(d3);
+        HashMap<String, ArrayList<Expense>> expense = PaymentDAO.retrieveAllExpenseData();   
+        ArrayList<BankDeposit> bankDeposit = PaymentDAO.retrieveAllBankDepositData();
         
         FinancialReportDAO.FinancialReportGeneration(AccountExcel,revenue, deposit, expense, bankDeposit, "010-91303-9", 0);
     }

@@ -5,28 +5,20 @@
  */
 package controller;
 
-import entity.BankDeposit;
-import entity.Deposit;
-import entity.Expense;
-import entity.Revenue;
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.FinancialReportDAO;
 import model.PaymentDAO;
 
 /**
  *
  * @author DEYU
  */
-@WebServlet(name = "FinancialReportServlet", urlPatterns = {"/FinancialReportServlet"})
-public class FinancialReportServlet extends HttpServlet {
+@WebServlet(name = "UpdateBankDepositServlet", urlPatterns = {"/UpdateBankDepositServlet"})
+public class UpdateBankDepositServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -40,20 +32,33 @@ public class FinancialReportServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String temp = request.getSession().getServletContext().getRealPath("/temp");
-        System.out.println(request.getSession().getServletContext().getContextPath());
-        File file = new File(temp);
-        if (!file.exists()) {
-            file.mkdir();
-        }
+        //String bankAccountNum = request.getParameter("bankAccountNum");
+        String[] types = request.getParameterValues("type[]");
+        String[] paymentDates = request.getParameterValues("date[]");
+        String[] froms = request.getParameterValues("from[]");
+        String[] amounts = request.getParameterValues("amount[]");
         
-        String AccountExcel = temp + File.separator + "Account.xlsx";
-        HashMap<String, ArrayList<Revenue>> revenue = PaymentDAO.retrieveAllRevenueData();
-        HashMap<String, ArrayList<Deposit>> deposit = PaymentDAO.retrieveAllDepositData();
-        HashMap<String, ArrayList<Expense>> expense = PaymentDAO.retrieveAllExpenseData();      
-        ArrayList<BankDeposit> bankDeposit = PaymentDAO.retrieveAllBankDepositData();;
-
-        FinancialReportDAO.FinancialReportGeneration(AccountExcel,revenue, deposit, expense, bankDeposit, "010-91303-9", 0);
+        boolean insertStatus = false;
+        for (int i = 0; i < types.length; i++) {
+            String type = types[i];
+            String paymentDate = paymentDates[i];
+            String from = froms[i];
+            double amount = 0;
+            if(!amounts[i].isEmpty()){
+                amount = Double.parseDouble(amounts[i]);
+            }
+            if(!types[i].isEmpty() && !paymentDates[i].isEmpty() && !froms[i].isEmpty() && !amounts[i].isEmpty()){
+                insertStatus = PaymentDAO.insertBankDeposit(type, paymentDate, from, amount);
+            }
+            if (!insertStatus) {
+                response.sendRedirect("BankDepositRevenue.jsp?errorMsg=Error Occurs while inserting!");
+                return;
+            }
+        }
+        if (insertStatus) {
+            response.sendRedirect("BankDepositRevenue.jsp?status=Update successfully.");
+            return;
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

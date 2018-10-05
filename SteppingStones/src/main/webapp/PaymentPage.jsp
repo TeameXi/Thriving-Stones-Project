@@ -74,7 +74,7 @@
                                     if (payment.getPaymentType().equals("First Installment") && payment.getChargeAmount() == 0) {
                                         out.println("<td>");
                             %>
-                        <input name="<%=payment.getClassID()%>" class="form-control" type="number">
+                        <input name="<%=payment.getClassID()%>" class="form-control" type="number" step="0.01">
                         <%
                                         out.println("</td><td>");
                         %>
@@ -94,7 +94,7 @@
                         <input type="hidden" value="<%=payment.getNoOfLessons()%>" name="noOfLessons[]">
                         <input type="hidden" value="<%=payment.getDetails()%>" name="subject[]">
                         <input type="hidden" value="<%=payment.getChargeAmount()%>" name="chargeAmount[]">
-                        <input name="paymentAmount[]" id="paymentAmount" class="form-control calculate" type="number">
+                        <input name="paymentAmount[]" id="paymentAmount" class="form-control calculate" type="number" step="0.01">
                         <%        
                                     out.println("</td></tr>");
                                 }
@@ -111,7 +111,7 @@
                 </div>
                 <div class="form-group">
                     <div>
-                        <button type="submit" class="btn btn-default" name="select" value="select">Pay Now</button>
+                        <button type="submit" class="btn btn-default" name="select" value="select">Update Payment</button>
                     </div>
                 </div>
             </form>
@@ -123,7 +123,8 @@
 
         </div>
     </div>
-    <%        String status = (String) request.getAttribute("status");
+    <%        
+        String status = (String) request.getAttribute("status");
         if (status != null) {
             out.println(status);
         }

@@ -6,6 +6,7 @@
 package model;
 
 import connection.ConnectionManager;
+import entity.BankDeposit;
 import entity.Payment;
 import entity.Class;
 import entity.Deposit;
@@ -495,6 +496,28 @@ public class PaymentDAO {
         return expenseData;
     }
     
+    public static ArrayList<BankDeposit> retrieveAllBankDepositData() {
+        ArrayList<BankDeposit> bankDepositData = new ArrayList<>();
+
+        try (Connection conn = ConnectionManager.getConnection()) {
+            String sql = "select * from bank_deposit_revenue where EXTRACT(MONTH FROM payment_date) = MONTH(curdate())  and EXTRACT(YEAR FROM payment_date) = YEAR(curdate());";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                String type = rs.getString("type");
+                String paymentDate = rs.getString("payment_date");
+                String fromAccount = rs.getString("from_account");
+                double amount = rs.getDouble("amount");
+                BankDeposit bankDeposit = new BankDeposit(type, paymentDate, fromAccount, amount);
+                bankDepositData.add(bankDeposit);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error in retrieveAllBankDepositData method" + e.getMessage());
+        }
+        return bankDepositData;
+    }
+    
     public static boolean deleteStudentClassPaymentReminder(int studentID, int classID) {
         boolean deletedStatus = false;
         try (Connection conn = ConnectionManager.getConnection();) {
@@ -510,6 +533,24 @@ public class PaymentDAO {
             System.out.println(e.getMessage());
         }
         return deletedStatus;
+    }
+    
+    public static boolean insertBankDeposit(String type, String date, String from, double amount){
+        boolean status = false;
+        String sql = "insert into bank_deposit_revenue(type, payment_date,from_account, amount) values(?, ?, ?, ?)";
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, type);
+            stmt.setString(2, date);
+            stmt.setString(3, from);
+            stmt.setDouble(4, amount);
+            
+            stmt.executeUpdate();
+            status = true;
+        } catch (SQLException ex) {
+            Logger.getLogger(PaymentDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return status;
     }
     
 }
