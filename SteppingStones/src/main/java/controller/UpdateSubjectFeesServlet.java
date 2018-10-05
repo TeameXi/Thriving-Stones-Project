@@ -81,6 +81,8 @@ public class UpdateSubjectFeesServlet extends HttpServlet {
                 
                 boolean status = new LevelDAO().updateSubjectFees(branchID, subjectID, levelID, fees);
                 
+                
+                
                 JSONObject toReturn = new JSONObject().put("data", status);
                 String json = toReturn.toString();
                 out.println(json);

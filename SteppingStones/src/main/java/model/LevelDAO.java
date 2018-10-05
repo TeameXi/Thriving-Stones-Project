@@ -168,7 +168,7 @@ public class LevelDAO {
         return subjectLists;
     }
     
-    // Update subject cost in subject and class table
+    // Update subject cost in subject and class tabled
     public boolean updateSubjectFees(int branchID, int subjectID, int levelID, float fees){
         String sql = "update lvl_sub_rel set cost = ? where level_id = ? and subject_id = ? and branch_id = ?";
         

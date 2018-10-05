@@ -279,20 +279,44 @@ public class TutorDAO {
         return tutorLists;
     }
 
-    public boolean deleteTutor(int tutorId) {
-        String delete_sql = "DELETE FROM tutor WHERE tutor_id = ?";
-        try (Connection conn = ConnectionManager.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(delete_sql)) {
-            preparedStatement.setInt(1, tutorId);
-            int num = preparedStatement.executeUpdate();
-            if (num != 0) {
-                return true;
+    public boolean deleteTutor(int tutorId){
+        String sql = "DELETE FROM tutor WHERE tutor_id = ?";
+        
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, tutorId);
+            
+            int recordsUpdated = stmt.executeUpdate();
+            
+            if(recordsUpdated > 0){
+                recordsUpdated = 0;
+                sql = "DELETE FROM tutor_hourly_rate WHERE tutor_id = ?";
+                stmt = conn.prepareStatement(sql);
+                stmt.setInt(1, tutorId);
+                stmt.executeUpdate();
+                
+                sql = "UPDATE class SET tutor_id=0 WHERE tutor_id = ? ";
+                stmt = conn.prepareStatement(sql);
+                stmt.setInt(1, tutorId);
+                stmt.executeUpdate();
+                
+                sql = "UPDATE lesson SET tutor_id = 0 , tutor_attended = 0,replacement_tutor_id = 0 WHERE tutor_id = ? OR replacement_tutor_id = ?";
+                stmt = conn.prepareStatement(sql);
+                stmt.setInt(1, tutorId);
+                stmt.setInt(2, tutorId);
+                recordsUpdated = stmt.executeUpdate();
+                
+                if(recordsUpdated > 0){
+                    return true;
+                }
             }
         } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
+            Logger.getLogger(LevelDAO.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         return false;
     }
+    
+    
 
     public Tutor retrieveTutorByEmail(String email) {
         Tutor tutor = null;

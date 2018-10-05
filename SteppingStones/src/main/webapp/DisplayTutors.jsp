@@ -44,7 +44,7 @@
     %> 
 
 
-     <div class="row  spaced-top">
+<!--     <div class="row  spaced-top">
         <div class="col-sm-6">
             <form id="searchTutor"> 
         	<input class="form-control advanced_targeting_class" type="text" id="filter" placeholder="Tutor Name" style="width:237px; display:inline-block; margin-right:10px">
@@ -72,7 +72,7 @@
                 <br style="clear:both">
             </div>
         </div>
-    </div>
+    </div>-->
 
 
     <span class="toggler active" data-toggle="grid"><span class="zmdi zmdi-view-dashboard"></span></span>
@@ -175,7 +175,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
                 <span class="pc_title centered">Alert</span>
             </div>
-            <div class="modal-body smaller-fonts centered">Are you sure you want to delete this item?</div>
+            <div class="modal-body smaller-fonts centered">Are you sure you want to delete this tutor? Once delete, all data(classes,hourly pay rate) related to this tutor will be deleted too.</div>
             <div class="modal-footer centered">
                 <a id="confirm_btn"><button type="button" class="small_button pw_button del_button autowidth">Yes, Remove</button></a>
                 <button type="button" class="small_button del_button pw_button autowidth" data-dismiss="modal">Close</button>
