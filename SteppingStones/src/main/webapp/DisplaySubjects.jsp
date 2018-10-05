@@ -128,7 +128,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
                 <span class="pc_title centered">Alert</span>
             </div>
-            <div class="modal-body smaller-fonts centered">Are you sure you want to delete this item?</div>
+            <div class="modal-body smaller-fonts centered">Are you sure you want to delete this subject? Once deleted, all data relating to this subject will be deleted too.</div>
             <div class="modal-footer centered">
                 <a id="confirm_btn"><button type="button" class="small_button pw_button del_button autowidth">Yes, Remove</button></a>
                 <button type="button" class="small_button del_button pw_button autowidth" data-dismiss="modal">Close</button>

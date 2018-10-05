@@ -146,16 +146,20 @@ public class SubjectDAO {
             int recordsUpdated = stmt.executeUpdate();
             
             if(recordsUpdated > 0) {
-                recordsUpdated = 0;
                 sql = "delete from lvl_sub_rel where subject_id = ?";
                 stmt = conn.prepareStatement(sql);
                 stmt.setInt(1, subjectID);
+                stmt.executeUpdate();
                 
+                
+                sql = "update class set subject_id=0 where subject_id=?";
+                stmt = conn.prepareStatement(sql);
+                stmt.setInt(1, subjectID);
                 recordsUpdated = stmt.executeUpdate();
                 
-                if(recordsUpdated > 0) {
-                    status = true;
-                }
+           
+                return true;
+                
             }
         } catch (SQLException ex) {
             Logger.getLogger(SubjectDAO.class.getName()).log(Level.SEVERE, null, ex);
