@@ -5,6 +5,7 @@
  */
 package controller;
 
+import entity.Student;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -36,14 +37,25 @@ public class UpdateStudentServlet extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
 
             int studentID = Integer.parseInt(request.getParameter("studentID"));
+            Student stud = StudentDAO.retrieveStudentbyID(studentID);
             String name = request.getParameter("name");
             String lvl = request.getParameter("lvl");
             String address = request.getParameter("address");
+            String email = "";
+            if (request.getParameter("email") != null){
+                email = request.getParameter("email");
+            }
             int phone = Integer.parseInt(request.getParameter("phone"));
-            double req_amount = Double.parseDouble(request.getParameter("r_amount"));
-            double out_amount = Double.parseDouble(request.getParameter("o_amount"));
+            double req_amount = stud.getReqAmt();
+            if (request.getParameter("r_amount") != null){
+                req_amount = Double.parseDouble(request.getParameter("r_amount"));
+            }
+            double out_amount = stud.getOutstandingAmt();
+            if (request.getParameter("o_amount") != null){
+                out_amount = Double.parseDouble(request.getParameter("o_amount"));
+            }
             
-            boolean status = StudentDAO.updateStudent(studentID, name, lvl, address, phone, req_amount, out_amount);
+            boolean status = StudentDAO.updateStudent(studentID, name, lvl, address, phone, email, req_amount, out_amount);
             if (status) {
                 out.println(1);
             } else {

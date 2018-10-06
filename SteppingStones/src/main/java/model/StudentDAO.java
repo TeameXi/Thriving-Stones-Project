@@ -49,7 +49,6 @@ public class StudentDAO {
             String sql = "insert ignore into student(student_name, phone, email, school, stream, reg_fees, outstanding_reg_fees, required_amount, outstanding_amount, level_id, branch_id)"
                     + " value(?, ?, ?, ?, ?, ? ,?, ?, ?, ?, ?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
-            System.out.println(stmt);
             stmt.setString(1, studentName);
             stmt.setInt(2, phone);
             stmt.setString(3, stuEmail);
@@ -340,12 +339,13 @@ public class StudentDAO {
             PreparedStatement stmt = conn.prepareStatement("select * from student where student_id = ?");
             stmt.setInt(1, studentID);
             ResultSet rs = stmt.executeQuery();
-
+            System.out.println(stmt);
             while (rs.next()) {
                 String studentNRIC = rs.getString("student_nric");
                 String name = rs.getString("student_name");
                 String BOD = rs.getString("birth_date");
                 String gender = rs.getString("gender");
+                System.out.println(gender + " hAalpppp");
                 int levelID = rs.getInt("level_id");
                 int branchID = rs.getInt("branch_id");
                 int phone = rs.getInt("phone");
@@ -396,19 +396,20 @@ public class StudentDAO {
         return deletedStatus;
     }
 
-    public static boolean updateStudent(int studentID, String name, String lvl, String address, int phone, double req_amount, double out_amount) {
+    public static boolean updateStudent(int studentID, String name, String lvl, String address, int phone, String email, double req_amount, double out_amount) {
         boolean updatedStatus = false;
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            String sql = "update student set student_name = ?, level_id = ?, address = ?, phone = ?, required_amount = ?, outstanding_amount = ? where student_id = ?";
+            String sql = "update student set student_name = ?, level_id = ?, address = ?, phone = ?, email = ?, required_amount = ?, outstanding_amount = ? where student_id = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, name);
             stmt.setInt(2, LevelDAO.retrieveLevelID(lvl));
             stmt.setString(3, address);
             stmt.setInt(4, phone);
-            stmt.setDouble(5, req_amount);
-            stmt.setDouble(6, out_amount);
-            stmt.setDouble(7, studentID);
+            stmt.setString(5, email);
+            stmt.setDouble(6, req_amount);
+            stmt.setDouble(7, out_amount);
+            stmt.setDouble(8 , studentID);
             stmt.executeUpdate();
             conn.commit();
             updatedStatus = true;

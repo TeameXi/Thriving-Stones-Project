@@ -77,13 +77,12 @@ public class TutorDAO {
                 int phone = rs.getInt(4);
                 String address = rs.getString(5);
                 String qualification = rs.getString(6);
-                System.out.println(qualification + " HECK YEAAA");
                 String birth_date = rs.getString(7);
                 String gender = rs.getString(8);
                 String email = rs.getString(9);
                 int branch_id = rs.getInt(10);
                 //double pay = rs.getDouble(11);
-                Tutor t = new Tutor(id, nric, fullname, phone, address, qualification, birth_date, gender, email, branch_id/*, pay*/);
+                Tutor t = new Tutor(id, nric, fullname, phone, address, qualification, birth_date, gender, email, branch_id);
                 return t;
             }
 

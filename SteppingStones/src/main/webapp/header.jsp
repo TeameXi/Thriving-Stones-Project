@@ -47,6 +47,8 @@
                                         out.println("<li><a href='ProfileForTutor.jsp'>Manage Account</a></li>");
                                     }else if(role != null && role == "parent"){
                                         out.println("<li><a href='ProfileForParent.jsp'>Manage Account</a></li>");
+                                    }else if(role != null && role == "student"){
+                                        out.println("<li><a href='ProfileForStudent.jsp'>Manage Account</a></li>");
                                     }
                                 %>
                               <li><a href="ResetPassword.jsp">Update Password</a></li>
@@ -215,7 +217,12 @@
                             
                     <%
                         }else if(role != null && user != null && role == "student" ){
+                    %>
+                            <li><a href="StudentViewGrade.jsp"><i class="zmdi zmdi-money-box"></i>Grades</a></li>
+                            <li><a href=DisplayBranches.jsp""><i class="zmdi zmdi-money-box"></i>View Attendance</a></li>
+                            <li><a href=""><i class="zmdi zmdi-money-box"></i>Rewards</a></li>
 
+                    <%
                         }
                     %>
                     
