@@ -40,7 +40,12 @@ public class CreateStudentServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-
+        
+        if(request.getParameter("branch") == null){
+            response.sendRedirect("CreateStudent.jsp");
+            return;
+        }
+        
         String studentName = request.getParameter("studentName");
         String lvl = request.getParameter("lvl");
         String stream = request.getParameter("stream");
@@ -69,24 +74,29 @@ public class CreateStudentServlet extends HttpServlet {
         String parentPassword = GeneratePassword.random(16);
         int parentPhone = Integer.parseInt(request.getParameter("parentPhone"));
         String parentEmail = request.getParameter("parentEmail"); 
+        String href =  request.getHeader("origin")+request.getContextPath()+"/Login.jsp";
+        
+        int studentID = 0;
         String stu = "";
         if(stuEmail != null && !stuEmail.isEmpty()){
             stu = studentName + "-" + stuEmail; 
+            studentID = StudentDAO.retrieveStudentIDWithEmail(studentName, stuEmail);
         }else{
             stu = studentName + "-" + phone;
+            studentID = StudentDAO.retrieveStudentIDWithPhone(studentName, phone);
         }
-        
-        String href =  request.getHeader("origin")+request.getContextPath()+"/Login.jsp";
-        
         if(stuEmail.equals("")){
             stuEmail = null;
         }
+        //System.out.println("StudentID  " + studentID);
         
-        int insertStudent = StudentDAO.insertStudent(studentName, phone,stuEmail, levelID, branchID, regFees, school, stream);
-//        System.out.println("Insert Student " + insertStudent);
-//        System.out.println("StuEmail" + stuEmail);
-//        System.out.println(phone);
-        if(insertStudent>0){
+        int insertStudent = 0;
+        if(studentID == 0){
+            insertStudent = StudentDAO.insertStudent(studentName, phone,stuEmail, levelID, branchID, regFees, school, stream);
+        }
+        //System.out.println("Insert Student " + insertStudent);
+
+        if(insertStudent > 0){
             UsersDAO userDAO = new UsersDAO();
             String username = studentName.replace(' ', '.');
             int i = -1;
@@ -125,44 +135,50 @@ public class CreateStudentServlet extends HttpServlet {
 //                    SendSMS.sendingSMS(phoneNum, text);
 //                }
 //            }
-        }
 
-        int insertParent = ParentDAO.insertParent(parentName, parentPhone, parentEmail, branchID);
-        if(insertParent>0){
-            UsersDAO userDAO = new UsersDAO();
-            String username = parentName.replace(' ', '.');
-            int i = -1;
-            int temp = 0;
-            while(i<0){
-                if(temp == 0){
-                    temp++;
-                    username = parentName.replace(' ', '.') + "." + (Calendar.getInstance().get(Calendar.YEAR));
-                    if(userDAO.retrieveUserByUsername(username) < 1){
-                        i = 0;
-                    }
-                }else{
-                    username = parentName.replace(' ', '.') + temp + "." + (Calendar.getInstance().get(Calendar.YEAR));
-                    temp++;
-                    if(userDAO.retrieveUserByUsername(username) < 1){
-                        i = 0;
+            
+        }
+        
+        int insertParent = 0;
+        if(insertStudent > 0){
+            insertParent = ParentDAO.insertParent(parentName, parentPhone, parentEmail, branchID);
+            //System.out.println("Insert Parent" + insertParent);
+            if(insertParent>0){
+                UsersDAO userDAO = new UsersDAO();
+                String username = parentName.replace(' ', '.');
+                int i = -1;
+                int temp = 0;
+                while(i<0){
+                    if(temp == 0){
+                        temp++;
+                        username = parentName.replace(' ', '.') + "." + (Calendar.getInstance().get(Calendar.YEAR));
+                        if(userDAO.retrieveUserByUsername(username) < 1){
+                            i = 0;
+                        }
+                    }else{
+                        username = parentName.replace(' ', '.') + temp + "." + (Calendar.getInstance().get(Calendar.YEAR));
+                        temp++;
+                        if(userDAO.retrieveUserByUsername(username) < 1){
+                            i = 0;
+                        }
                     }
                 }
-            }
 
-            Users tempUser = new Users(username, parentPassword, "parent", insertParent, branchID);
-            boolean userStatus = userDAO.addUser(tempUser);
-//            if(userStatus){
-//                String subject = "Stepping Stones Tuition Center Parent's Account Creation";
-//                String text = "Thanks for choosing us. Your account has been created.\n\nBelow is the username and password to access your account: \nUsername: " + username 
-//                        + "\nPassword: " + parentPassword + "\n\nYou can Login via "+href; 
-//                if(parentEmail != null && !parentEmail.equals("")){
-//                    SendMail.sendingEmail(parentEmail, subject, text);
-//                }else if(parentPhone != 0){
-//                    String phoneNum = "+65" + parentPhone;
-//                    SendSMS.sendingSMS(phoneNum, text);
-//                }
-//            }
-            
+                Users tempUser = new Users(username, parentPassword, "parent", insertParent, branchID);
+                boolean userStatus = userDAO.addUser(tempUser);
+    //            if(userStatus){
+    //                String subject = "Stepping Stones Tuition Center Parent's Account Creation";
+    //                String text = "Thanks for choosing us. Your account has been created.\n\nBelow is the username and password to access your account: \nUsername: " + username 
+    //                        + "\nPassword: " + parentPassword + "\n\nYou can Login via "+href; 
+    //                if(parentEmail != null && !parentEmail.equals("")){
+    //                    SendMail.sendingEmail(parentEmail, subject, text);
+    //                }else if(parentPhone != 0){
+    //                    String phoneNum = "+65" + parentPhone;
+    //                    SendSMS.sendingSMS(phoneNum, text);
+    //                }
+    //            }
+
+            }
         }
         
         //System.out.print("parent Child Rel" + parentPhone + " " + insertStudent );
