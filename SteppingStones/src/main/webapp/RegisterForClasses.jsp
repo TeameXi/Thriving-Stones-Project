@@ -42,8 +42,8 @@
 <div class="row" id="errorMsg"></div>
     <div style="text-align: center;margin: 20px;"><span class="tab_active">Register For Classes </span></h5></div>
     <div class="row">
-        <div class="col-md-2"></div>
-        <div class="col-md-8">
+        <div class="col-md-1"></div>
+        <div class="col-md-9">
 
 
             <form action="RegisterForClassesServlet" method="post" autocomplete = "off">
@@ -202,7 +202,9 @@
                             out.println("<td>"+norCls.getMthlyFees()+"</td>");
                             out.println("<td>");
                             %>
-                            <input name="<%=norCls.getClassID()%>" type='text' class='form-control n_join_date'  placeholder='YYYY-MM-DD'> 
+                            <div class="input-group">
+                                <input name="<%=norCls.getClassID()%>" type='text' class='form-control n_join_date'  placeholder='YYYY-MM-DD'> 
+                            </div>
                             <%
                             out.println("</td>");
                             out.println("</tr>");    
@@ -245,7 +247,10 @@
                             out.println("<td>"+preCls.getMthlyFees()+"</td>");
                             String paymentType = preCls.getClassID()+"_paymentType";
                             %>
-                                    <td><input name="<%=preCls.getClassID()%>" type='text' class='form-control p_join_date'  placeholder='YYYY-MM-DD'></td>
+                                    <td>
+                                        <div class="input-group">
+                                        <input name="<%=preCls.getClassID()%>" type='text' class='form-control p_join_date'  placeholder='YYYY-MM-DD'>
+                                        </div></td>
                                     
                                     <td><select name=<%=paymentType%> class="form-control" id="paymentType">
                                             <option value="term">Pay Per Term</option>
@@ -261,7 +266,7 @@
                 }
                 if(premiumClasses.size() == 0 && normalClasses.size() == 0){
                     out.println("<label>No class available to register.</label><br><br>");
-                }
+                }else{
             %>  
             <div class="form-group">
                 <div>
@@ -270,6 +275,7 @@
             </div>    
             <%
                 }
+            }
             %>
             
             </form>

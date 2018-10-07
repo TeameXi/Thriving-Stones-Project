@@ -18,8 +18,8 @@
 
     <div style="text-align: center;margin: 20px;"><span class="tab_active">Make Payment</span></div>
     <div class="row">
-        <div class="col-md-2"></div>
-        <div class="col-md-8">
+      
+        <div class="col-md-10">
 
             <form id="paymentPage" method="POST" class="form-horizontal" action="PaymentHandlerServlet">
 
