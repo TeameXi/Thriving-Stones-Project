@@ -159,7 +159,17 @@
                                 </ul>
                             </li>
                             
-                           
+                            <li class="submenu">
+                                <a href="#">
+                                    <i class="zmdi zmdi-book"></i> Financial Reports
+                                    <span class="caret pull-right"></span>
+                                </a>
+                                <!-- Sub menu -->
+                                <ul>
+                                    <li><a href="${pageContext.request.contextPath}/GenerateFinancialReportServlet">Generate Financial Report</a></li>
+                                    
+                                </ul>
+                            </li>
                             
                       
                             <!-- <li><a href="RegisterForClasses.jsp"><i class="zmdi zmdi-library"></i>Register For Classes</a></li> -->

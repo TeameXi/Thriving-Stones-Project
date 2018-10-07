@@ -801,4 +801,44 @@ public class FinancialReportDAO {
 
         System.out.println("Done");
     }
+    
+    public static XSSFWorkbook FinancialReportGeneration1(String filename, HashMap<String, ArrayList<Revenue>> revenueData, HashMap<String, ArrayList<Deposit>> depositData, 
+            HashMap<String, ArrayList<Expense>> expenseData, ArrayList<BankDeposit> bankDeposit, String accountNum, double openingBalance){
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet revenue = workbook.createSheet("Revenue");
+        XSSFSheet expense = workbook.createSheet("Expenses");
+        XSSFSheet studentDeposit = workbook.createSheet("Students Deposits");
+        XSSFSheet balanceSheet = workbook.createSheet("Balance Sheet");
+        
+        XSSFCellStyle styleBold = styleBoldBorder(workbook);
+        XSSFCellStyle style = styleBorder(workbook);
+        XSSFCellStyle styleTitleUnderLine = styleTitleUnderLine(workbook);
+        XSSFCellStyle styleTitleBold = styleTitleBold(workbook);
+        //System.out.println("Creating excel");
+        HashMap<String, Account> revenues = revenue(revenue, revenueData, styleTitleBold, styleTitleUnderLine, styleBold, style);
+        HashMap<String, Double> expenses = expense(expense, expenseData, styleTitleBold, styleTitleUnderLine, styleBold, style);
+        deposit(studentDeposit, depositData, styleTitleBold, styleTitleUnderLine, styleBold, style);
+        System.out.println("revenue " + revenues + " deposit" + bankDeposit + " expense " + expenses);
+        balanceSheet(balanceSheet, revenues, expenses, bankDeposit, accountNum, openingBalance, styleTitleBold, styleTitleUnderLine, styleBold, style);
+        
+        for(int i = 0; i < 30; i++){
+            revenue.autoSizeColumn(i);
+            expense.autoSizeColumn(i);
+            studentDeposit.autoSizeColumn(i);
+            balanceSheet.autoSizeColumn(i);  
+        }
+        
+        /*try {
+            FileOutputStream outputStream = new FileOutputStream(filename);
+            workbook.write(outputStream);
+            workbook.close();
+        } catch (FileNotFoundException e) {
+            e.getMessage();
+        } catch (IOException e) {
+            e.getMessage();
+        }*/
+
+        System.out.println("Done");
+        return workbook;
+    }
 }
