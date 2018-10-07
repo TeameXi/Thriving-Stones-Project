@@ -219,7 +219,7 @@
                         }else if(role != null && user != null && role == "student" ){
                     %>
                             <li><a href="StudentViewGrade.jsp"><i class="zmdi zmdi-money-box"></i>Grades</a></li>
-                            <li><a href=DisplayBranches.jsp""><i class="zmdi zmdi-money-box"></i>View Attendance</a></li>
+                            <li><a href="StudentViewAttendance.jsp"><i class="zmdi zmdi-money-box"></i>View Attendance</a></li>
                             <li><a href=""><i class="zmdi zmdi-money-box"></i>Rewards</a></li>
 
                     <%
