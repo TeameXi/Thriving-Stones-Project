@@ -167,7 +167,8 @@
                                 <!-- Sub menu -->
                                 <ul>
                                     <li><a href="${pageContext.request.contextPath}/GenerateFinancialReportServlet">Generate Financial Report</a></li>
-                                    
+                                    <li><a href="CreateExpenses.jsp">Create Expenses</a></li>
+                                    <li><a href="DisplayExpenses.jsp">View Expenses</a></li>
                                 </ul>
                             </li>
                             

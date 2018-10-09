@@ -9,6 +9,7 @@ import connection.ConnectionManager;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,5 +33,15 @@ public class ExpenseDAO {
         }
     }
     
-    
+    public static void insertExpense(List<String> expenseList){
+        try (Connection conn = ConnectionManager.getConnection()){
+                String expenseLists = String.join(",", expenseList);
+                String insert_expense = "insert ignore into expense(tutor_id,description,amount,payment_date) values " + expenseLists;
+                PreparedStatement insertStatement = conn.prepareStatement(insert_expense);
+                insertStatement.executeUpdate();
+
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+    }
 }
