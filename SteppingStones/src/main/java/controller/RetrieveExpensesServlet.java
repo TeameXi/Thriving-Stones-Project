@@ -5,33 +5,26 @@
  */
 package controller;
 
-import entity.BankDeposit;
-import entity.Deposit;
+import com.google.gson.Gson;
 import entity.Expense;
-import entity.Revenue;
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.DateFormatSymbols;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Locale;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.FinancialReportDAO;
-import model.PaymentDAO;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import model.ExpenseDAO;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  *
  * @author Desmond
  */
-@WebServlet(name = "GenerateFinancialReportServlet", urlPatterns = {"/GenerateFinancialReportServlet"})
-public class GenerateFinancialReportServlet extends HttpServlet {
+@WebServlet(name = "RetrieveExpensesServlet", urlPatterns = {"/RetrieveExpensesServlet"})
+public class RetrieveExpensesServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -44,39 +37,37 @@ public class GenerateFinancialReportServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int months = Integer.parseInt(request.getParameter("month"));
-        int year = Integer.parseInt(request.getParameter("year"));
-        Calendar mCalendar = Calendar.getInstance();
-        //int monthInt = mCalendar.get(Calendar.MONTH) -1;
-        String month = "_" + getMonth(months) + "_" + year;
-                
-        String temp = this.getServletContext().getRealPath("/temp");
-        
-        File file = new File(temp);
-        if (!file.exists()) {
-            file.mkdir();
-        }
-        
-        String AccountExcel = temp + File.separator + "Account_" + month + ".xlsx";
-        HashMap<String, ArrayList<Revenue>> revenue = PaymentDAO.retrieveAllRevenueData(months, year);
-        HashMap<String, ArrayList<Deposit>> deposit = PaymentDAO.retrieveAllDepositData(year);
-        HashMap<String, ArrayList<Expense>> expense = PaymentDAO.retrieveAllExpenseData(months, year);   
-        ArrayList<BankDeposit> bankDeposit = PaymentDAO.retrieveAllBankDepositData(months, year);
-        
-        XSSFWorkbook workbook = FinancialReportDAO.FinancialReportGeneration1(AccountExcel,revenue, deposit, expense, bankDeposit, "010-91303-9", 0);
-        
-        try {
-            response.setContentType("application/vnd.ms-excel");
-            response.setHeader("Content-Disposition", "attachment; filename=Account_" + month + ".xlsx");
-            
-            workbook.write(response.getOutputStream());
-        } catch (Exception e) {
-            throw new ServletException("Exception in DownLoad Excel Servlet", e);
+        response.setContentType("text/html;charset=UTF-8");
+        try (PrintWriter out = response.getWriter()) {
+            Gson gson = new Gson();
+            String action = request.getParameter("action");
+
+            if (action.equals("retrieve")) {
+                 JSONArray array = new JSONArray();
+                ArrayList<Expense> expenses = ExpenseDAO.listAllExpenses();
+
+                for (Expense e : expenses) {
+                    JSONObject obj = new JSONObject();
+                    obj.put("id", e.getPaymentID());
+                    obj.put("type", (e.getTutorID() == 0? "Bank Expenses" : "Cashbox Expenses") );
+                    obj.put("description", e.getDescription());
+                    obj.put("amount", e.getAmount());
+                    obj.put("paymentdate", e.getDate());
+                    array.put(obj);
+                }
+                JSONObject toReturn = new JSONObject().put("data", array);
+                String json = toReturn.toString();
+                out.println(json);
+            }else if (action.equals("delete")) {
+                int payment_id = Integer.parseInt(request.getParameter("expenseID"));
+                 boolean success = ExpenseDAO.deleteExpense(payment_id);
+                 JSONObject toReturn = new JSONObject().put("data", success);
+                 String json = toReturn.toString();
+                 out.println(json);
+            }
         }
     }
-    public String getMonth(int month) {
-        return new DateFormatSymbols().getMonths()[month-1];
-    }
+
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.

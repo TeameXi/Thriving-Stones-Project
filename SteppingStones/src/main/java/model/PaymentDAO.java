@@ -386,12 +386,14 @@ public class PaymentDAO {
         return deletedStatus;
     }
 
-    public static HashMap<String, ArrayList<Revenue>> retrieveAllRevenueData() {
+    public static HashMap<String, ArrayList<Revenue>> retrieveAllRevenueData(int month, int year) {
         HashMap<String, ArrayList<Revenue>> revenueData = new HashMap<>();
 
         try (Connection conn = ConnectionManager.getConnection()) {
-            String sql = "select * from revenue where EXTRACT(MONTH FROM payment_date) = MONTH(curdate())  and EXTRACT(YEAR FROM payment_date) = YEAR(curdate());";
+            String sql = "select * from revenue where EXTRACT(MONTH FROM payment_date) = ?  and EXTRACT(YEAR FROM payment_date) = ?;";
             PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, month);
+            stmt.setInt(2, year);
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -418,12 +420,13 @@ public class PaymentDAO {
         return revenueData;
     }
     
-    public static HashMap<String, ArrayList<Deposit>> retrieveAllDepositData() {
+    public static HashMap<String, ArrayList<Deposit>> retrieveAllDepositData(int year) {
         HashMap<String, ArrayList<Deposit>> depositData = new HashMap<>();
 
         try (Connection conn = ConnectionManager.getConnection()) {
-            String sql = "select * from class_student_rel where EXTRACT(YEAR FROM deposit_payment_date) = YEAR(curdate());";
+            String sql = "select * from class_student_rel where EXTRACT(YEAR FROM deposit_payment_date) = ?;";
             PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, year);
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -456,12 +459,14 @@ public class PaymentDAO {
         return depositData;
     }
     
-    public static HashMap<String, ArrayList<Expense>> retrieveAllExpenseData() {
+    public static HashMap<String, ArrayList<Expense>> retrieveAllExpenseData(int month, int year) {
         HashMap<String, ArrayList<Expense>> expenseData = new HashMap<>();
 
         try (Connection conn = ConnectionManager.getConnection()) {
-            String sql = "select * from expense where EXTRACT(MONTH FROM payment_date) = MONTH(curdate())  and EXTRACT(YEAR FROM payment_date) = YEAR(curdate());";
+            String sql = "select * from expense where EXTRACT(MONTH FROM payment_date) = ?  and EXTRACT(YEAR FROM payment_date) = ?;";
             PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, month);
+            stmt.setInt(2, year);
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -496,12 +501,14 @@ public class PaymentDAO {
         return expenseData;
     }
     
-    public static ArrayList<BankDeposit> retrieveAllBankDepositData() {
+    public static ArrayList<BankDeposit> retrieveAllBankDepositData(int month, int year) {
         ArrayList<BankDeposit> bankDepositData = new ArrayList<>();
 
         try (Connection conn = ConnectionManager.getConnection()) {
-            String sql = "select * from bank_deposit_revenue where EXTRACT(MONTH FROM payment_date) = MONTH(curdate())  and EXTRACT(YEAR FROM payment_date) = YEAR(curdate());";
+            String sql = "select * from bank_deposit_revenue where EXTRACT(MONTH FROM payment_date) = ?  and EXTRACT(YEAR FROM payment_date) = ?;";
             PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, month);
+            stmt.setInt(2, year);
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {

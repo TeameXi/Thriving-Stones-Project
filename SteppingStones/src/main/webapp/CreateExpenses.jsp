@@ -8,6 +8,8 @@
 
 <!------ Include the above in your HEAD tag ---------->
 <div class="col-md-10">
+    <div style="text-align: center;margin: 10px;"><span class="tab_active" style="font-size: 14px">Create Expense</span></div>
+    
     <div class="container">
         <form id="createExpensesForm" method="POST" class="form-horizontal" action="CreateExpensesServlet">
             <table id="myTable" class=" table order-list">

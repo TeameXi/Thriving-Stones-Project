@@ -14,6 +14,7 @@ public class Expense {
     private String date;
     private int tutorID;
     private String description;
+    private int paymentID;
     
     public Expense(int tutorID, String description, double amount, String date){
         this.tutorID = tutorID;
@@ -21,6 +22,23 @@ public class Expense {
         this.amount = amount;
         this.date = date;
     }
+
+    public Expense(double amount, String date, int tutorID, String description, int paymentID) {
+        this.amount = amount;
+        this.date = date;
+        this.tutorID = tutorID;
+        this.description = description;
+        this.paymentID = paymentID;
+    }
+
+    public int getPaymentID() {
+        return paymentID;
+    }
+
+    public void setPaymentID(int paymentID) {
+        this.paymentID = paymentID;
+    }
+    
     
     public double getAmount(){
         return this.amount;
