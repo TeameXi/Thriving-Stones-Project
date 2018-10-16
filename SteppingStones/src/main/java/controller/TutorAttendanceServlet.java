@@ -17,6 +17,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import entity.Class;
 import model.AttendanceDAO;
+import org.joda.time.format.DateTimeFormat;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -165,14 +166,13 @@ public class TutorAttendanceServlet extends HttpServlet {
                 
                 JSONArray array = new JSONArray();
                 LessonDAO lessonDAO = new LessonDAO();
-                ArrayList<Lesson> lessons = LessonDAO.retrieveAllLessonLists(classID);
+                ArrayList<Lesson> lessons = LessonDAO.retrieveAllLessonListsBeforeCurr(classID);
                 
                 for(Lesson l:lessons){
                     JSONObject obj = new JSONObject();
                     obj.put("id", l.getLessonid());
                     String date = l.getStartDate();
                     obj.put("date", date.substring(0, date.indexOf(" ")));
-                    
                     
                     if(lessonDAO.retrieveAttendanceForLesson(l.getLessonid())){
                         obj.put("attendance", "Present");

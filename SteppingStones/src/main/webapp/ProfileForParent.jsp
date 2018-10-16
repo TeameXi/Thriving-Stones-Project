@@ -12,7 +12,7 @@
     <%               
         int parentId = 0;
         if(user != null){
-            parentId = user.getUserId();
+            parentId = user.getRespectiveID();
         }
         
         ParentDAO parentDao = new ParentDAO();
@@ -34,7 +34,7 @@
                     <div class="col-lg-7 inputGroupContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-account"></i></span>
-                            <input class="form-control" value="<%=parent.getName()%>" readonly  type="text">
+                            <input class="form-control" value="<%=user.getUsername()%>" readonly  type="text">
                             <input type="hidden" value="<%=parent.getParentId()%>" id="parent_id"/>
                         </div>
                     </div>
@@ -48,7 +48,7 @@
                             <% if (parent.getNationality().length() != 0){
                                     out.println("<input id='nationality' class='form-control' value='"+parent.getNationality()+"' readonly  type='text'>");
                                }else{
-                                    out.println("<input id='nationality' class='form-control' value='' type='text'>");
+                                    out.println("<input id='nationality' class='form-control' value='' type='text' placeholder='Nationality'>");
                                }
                             %>
                            
@@ -61,7 +61,7 @@
                     <div class="col-lg-7 inputGroupContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-city"></i></span>
-                            <input id="company" placeholder="company" class="form-control" value="<%=parent.getCompany()%>" />
+                            <input id="company" placeholder="Company" class="form-control" value="<%=parent.getCompany()%>" />
                         </div>
                     </div>
                 </div>
@@ -71,7 +71,7 @@
                     <div class="col-lg-7 inputGroupContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-case"></i></span>
-                            <input id="designation" placeholder="designation" class="form-control" value="<%=parent.getDesignation()%>" />
+                            <input id="designation" placeholder="Designation" class="form-control" value="<%=parent.getDesignation()%>" />
                         </div>
                     </div>
                 </div>
@@ -82,7 +82,7 @@
                     <div class="col-lg-7 inputGroupContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-phone"></i></span>
-                            <input name='phone' id="phone" class="form-control" type="text" value="<%=phone%>">
+                            <input name='phone' id="phone" placeholder="Phone" class="form-control" type="text" value="<%=phone%>">
                         </div>
                     </div>
                 </div>

@@ -4,13 +4,11 @@
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.dataTables.min.css">
 <style type="text/css">
     td.details-control {
-        background: url("${pageContext.request.contextPath}/styling/img/add.png") no-repeat center center;
+        background: url('${pageContext.request.contextPath}/styling/img/list_metro.png') no-repeat center center;
         cursor: pointer;
-        background-size: 15px 15px;
     }
     tr.shown td.details-control {
-        background: url("${pageContext.request.contextPath}/styling/img/minus.png") no-repeat center center;
-        background-size: 15px 15px;
+        background: url('${pageContext.request.contextPath}/styling/img/close.png') no-repeat center center;
     }
 
     .tutor-text {
@@ -20,21 +18,30 @@
     .attendance-button {
         text-align: center;
     }
+    
+    .innerTable{
+        padding-left:50px;
+        padding-right:50px;
+
+    }
 </style>
 <div class="col-lg-10">
     <div style="text-align: center;margin: 10px;"><span class="tab_active" style="font-size: 14px">Your Attendance</span></div>
-    <table id="tutorAttendance" class="table table-bordered" style="background-color: #cdcddf; width:100%; font-size: 14px">
-        <thead>
-            <tr>
-                <th></th>
-                <th style="text-align: center">Class</th>
-                <th style="text-align: center">Class Size</th>
-                <th style="text-align: center">Level</th>
-                <th style="text-align: center">Subject</th>
-                <th style="text-align: center">Overall Attendance</th>
-            </tr>
-        </thead>
-    </table>
+    
+    <div class="table-responsive-sm">
+        <table id="tutorAttendance" class="table display responsive nowrap" style="width:100%">
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col">Class</th>
+                    <th scope="col">Class Size</th>
+                    <th scope="col">Level</th>
+                    <th scope="col">Subject</th>
+                    <th scope="col">Overall Attendance</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
     
     <div class="inline">
         <button class="btn btn-default" id="expand">Expand All</button>
@@ -49,8 +56,8 @@
 
 <script type="text/javascript">
     function format(rowData, classID) {
-        return '<table id=' + classID + ' class="table table-bordered" style="background-color: #dddde9; width: 100%;">'
-                + '<thead><tr><th style="text-align: center">Lesson</th><th style="text-align: center">Present?</th></tr></thead></table>';
+        return '<div class="innerTable"><table id=' + classID + ' class="table table-bordered table-striped" style="background-color: #e7e7e7; width: 100%;">'
+                + '<thead><tr><th scope="col" style="text-align: center">Lesson</th><th scope="col" style="text-align: center">Present?</th></tr></thead></table></div>';
     }
 
     $(document).ready(function () {
