@@ -130,8 +130,10 @@ public class TutorPaymentServlet extends HttpServlet {
                         ClassDAO.getClassTime(c.getClassID()) * 
                         TutorDAO.getHourlyPay(tutorID, LevelDAO.retrieveLevelID(c.getLevel()), SubjectDAO.retrieveSubjectID(c.getSubject()));
                 
-                boolean status = TutorDAO.updateTutorPayment(tutorID, classID);
-                ExpenseDAO.insertExpense(tutorID, tutorDAO.retrieveSpecificTutorById(tutorID).getName(), c.getSubject(), c.getLevel(), tutorID);
+                boolean status = TutorDAO.updateTutorPayment(tutorID, lessonID);
+                if (status){
+                    ExpenseDAO.insertExpense(tutorID, tutorDAO.retrieveSpecificTutorById(tutorID).getName(), c.getSubject(), c.getLevel(), amount);
+                }
 
                 JSONObject toReturn = new JSONObject().put("data", status);
                 String json = toReturn.toString();

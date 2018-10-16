@@ -417,11 +417,11 @@ public class TutorDAO {
         return count;
     }
 
-    public static boolean updateTutorPayment(int tutorID, int classID) {
+    public static boolean updateTutorPayment(int tutorID, int lessonID) {
         try (Connection conn = ConnectionManager.getConnection();
-                PreparedStatement stmt = conn.prepareStatement("UPDATE table lesson set tutor_payment_status = 1 where tutor_id = ? and class_id = ?")) {
+                PreparedStatement stmt = conn.prepareStatement("update lesson set tutor_payment_status = 1 where tutor_id = ? and lesson_id = ?")) {
             stmt.setInt(1, tutorID);
-            stmt.setInt(2, classID);
+            stmt.setInt(2, lessonID);
 
             stmt.executeQuery();
             return true;
