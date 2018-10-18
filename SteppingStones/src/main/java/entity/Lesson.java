@@ -93,4 +93,7 @@ public class Lesson {
         this.reminder_term = reminder_term;
     }
     
+    public String getLessonDate(){
+        return startDate.substring(0, startDate.indexOf(" "));
+    }
 }
