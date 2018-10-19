@@ -55,8 +55,10 @@
                     <div class="col-lg-2 col-lg-offset-2">
                         <!-- Do NOT use name="submit" or id="submit" for the Submit button -->
                         <button type="submit" class="btn btn-default" name="search">Search</button>
+                        
                     </div>
                 </div>
+                
             </form><br><br>
             <%                
                 ArrayList<Student> selectedStudents = new ArrayList<Student>();
@@ -64,8 +66,9 @@
                 if(selectedStudents != null && !selectedStudents.isEmpty()){
             %>  
             <form id="submitStudentForm" method="POST" class="form-horizontal" action="AutoPromoteServlet">
+                                
                 <table class="table table-bordered">
-                    <thead class="table_title"><tr><th width="5%"></th><th width="20%">Name</th><th width="15%">Level</th><th width="27%">Email</th>
+                    <thead class="table_title"><tr><th width="5%"><input type="checkbox" id="checkAllStu" name="checkAllStu" onclick="checkAll();"/></th><th width="20%">Name</th><th width="15%">Level</th><th width="27%">Email</th>
                             <%--<th width="33%">Action</th> --%></tr></thead>
                     <tbody>
                         <%
@@ -73,7 +76,7 @@
                                 request.setAttribute("value", stu.getStudentID());
                         %>
                         <tr class="table_content">
-                            <td><input type= "checkbox" name ="studentValue" value = "${value}"></td>
+                            <td><input type= "checkbox" name ="studentValue" id="checkAllStudent" value = "${value}"></td>
                             <%
                                 out.println("<td>"+stu.getName()+"</td>");
                                 out.println("<td>"+stu.getLevel()+"</td>");
@@ -275,6 +278,28 @@
             }
         });
     });
+    
+    function checkAll() {
+        //alert("Check all the checkboxes...");
+        var checkAllStu = document.getElementById("checkAllStu");
+        var allRows = document.getElementsByName("studentValue");
+        if(checkAllStu.checked == true){
+            for (var i=0; i < allRows.length; i++) {
+                if (allRows[i].type == 'checkbox') 
+                {
+                    allRows[i].checked = true;
+                }
+            }
+        }else{
+            for (var i=0; i < allRows.length; i++) {
+                if (allRows[i].type == 'checkbox') 
+                {
+                    allRows[i].checked = false;
+                }
+            }
+        }
+
+    }
 </script>
 
 <script>
