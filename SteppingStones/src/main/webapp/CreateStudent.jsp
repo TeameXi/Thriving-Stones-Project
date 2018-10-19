@@ -162,8 +162,8 @@
             <div class="form-group">
                 <div class="col-lg-7 col-lg-offset-2">
                     <!-- Do NOT use name="submit" or id="submit" for the Submit button -->
-                    <button type="button" class="btn btn-success col-md-3"  onclick="optionalStudentInfo()">+ Optional fields</button>
-                    <button type="submit" class="btn btn-primary center-block" name="insert">Register Student</button>
+                    <button type="button" class="btn btn1 col-md-3"  onclick="optionalStudentInfo()">+ Optional fields</button>
+                    <button type="submit" class="btn btn2 center-block" name="insert">Register Student</button>
                 </div>
             </div>
                             
