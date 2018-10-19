@@ -1456,3 +1456,26 @@ footer .copy{
     background-color: #7ecbb7;
 }
 
+
+.btn1{
+    background-color: #9ccbce;
+    color:white;
+}
+
+.btn1:hover{
+    background: transparent;
+    color:#9ccbce;
+    border: 1px solid #9ccbce;
+}
+
+.btn2{
+    background-color: #f7a4a3;
+    color:white;
+}
+
+.btn2:hover{
+    background: transparent;
+    color:#f7a4a3;
+    border: 1px solid #f7a4a3;
+}
+

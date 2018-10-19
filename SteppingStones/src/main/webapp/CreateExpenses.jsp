@@ -5,20 +5,22 @@
 --%>
 <%@include file="protect_branch_admin.jsp"%>
 <%@include file="header.jsp"%>
+<style>
 
+</style>
 <!------ Include the above in your HEAD tag ---------->
 <div class="col-md-10">
-    <div style="text-align: center;margin: 10px;"><span class="tab_active" style="font-size: 14px">Create Expense</span></div>
+    <div style="text-align: center;margin: 10px;"><span class="tab_active" style="font-size: 14px">Create Expense</span></div><br/>
     
-    <div class="container">
+    <div class="row">
         <form id="createExpensesForm" method="POST" class="form-horizontal" action="CreateExpensesServlet">
             <table id="myTable" class=" table order-list">
                 <thead>
                     <tr>
                         <td>Expenses Type</td>
+                        <td>Spending Amount</td>
+                        <td>Date Of Expenditure</td>
                         <td>Description</td>
-                        <td>Amount</td>
-                        <td>Payment Date</td>
                     </tr>
                 </thead>
                 <tbody>
@@ -32,11 +34,7 @@
                                 </select>
                             </div>
                         </td>
-                        <td class="col-sm-4">
-                            <div class="form-group col-lg-12">
-                                <input type="text" name="description[0]"  class="form-control"/>
-                            </div>
-                        </td>
+                     
                         <td class="col-sm-2">
                             <div class="form-group col-lg-12">
                                 <input type="text" name="amount[0]"  class="form-control"/>
@@ -47,20 +45,27 @@
                                 <input type="text" name="paymentdate[0]"  class="form-control paymentdate"/>
                             </div>
                         </td>
-                        <td class="col-sm-2"><a class="deleteRow"></a>
-
+                        
+                        <td class="col-sm-4">
+                            <div class="form-group col-lg-12">
+                                <textarea class="form-control" name="description[0]"   cols="50"></textarea>
+                            </div>
                         </td>
+                        
+                        <td class="col-sm-2"><a class="deleteRow"></a></td>
                     </tr>
 
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colspan="2" style="text-align: left;">
-                            <input type="button" class="btn btn-lg btn-block " id="addrow" value="Add Row" />
+                        <td colspan="1"></td>
+                        <td colspan="1" style="text-align: left;">
+                            <input type="button" class="btn btn-block btn1 " id="addrow" value="Add Row" />
                         </td>
-                        <td colspan="3" style="text-align: left;">
-                            <input type="submit" class="btn btn-lg btn-block "  value="Submit" />
+                        <td colspan="1" style="text-align: left;">
+                            <input type="submit" class="btn btn-block btn2 "  value="Submit" />
                         </td>
+                        <td colspan="2"></td>
                     </tr>
                     <tr>
                     </tr>
@@ -137,12 +142,9 @@
                         var cols = "";
 
                         cols += '<td><div class="form-group col-lg-12"><select name="type[' + counter + ']" class="form-control"><option value="">Select Type</option><option value="0">Bank Expenses</option><option value="-1">Cash Box Expenses</option></select></div></td>';
-
-
-                        cols += '<td><div class="form-group col-lg-12"><input type="text" class="form-control" name="description[' + counter + ']"/></div></td>';
                         cols += '<td><div class="form-group col-lg-12"><input type="text" class="form-control" name="amount[' + counter + ']"/></div></td>';
-
                         cols += '<td><div class="form-group col-lg-12"><input type="text" class="form-control paymentdate" name="paymentdate[' + counter + ']"/></div></td>';
+                        cols += '<td><div class="form-group col-lg-12"><textarea class="form-control" name="description[' + counter + ']"></textarea></div></td>';
                         cols += '<td><input type="button" class="ibtnDel btn btn-md btn-danger "  value="Delete"></td>';
                         newRow.append(cols);
                         $("table.order-list").append(newRow);

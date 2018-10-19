@@ -64,7 +64,7 @@
                     <div class="form-group">
                         <div class="col-lg-2">
                             <!-- Do NOT use name="submit" or id="submit" for the Submit button -->
-                            <button class="btn btn-default"  type="submit">Create Subject</button>
+                            <button class="btn btn1"  type="submit">Create Subject</button>
 <!--                            <button class="btn btn-default"  onclick="return createSubjectWithCost()">Create Subject</button>-->
                         </div>
                     </div>

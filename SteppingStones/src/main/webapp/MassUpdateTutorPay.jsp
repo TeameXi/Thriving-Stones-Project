@@ -470,7 +470,7 @@
                         
                         oldTutorLists = responseData["oldTutor"];
                         newTutorLists = responseData["newTutor"];
-                        //console.log(responseData);
+                        console.log(responseData);
                       
                         if (responseData === -1) {
                             html = '<div class="alert alert-danger col-md-5"><strong>Sorry!</strong> Something went wrong</div>';

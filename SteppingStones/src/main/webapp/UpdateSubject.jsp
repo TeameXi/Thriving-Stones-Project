@@ -33,8 +33,8 @@
         </thead>
     </table>
     <div class="inline">
-        <button class="btn btn-default" id="expand">Expand All</button>
-        <button class="btn btn-default" id="collaspe">Collapse All</button>
+        <button class="btn btn1" id="expand">Expand All</button>
+        <button class="btn btn2" id="collaspe">Collapse All</button>
     </div>
 </div>
 </div>
@@ -147,7 +147,7 @@
                         {
                             "targets": 2,
                             "data": null,
-                            "defaultContent": '<button class="btn btn-default">Update</button>',
+                            "defaultContent": '<button class="btn btn1">Update</button>',
                             "className": 'tutor-text'
                         }
                     ],
