@@ -18,7 +18,28 @@
         <div class="col-md-3"></div>
         <div class="col-md-7">
             <form id="createTutorForm" method="POST" class="form-horizontal" action="CreateTutorServlet" autocomplete="off">
+                
                 <div class="form-group">
+                    <label class="col-lg-2 control-label">Full Name</label>  
+                    <div class="col-lg-7 inputGroupContainer">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="zmdi zmdi-account"></i></span>
+                            <input id="tutorName"  name="tutorName" placeholder="Full Name" class="form-control"  type="text">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">Email</label>  
+                    <div class="col-lg-7 inputGroupContainer">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="zmdi zmdi-email"></i></span>
+                            <input name="email" placeholder="E-Mail Address" class="form-control"  type="text">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group" id="nricField" style="display:none">
                     <label class="col-lg-2 control-label">NRIC</label>  
                     <div class="col-lg-7 inputGroupContainer">
                         <div class="input-group">
@@ -32,18 +53,7 @@
                     </div>
                 </div>
 
-
-                <div class="form-group">
-                    <label class="col-lg-2 control-label">Full Name</label>  
-                    <div class="col-lg-7 inputGroupContainer">
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="zmdi zmdi-account"></i></span>
-                            <input id="tutorName"  name="tutorName" placeholder="Full Name" class="form-control"  type="text">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
+                <div class="form-group" id="phoneField" style="display:none">
                     <label class="col-lg-2 control-label">Phone </label>  
                     <div class="col-lg-7 inputGroupContainer">
                         <div class="input-group">
@@ -53,7 +63,7 @@
                     </div>
                 </div>
                         
-                <div class="form-group">
+                <div class="form-group" id="qualificationField" style="display:none">
                     <label class="col-lg-2 control-label">Qualification </label>  
                     <div class="col-lg-7 inputGroupContainer">
                         <div class="input-group">
@@ -64,7 +74,7 @@
                 </div>
 
 
-                <div class="form-group">
+                <div class="form-group" id="addressField" style="display:none">
                     <label class="col-lg-2 control-label">Address</label>  
                     <div class="col-lg-7 inputGroupContainer">
                         <div class="input-group">
@@ -74,7 +84,7 @@
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" id="dobField" style="display:none">
                     <label class="col-lg-2 control-label">Birth Date</label>  
                     <div class="col-lg-7 inputGroupContainer">
                   
@@ -91,7 +101,7 @@
 
 
 
-                <div class="form-group">
+                <div class="form-group" id="genderField" style="display:none">
                     <label class="col-lg-2 control-label">Gender</label>  
                     <div class="col-lg-7 inputGroupContainer">
                         <div class="input-group">
@@ -105,20 +115,12 @@
                     </div>
                 </div>
                 
-                <div class="form-group">
-                    <label class="col-lg-2 control-label">Email</label>  
-                    <div class="col-lg-7 inputGroupContainer">
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="zmdi zmdi-email"></i></span>
-                            <input name="email" placeholder="E-Mail Address" class="form-control"  type="text">
-                        </div>
-                    </div>
-                </div>
 
                 <div class="form-group">
-                    <div class="col-lg-2 col-lg-offset-2">
+                    <div class="col-lg-7 col-lg-offset-2">
                         <!-- Do NOT use name="submit" or id="submit" for the Submit button -->
-                        <button type="submit" class="btn btn-default">Create Tutor</button>
+                        <button type="button" class="btn btn-success col-md-5"  onclick="optionalTutorInfo()">+ Optional fields</button>
+                        <button type="submit" class="btn btn-primary center-block">Create Tutor</button>
                     </div>
                 </div>
                 
@@ -218,4 +220,29 @@ $(function () {
     
     
 });
+function optionalTutorInfo() {       
+    var nric = document.getElementById("nricField");
+    var phone = document.getElementById("phoneField");
+    var qualification = document.getElementById("qualificationField");
+    var address = document.getElementById("addressField");
+    var dob = document.getElementById("dobField");
+    var gender = document.getElementById("genderField");
+
+    if (nric.style.display === "none"){
+        nric.style.display = "block";
+        phone.style.display = "block";
+        qualification.style.display = "block";
+        address.style.display = "block";
+        dob.style.display = "block";
+        gender.style.display = "block";
+    } else {
+        nric.style.display = "none";
+        phone.style.display = "none";
+        qualification.style.display = "none";
+        address.style.display = "none";
+        dob.style.display = "none";
+        gender.style.display = "none";
+    }
+       
+}
 </script>
