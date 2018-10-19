@@ -333,21 +333,36 @@ public class PaymentDAO {
         return updatedStatus;
     }
     
-    public static boolean insertPaymentToRevenue(int studentID, String studentName, int noOfLessons, String paymentType, String lvlSubject, double amountPaid) {
+    public static boolean insertPaymentToRevenue(int studentID, String studentName, int noOfLessons, String paymentType, String lvlSubject, double amountPaid, String paymentDate) {
         boolean status = false;
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            String sql = "insert into revenue(student_id, student_name, no_of_lessons, payment_date, payment_type, lvl_subject, amount_paid) value(?, ?, ?, curdate(), ?, ?, ?);";
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setInt(1, studentID);
-            stmt.setString(2, studentName);
-            stmt.setInt(3, noOfLessons);
-            stmt.setString(4, paymentType);
-            stmt.setString(5, lvlSubject);
-            stmt.setDouble(6, amountPaid);
-            stmt.executeUpdate();
-            conn.commit();
-            status = true;
+            if(paymentDate.isEmpty()){
+                String sql = "insert into revenue(student_id, student_name, no_of_lessons, payment_date, payment_type, lvl_subject, amount_paid) value(?, ?, ?, curdate(), ?, ?, ?);";
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                stmt.setInt(1, studentID);
+                stmt.setString(2, studentName);
+                stmt.setInt(3, noOfLessons);
+                stmt.setString(4, paymentType);
+                stmt.setString(5, lvlSubject);
+                stmt.setDouble(6, amountPaid);
+                stmt.executeUpdate();
+                conn.commit();
+                status = true;
+            }else{
+                String sql = "insert into revenue(student_id, student_name, no_of_lessons, payment_date, payment_type, lvl_subject, amount_paid) value(?, ?, ?, ?, ?, ?, ?);";
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                stmt.setInt(1, studentID);
+                stmt.setString(2, studentName);
+                stmt.setInt(3, noOfLessons);
+                stmt.setString(4, paymentDate);
+                stmt.setString(5, paymentType);
+                stmt.setString(6, lvlSubject);
+                stmt.setDouble(7, amountPaid);
+                stmt.executeUpdate();
+                conn.commit();
+                status = true;
+            }
         } catch (Exception e) {
             System.out.println("Error in insertPaymentToRevenue method" + e.getMessage());
         }
