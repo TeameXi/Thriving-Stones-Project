@@ -38,6 +38,13 @@ public class PaymentHandlerServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        
+        String paymentMode = request.getParameter("payment_mode");
+        String totalAmountStr = request.getParameter("totalAmount");
+        int totalAmount = 0;
+        if(totalAmountStr != null && !totalAmountStr.isEmpty()){
+            totalAmount = Integer.parseInt(totalAmountStr);
+        }
         String studentIDStr = request.getParameter("student_id");
         int studentID = 0;
         if (studentIDStr != null && !studentIDStr.isEmpty()) {
@@ -53,7 +60,14 @@ public class PaymentHandlerServlet extends HttpServlet {
         String[] noOfLessons = request.getParameterValues("noOfLessons[]");
         String[] subjects = request.getParameterValues("subject[]");
         String[] chargeAmounts = request.getParameterValues("chargeAmount[]");
-
+        
+        System.out.println(paymentMode);
+        if(paymentMode.equals("Bank Transfer") || paymentMode.equals("Cheque")){
+            String paymentDate = request.getParameter("payment_date");
+            boolean insert = PaymentDAO.insertBankDeposit(paymentMode, paymentDate, studentName, totalAmount);
+            System.out.println("insert");
+        }
+        
         for (int i = 0; i < paymentType.length; i++) {
             String type = paymentType[i];
             int classID = Integer.parseInt(classIDs[i]);
@@ -162,6 +176,7 @@ public class PaymentHandlerServlet extends HttpServlet {
         }
         
         String from = (String) request.getSession().getAttribute("from");
+        //String from = "registration";
         if (from.equals("registration")) {
             response.sendRedirect("RegisterForClasses.jsp?status=Payment successful.");
             return;

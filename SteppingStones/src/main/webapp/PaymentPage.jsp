@@ -18,8 +18,8 @@
 
     <div style="text-align: center;margin: 20px;"><span class="tab_active">Make Payment</span></div>
     <div class="row">
-      
-        <div class="col-md-10">
+        <div class="col-md-1"></div>
+        <div class="col-md-9">
 
             <form id="paymentPage" method="POST" class="form-horizontal" action="PaymentHandlerServlet">
 
@@ -48,15 +48,32 @@
                 Level: <label> <%out.println(level);%></label><br><br>
                 <input type="hidden" value="<%=studentID%>" name="student_id">
                 <input type="hidden" value="<%=level%>" name="level">
+                 
+                
                 <%
                     if(paymentData.size() != 0){
                 %>
+                <div class="form-group">
+                    <label class="col-md-3 control-label">Paymnet Mode</label>  
+                    <div class="col-md-4 inputGroupContainer">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="zmdi zmdi-badge-check"></i></span>
+                            <select name="payment_mode" class="form-control" onchange="dynamic(this)" id="payment_mode">
+                                <option value="" >Select Payment Mode</option>
+                                <option value="Cash">Cash </option>
+                                <option value="Cheque">Cheque</option>
+                                <option value="Bank Transfer">Bank Transfer</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                </div>
+                <div id="dynamicField"></div>
                 <label>Outstanding Charges</label>
                 <div class="table-responsive-sm">
                     <table id="paymentTable" class="table display responsive nowrap" style="width:100%">
                         <thead class="thead-light">
                             <tr>
-                                <th scope="col">Account Type</th>
                                 <th scope="col">Details</th>
                                 <th scope="col">Due Date</th>
                                 <th scope="col">Charge Amount</th>
@@ -65,11 +82,19 @@
                             </tr>
                         </thead>
                         <tbody>
-                        
+                            
                             <%
                                 for (Payment payment : paymentData) {
-                                    out.println("<tr><td>" + payment.getPaymentType() + "</td>");
-                                    out.println("<td>" + payment.getDetails() + "</td>");
+                            %>
+                            
+                            <%
+                                    if(payment.getPaymentType().equals("Reg Fees")){
+                                        out.println("<tr><td>" + payment.getDetails() + "</td>");
+                                    }else{
+                                        out.println("<tr><td>" + payment.getDetails() + " : " + payment.getPaymentType() + "</td>");
+                                    }
+                                    
+                                    
                                     out.println("<td>" + payment.getDueDate() + "</td>");
                                     if (payment.getPaymentType().equals("First Installment") && payment.getChargeAmount() == 0) {
                                         out.println("<td>");
@@ -99,7 +124,7 @@
                                     out.println("</td></tr>");
                                 }
 
-                                out.println("<tr><td> </td><td> </td><td> </td><td> </td><td><label>Total</label></td><td>");
+                                out.println("<tr><td> </td><td> </td><td> </td><td><label>Total</label></td><td>");
                         %>
                         <input name="totalAmount" id="totalAmount" class="form-control calculate" type="number" readonly>
                         <%        
@@ -146,17 +171,36 @@
 <script src='http://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.4.5/js/bootstrapvalidator.min.js'></script>
 
 <script>
+    function dynamic(selectObject) {
+        payment_mode = $("#payment_mode").val();
+        var dynamicField = document.getElementById('dynamicField');
+        var html = '';
+        if(payment_mode === "Cheque" || payment_mode === "Bank Transfer"){
+            console.log("Payment Mode " + payment_mode);
+            html = '<div class="form-group"><label class="col-lg-3 control-label">Payment Date</label>  <div class="col-lg-4 inputGroupContainer">\n\
+                        <div class="input-group"><span class="input-group-addon"><i class="zmdi zmdi-badge-check"></i></span>\n\
+                        <input name="payment_date" id="payment_date" class="form-control" type="date"></div></div></div>';;
+            
+        }else if(payment_mode === "Cash")  {
+            html = '';
+        }
+        //$('#payment_date').validator('update');
+        dynamicField.innerHTML = html;
+        
+    }
+        
     $(document).ready(function () {
         $('#paymentTable').dataTable( {
             "paging":   false,
             "ordering": false,
             "info":     false,
             "searching": false
-        } );
+        });
 
 //        var chargeAmount = $("input[name='chargeAmount[]']").map(function(){return $(this).val();}).get();
 //        console.log("Amount " + chargeAmount);
         
+
         $('.calculate').keyup(function () {
             var values = $("input[name='paymentAmount[]']").map(function(){return $(this).val();}).get();    
             var total = 0;
@@ -172,24 +216,38 @@
         });
         
         
-        
-//        $('#paymentPage').bootstrapValidator({
-//        // To use feedback icons, ensure that you use Bootstrap v3.1.0 or later
-//            feedbackIcons: {
-//                valid: 'glyphicon glyphicon-ok',
-//                invalid: 'glyphicon glyphicon-remove',
-//                validating: 'glyphicon glyphicon-refresh'
-//            },
-//            fields: {
+
+        $('#paymentPage').bootstrapValidator({
+        // To use feedback icons, ensure that you use Bootstrap v3.1.0 or later
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
 //                'paymentAmount[]': {
 //                    validators: { 
 //                        integer: {
 //                            message: 'Integer Only'
 //                        }
 //                    }
-//                }
-//            }
-//        });
+//                },
+                payment_mode: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Please select payment mode'
+                        }
+                    }
+                },
+                payment_date: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Please select payment date'
+                        }
+                    }
+                }
+            }
+        });
     });
 
 </script>

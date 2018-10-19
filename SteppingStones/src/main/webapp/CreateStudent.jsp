@@ -279,7 +279,7 @@
                             message: 'Integer only'
                         },
                         between: {
-                            min: 80000000,
+                            min: 60000000,
                             max: 99999999,
                             message: 'Please enter valid phone number'
                         },

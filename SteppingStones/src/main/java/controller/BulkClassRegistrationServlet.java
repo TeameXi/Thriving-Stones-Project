@@ -115,7 +115,7 @@ public class BulkClassRegistrationServlet extends HttpServlet {
             }
             if (updateOutstandingFees && status && paymentStauts && insertOutFeesStatus && firstInstallentStatus) {
                 //System.out.println("Enter successful");
-                response.sendRedirect("BulkClassRegistration.jsp?status=Successfully Registered.");
+                response.sendRedirect("AdminMarkAttendance.jsp?status=Successfully Registered.");
                 return;
             }
         }
