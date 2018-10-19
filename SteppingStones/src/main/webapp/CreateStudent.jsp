@@ -69,21 +69,6 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="col-lg-4 control-label">Stream</label>  
-                    <div class="col-lg-8 inputGroupContainer">
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="zmdi zmdi-badge-check"></i></span>
-                            <select name="stream" class="form-control" >
-                                <option value="" >Select Stream</option>
-                                <option value="Express"> Express </option>
-                                <option value="Normal Academic"> Normal Academic</option>
-                                <option value="Normal Technical"> Normal Technical </option>
-                            </select>
-                        </div>
-                    </div>
-                </div>               
-
-                <div class="form-group">
                     <label class="col-lg-4 control-label">Mobile</label>  
                     <div class="col-lg-8 inputGroupContainer">
                         <div class="input-group">
@@ -112,6 +97,21 @@
                         </div>
                     </div>
                 </div>
+            
+                <div class="form-group" id="streamField" style="display:none">
+                    <label class="col-lg-4 control-label">Stream</label>  
+                    <div class="col-lg-8 inputGroupContainer">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="zmdi zmdi-badge-check"></i></span>
+                            <select name="stream" class="form-control" >
+                                <option value="" >Select Stream</option>
+                                <option value="Express"> Express </option>
+                                <option value="Normal Academic"> Normal Academic</option>
+                                <option value="Normal Technical"> Normal Technical </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="col-md-6">
@@ -126,16 +126,7 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label class="col-lg-2 control-label">Relationship</label>  
-                    <div class="col-lg-7 inputGroupContainer"> 
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="zmdi zmdi-account"></i></span>
-                            <input id="rel"  name="relationship" placeholder="Relationship" class="form-control"  type="text">
-                        </div>
-                    </div>
-                </div>
-
+              
                 <div class="form-group">
                     <label class="col-lg-2 control-label">Mobile</label>  
                     <div class="col-lg-7 inputGroupContainer">
@@ -146,7 +137,7 @@
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" id="emailField" style="display:none">
                     <label class="col-lg-2 control-label">Email</label>  
                     <div class="col-lg-7 inputGroupContainer">
                         <div class="input-group">
@@ -156,11 +147,22 @@
                     </div>
                 </div>
                 
+                <div class="form-group" id="relationshipField" style="display:none">
+                    <label class="col-lg-2 control-label">Relationship</label>  
+                    <div class="col-lg-7 inputGroupContainer"> 
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="zmdi zmdi-account"></i></span>
+                            <input id="rel"  name="relationship" placeholder="Relationship" class="form-control"  type="text">
+                        </div>
+                    </div>
+                </div>
+                
             </div>
-                            
+                      
             <div class="form-group">
                 <div class="col-lg-7 col-lg-offset-2">
                     <!-- Do NOT use name="submit" or id="submit" for the Submit button -->
+                    <button type="button" class="btn btn-success col-md-3"  onclick="optionalStudentInfo()">+ Optional fields</button>
                     <button type="submit" class="btn btn-primary center-block" name="insert">Register Student</button>
                 </div>
             </div>
@@ -317,4 +319,20 @@
             $('#createTutorForm').data('bootstrapValidator').updateStatus('phone', 'NOT_VALIDATED').validateField('phone');
         });
     });
+    function optionalStudentInfo() {       
+        var stream = document.getElementById("streamField");
+        var relationship = document.getElementById("relationshipField");
+        var email = document.getElementById("emailField");
+        
+        if (stream.style.display === "none"){
+            stream.style.display = "block";
+            relationship.style.display = "block";
+            email.style.display = "block";
+        } else {
+            stream.style.display = "none";
+            relationship.style.display = "none";
+            email.style.display = "none";
+        }
+       
+    }
 </script>
