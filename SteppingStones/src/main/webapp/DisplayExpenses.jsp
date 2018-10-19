@@ -23,13 +23,13 @@
     %>
     <div class="col-lg-12">
     <div style="text-align: center;margin: 10px;"><span class="tab_active" style="font-size: 14px">Expenses</span></div>
-    <table id="expensesTable" class="table table-bordered" style="background-color: #cdcddf; width:100%; font-size: 14px">
-        <thead>
+    <table id="expensesTable" class="table table-bordered">
+        <thead class="thead-light">
             <tr>
                 <th style="text-align: center">Expenses Type</th>
                 <th style="text-align: center">Description</th>
-                <th style="text-align: center">Amount</th>
-                <th style="text-align: center">Payment Date</th>
+                <th style="text-align: center">Spending Amount</th>
+                <th style="text-align: center">Date Of Expenditure</th>
                 <th style="text-align: center">Action</th>
             </tr>
         </thead>
@@ -60,17 +60,9 @@
                             </div>
                         </td>
                     </tr>
+                   
                     <tr>
-                        <td>Description</td>
-                        <td>
-                            <div class="form-group col-lg-12">
-                                <input type="hidden" name="paymentid" class="form-control" id="txtpaymentid" />
-                                <input type="text" name="description"  class="form-control" id="txtdescription"/>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Amount</td>
+                        <td>Spending Amount</td>
                         <td>
                             <div class="form-group col-lg-12">
                                 <input type="text" name="amount"  class="form-control" id="txtamount"/>
@@ -78,31 +70,36 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>Payment Date</td>
+                        <td>Date Of Expenditure</td>
                         <td>
                             <div class="form-group col-lg-12">
                                 <input type="text" name="paymentdate"  class="form-control paymentdate" id="dppaymentdate"/>
                             </div>
                         </td>
                     </tr>
-                    <tr>
-                        <td></td>
+                    
+                     <tr>
+                        <td>Description</td>
                         <td>
-                            
+                            <div class="form-group col-lg-12">
+                                <input type="hidden" name="paymentid" class="form-control" id="txtpaymentid" />
+                                <textarea name="description"  class="form-control" id="txtdescription" col="50"></textarea>
+                            </div>
                         </td>
                     </tr>
-                </table>
-                    
-            </div><br/>
+                </table>  
+            </div>
             <div class="modal-footer spaced-top-small centered">
                 <button type="submit" class="btn btn-success" onclick="updateDetails()">Save Changes</button>
+             
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+
             </div>
             </form>
+            
         </div>  
 
-        <div class="modal-footer spaced-top-small centered">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        </div>
+     
     </div>       
 </div>
 </div>
