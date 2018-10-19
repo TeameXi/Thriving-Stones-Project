@@ -22,7 +22,7 @@ public class FinancialReportScheduler implements ServletContextListener{
     public void contextInitialized(ServletContextEvent event) {
         String a = event.getServletContext().getRealPath("/temp");
         scheduler = Executors.newSingleThreadScheduledExecutor();
-        scheduler.scheduleAtFixedRate(new FinancialReportJob(event.getServletContext().getRealPath("/temp")), 0, 1, TimeUnit.DAYS);
+        //scheduler.scheduleAtFixedRate(new FinancialReportJob(event.getServletContext().getRealPath("/temp")), 0, 1, TimeUnit.DAYS);
         //scheduler.scheduleAtFixedRate(new FinancialReportJob(event.getServletContext().getRealPath("/temp")), 0, 1, TimeUnit.HOURS);
         
         //use this when debugging
