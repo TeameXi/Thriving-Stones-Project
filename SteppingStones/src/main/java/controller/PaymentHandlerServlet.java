@@ -176,8 +176,8 @@ public class PaymentHandlerServlet extends HttpServlet {
             }
         }
         
-        //String from = (String) request.getSession().getAttribute("from");
-        String from = "registration";
+        String from = (String) request.getSession().getAttribute("from");
+        //String from = "registration";
         if (from.equals("registration")) {
             response.sendRedirect("RegisterForClasses.jsp?status=Payment successful.");
             return;
