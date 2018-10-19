@@ -2,14 +2,14 @@
 <%@include file="protect_branch_admin.jsp"%>
 <%@include file="header.jsp"%>
 <div class="col-lg-10">
-    <div style="text-align: center;margin: 20px;"><span class="tab_active" style="font-size: 14px">Generate Financial Report</span></div>
-    <div class="row"></div>
+    <div style="text-align: center;margin: 20px;"><span class="tab_active" style="font-size: 14px">Generate Financial Report</span></div><br/>
+
     <div class="row">
         <div class="col-md-2"></div>
-        <div class="col-md-8">
+        <div class="col-md-10">
     <form action="GenerateFinancialReportServlet" method="post"  class="form-horizontal" autocomplete = "off">
         <div class="form-group">
-            <label class="col-lg-3 control-label">Generate for : </label>  
+            <label class="col-lg-2 control-label">Generate for : </label>  
             <div class="col-lg-3 inputGroupContainer">
                 <select name="month" class="form-control">
                     <option value="1">January</option>
@@ -37,13 +37,10 @@
                 </select>
             </div>
                 
+            <button style="margin-left: 20px;" type="submit" class="btn btn1">Generate</button>
+                
         </div>
-        <div class="form-group">
-            <div class="col-lg-2 col-lg-offset-6">
-                <!-- Do NOT use name="submit" or id="submit" for the Submit button -->
-                <button style="margin-left: 20px;" type="submit" class="btn btn-default">Generate</button>
-            </div>
-        </div>
+       
         
     </form>
         </div>
