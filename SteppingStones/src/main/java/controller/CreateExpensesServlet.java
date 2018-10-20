@@ -54,7 +54,7 @@ public class CreateExpensesServlet extends HttpServlet {
         
         ExpenseDAO.insertExpense(expensesList);
         
-        response.sendRedirect("Expenses.jsp");
+        response.sendRedirect("DisplayExpenses.jsp");
         
     }
 
