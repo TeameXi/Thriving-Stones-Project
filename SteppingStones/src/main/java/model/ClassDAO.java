@@ -139,7 +139,9 @@ public class ClassDAO {
                 String subject = SubjectDAO.retrieveSubject(subjectID);
                 String level = LevelDAO.retrieveLevel(levelID);
                 String type = rs.getString("class_type");
+                int tutor = rs.getInt("tutor_id");
                 Class cls = new Class(classID, level, subject, term, startTime, endTime, classDay, mthlyFees, startDate, endDate, type);
+                cls.setTutorID(tutor);
                 classList.add(cls);
             }
         } catch (SQLException e) {

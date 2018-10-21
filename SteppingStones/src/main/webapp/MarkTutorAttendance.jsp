@@ -41,10 +41,6 @@
             </tr>
         </thead>
     </table>
-    <div class="inline">
-        <button class="btn btn-default" id="expand">Expand All</button>
-        <button class="btn btn-default" id="collaspe">Collapse All</button>
-    </div>
 </div>
 </div>
 </div>
@@ -85,23 +81,7 @@
             ],
             "order": [[1, 'asc']]
         });
-        // Handle click on "Expand All" button
-        $('#expand').on('click', function () {
-            // Expand row details
-            table.rows(':not(.parent)').nodes().to$().find('td:first-child').trigger('click');
-        });
-        // Handle click on "Collapse All" button
-        $('#collaspe').on('click', function () {
-            // Collapse row details
-            table.rows().every(function () {
-                // If row has details expanded
-                if (this.child.isShown()) {
-                    // Collapse row details
-                    this.child.hide();
-                    $(this.node()).removeClass('shown');
-                }
-            });
-        });
+        
         $('#tutorAttendanceTable tbody').on('click', 'td.details-control', function () {
             tr = $(this).parents('tr');
             row = table.row(tr);
@@ -134,10 +114,10 @@
                             html += '<th style="text-align: center;">Lesson ' + lessonNum + '</th>';
                         }
 
-                        html += '</tr></thead><tbody><tr>';
+                        html += '</tr></thead><tbody>';
                         for (var i = 0; i < data.length; i++) {
                             lessons = data[i].lessons;
-                            html += '<td style="text-align:center;">' + data[i].name + '</td>';
+                            html += '<tr><td style="text-align:center;">' + data[i].name + '</td>';
                             for (var j = 0; j < lessons.length; j++) {
                                 if (lessons[j].attended) {
                                     html += '<td style="text-align: center;">' + lessons[j].date + '<br/><input type="checkbox" id='
@@ -147,8 +127,9 @@
                                             + lessons[j].id + ' class="checkSingle"></td>';
                                 }
                             }
+                            html += '</tr>';
                         }
-                        html += '</tr></tbody></table></div></div>';
+                        html += '</tbody></table></div></div>';
                         //console.log(html);
                         // Open this row
                         row.child(html).show();
@@ -203,6 +184,7 @@
                                     } else {
                                         $("<div id='errorMsg' class='alert alert-success'>Oops! Something went wrong!</div>").insertAfter($("#tab"));
                                     }
+                                    table.cell(row.index().row, 3).data(data.attendance).draw();
                                     $("#errorMsg").fadeTo(2000, 0).slideUp(2000, function () {
                                         $(this).remove();
                                     });
