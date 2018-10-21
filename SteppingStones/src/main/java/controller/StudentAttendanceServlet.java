@@ -54,7 +54,16 @@ public class StudentAttendanceServlet extends HttpServlet {
             switch (action) {
                 case "retrieve": {
                     int branchID = Integer.parseInt(request.getParameter("branchID"));
-                    ArrayList<Class> classes = ClassDAO.listAllClasses(branchID);
+                    String tutorID = request.getParameter("tutorID");
+                    ArrayList<Class> classes;
+                    
+                    if(tutorID != null){
+                        int tutor = Integer.parseInt(tutorID);
+                        classes = classDAO.listAllClassesByTutorID(tutor, branchID);
+                    }else{
+                        classes = classDAO.listAllClasses(branchID);
+                    }
+                    
                     JSONArray array = new JSONArray();
                     for (Class c : classes) {
                         JSONObject obj = new JSONObject();
@@ -62,8 +71,12 @@ public class StudentAttendanceServlet extends HttpServlet {
                         System.out.println(c.getClassID());
                         obj.put("name", c.getClassDay() + " " + c.getStartTime() + "-" + c.getEndTime()
                                 + "<br/>" + c.getLevel() + " " + c.getSubject());
-                        System.out.println(c.getTutorID());
-                        obj.put("tutor", new TutorDAO().retrieveSpecificTutorById(c.getTutorID()).getName());
+                        
+                        if(tutorID != null){
+                            obj.put("tutor", new TutorDAO().retrieveSpecificTutorById(Integer.parseInt(tutorID)).getName());
+                        }else{
+                            obj.put("tutor", new TutorDAO().retrieveSpecificTutorById(c.getTutorID()).getName());
+                        }
                         array.put(obj);
                     }
                     JSONObject obj = new JSONObject().put("data", array);
@@ -107,6 +120,12 @@ public class StudentAttendanceServlet extends HttpServlet {
                     String lessons = request.getParameter("lessons");
                     String[] lesson_student = lessons.split(" ");
                     int classID = Integer.parseInt(request.getParameter("classID"));
+                    
+                    String tutor = request.getParameter("tutorID");
+                    int tutorID = 0;
+                    if(tutor != null){
+                        tutorID = Integer.parseInt(tutor);
+                    }
 
                     int updated = 0;
 
@@ -118,10 +137,10 @@ public class StudentAttendanceServlet extends HttpServlet {
                         int attended = Integer.parseInt(s.split("-")[2]);
 
                         if (attended == 1) {
-                            a.updateStudentAttendance(studentID, lessonID, classID, 0, true);
+                            a.updateStudentAttendance(studentID, lessonID, classID, tutorID, true);
                             updated++;
                         } else {
-                            a.updateStudentAttendance(studentID, lessonID, classID, 0, false);
+                            a.updateStudentAttendance(studentID, lessonID, classID, tutorID, false);
                             updated++;
                         }
 

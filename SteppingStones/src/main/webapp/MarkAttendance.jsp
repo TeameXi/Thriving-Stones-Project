@@ -1,129 +1,75 @@
 <%@include file="protect_tutor.jsp"%>
 <%@include file="header.jsp"%>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css">
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.dataTables.min.css">
-<style type="text/css">
-    td.details-control {
-        background: url("${pageContext.request.contextPath}/styling/img/add.png") no-repeat center center;
-        cursor: pointer;
-        background-size: 15px 15px;
-    }
-    tr.shown td.details-control {
-        background: url("${pageContext.request.contextPath}/styling/img/minus.png") no-repeat center center;
-        background-size: 15px 15px;
-    }
 
-    .student-text {
-        text-align: center;
-    }
-
-    .attendance-button {
-        text-align: center;
-    }
-</style>
-<div class="col-lg-10">
-    <div style="text-align: center;margin: 10px;"><span class="tab_active" style="font-size: 14px">Attendance Taking</span></div>
-    <table id="studentAttendanceTable" class="table table-bordered" style="background-color: #cdcddf; width:100%; font-size: 14px">
-        <thead>
-            <tr>
-                <th></th>
-                <th style="text-align: center">Class</th>
-                <th style="text-align: center">Level</th>
-                <th style="text-align: center">Subject</th>
-                <th style="text-align: center">Overall Attendance</th>
-            </tr>
-        </thead>
-    </table>
-    <div class="inline">
-        <button class="btn btn-default" id="expand">Expand All</button>
-        <button class="btn btn-default" id="collaspe">Collapse All</button>
-    </div>
-</div>
-</div>
-
-<div class="modal fade" id="lessonAttendance" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <span class="pc_title centered">Class Details</span>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="table-responsive">
-                    <table id="lessonAttendanceTable" class="table table-bordered table-striped" style="width:100%; font-size: 14px">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th style="text-align: center">Lesson Date</th>
-                                <th style="text-align: center">Attendance</th>
-                            </tr>
-                        </thead>
-                    </table>
-                </div>
-            </div><br/>
-        </div>  
-
-        <div class="modal-footer spaced-top-small centered">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        </div>
-    </div>       
-</div>
-</div>
+<%@include file="footer.jsp"%>
 <script src='https://code.jquery.com/jquery-3.3.1.js'></script>
 <script src='https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js'></script>
 <script src='https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js'></script>
 <script src='https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js'></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<style type="text/css">
+    td.details-control {
+        background: url('${pageContext.request.contextPath}/styling/img/list_metro.png') no-repeat center center;
+        cursor: pointer;
+    }
+    tr.shown td.details-control {
+        background: url('${pageContext.request.contextPath}/styling/img/close.png') no-repeat center center;
+    }
+
+    .innerTable{
+        padding-left:50px;
+        padding-right:50px;
+        max-width: 1000px;
+    }
+
+    #table-wrapper {
+        width: 95%;
+        float: left;
+        overflow-x: hidden;
+    }
+
+    .text{
+        text-align: center;
+    }
+</style>
+<div class="col-lg-10">
+    <div id="tab" style="text-align: center;margin: 10px;"><span class="tab_active" style="font-size: 14px">Attendance Taking</span></div>
+    <table id="studentAttendanceTable" class="table display dt-responsive nowrap" style="width:100%;">
+        <thead class="thead-light">
+            <tr>
+                <th scope="col" style="text-align: center;"></th>
+                <th scope="col" style="text-align: center;">Class</th>
+                <th scope="col" style="text-align: center;">Class Size</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+</div>
+</div>
+
 <script type="text/javascript">
-    function format(rowData, classID) {
-        return '<table id=' + classID + ' class="table table-bordered" style="background-color: #dddde9; width: 100%;">'
-                + '<thead><tr><th></th><th style="text-align: center">Student Name</th><th style="text-align: center">Phone No.</th><th style="text-align: center">Attendance</th></tr></thead></table>';
-    }
-
-    function formatLessonList(rowData, studentID) {
-        return '<table id=' + studentID + ' class="table table-bordered" style="background-color: #ececf3; width: 100%;">'
-                + '<thead><tr><th style="text-align: center">Lesson Date</th><th style="text-align: center">Present?</th>'
-                + '</tr></thead></table>';
-    }
-
-    function formatLessonModal(rowData) {
-        return '<table id="lessonModal" class="table table-bordered table-striped" style="width: 100%;">'
-                + '<thead></th><th style="text-align: center">Student Name</th><th style="text-align: center">Contact No.</th><th style="text-align: center">Present?</th>'
-                + '</tr></thead></table>';
-    }
-
     $(document).ready(function () {
-        tutorID = <%=user.getRespectiveID()%>
         branchID = <%=branch_id%>
+        tutorID = <%=user.getRespectiveID()%>
         action = 'retrieve';
-
         table = $('#studentAttendanceTable').DataTable({
-            'responsive': true,
             "iDisplayLength": 5,
             "aLengthMenu": [[5, 10, 25, -1], [5, 10, 25, "All"]],
             'ajax': {
                 "type": "POST",
-                "url": "MarkStudentAttendanceServlet",
+                "url": "StudentAttendanceServlet",
                 "data": {
-                    "tutorID": tutorID,
                     "branchID": branchID,
-                    "action": action
+                    "action": action,
+                    "tutorID": tutorID
                 }
             },
             "columnDefs": [
                 {
-                    "targets": [1, 2, 3],
+                    "targets": [1, 2],
                     "data": null,
                     "defaultContent": '',
-                    "className": 'student-text'
-                },
-                {
-                    "targets": 4,
-                    "data": null,
-                    "defaultContent": '<button class="btn btn-default">View Attendances</button>',
-                    "className": 'student-text'
+                    "className": 'text'
                 }
             ],
             'columns': [
@@ -133,159 +79,12 @@
                     "data": null,
                     "defaultContent": ''
                 },
-                {"data": "class"},
-                {"data": "level"},
-                {"data": "subject"}
+                {"data": "name"},
+                {"data": "tutor"}
             ],
             "order": [[1, 'asc']]
         });
-
-        // Handle click on "Expand All" button
-        $('#expand').on('click', function () {
-            // Expand row details
-            table.rows(':not(.parent)').nodes().to$().find('td:first-child').trigger('click');
-        });
-
-        // Handle click on "Collapse All" button
-        $('#collaspe').on('click', function () {
-            // Collapse row details
-            table.rows().every(function () {
-                // If row has details expanded
-                if (this.child.isShown()) {
-                    // Collapse row details
-                    this.child.hide();
-                    $(this.node()).removeClass('shown');
-                }
-            });
-        });
-
-        $('#studentAttendanceTable tbody').on('click', 'button', function () {
-            classID = table.row($(this).parents('tr')).data().id;
-            action = 'retrieveModal';
-            $('#lessonAttendance').on('shown.bs.modal', function () {
-                lessonAttendanceTable = $("#lessonAttendanceTable").DataTable({
-                    destroy: true,
-                    "dom": 'tpr',
-                    "iDisplayLength": 5,
-                    'ajax': {
-                        "type": "POST",
-                        "url": "MarkStudentAttendanceServlet",
-                        "data": {
-                            "classID": classID,
-                            "action": action
-                        }
-                    },
-                    "columnDefs": [
-                        {
-                            "targets": [1, 2],
-                            "data": null,
-                            "defaultContent": '',
-                            "className": 'student-text'
-                        }
-                    ],
-                    'columns': [
-                        {
-                            "className": 'details-control',
-                            "orderable": false,
-                            "data": null,
-                            "defaultContent": ''
-                        },
-                        {"data": "date"},
-                        {"data": "attendance"}
-                    ],
-                    "order": [[1, "asc"]]
-                });
-                $('#lessonAttendanceTable tbody').on('click', 'td.details-control', function () {
-                    lesson_tr = $(this).parents('tr');
-                    lesson_row = lessonAttendanceTable.row(lesson_tr);
-                    if (lesson_row.child.isShown()) {
-                        lesson_row.child.hide();
-                        lesson_tr.removeClass('shown');
-                    } else {
-                        lessonID = lesson_row.data().id;
-                        action = 'retrieveLessonDetails';
-                        lesson_row.child(formatLessonModal(lesson_row.data())).show();
-                        lessonModal = $("#lessonModal").DataTable({
-                            "dom": 'tpr',
-                            "iDisplayLength": 5,
-                            'ajax': {
-                                "type": "POST",
-                                "url": "MarkStudentAttendanceServlet",
-                                "data": {
-                                    "lessonID": lessonID,
-                                    "action": action
-                                }
-                            },
-                            "columnDefs": [
-                                {
-                                    "targets": 0,
-                                    "data": null,
-                                    "defaultContent": '',
-                                    "className": 'student-text'
-                                },
-                                {
-                                    "targets": 1,
-                                    "data": null,
-                                    "defaultContent": '',
-                                    "className": 'student-text'
-                                },
-                                {
-                                    "targets": 2,
-                                    "data": null,
-                                    "orderable": false,
-                                    "defaultContent": '<button id="_present" class="btn btn-default _present">Present</button> <button id="_absent" class="btn btn-default _absent">Absent</button>',
-                                    "className": 'student-text'
-                                }
-                            ],
-                            'columns': [
-                                {"data": "name"},
-                                {"data": "phone"},
-                                {"data": "attended"}
-                            ],
-                            "order": [[1, 'asc']]
-                        });
-                        $('#lessonModal tbody').on('click', '._present', function () {
-                            studentID = lessonModal.row($(this).parents('tr')).data().id;
-                            rowIndex = lessonModal.row($(this).parents('tr')).index();
-                            columnIndex = lessonModal.cell($(this).closest('td')).index().column;
-                            action = 'markLessonModal';
-                            $.ajax({
-                                type: 'POST',
-                                url: 'MarkStudentAttendanceServlet',
-                                dataType: 'JSON',
-                                data: {classID: classID, lessonID: lessonID, studentID: studentID, tutorID: tutorID, action: action},
-                                success: function (data) {
-                                    if (data) {
-                                        lessonModal.cell(rowIndex, columnIndex).data('Present' + ' <button id="_absent" class="btn btn-default _absent">Absent</button>').draw();
-                                        lessonAttendanceTable.cell(lesson_row.index(), 2).data(data.attendance).draw();
-                                    }
-                                }
-                            });
-                        });
-                        $('#lessonModal tbody').on('click', '._absent', function () {
-                            studentID = lessonModal.row($(this).parents('tr')).data().id;
-                            rowIndex = lessonModal.row($(this).parents('tr')).index();
-                            columnIndex = lessonModal.cell($(this).closest('td')).index().column;
-                            action = 'markLessonModalAbsent';
-                            $.ajax({
-                                type: 'POST',
-                                url: 'MarkStudentAttendanceServlet',
-                                dataType: 'JSON',
-                                data: {classID: classID, lessonID: lessonID, studentID: studentID, tutorID: tutorID, action: action},
-                                success: function (data) {
-                                    if (data) {
-                                        lessonModal.cell(rowIndex, columnIndex).data('Absent' + ' <button id="_present" class="btn btn-default _present">Present</button>').draw();
-                                        lessonAttendanceTable.cell(lesson_row.index(), 2).data(data.attendance).draw();
-                                    }
-                                }
-                            });
-                        });
-                        lesson_tr.addClass('shown');
-                    }
-                });
-            });
-            $("#lessonAttendance").modal('show');
-        });
+        
         $('#studentAttendanceTable tbody').on('click', 'td.details-control', function () {
             tr = $(this).parents('tr');
             row = table.row(tr);
@@ -296,133 +95,110 @@
             } else {
                 classID = row.data().id;
                 action = 'retrieveStudents';
-                // Open this row
-                row.child(format(row.data(), classID)).show();
-                var childTable = $("#" + classID).DataTable({
-                    "dom": 'tpr',
-                    "iDisplayLength": 5,
-                    'ajax': {
-                        "type": "POST",
-                        "url": "MarkStudentAttendanceServlet",
-                        "data": {
-                            "classID": classID,
-                            "action": action
+                $.ajax({
+                    type: 'POST',
+                    url: 'StudentAttendanceServlet',
+                    dataType: 'JSON',
+                    data: {action: action, classID: classID, branchID: branchID},
+                    success: function (data) {
+                        console.log(data);
+                        html = '<div class="innerTable"><div style="text-align: right; margin-bottom: 10px; margin-right: 50px;">'
+                                + '<button class="btn btn-default" id="updateAttendance">Update Attendance</button>'
+                                + '<button class="btn btn-default" id="uncheckAll" style="margin-left: 370px;">Uncheck All</button>'
+                                + '<button class="btn btn-default" id="checkAll" style="margin-left: 10px; margin-right: 20px;">Check All</button>'
+                                + '<img class="leftArrow" src="${pageContext.request.contextPath}/styling/img/left-arrow.svg" height="15" '
+                                + 'width="15" style="margin-right: 58px;"><img '
+                                + 'class="rightArrow" src="${pageContext.request.contextPath}/styling/img/right-arrow.svg" height="15" '
+                                + 'width="15"></div><div id="table-wrapper"><table id=' + classID
+                                + ' class="table table-striped table-bordered nowrap" style="width:100%">'
+                                + '<thead><tr><th style="text-align: center;">Student</th><th style="text-align: center;">Attendance</th>';
+                        for (var i = 0; i < data[0].lessons.length; i++) {
+                            lessonNum = i + 1;
+                            html += '<th style="text-align: center;">Lesson ' + lessonNum + '</th>';
                         }
-                    },
-                    "columnDefs": [
-                        {
-                            "targets": 1,
-                            "data": null,
-                            "defaultContent": '',
-                            "className": 'student-text'
-                        },
-                        {
-                            "targets": 2,
-                            "data": null,
-                            "defaultContent": '',
-                            "className": 'student-text'
-                        },
-                        {
-                            "targets": 3,
-                            "data": null,
-                            "defaultContent": '',
-                            "className": 'student-text'
+
+                        html += '</tr></thead><tbody>';
+                        for (var i = 0; i < data.length; i++) {
+                            lessons = data[i].lessons;
+                            html += '<tr id=' + data[i].id + '><td style="text-align:center;">' + data[i].name + '</td><td id=' + data[i].id + ' style="text-align: center;">' + data[i].attendance + '</td>';
+                            for (var j = 0; j < lessons.length; j++) {
+                                if (lessons[j].attended) {
+                                    html += '<td style="text-align: center;"><label style="margin-right: 10px;">' + lessons[j].date + '</label><input type="checkbox" id='
+                                            + lessons[j].id + ' class="checkSingle" checked></td>';
+                                } else {
+                                    html += '<td style="text-align: center;"><label style="margin-right: 10px;">' + lessons[j].date + '</label><input type="checkbox" id='
+                                            + lessons[j].id + ' class="checkSingle"></td>';
+                                }
+                            }
+                            html += '</tr>';
                         }
-                    ],
-                    'columns': [
-                        {
-                            "className": 'details-control',
-                            "orderable": false,
-                            "data": null,
-                            "defaultContent": ''
-                        },
-                        {"data": "name"},
-                        {"data": "phone"},
-                        {"data": "attendance"}
-                    ],
-                    "order": [[1, 'asc']]
-                });
-                tr.addClass('shown');
-                $('#' + classID + ' tbody').on('click', 'td.details-control', function () {
-                    childTR = $(this).parents('tr');
-                    childRow = childTable.row(childTR);
-                    if (childRow.child.isShown()) {
-                        // This row is already open - close it
-                        childRow.child.hide();
-                        childTR.removeClass('shown');
-                    } else {
-                        studentID = childRow.data().id;
-                        action = 'retrieveLessons';
+                        html += '</tbody></table></div></div>';
+                        
                         // Open this row
-                        childRow.child(formatLessonList(childRow.data(), studentID)).show();
-                        lessonTable = $("#" + studentID).DataTable({
-                            "dom": 'tpr',
-                            "iDisplayLength": 5,
-                            'ajax': {
-                                "type": "POST",
-                                "url": "MarkStudentAttendanceServlet",
-                                "data": {
-                                    "classID": classID,
-                                    "action": action,
-                                    "studentID": studentID
-                                }
-                            },
-                            "columnDefs": [
-                                {
-                                    "targets": 0,
-                                    "data": null,
-                                    "defaultContent": '',
-                                    "className": 'student-text'
-                                },
-                                {
-                                    "targets": 1,
-                                    "data": null,
-                                    "defaultContent": '<button id="'+ studentID+'_present" class="btn btn-default">Present</button> <button id="'+ studentID+'_absent" class="btn btn-default">Absent</button>',
-                                    "className": 'student-text'
-                                }
-                            ],
-                            'columns': [
-                                {"data": "date"},
-                                {"data": "attended"}
-                            ]
+                        row.child(html).show();
+
+                        tr.addClass('shown');
+
+                        $(".leftArrow").on("click", function () {
+                            var leftPos = $('#table-wrapper').scrollLeft();
+                            console.log(leftPos);
+                            $("#table-wrapper").animate({
+                                scrollLeft: leftPos - 200
+                            }, 800);
                         });
-                        $('#' + studentID + ' tbody').on('click', '#' +studentID+'_present', function () {
-                            lessonID = lessonTable.row($(this).parents('tr')).data().id;
-                            rowIndex = lessonTable.row($(this).parents('tr')).index();
-                            columnIndex = lessonTable.cell($(this).closest('td')).index().column;
+
+                        $(".rightArrow").on("click", function () {
+                            var leftPos = $('#table-wrapper').scrollLeft();
+                            console.log(leftPos);
+                            $("#table-wrapper").animate({
+                                scrollLeft: leftPos + 200
+                            }, 800);
+                        });
+
+                        $("#checkAll").on('click', function () {
+                            $(".checkSingle").each(function () {
+                                this.checked = true;
+                            });
+                        });
+
+                        $("#uncheckAll").on('click', function () {
+                            $(".checkSingle").each(function () {
+                                this.checked = false;
+                            });
+                        });
+
+                        $('#updateAttendance').on('click', function () {
+                            lessons = '';
+                            
+                            $(".checkSingle").each(function () {
+                                if (this.checked) {
+                                    lessons += this.id + '-' + $(this).closest('tr').attr('id') + '-' + 1 + ' ';
+                                }else{
+                                    lessons += this.id + '-' + $(this).closest('tr').attr('id') + '-' + 0 + ' ';
+                                }
+                            });
                             action = 'mark';
+
                             $.ajax({
                                 type: 'POST',
-                                url: 'MarkStudentAttendanceServlet',
+                                url: 'StudentAttendanceServlet',
                                 dataType: 'JSON',
-                                data: {classID: classID, lessonID: lessonID, studentID: studentID, tutorID: tutorID, action: action},
+                                data: {action: action, lessons: lessons, classID: classID, tutorID: tutorID},
                                 success: function (data) {
                                     if (data) {
-                                        lessonTable.cell(rowIndex, columnIndex).data('Present' + ' <button id="'+ studentID+'_absent" class="btn btn-default">Absent</button>').draw();
-                                        childTable.cell(childRow.index(), 3).data(data.attendance).draw();
+                                        $("<div id='errorMsg' class='alert alert-success'>Attendance Updated Successfully!</div>").insertAfter($("#tab"));
+                                    } else {
+                                        $("<div id='errorMsg' class='alert alert-success'>Oops! Something went wrong!</div>").insertAfter($("#tab"));
                                     }
+                                    
+                                    console.log(data.attendance);
+                                    
+                                    $("#errorMsg").fadeTo(2000, 0).slideUp(2000, function () {
+                                        $(this).remove();
+                                    });
                                 }
                             });
                         });
-                        $('#' + studentID + ' tbody').on('click', '#' +studentID+'_absent', function () {
-                            lessonID = lessonTable.row($(this).parents('tr')).data().id;
-                            rowIndex = lessonTable.row($(this).parents('tr')).index();
-                            columnIndex = lessonTable.cell($(this).closest('td')).index().column;
-                            action = 'markAbsent';
-                            $.ajax({
-                                type: 'POST',
-                                url: 'MarkStudentAttendanceServlet',
-                                dataType: 'JSON',
-                                data: {classID: classID, lessonID: lessonID, studentID: studentID, tutorId: tutorID, action: action},
-                                success: function (data) {
-                                    if (data) {
-                                        lessonTable.cell(rowIndex, columnIndex).data('Absent'+ ' <button id="'+ studentID+'_present" class="btn btn-default">Present</button>').draw();
-                                        childTable.cell(childRow.index(), 3).data(data.attendance).draw();
-                                    }
-                                }
-                            });
-                        });
-                        childTR.addClass('shown');
                     }
                 });
             }
