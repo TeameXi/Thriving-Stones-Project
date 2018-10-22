@@ -39,7 +39,6 @@
             <tr>
                 <th scope="col" style="text-align: center;"></th>
                 <th scope="col" style="text-align: center;">Class</th>
-                <th scope="col" style="text-align: center;">Class Size</th>
             </tr>
         </thead>
     </table>
@@ -79,8 +78,7 @@
                     "data": null,
                     "defaultContent": ''
                 },
-                {"data": "name"},
-                {"data": "tutor"}
+                {"data": "name"}
             ],
             "order": [[1, 'asc']]
         });

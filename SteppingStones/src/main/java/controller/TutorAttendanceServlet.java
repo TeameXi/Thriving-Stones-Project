@@ -16,6 +16,8 @@ import model.TutorDAO;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import entity.Class;
+import entity.Student;
+import java.text.DecimalFormat;
 import java.util.Arrays;
 
 /*
@@ -23,15 +25,14 @@ import java.util.Arrays;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author Zang Yu
  */
 @WebServlet(name = "TutorAttendanceServlet", urlPatterns = {"/TutorAttendanceServlet"})
 public class TutorAttendanceServlet extends HttpServlet {
-    
-       /**
+
+    /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
      *
@@ -46,85 +47,134 @@ public class TutorAttendanceServlet extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             String action = request.getParameter("action");
 
-            switch (action) {
-                case "retrieve":
-                    {
-                        int branchID = Integer.parseInt(request.getParameter("branchID"));
-                        JSONArray array = new JSONArray();
-                        LessonDAO lessons = new LessonDAO();
-                        ArrayList<Tutor> tutors = new TutorDAO().retrieveAllTutorsByBranch(branchID);
-                        for (Tutor t : tutors) {
-                            JSONObject obj = new JSONObject();
-                            obj.put("id", t.getTutorId());
-                            obj.put("phone", t.getPhone());
-                            obj.put("name", t.getName());
-                            obj.put("attendance", lessons.retrieveTotalPercentageAttendance(t.getTutorId()) + "%");
-                            array.put(obj);
-                        }       
-                        JSONObject toReturn = new JSONObject().put("data", array);
-                        String json = toReturn.toString();
-                        out.println(json);
-                        break;
-                    }
-                case "retrieveClasses":
-                    {
-                        int tutorID = Integer.parseInt(request.getParameter("tutorID"));
-                        int branchID = Integer.parseInt(request.getParameter("branchID"));
-                        LessonDAO lessonDAO = new LessonDAO();
-                        ArrayList<Class> classes = ClassDAO.listAllClassesByTutorID(tutorID, branchID);
-                        JSONArray array = new JSONArray();
-                        for (Class c : classes) {
-                            JSONObject obj = new JSONObject();
-                            obj.put("id", c.getClassID());
-                            obj.put("name", c.getClassDay() + " " +  c.getStartTime() + "-" 
-                                    + c.getEndTime() + "<br/>" + c.getLevel() + " " + c.getSubject());
-                            
-                            JSONArray lessons = new JSONArray();
-                            ArrayList<Lesson> lessonList = lessonDAO.retrieveAllLessonListsBeforeCurr(c.getClassID());
-                            
-                            for(Lesson l: lessonList){
-                                JSONObject lesson = new JSONObject();
-                                lesson.put("id", l.getLessonid());
-                                lesson.put("date", l.getLessonDate());
-                                lesson.put("attended", lessonDAO.retrieveAttendanceForLesson(l.getLessonid()));
-                                lessons.put(lesson);
-                            }
-                            obj.put("lessons", lessons);
-                            array.put(obj);
-                        }       
-                        String json = array.toString();
-                        System.out.println(json);
-                        out.println(json);
-                        break;
-                    }
-                case "mark":
-                    {
-                        String lessons = request.getParameter("lessons");
-                        int tutorID = Integer.parseInt(request.getParameter("tutorID"));
+            ClassDAO classDAO = new ClassDAO();
+            LessonDAO lessonDAO = new LessonDAO();
 
-                        LessonDAO les = new LessonDAO();
-                        String[] lessonIDs = lessons.split(" ");
-                        ArrayList<String> lessonList = new ArrayList<>(Arrays.asList(lessonIDs));
-                        
-                        ArrayList<Lesson> ls = LessonDAO.retrieveLessonsByTutor(tutorID);
-                        ArrayList<Integer> ids = new ArrayList<>();
-                        
-                        for(Lesson l: ls){
-                            ids.add(l.getLessonid());
-                        }
-                        
-                        for(int id: ids){
-                            if(lessonList.contains(id + "")){
-                                LessonDAO.updateTutorAttendance(id, 1);
-                            }else{
-                                LessonDAO.updateTutorAttendance(id, 0);
-                            }
-                        }
-                        JSONObject obj = new JSONObject().put("status", true);
-                        obj.put("attendance", les.retrieveTotalPercentageAttendance(tutorID) + "%");
-                        out.println(obj.toString());
-                        break;
+            switch (action) {
+                case "retrieve": {
+                    int branchID = Integer.parseInt(request.getParameter("branchID"));
+                    JSONArray array = new JSONArray();
+
+                    ArrayList<Tutor> tutors = new TutorDAO().retrieveAllTutorsByBranch(branchID);
+                    for (Tutor t : tutors) {
+                        JSONObject obj = new JSONObject();
+                        obj.put("id", t.getTutorId());
+                        obj.put("phone", t.getPhone());
+                        obj.put("name", t.getName());
+                        obj.put("attendance", lessonDAO.retrieveTotalPercentageAttendance(t.getTutorId()) + "%");
+                        array.put(obj);
                     }
+                    JSONObject toReturn = new JSONObject().put("data", array);
+                    String json = toReturn.toString();
+                    out.println(json);
+                    break;
+                }
+                case "retrieveClasses": {
+                    int tutorID = Integer.parseInt(request.getParameter("tutorID"));
+                    int branchID = Integer.parseInt(request.getParameter("branchID"));
+
+                    ArrayList<Class> classes = ClassDAO.listAllClassesByTutorID(tutorID, branchID);
+                    JSONArray array = new JSONArray();
+                    for (Class c : classes) {
+                        JSONObject obj = new JSONObject();
+                        obj.put("id", c.getClassID());
+                        obj.put("name", c.getClassDay() + " " + c.getStartTime() + "-"
+                                + c.getEndTime() + "<br/>" + c.getLevel() + " " + c.getSubject());
+
+                        JSONArray lessons = new JSONArray();
+                        ArrayList<Lesson> lessonList = lessonDAO.retrieveAllLessonListsBeforeCurr(c.getClassID());
+
+                        for (Lesson l : lessonList) {
+                            JSONObject lesson = new JSONObject();
+                            lesson.put("id", l.getLessonid());
+                            lesson.put("date", l.getLessonDate());
+                            lesson.put("attended", lessonDAO.retrieveAttendanceForLesson(l.getLessonid()));
+                            lessons.put(lesson);
+                        }
+                        obj.put("lessons", lessons);
+                        array.put(obj);
+                    }
+                    String json = array.toString();
+                    System.out.println(json);
+                    out.println(json);
+                    break;
+                }
+                case "mark": {
+                    String lessons = request.getParameter("lessons");
+                    int tutorID = Integer.parseInt(request.getParameter("tutorID"));
+
+                    String[] lessonIDs = lessons.split(" ");
+                    ArrayList<String> lessonList = new ArrayList<>(Arrays.asList(lessonIDs));
+
+                    ArrayList<Lesson> ls = LessonDAO.retrieveLessonsByTutor(tutorID);
+                    ArrayList<Integer> ids = new ArrayList<>();
+
+                    for (Lesson l : ls) {
+                        ids.add(l.getLessonid());
+                    }
+
+                    for (int id : ids) {
+                        if (lessonList.contains(id + "")) {
+                            LessonDAO.updateTutorAttendance(id, 1);
+                        } else {
+                            LessonDAO.updateTutorAttendance(id, 0);
+                        }
+                    }
+                    JSONObject obj = new JSONObject().put("status", true);
+                    obj.put("attendance", lessonDAO.retrieveTotalPercentageAttendance(tutorID) + "%");
+                    out.println(obj.toString());
+                    break;
+                }
+                case "display": {
+                    int branchID = Integer.parseInt(request.getParameter("branchID"));
+                    int tutorID = Integer.parseInt(request.getParameter("tutorID"));
+
+                    ArrayList<Class> classes = classDAO.listAllClassesByTutorID(tutorID, branchID);
+
+                    JSONArray array = new JSONArray();
+                    for (Class c : classes) {
+                        JSONObject obj = new JSONObject();
+                        obj.put("id", c.getClassID());
+                        System.out.println(c.getClassID());
+                        obj.put("name", c.getClassDay() + " " + c.getStartTime() + "-" + c.getEndTime()
+                                + "<br/>" + c.getLevel() + " " + c.getSubject());
+
+                        obj.put("tutor", new TutorDAO().retrieveSpecificTutorById(tutorID).getName());
+
+                        array.put(obj);
+                    }
+                    JSONObject obj = new JSONObject().put("data", array);
+                    out.println(obj.toString());
+                    break;
+                }
+                case "displayAttendances": {
+                    int classID = Integer.parseInt(request.getParameter("classID"));
+                    int branchID = Integer.parseInt(request.getParameter("branchID"));
+                    int tutorID = Integer.parseInt(request.getParameter("tutorID"));
+                    
+                    JSONObject obj = new JSONObject();
+                    JSONArray array = new JSONArray();
+                    
+                    Class c = classDAO.getClassByID(classID);
+                   
+                    obj.put("attendance", lessonDAO.retrieveNumberTutorAttendancePerClass(classID, tutorID) + "%");
+                    
+                    ArrayList<Lesson> lessons = lessonDAO.retrieveAllLessonListsBeforeCurr(classID);
+                    
+                    for(Lesson l: lessons){
+                        JSONObject lesson = new JSONObject();
+                        lesson.put("name", l.getLessonDate());
+                        lesson.put("attendance", lessonDAO.retrieveAttendanceForLesson(l.getLessonid()));
+                        array.put(lesson);
+                    }
+                    
+                    obj.put("lessons", array);
+                    
+                    String json = obj.toString();
+                    System.out.println(json);
+                    out.println(json);
+                    break;
+                }
                 default:
                     break;
             }
