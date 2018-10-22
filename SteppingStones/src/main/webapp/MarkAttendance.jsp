@@ -65,7 +65,7 @@
             },
             "columnDefs": [
                 {
-                    "targets": [1, 2],
+                    "targets": [1],
                     "data": null,
                     "defaultContent": '',
                     "className": 'text'
