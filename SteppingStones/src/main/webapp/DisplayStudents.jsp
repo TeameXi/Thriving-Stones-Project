@@ -16,9 +16,15 @@
         position: relative;
         display: inline-block;
         vertical-align: top;
-        height: 200px;
+        height: 220px;
         width: 250px;
         margin: 10px;
+    }
+    
+    .btn-default{
+        background-color: #9ccbce;
+        color:white;
+        border:none;
     }
 </style>
 
@@ -67,7 +73,7 @@
         <div><h4>Student Lists from <strong><%=level%></strong></h4></div>
         <div class="row" id="errorMsg"></div>
         <div class="row  spaced-top">
-            <div class="col-sm-6">
+            <div class="col-sm-8">
                 <div class="portlet light portlet-fit smaller-fonts" >
                     <span class="sortby_span">
                         Sort By
@@ -88,6 +94,13 @@
                     <br style="clear:both">
                 </div>
             </div>
+             <div class="col-sm-3">
+                 <form action="ExportArchievedStudents" method="POST">
+                    <button type="submit" class="btn btn-default"><i class="zmdi zmdi-download"> </i> Archived Students</button>
+                </form>
+            </div>
+
+        
         </div>
         <span class="toggler active" data-toggle="grid"><span class="zmdi zmdi-view-dashboard"></span></span>
         <span class="toggler" data-toggle="list"><span class="zmdi zmdi-view-list"></span></span>
@@ -148,7 +161,7 @@
                         }
 
                     } else {
-                        out.println("<div class='alert alert-warning col-md-5'>No Student Yet! <strong> <a href='CreateStudent.jsp'>Create One</a></strong> </div>");
+                        out.println("<div class='alert alert-warning col-md-5'>Select respective level to view students</div>");
                     }
                 %>
         </ul>

@@ -1,6 +1,7 @@
 package model;
 
 import connection.ConnectionManager;
+import entity.ArchivedObj;
 import entity.Student;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,7 +11,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.json.JSONObject;
 
 public class StudentDAO {
 
@@ -382,14 +389,60 @@ public class StudentDAO {
 
     public static boolean deleteStudentbyID(int studentID) {
         boolean deletedStatus = false;
-        try (Connection conn = ConnectionManager.getConnection();) {
-            conn.setAutoCommit(false);
-            String sql = "delete from student where student_id = ?";
+        try (Connection conn = ConnectionManager.getConnection()) {
+            String sql = "SELECT s.level_id,s.gender,s.student_name,s.phone as student_phone,s.address,s.email as student_email,s.school as school,p.name,p.phone,p.email,p_rel.relationship "
+                    + "FROM student s,parent as p, parent_child_rel as p_rel WHERE "
+                    + "p.parent_id = p_rel.parent_id AND s.student_id = p_rel.child_id  AND child_id = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, studentID);
-            stmt.executeUpdate();
+            
+//            System.out.println(sql);
+            ResultSet rs = stmt.executeQuery();
+            
+            String student_data = "";
+            String parent_data = "";
+            JSONObject student_obj = new JSONObject();
+            JSONObject parent_obj = new JSONObject();
+            if(rs.next()){
+                student_obj.put("student_name", rs.getString("student_name"));
+                student_obj.put("student_phone",rs.getString("student_phone"));
+                student_obj.put("address",rs.getString("address"));
+                student_obj.put("gender",rs.getString("gender"));
+                student_obj.put("student_email", rs.getString("student_email"));
+                String school =  rs.getString("school").trim();
+                school = school.replace("\u0000","");
+                student_obj.put("school",school);
+                student_data = student_obj.toString();
+                
+                parent_obj.put("parent_name",rs.getString("name"));
+                parent_obj.put("parent_phone",rs.getString("phone"));
+                parent_obj.put("parent_email",rs.getString("email"));
+                
+                String rel = rs.getString("relationship").trim();
+                rel = rel.replace("\u0000","");
+                System.out.println(rel);
+                parent_obj.put("relationship",rel);
+                parent_data = parent_obj.toString();
+                
+                int levelId = rs.getInt("level_id");
+                                
+                sql = "INSERT INTO archived_students(student_id,lvl_id,student_data,parent_data) VALUES(?,?,?,?)";
+                stmt = conn.prepareStatement(sql);
+                stmt.setInt(1, studentID);
+                stmt.setInt(2, levelId);
+                stmt.setString(3, student_data);
+                stmt.setString(4, parent_data);
+                int num = stmt.executeUpdate();
+            } 
+
+            sql = "delete from student where student_id = ?";
+            stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, studentID);
+            int deletedRecord = stmt.executeUpdate();
             conn.commit();
-            deletedStatus = true;
+            if(deletedRecord > 0){
+                deletedStatus = true;
+            }
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -616,5 +669,124 @@ public class StudentDAO {
             System.out.println("error in retrieveStudentID sql");
         }
         return result;
+    }
+    
+    
+    public static ArrayList<ArchivedObj>retrieveArchivedStudentData(){
+        ArrayList<ArchivedObj> past_data = new ArrayList<>();
+        String sql = "SELECT * FROM archived_students order by lvl_id";
+
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            
+            ResultSet rs = stmt.executeQuery();
+            
+            while(rs.next()){
+                int studentID = rs.getInt(1);
+                int levelID = rs.getInt(2);
+                String studentInfo = rs.getString(3);
+                String parentInfo = rs.getString(4);
+                past_data.add(new ArchivedObj(studentID,levelID,studentInfo,parentInfo));
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        
+        return past_data;
+    }
+
+    public static XSSFWorkbook generateArchievedStudent(String filename){
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("Past Students");
+
+        //Create title
+        XSSFRow row = sheet.createRow(0);
+        
+        XSSFCellStyle style = workbook.createCellStyle();
+        XSSFFont fontBold = workbook.createFont();
+        fontBold.setFontName("Times New Roman");
+        fontBold.setFontHeightInPoints((short)11);
+        fontBold.setBold(true);
+        style.setFont(fontBold);
+        
+        String [] titleList = {"Student Name","Student Phone","Address","Gender","Student Email","School","level","Parent Name","Contact Details","Parent Email","Relationship"};
+        
+        for(int i = 0; i < titleList.length; i++){
+            row.createCell(i).setCellValue(titleList[i]);
+            row.getCell(i).setCellStyle(style);
+        }
+      
+        
+        // Load data
+        ArrayList<ArchivedObj> student_archived_data =  retrieveArchivedStudentData();
+        int r = 1;
+        for(ArchivedObj stuObj: student_archived_data){
+            // Manipulating Data
+            row = sheet.createRow(r);
+            String studentData = stuObj.getStudent_data();
+            JSONObject studentInfoObj = new JSONObject(studentData);
+            
+            String parentData = stuObj.getParent_data();
+            JSONObject parentInfoObj = new JSONObject(parentData);
+            
+            System.out.println(parentInfoObj);
+            
+            // Data Value
+            String name = studentInfoObj.getString("student_name");
+            String phone = studentInfoObj.getString("student_phone");
+            String address = studentInfoObj.getString("address");
+            String gender = studentInfoObj.getString("gender");
+            String email = studentInfoObj.getString("student_email");
+            String school = studentInfoObj.getString("school");
+            
+            int lvl_id = stuObj.getLevel_id();
+            String level  = "";
+            if(lvl_id < 7){
+                level = "Primary "+lvl_id;
+            }else{
+                level = "Secondary "+(10-lvl_id);
+            }
+
+            String parent_name = parentInfoObj.getString("parent_name");
+            String parent_phone = parentInfoObj.getString("parent_phone");
+            String parent_email = parentInfoObj.getString("parent_email");
+            String relationship = parentInfoObj.getString("relationship");
+            
+            int column = 0;
+            XSSFCell cell = row.createCell(column);
+            cell.setCellValue(name);
+
+            cell = row.createCell(++column);
+            cell.setCellValue(phone);
+            
+            cell = row.createCell(++column);
+            cell.setCellValue(address);
+            
+            cell = row.createCell(++column);
+            cell.setCellValue(gender);
+            
+            cell = row.createCell(++column);
+            cell.setCellValue(email);
+            
+            cell = row.createCell(++column);
+            cell.setCellValue(school);
+            
+            cell = row.createCell(++column);
+            cell.setCellValue(level);
+            
+            cell = row.createCell(++column);
+            cell.setCellValue(parent_name);
+            
+            cell = row.createCell(++column);
+            cell.setCellValue(parent_phone);
+            
+            cell = row.createCell(++column);
+            cell.setCellValue(parent_email);
+            
+            cell = row.createCell(++column);
+            cell.setCellValue(relationship);
+            r++;
+        }
+        return workbook;
     }
 }

@@ -46,6 +46,7 @@ public class DeleteStudentServlet extends HttpServlet {
         int studentID = Integer.parseInt(request.getParameter("studentID"));
         int parentID = ParentChildRelDAO.getParentID(studentID);
         boolean deleteUser = UsersDAO.deleteUserByIdAndRole(studentID, "student");
+        
         boolean deleteStudent = StudentDAO.deleteStudentbyID(studentID);
         boolean deleteParentChildRel = ParentChildRelDAO.deleteParentChildRel(studentID);
         boolean deleteParent;
