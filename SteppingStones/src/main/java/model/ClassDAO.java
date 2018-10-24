@@ -652,4 +652,21 @@ public class ClassDAO {
         }
         return false;
     }
+    
+        public static HashMap retrieveClassTypes(int branch_id){
+        HashMap<Integer, String> classTypes = new HashMap<>();
+        
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement("select class_id, class_type from class where branch_id = ?");
+            stmt.setInt(1, branch_id);
+ 
+            ResultSet rs = stmt.executeQuery();
+            if(rs.next()){
+                classTypes.put(rs.getInt(1), rs.getString(2));
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return classTypes;
+    }
 }

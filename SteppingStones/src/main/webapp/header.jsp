@@ -209,22 +209,10 @@
                     <%
                         }else if(role != null && user != null && role == "parent" ){
                     %>
-                            <li><a href=""><i class="zmdi zmdi-money-box"></i>Outstanding Fees</a></li>
-                            <li><a href="DisplayClassesBelongToTutor.jsp"><i class="zmdi zmdi-local-library"></i>Classes</a></li>
-                            <li class="submenu">
-                                <a href="#">
-                                    <i class="zmdi zmdi zmdi-graduation-cap"></i> Student Attendance 
-                                    <span class="caret pull-right"></span>
-                                </a>
-                                <!-- Sub menu -->
-                                <ul>
-                                    <li><a href="CreateBranch.jsp">Mark Attendance</a></li>
-                                    <li><a href="DisplayBranches.jsp">View Attendance</a></li>
-                                </ul>
-                            </li>
-                           
-                            <li><a href="stats.html"><i class="zmdi zmdi-chart"></i>Your Attendance</a></li>
-                            <li><a href="CreateTuitionGrade.jsp"><i class="zmdi zmdi-star-circle"></i>Student's Grades</a></li>
+                            
+                            <li><a href="ParentViewGrade.jsp"><i class="zmdi zmdi-money-box"></i>View Child's Grades</a></li>
+                            <li><a href="ParentViewAttendance.jsp"><i class="zmdi zmdi-money-box"></i>View Child's Attendance</a></li>
+                            <li><a href=""><i class="zmdi zmdi-money-box"></i>Rewards</a></li>
                             
                     <%
                         }else if(role != null && user != null && role == "student" ){

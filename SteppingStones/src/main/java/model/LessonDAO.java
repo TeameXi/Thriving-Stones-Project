@@ -582,4 +582,22 @@ public class LessonDAO {
         return 0;
     }
     
+    public static Timestamp retrieveFirstClass(int classID) {
+        
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareCall("select lesson_id, start_date from lesson where class_id = ? order by lesson_id");
+            stmt.setInt(1, classID);
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                return rs.getTimestamp(1);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(LessonDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return null;
+    }
+    
 }

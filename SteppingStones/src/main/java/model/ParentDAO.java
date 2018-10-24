@@ -190,5 +190,36 @@ public class ParentDAO {
         returnList.add(insertedParents);
         return returnList;
     }
-
+    
+    public static ArrayList<Integer> retrieveChildrenIDs(int parentID, int branchID){
+        ArrayList<Integer> children = new ArrayList<>();
+        
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("select child_id from parent_child_rel where parent_id = ? and branch_id = ?");
+            stmt.setInt(1, parentID);
+            stmt.setInt(2, branchID);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                children.add(rs.getInt(1));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return children;
+    }
+    
+    public static Integer getTotalParentsCount(int branch_id){
+        int total = 0;
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("select count(*) from parent where branch_id = ?");
+            stmt.setInt(1, branch_id);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                total = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return total;
+    }
 }
