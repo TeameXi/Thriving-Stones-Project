@@ -420,9 +420,12 @@ public class StudentDAO {
                 
                 String rel = rs.getString("relationship").trim();
                 rel = rel.replace("\u0000","");
-                System.out.println(rel);
+                
                 parent_obj.put("relationship",rel);
                 parent_data = parent_obj.toString();
+                
+//                System.out.println(parent_data);
+//                System.out.println(student_data);
                 
                 int levelId = rs.getInt("level_id");
                                 
@@ -439,7 +442,6 @@ public class StudentDAO {
             stmt = conn.prepareStatement(sql);
             stmt.setInt(1, studentID);
             int deletedRecord = stmt.executeUpdate();
-            conn.commit();
             if(deletedRecord > 0){
                 deletedStatus = true;
             }
