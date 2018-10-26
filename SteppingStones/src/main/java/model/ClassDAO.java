@@ -669,4 +669,24 @@ public class ClassDAO {
         }
         return classTypes;
     }
+        
+    public ArrayList<String> retrieveReplacementDates(int lessonID){
+        ArrayList<String> replacementDates = new ArrayList<>();
+        String sql = "select changed_start_date, changed_end_date from lesson where lesson_id = ?";
+        
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, lessonID);
+            
+            ResultSet rs = stmt.executeQuery();
+            
+            while(rs.next()){
+                replacementDates.add(rs.getString(1));
+                replacementDates.add(rs.getString(2));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ClassDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return replacementDates;
+    }
 }
