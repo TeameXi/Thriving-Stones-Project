@@ -600,4 +600,23 @@ public class LessonDAO {
         return null;
     }
     
+    public static ArrayList<Lesson> retrieveAllLessonListsAfterCurr(int classid) {
+        ArrayList<Lesson> lessons = new ArrayList<>();
+        String sql = "select lesson_id, class_id, reminder_status, start_date, end_date from lesson where class_id = ? and start_date > CURDATE()";
+        System.out.println(sql);
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, classid);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Lesson lesson = new Lesson(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getTimestamp(4), rs.getTimestamp(5));
+                lessons.add(lesson);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return lessons;
+    }
 }
