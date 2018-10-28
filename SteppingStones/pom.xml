@@ -57,6 +57,11 @@
             <artifactId>poi-ooxml</artifactId>
             <version>3.17</version>
         </dependency>
+        <dependency>
+            <groupId>com.qoppa.pdfwriter</groupId>
+            <artifactId>pdfwriter</artifactId>
+            <version>v2016R1.04</version>
+        </dependency>
     </dependencies>
 
     <build>
