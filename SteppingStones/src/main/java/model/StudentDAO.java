@@ -49,12 +49,14 @@ public class StudentDAO {
 //        return 0;
 //    }
     
-    public static int insertStudent(String studentName, int phone, String stuEmail, int level_id, int branch_id, double regFees, String school, String stream) {
+    public static int insertStudent(String studentName, int phone, String stuEmail, int level_id, int branch_id, double regFees, String school, String stream, 
+            String nric, String gender, String birthDate, String address) {
 
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            String sql = "insert ignore into student(student_name, phone, email, school, stream, reg_fees, outstanding_reg_fees, required_amount, outstanding_amount, level_id, branch_id)"
-                    + " value(?, ?, ?, ?, ?, ? ,?, ?, ?, ?, ?)";
+            String sql = "insert ignore into student(student_name, phone, email, school, stream, reg_fees, outstanding_reg_fees, required_amount, outstanding_amount, level_id, branch_id,"
+                    + " student_nric, gender, birth_date, address)"
+                    + " value(?, ?, ?, ?, ?, ? ,?, ?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, studentName);
             stmt.setInt(2, phone);
@@ -67,6 +69,10 @@ public class StudentDAO {
             stmt.setDouble(9, 0);
             stmt.setInt(10, level_id);
             stmt.setInt(11, branch_id);
+            stmt.setString(12, nric);
+            stmt.setString(13, gender);
+            stmt.setString(14, birthDate);
+            stmt.setString(15, address);
             stmt.executeUpdate();
             conn.commit();
             ResultSet rs = stmt.getGeneratedKeys();
@@ -420,9 +426,12 @@ public class StudentDAO {
                 
                 String rel = rs.getString("relationship").trim();
                 rel = rel.replace("\u0000","");
-                System.out.println(rel);
+                
                 parent_obj.put("relationship",rel);
                 parent_data = parent_obj.toString();
+                
+//                System.out.println(parent_data);
+//                System.out.println(student_data);
                 
                 int levelId = rs.getInt("level_id");
                                 
@@ -439,7 +448,6 @@ public class StudentDAO {
             stmt = conn.prepareStatement(sql);
             stmt.setInt(1, studentID);
             int deletedRecord = stmt.executeUpdate();
-            conn.commit();
             if(deletedRecord > 0){
                 deletedStatus = true;
             }

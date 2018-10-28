@@ -188,6 +188,7 @@
                             ]
                         });
 
+                    
                         $('#' + classID + ' tbody').on('click', 'button', function () {
                             lessonID = lessonTable.row($(this).parents('tr')).data().id;
                             rowIndex = lessonTable.row($(this).parents('tr')).index();

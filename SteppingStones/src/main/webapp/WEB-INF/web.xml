@@ -30,6 +30,6 @@
         <url-pattern>/ChangePassword</url-pattern>
     </servlet-mapping>
     <listener>
-        <listener-class>JobScheduler.FinancialReportScheduler</listener-class>
+        <listener-class>JobScheduler.PaymentReminderScheduler</listener-class>
     </listener>
 </web-app>

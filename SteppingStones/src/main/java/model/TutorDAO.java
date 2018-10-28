@@ -402,7 +402,7 @@ public class TutorDAO {
     public static int calculateLessonCount(int tutorID, int classID) {
         int count = 0;
         try (Connection conn = ConnectionManager.getConnection();
-                PreparedStatement stmt = conn.prepareStatement("select count(*) from lesson where tutor_id = ? and class_id = ? and tutor_payment_status = 0 start_date < CURDATE()")) {
+                PreparedStatement stmt = conn.prepareStatement("select count(*) from lesson where tutor_id = ? and class_id = ? and tutor_payment_status = 0 and start_date < CURDATE()")) {
             stmt.setInt(1, tutorID);
             stmt.setInt(2, classID);
 
@@ -423,7 +423,7 @@ public class TutorDAO {
             stmt.setInt(1, tutorID);
             stmt.setInt(2, lessonID);
 
-            stmt.executeQuery();
+            stmt.executeUpdate();
             return true;
 
         } catch (SQLException ex) {

@@ -7,22 +7,23 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ParentDAO {
 
-    public static int insertParent(String name, int phone, String email, int branchID) {
+    public static int insertParent(String name, int phone, String email, int branchID, String nationality, String company, String designation) {
         
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            String sql = "insert ignore into parent(name, phone, email, branch_id)"
-                    + " value(?, ?, ?, ?)";
+            String sql = "insert ignore into parent(name, phone, email, branch_id, nationality, company, designation)"
+                    + " value(?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, name);
             stmt.setInt(2, phone);
             stmt.setString(3, email);
             stmt.setInt(4, branchID);
+            stmt.setString(5, nationality);
+            stmt.setString(6, company);
+            stmt.setString(7, designation);
             stmt.executeUpdate();
             conn.commit();
             ResultSet rs = stmt.getGeneratedKeys();

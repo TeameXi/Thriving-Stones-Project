@@ -11,6 +11,8 @@ public class Lesson {
     private String endDate;
     private int reminder_status;
     private int reminder_term;
+    private Timestamp startDateTS;
+    private Timestamp endDateTS;
     
     public Lesson(int lessonid, int classid, int tutorid, int tutorAttended, String startDate, String endDate) {
         this.lessonid = lessonid;
@@ -19,6 +21,14 @@ public class Lesson {
         this.tutorAttended = tutorAttended;
         this.startDate = startDate;
         this.endDate = endDate;
+    }
+    
+    public Lesson(int lessonid, int classid, int reminderStatus, Timestamp startDate, Timestamp endDate) {
+        this.lessonid = lessonid;
+        this.classid = classid;
+        this.reminder_status = reminderStatus;
+        this.startDateTS = startDate;
+        this.endDateTS = endDate;
     }
     
     public Lesson(int classid, int tutorid, String startDate, String endDate, int reminder_status) {
@@ -75,6 +85,14 @@ public class Lesson {
     
     public String getEndDate(){
         return endDate;
+    }
+    
+    public Timestamp getStartDateTS(){
+        return startDateTS;
+    }
+    
+    public Timestamp getEndDateTS(){
+        return endDateTS;
     }
     
     public Timestamp getUpdated() {

@@ -48,119 +48,131 @@ public class TutorScheduleServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            
+
             String action = request.getParameter("action");
-            
-            if(action.equals("retrieve")){
-                int tutorID = Integer.parseInt(request.getParameter("tutorID"));
-                JSONArray array = new JSONArray();
-                ArrayList<Lesson> lessons = LessonDAO.retrieveLessonsByTutor(tutorID);
-                
-                for(Lesson l : lessons){
-                    JSONObject obj = new JSONObject();
-                    obj.put("id", l.getLessonid());
-                    Class c = ClassDAO.getClassByID(l.getClassid());
-                    obj.put("start_date", l.getStartDate());
-                    obj.put("end_date", l.getEndDate());
-                    obj.put("text", c.getLevel() + " " + c.getSubject());
-                    array.put(obj);
-                }
-                JSONObject toReturn = new JSONObject().put("data", array);
-                String json = toReturn.toString();
-                out.println(json);
-            }else if(action.equals("retrieveClassDetails")){
-                int lessonID = Integer.parseInt(request.getParameter("lessonID"));
-                
-                Lesson lesson = LessonDAO.getLessonByID(lessonID);
-                JSONObject obj = new JSONObject();
-                obj.put("attendance", new AttendanceDAO().retrieveNumberOfStudentsAttended(lessonID));
-                obj.put("id", lessonID);
-                obj.put("startDate", lesson.getStartDate().substring(0, lesson.getStartDate().length() - 2));
-                obj.put("endDate", lesson.getEndDate().substring(0, lesson.getEndDate().length() - 2));
-                obj.put("tutor", new TutorDAO().retrieveSpecificTutorById(lesson.getTutorid()).getName());
-                obj.put("classSize", new StudentClassDAO().retrieveNumberOfStudentByClass(lesson.getClassid()));
-                obj.put("className", new ClassDAO().getClassByID(lesson.getClassid()).getClassDay() + " " + new ClassDAO().getClassByID(lesson.getClassid()).getStartTime() + "-" + new ClassDAO().getClassByID(lesson.getClassid()).getEndTime());
-                HashMap<String, String> map = new LessonDAO().retrieveUpdatedLessonDate(lessonID);
-                obj.put("changedStart", map.get("start"));
-                obj.put("changedEnd", map.get("end"));
-                
-                String json = obj.toString();
-                out.println(json);
-            }else if(action.equals("retrieveStudents")){
-                int lessonID = Integer.parseInt(request.getParameter("lessonID"));
-                
-                Lesson lesson = LessonDAO.getLessonByID(lessonID);
-                JSONArray array = new JSONArray();
-                ArrayList<Student> students = StudentClassDAO.listAllStudentsByClass(lesson.getClassid());
-                
-                for(Student s : students){
-                    JSONObject obj = new JSONObject();
-                    obj.put("id", s.getStudentID());
-                    obj.put("name", s.getName());
-                    obj.put("phone", s.getPhone());
-                    
-                    if(new AttendanceDAO().retrieveStudentAttendances(s.getStudentID(), lessonID)){
-                        obj.put("attended", "Present");
-                    }
-                    array.put(obj);
-                }
-                JSONObject toReturn = new JSONObject().put("data", array);
-                String json = toReturn.toString();
-                out.println(json);
-            }else if(action.equals("mark")){
-                int studentID = Integer.parseInt(request.getParameter("studentID"));
-                int tutorID = Integer.parseInt(request.getParameter("tutorID"));
-                int lessonID = Integer.parseInt(request.getParameter("lessonID"));
-                int classID = LessonDAO.getLessonByID(lessonID).getClassid();
-                
-                AttendanceDAO attendance = new AttendanceDAO();
-                boolean status = attendance.updateStudentAttendance(studentID, lessonID, classID, tutorID, true);
-                int numStudents = attendance.retrieveNumberOfStudentsAttended(lessonID);
-                
-                JSONObject toReturn = new JSONObject().put("status", status);
-                toReturn.put("attendance", numStudents);
-                String json = toReturn.toString();
-                out.println(json);
-            }else if (action.equals("updateLessonDate")){
-                int lessonID = Integer.parseInt(request.getParameter("lessonID"));
-                String startDate = request.getParameter("startDate");
-                String endDate = request.getParameter("endDate");
-                LessonDAO l = new LessonDAO();
-                Lesson lesson = l.getLessonByID(lessonID);
-                
-                JSONObject obj = new JSONObject();
-                
-                if(startDate == null || startDate.isEmpty()){
-                    obj.put("message", "Please enter a start date!");
-                }
-                
-                if(endDate == null || endDate.isEmpty()){
-                    obj.put("message", "Please enter an end date!");
-                }
-                
-                if(obj.length() == 0){
-                    DateTimeFormatter pattern = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
-                    DateTime startFormat = pattern.parseDateTime(startDate);
-                    DateTime endFormat = pattern.parseDateTime(endDate);
 
-                    if(startFormat.isEqual(endFormat) || startFormat.isAfter(endFormat)){
-                        obj.put("message", "Please select a valid timing!");
-                    }
-                    
-                    if(obj.length() == 0){
-                        boolean overlap = l.retrieveOverlappingLessonsForTutor(lesson.getTutorid(), pattern.print(startFormat), pattern.print(endFormat), lesson.getClassid());
+            ClassDAO classDAO = new ClassDAO();
+            LessonDAO lessonDAO = new LessonDAO();
 
-                        if(!overlap){
-                            boolean status = l.updateLessonDateTutor(lessonID,pattern.print(startFormat), pattern.print(endFormat));
-                            obj.put("message", "Lesson successfully updated!");
-                        }else{
-                            obj.put("message", "You have another class at that timing!");
+            switch (action) {
+                case "retrieve": {
+                    int tutorID = Integer.parseInt(request.getParameter("tutorID"));
+                    JSONArray array = new JSONArray();
+                    ArrayList<Lesson> lessons = LessonDAO.retrieveLessonsByTutor(tutorID);
+                    for (Lesson l : lessons) {
+                        JSONObject obj = new JSONObject();
+                        obj.put("id", l.getLessonid());
+                        Class c = ClassDAO.getClassByID(l.getClassid());
+
+                        ArrayList<String> replacements = classDAO.retrieveReplacementDates(l.getLessonid());
+
+                        if (!replacements.isEmpty()) {
+                            obj.put("start_date", replacements.get(0));
+                            obj.put("end_date", replacements.get(1));
+                        } else {
+                            obj.put("start_date", l.getStartDate());
+                            obj.put("end_date", l.getEndDate());
+                        }
+                        obj.put("text", c.getLevel() + " " + c.getSubject());
+                        array.put(obj);
+                    }
+                    JSONObject toReturn = new JSONObject().put("data", array);
+                    String json = toReturn.toString();
+                    out.println(json);
+                    break;
+                }
+                case "retrieveClassDetails": {
+                    int lessonID = Integer.parseInt(request.getParameter("lessonID"));
+                    Lesson lesson = LessonDAO.getLessonByID(lessonID);
+                    JSONObject obj = new JSONObject();
+                    obj.put("attendance", new AttendanceDAO().retrieveNumberOfStudentsAttended(lessonID));
+                    obj.put("id", lessonID);
+                    obj.put("startDate", lesson.getStartDate().substring(0, lesson.getStartDate().length() - 2));
+                    obj.put("endDate", lesson.getEndDate().substring(0, lesson.getEndDate().length() - 2));
+                    obj.put("tutor", new TutorDAO().retrieveSpecificTutorById(lesson.getTutorid()).getName());
+                    obj.put("classSize", new StudentClassDAO().retrieveNumberOfStudentByClass(lesson.getClassid()));
+                    obj.put("className", new ClassDAO().getClassByID(lesson.getClassid()).getClassDay() + " " + new ClassDAO().getClassByID(lesson.getClassid()).getStartTime() + "-" + new ClassDAO().getClassByID(lesson.getClassid()).getEndTime());
+                    HashMap<String, String> map = new LessonDAO().retrieveUpdatedLessonDate(lessonID);
+                    obj.put("changedStart", map.get("start"));
+                    obj.put("changedEnd", map.get("end"));
+                    String json = obj.toString();
+                    out.println(json);
+                    break;
+                }
+                case "retrieveStudents": {
+                    int lessonID = Integer.parseInt(request.getParameter("lessonID"));
+                    Lesson lesson = LessonDAO.getLessonByID(lessonID);
+                    JSONArray array = new JSONArray();
+                    ArrayList<Student> students = StudentClassDAO.listAllStudentsByClass(lesson.getClassid());
+                    for (Student s : students) {
+                        JSONObject obj = new JSONObject();
+                        obj.put("id", s.getStudentID());
+                        obj.put("name", s.getName());
+                        obj.put("phone", s.getPhone());
+
+                        if (new AttendanceDAO().retrieveStudentAttendances(s.getStudentID(), lessonID)) {
+                            obj.put("attended", "Present");
+                        }
+                        array.put(obj);
+                    }
+                    JSONObject toReturn = new JSONObject().put("data", array);
+                    String json = toReturn.toString();
+                    out.println(json);
+                    break;
+                }
+                case "mark": {
+                    int studentID = Integer.parseInt(request.getParameter("studentID"));
+                    int tutorID = Integer.parseInt(request.getParameter("tutorID"));
+                    int lessonID = Integer.parseInt(request.getParameter("lessonID"));
+                    int classID = LessonDAO.getLessonByID(lessonID).getClassid();
+                    AttendanceDAO attendance = new AttendanceDAO();
+                    boolean status = attendance.updateStudentAttendance(studentID, lessonID, classID, tutorID, true);
+                    int numStudents = attendance.retrieveNumberOfStudentsAttended(lessonID);
+                    JSONObject toReturn = new JSONObject().put("status", status);
+                    toReturn.put("attendance", numStudents);
+                    String json = toReturn.toString();
+                    out.println(json);
+                    break;
+                }
+                case "updateLessonDate": {
+                    int lessonID = Integer.parseInt(request.getParameter("lessonID"));
+                    String startDate = request.getParameter("startDate");
+                    String endDate = request.getParameter("endDate");
+                    LessonDAO l = new LessonDAO();
+                    Lesson lesson = l.getLessonByID(lessonID);
+                    JSONObject obj = new JSONObject();
+                    if (startDate == null || startDate.isEmpty()) {
+                        obj.put("message", "Please enter a start date!");
+                    }
+                    if (endDate == null || endDate.isEmpty()) {
+                        obj.put("message", "Please enter an end date!");
+                    }
+                    if (obj.length() == 0) {
+                        DateTimeFormatter pattern = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+                        DateTime startFormat = pattern.parseDateTime(startDate);
+                        DateTime endFormat = pattern.parseDateTime(endDate);
+
+                        if (startFormat.isEqual(endFormat) || startFormat.isAfter(endFormat)) {
+                            obj.put("message", "Please select a valid timing!");
+                        }
+
+                        if (obj.length() == 0) {
+                            boolean overlap = l.retrieveOverlappingLessonsForTutor(lesson.getTutorid(), pattern.print(startFormat), pattern.print(endFormat), lesson.getClassid());
+
+                            if (!overlap) {
+                                boolean status = l.updateLessonDateTutor(lessonID, pattern.print(startFormat), pattern.print(endFormat));
+                                obj.put("message", "Lesson successfully updated!");
+                            } else {
+                                obj.put("message", "You have another class at that timing!");
+                            }
                         }
                     }
+                    String json = obj.toString();
+                    out.println(json);
+                    break;
                 }
-                
-                String json = obj.toString();
-                out.println(json);
+                default:
+                    break;
             }
         }
     }

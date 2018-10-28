@@ -61,7 +61,8 @@ public class TutorPaymentServlet extends HttpServlet {
                     ArrayList<Class> classes = ClassDAO.listAllClassesByTutorID(t.getTutorId(), branchID);
                     double totalOwed = 0.0;
                     for (Class c : classes) {
-                        totalOwed += TutorDAO.calculateLessonCount(t.getTutorId(), c.getClassID()) * ClassDAO.getClassTime(c.getClassID()) * TutorDAO.getHourlyPay(t.getTutorId(), LevelDAO.retrieveLevelID(c.getLevel()), SubjectDAO.retrieveSubjectID(c.getSubject()));   
+                        totalOwed += TutorDAO.calculateLessonCount(t.getTutorId(), c.getClassID()) * ClassDAO.getClassTime(c.getClassID()) * 
+                                TutorDAO.getHourlyPay(t.getTutorId(), LevelDAO.retrieveLevelID(c.getLevel()), SubjectDAO.retrieveSubjectID(c.getSubject()));
                     }
                     obj.put("salary", totalOwed);
                     array.put(obj);
@@ -85,7 +86,8 @@ public class TutorPaymentServlet extends HttpServlet {
                     obj.put("level", c.getLevel());
                     obj.put("subject", c.getSubject());
                     obj.put("hourly_rate", TutorDAO.getHourlyPay(tutorID, LevelDAO.retrieveLevelID(c.getLevel()), SubjectDAO.retrieveSubjectID(c.getSubject())));
-                    obj.put("owed_amount", TutorDAO.calculateLessonCount(tutorID, c.getClassID()) * ClassDAO.getClassTime(c.getClassID()) * TutorDAO.getHourlyPay(tutorID, LevelDAO.retrieveLevelID(c.getLevel()), SubjectDAO.retrieveSubjectID(c.getSubject())));
+                    obj.put("owed_amount", TutorDAO.calculateLessonCount(tutorID, c.getClassID()) * ClassDAO.getClassTime(c.getClassID()) * 
+                            TutorDAO.getHourlyPay(tutorID, LevelDAO.retrieveLevelID(c.getLevel()), SubjectDAO.retrieveSubjectID(c.getSubject())));
                     array.put(obj);
                 }
                 JSONObject toReturn = new JSONObject().put("data", array);

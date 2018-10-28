@@ -54,7 +54,7 @@
                     if(paymentData.size() != 0){
                 %>
                 <div class="form-group">
-                    <label class="col-md-3 control-label">Paymnet Mode</label>  
+                    <label class="col-md-3 control-label">Payment Mode</label>  
                     <div class="col-md-4 inputGroupContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-badge-check"></i></span>
@@ -76,8 +76,8 @@
                             <tr>
                                 <th scope="col">Details</th>
                                 <th scope="col">Due Date</th>
-                                <th scope="col">Charge Amount</th>
-                                <th scope="col">Outstanding Charge(s)</th>
+                                <th scope="col">Student Fees</th>
+                                <th scope="col">Outstanding Fees</th>
                                 <th scope="col">Payment Amount</th>
                             </tr>
                         </thead>

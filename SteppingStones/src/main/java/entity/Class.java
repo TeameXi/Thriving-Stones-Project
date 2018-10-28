@@ -19,6 +19,7 @@ public class Class {
     private int tutorID;
     private String holidayDate;
     private String type;
+    private String combinedLevel;
 
     public Class(int classID,String level, int subjectID, String startTime, String endTime, String classDay, double mthlyFees, String startDate, String endDate,String holidayDate,int tutorID) {
         this.classID = classID;
@@ -48,6 +49,22 @@ public class Class {
         this.type = type;
     }
     
+    public Class(int classID, String level, String subject, int term, String startTime, String endTime, String classDay, 
+            double mthlyFees, String startDate, String endDate, String type, String combinedLevel) {
+        this.classID = classID;
+        this.level = level;
+        this.subject = subject;
+        this.term = term;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.classDay = classDay;
+        this.mthlyFees = mthlyFees;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.type = type;
+        this.combinedLevel= combinedLevel;
+    }
+    
     public Class(int classID, int subjectID, String startTime, String endTime, String classDay, double mthlyFees, String startDate, String endDate, int tutorID, String type) {
         this.classID = classID;
         this.subjectID = subjectID;
@@ -60,30 +77,15 @@ public class Class {
         this.tutorID = tutorID;
         this.type = type;  
     }
+    
+    public String getCombinedLevel() {
+        return this.combinedLevel;
+    }
 
-//    public Class(int classID, int subjectID, String classTime, String classDay, double mthlyFees, String startDate, String endDate, int tutorID) {
-//        this.classID = classID;
-//        this.subjectID = subjectID;
-//        this.classTime = classTime;
-//        this.classDay = classDay;
-//        this.mthlyFees = mthlyFees;
-//        this.startDate = startDate;
-//        this.endDate = endDate;
-//        this.tutorID = tutorID;
-//    }
-
-//    public Class(int classID, String level, String subject, String classTime, String classDay, double mthlyFees, String startDate, String endDate, int year) {
-//        this.classID = classID;
-//        this.level = level;
-//        this.subject = subject;
-//        this.classTime = classTime;
-//        this.classDay = classDay;
-//        this.mthlyFees = mthlyFees;
-//        this.startDate = startDate;
-//        this.endDate = endDate;
-//        this.year = year;
-//    }
-
+    public void setTerm(String combinedLevel) {
+        this.combinedLevel = combinedLevel;
+    }
+    
     public int getTerm() {
         return this.term;
     }
