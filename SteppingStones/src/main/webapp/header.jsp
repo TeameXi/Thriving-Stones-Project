@@ -158,6 +158,18 @@
                                     <li><a href="BulkClassRegistration.jsp">Bulk Class Registration</a></li>
                                 </ul>
                             </li>
+                                                        
+                             <li class="submenu">
+                                <a href="#">
+                                    <i class="zmdi zmdi-book"></i> Payment
+                                    <span class="caret pull-right"></span>
+                                </a>
+                                <!-- Sub menu -->
+                                <ul>
+                                    <li><a href="TutorPayment.jsp">Tutor Payment</a></li>
+                                    <li><a href="PaymentPage.jsp">Student Payment</a></li>
+                                </ul>
+                            </li>
                             
                             <li class="submenu">
                                 <a href="#">

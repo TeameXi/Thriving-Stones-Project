@@ -351,7 +351,7 @@ public class LessonDAO {
     public int retrievePaymentStatus(int lessonID, int tutorID) {
         int status = 2;
         try (Connection conn = ConnectionManager.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement("select tutor_payment_status from lesson where lesson_id = ? and tutor_id = ? and tutor_attended = 1");
+            PreparedStatement stmt = conn.prepareStatement("select tutor_payment_status from lesson where lesson_id = ? and tutor_id = ?");
             stmt.setInt(1, lessonID);
             stmt.setInt(2, tutorID);
 
