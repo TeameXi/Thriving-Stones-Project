@@ -45,7 +45,10 @@ public class CreateStudentServlet extends HttpServlet {
             response.sendRedirect("CreateStudent.jsp");
             return;
         }
-        
+        String nric = request.getParameter("nric");
+        String gender = request.getParameter("gender");
+        String birthDate = request.getParameter("bday");
+        String address = request.getParameter("address");
         String studentName = request.getParameter("studentName");
         String lvl = request.getParameter("lvl");
         String stream = request.getParameter("stream");
@@ -74,6 +77,10 @@ public class CreateStudentServlet extends HttpServlet {
         String parentPassword = GeneratePassword.random(16);
         int parentPhone = Integer.parseInt(request.getParameter("parentPhone"));
         String parentEmail = request.getParameter("parentEmail"); 
+        String nationality = request.getParameter("nationality");
+        String company = request.getParameter("company");
+        String designation = request.getParameter("designation");         
+        
         String href =  request.getHeader("origin")+request.getContextPath()+"/Login.jsp";
         
         int studentID = 0;
@@ -92,7 +99,7 @@ public class CreateStudentServlet extends HttpServlet {
         
         int insertStudent = 0;
         if(studentID == 0){
-            insertStudent = StudentDAO.insertStudent(studentName, phone,stuEmail, levelID, branchID, regFees, school, stream);
+            insertStudent = StudentDAO.insertStudent(studentName, phone,stuEmail, levelID, branchID, regFees, school, stream, nric, gender, birthDate, address);
         }
         //System.out.println("Insert Student " + insertStudent);
 
@@ -141,7 +148,7 @@ public class CreateStudentServlet extends HttpServlet {
         
         int insertParent = 0;
         if(insertStudent > 0){
-            insertParent = ParentDAO.insertParent(parentName, parentPhone, parentEmail, branchID);
+            insertParent = ParentDAO.insertParent(parentName, parentPhone, parentEmail, branchID, nationality, company, designation);
             //System.out.println("Insert Parent" + insertParent);
             if(insertParent>0){
                 UsersDAO userDAO = new UsersDAO();

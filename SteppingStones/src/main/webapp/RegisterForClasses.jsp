@@ -70,7 +70,7 @@
 
                 <div class="form-group">
                     <div class="col-lg-2 col-lg-offset-2">
-                        <button type="submit" class="btn btn-default" name="search">Search For Classes</button>
+                        <button type="submit" class="btn btn2 center-block" name="search">Search For Classes</button>
                     </div>
                 </div>
 
@@ -300,7 +300,7 @@
             %>  
             <div class="form-group">
                 <div>
-                    <button type="submit" class="btn btn-default" name="select" value="select">Register Class</button>
+                    <button type="submit" class="btn btn2 center-block" name="select" value="select">Register Class</button>
                 </div>
             </div>    
             <%

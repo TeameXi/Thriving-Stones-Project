@@ -76,8 +76,8 @@
                             <tr>
                                 <th scope="col">Details</th>
                                 <th scope="col">Due Date</th>
-                                <th scope="col">Charge Amount</th>
-                                <th scope="col">Outstanding Charge(s)</th>
+                                <th scope="col">Student Fees</th>
+                                <th scope="col">Outstanding Fees</th>
                                 <th scope="col">Payment Amount</th>
                             </tr>
                         </thead>

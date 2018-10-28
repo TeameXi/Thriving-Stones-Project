@@ -24,13 +24,47 @@
                         out.println("<input type='hidden' name='branch' value='" + user.getBranchId() + "'/>");
                     }
                 %>
-
+                
+                <div class="form-group" id="nricField" style="display:none">
+                    <label class="col-lg-4 control-label">NRIC</label>  
+                    <div class="col-lg-8 inputGroupContainer">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="zmdi zmdi-account"></i></span>
+                            <input id="nric"  name="nric" placeholder="NRIC" class="form-control"  type="text">
+                        </div>
+                    </div>
+                </div>
+                
                 <div class="form-group">
                     <label class="col-lg-4 control-label">Name</label>  
                     <div class="col-lg-8 inputGroupContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-account"></i></span>
                             <input id="studentName"  name="studentName" placeholder="Full Name" class="form-control"  type="text">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group" id="genderField" style="display:none">
+                    <label class="col-lg-4 control-label">Gender</label>  
+                    <div class="col-lg-8 inputGroupContainer">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="zmdi zmdi-badge-check"></i></span>
+                            <select name="gender" class="form-control" >
+                                <option value="Select Gender"></option>
+                                <option value="F">Female</option>
+                                <option value="M">Male</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group" id="birthDateField" style="display:none">
+                    <label class="col-lg-4 control-label">Birth Date</label>  
+                    <div class="col-lg-8 inputGroupContainer">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="zmdi zmdi-account"></i></span>
+                            <input id= "bday" name="bday" placeholder='YYYY-MM-DD' class="form-control"  type="text">
                         </div>
                     </div>
                 </div>
@@ -44,7 +78,6 @@
                         </div>
 
                     </div>
-
                 </div>
 
                 <div class="form-group">
@@ -74,6 +107,16 @@
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-phone"></i></span>
                             <input name="phone" placeholder="Mobile Number" id="phone" class="form-control" type="text">
+                        </div>
+                    </div>
+                </div>
+                            
+                <div class="form-group" id="addressField" style="display:none">
+                    <label class="col-lg-4 control-label">Address</label>  
+                    <div class="col-lg-8 inputGroupContainer">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="zmdi zmdi-account"></i></span>
+                            <input id="address"  name="address" placeholder="Address" class="form-control"  type="text">
                         </div>
                     </div>
                 </div>
@@ -153,6 +196,36 @@
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-account"></i></span>
                             <input id="rel"  name="relationship" placeholder="Relationship" class="form-control"  type="text">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group" id="nationalityField" style="display:none">
+                    <label class="col-lg-2 control-label">Nationality</label>  
+                    <div class="col-lg-7 inputGroupContainer">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="zmdi zmdi-account"></i></span>
+                            <input id="nationality"  name="nationality" placeholder="Nationality" class="form-control"  type="text">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group" id="companyField" style="display:none">
+                    <label class="col-lg-2 control-label">Company</label>  
+                    <div class="col-lg-7 inputGroupContainer">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="zmdi zmdi-account"></i></span>
+                            <input id="company"  name="company" placeholder="Company" class="form-control"  type="text">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group" id="designationField" style="display:none">
+                    <label class="col-lg-2 control-label">Designation</label>  
+                    <div class="col-lg-7 inputGroupContainer">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="zmdi zmdi-account"></i></span>
+                            <input id="designation"  name="designation" placeholder="Designation" class="form-control"  type="text">
                         </div>
                     </div>
                 </div>
@@ -323,15 +396,36 @@
         var stream = document.getElementById("streamField");
         var relationship = document.getElementById("relationshipField");
         var email = document.getElementById("emailField");
+        var studentNRIC = document.getElementById("nricField");
+        var gender = document.getElementById("genderField");
+        var birthDate = document.getElementById("birthDateField");
+        var address = document.getElementById("addressField");
+        var nationality = document.getElementById("nationalityField");
+        var company = document.getElementById("companyField");
+        var designation = document.getElementById("designationField");
         
         if (stream.style.display === "none"){
             stream.style.display = "block";
             relationship.style.display = "block";
             email.style.display = "block";
+            studentNRIC.style.display = "block";
+            gender.style.display = "block";
+            birthDate.style.display = "block";
+            address.style.display = "block";
+            nationality.style.display = "block";
+            company.style.display = "block";
+            designation.style.display = "block";
         } else {
             stream.style.display = "none";
             relationship.style.display = "none";
             email.style.display = "none";
+            studentNRIC.style.display = "none";
+            gender.style.display = "none";
+            birthDate.style.display = "none";
+            address.style.display = "none";
+            nationality.style.display = "none";
+            company.style.display = "none";
+            designation.style.display = "none";
         }
        
     }
