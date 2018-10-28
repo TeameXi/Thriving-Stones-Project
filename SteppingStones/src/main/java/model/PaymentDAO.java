@@ -527,9 +527,12 @@ public class PaymentDAO {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                String type = rs.getString("type");
-                String paymentDate = rs.getString("payment_date");
-                String fromAccount = rs.getString("from_account");
+                String type = rs.getString("type").trim();
+                type = type.replace("\u0000","");
+                String paymentDate = rs.getString("payment_date").trim();
+                paymentDate = paymentDate.replace("\u0000","");
+                String fromAccount = rs.getString("from_account").trim();
+                fromAccount = fromAccount.replace("\u0000","");
                 double amount = rs.getDouble("amount");
                 BankDeposit bankDeposit = new BankDeposit(type, paymentDate, fromAccount, amount);
                 bankDepositData.add(bankDeposit);

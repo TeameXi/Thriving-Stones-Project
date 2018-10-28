@@ -40,7 +40,7 @@
 
 <div class="col-md-10">
 <div class="row" id="errorMsg"></div>
-    <div style="text-align: center;margin: 20px;"><span class="tab_active">Register For Classes </span></h5></div>
+    <div style="text-align: center;margin: 20px;"><span class="tab_active">Register/Delete For Classes </span></h5></div>
     <div class="row">
         <div class="col-md-1"></div>
         <div class="col-md-9">
@@ -95,6 +95,7 @@
                 ArrayList<Class> premiumClasses = (ArrayList<Class>) request.getAttribute("premiumClasses");
                 ArrayList<Class> normalClasses = (ArrayList<Class>) request.getAttribute("normalClasses");
                 ArrayList<Class> enrolledClasses = (ArrayList<Class>) request.getAttribute("enrolledClasses");
+                ArrayList<Class> combinedClasses = (ArrayList<Class>) request.getAttribute("combinedClasses");
                 String level = (String) request.getAttribute("level");
                 String studentName = (String) request.getAttribute("studentName");
 
@@ -151,8 +152,13 @@
                         if(cls.getType().equals("P")){
                             out.println("<td>"+cls.getSubject()+" (Premium)</td>");
                         }else{
-                            out.println("<td>"+cls.getSubject()+"</td>");
+                            if(!cls.getCombinedLevel().equals("")){
+                                out.println("<td>"+cls.getSubject()+" (Combined)</td>");
+                            }else{
+                                out.println("<td>"+cls.getSubject()+"</td>");
+                            }
                         }
+                        
                         out.println("<td>"+ cls.getStartTime().substring(0, 5) + "-" + cls.getEndTime().substring(0, 5) +" ("+cls.getClassDay()+")"+"</td>");
                         out.println("<td>"+cls.getStartDate()+"</td>");
                         out.println("<td>"+cls.getMthlyFees()+"</td>");
@@ -170,7 +176,7 @@
             <input type="hidden" name="studentID" value="${student_id}">
             <input type="hidden" value="<%=branch_id%>" name="branch_id"/>
             <%
-                if(normalClasses.size() > 0){
+                if(normalClasses.size() > 0 || combinedClasses.size() > 0){
             %> 
             
             
@@ -204,6 +210,30 @@
                             %>
                             <div class="input-group">
                                 <input name="<%=norCls.getClassID()%>" type='text' class='form-control n_join_date'  placeholder='YYYY-MM-DD'> 
+                            </div>
+                            <%
+                            out.println("</td>");
+                            out.println("</tr>");    
+                                   
+                        }
+                    %>
+                                
+                    <%
+                        for (Class comCls : combinedClasses) {
+                            request.setAttribute("value", comCls.getClassID());
+                            String comClsStartDate = comCls.getStartDate();
+                    %>
+                                <tr><td><input type= "checkbox" name ="comClassValue" value = "${value}">
+                                        <input type='hidden' name='comClsStartDate' value="<%=comClsStartDate%>"></td>
+                    <%
+                            out.println("<td>"+comCls.getSubject()+" (Combined)</td>");
+                            out.println("<td>"+comCls.getStartTime().substring(0, 5)+ "-" + comCls.getEndTime().substring(0, 5) + " ("+comCls.getClassDay()+")"+"</td>");
+                            out.println("<td>"+comCls.getStartDate()+"</td>");
+                            out.println("<td>"+comCls.getMthlyFees()+"</td>");
+                            out.println("<td>");
+                            %>
+                            <div class="input-group">
+                                <input name="<%=comCls.getClassID()%>" type='text' class='form-control n_join_date'  placeholder='YYYY-MM-DD'> 
                             </div>
                             <%
                             out.println("</td>");

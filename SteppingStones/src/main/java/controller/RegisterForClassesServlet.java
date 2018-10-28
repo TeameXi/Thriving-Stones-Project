@@ -17,6 +17,7 @@ import model.ClassDAO;
 import model.StudentDAO;
 import entity.Class;
 import entity.Student;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Set;
 import javax.servlet.RequestDispatcher;
@@ -90,13 +91,16 @@ public class RegisterForClassesServlet extends HttpServlet {
                     } 
                 }
                 
+                ArrayList<Class> combinedCls = ClassDAO.getAllCombinedClass(branchID, studentID, levelID);
                 ArrayList<Class> enrolledCls = ClassDAO.getStudentEnrolledClass(studentID);
+                
                 request.setAttribute("level", LevelDAO.retrieveLevel(levelID));    
                 request.setAttribute("studentName", studentName);
                 request.setAttribute("student_id", studentID);
                 request.setAttribute("normalClasses", normalClasses);
                 request.setAttribute("premiumClasses", premiumClasses);
                 request.setAttribute("enrolledClasses", enrolledCls);
+                request.setAttribute("combinedClasses", combinedCls);
             }
             RequestDispatcher view = request.getRequestDispatcher("RegisterForClasses.jsp");
             view.forward(request, response);
@@ -105,17 +109,30 @@ public class RegisterForClassesServlet extends HttpServlet {
         if(request.getParameter("select") != null){
             String[] normalClassValues = request.getParameterValues("normalClassValue");
             String[] premiumClassValues = request.getParameterValues("premiumClassValue");
+            String[] combinedClassValues = request.getParameterValues("comClassValue");
             
-            String [] classes = null;
-            if(normalClassValues != null && premiumClassValues != null){
-                classes = ObjectArrays.concat(normalClassValues, premiumClassValues, String.class);
-            }else if(normalClassValues == null){
-                classes = premiumClassValues;
-            }else if(premiumClassValues == null){
-                classes = normalClassValues;
+            String [] classes = new String [0];
+//            if(normalClassValues != null && premiumClassValues != null){
+//                classes = ObjectArrays.concat(normalClassValues, premiumClassValues, String.class);
+//            }else if(normalClassValues == null){
+//                classes = premiumClassValues;
+//            }else if(premiumClassValues == null){
+//                classes = normalClassValues;
+//            }
+            
+            if(normalClassValues != null){
+                classes = ObjectArrays.concat(classes, normalClassValues, String.class);
             }
             
-            //System.out.println("Normal" + Arrays.toString(normalClassValues) + "Premium" + Arrays.toString(premiumClassValues) + "Joined" + Arrays.toString(classes));
+            if(premiumClassValues != null){
+                classes = ObjectArrays.concat(classes, premiumClassValues, String.class);
+            }
+            
+            if(combinedClassValues != null){
+                classes = ObjectArrays.concat(classes, combinedClassValues, String.class);
+            }
+            
+            System.out.println("Normal" + Arrays.toString(normalClassValues) + "Premium" + Arrays.toString(premiumClassValues) + "Joined" + Arrays.toString(classes));
             
             int studentID = 0;
             String studentIDStr = request.getParameter("studentID");
