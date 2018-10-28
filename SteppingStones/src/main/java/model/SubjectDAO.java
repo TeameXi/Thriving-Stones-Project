@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -252,6 +253,26 @@ public class SubjectDAO {
             
             while(rs.next()){
                 lvlWithSubLists.add(new Lvl_Sub_Rel(rs.getInt(1), rs.getInt(2), rs.getString(3), rs.getString(4)));
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(SubjectDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return lvlWithSubLists;
+    }
+    
+    public static ArrayList<Lvl_Sub_Rel> retrieveLevelAndSubjectForHourlyRatesForCombineClass(int branchId){
+        ArrayList<Lvl_Sub_Rel> lvlWithSubLists = new ArrayList<>();
+
+        try(Connection conn = ConnectionManager.getConnection()){
+            String sql = "SELECT s.subject_name,l.subject_id,l.additonal_level_id FROM lvl_sub_rel as l,subject as s "
+                    + "WHERE l.subject_id = s.subject_id AND l.branch_id=? AND combined_class = 1 ORDER BY s.subject_name";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, branchId);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){
+                lvlWithSubLists.add(new Lvl_Sub_Rel(rs.getString(1), rs.getInt(2), rs.getString(3)));
             }
             
         } catch (SQLException ex) {

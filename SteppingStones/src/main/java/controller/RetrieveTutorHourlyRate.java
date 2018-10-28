@@ -38,56 +38,93 @@ public class RetrieveTutorHourlyRate extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
+            String action = request.getParameter("action");
             int branchId = 0;
-            int levelId = 0;
             int subjectId = 0;
-            if(!request.getParameter("branch_id").equals("")){
+            if (!request.getParameter("branch_id").equals("")) {
                 branchId = Integer.parseInt(request.getParameter("branch_id"));
-            } 
-            
-            if(!request.getParameter("level_id").equals("")){
-                levelId = Integer.parseInt(request.getParameter("level_id"));
             }
             
-            if(!request.getParameter("subject_id").equals("")){
+            if (!request.getParameter("subject_id").equals("")) {
                 subjectId = Integer.parseInt(request.getParameter("subject_id"));
             }
-            
-            if(branchId == 0 || levelId == 0 || subjectId == 0){
-                out.println(-1);
+            if(action.equals("combined")){
+                String levelIds = request.getParameter("ids");
+                
+                if(branchId == 0 || subjectId == 0){
+                    out.println(-1);
+                }else{
+                    JSONObject parentObj = new JSONObject();
+                    ArrayList<Tutor> newtutorPayLists = TutorHourlyRateDAO.tutorListNotInPayTableForCombine(branchId, subjectId, levelIds);
+                    JSONArray newtutorJSONPayLists = new JSONArray();
+
+                    for (Tutor t : newtutorPayLists) {
+                        JSONObject tObj = new JSONObject();
+                        tObj.put("id", t.getTutorId());
+                        tObj.put("name", t.getName());
+
+                        newtutorJSONPayLists.put(tObj);
+                    }
+                    parentObj.put("newTutor", newtutorJSONPayLists);
+                    
+                    ArrayList<Tutor> existingtutorPayLists = TutorHourlyRateDAO.tutorListInPayTableForCombine(branchId, subjectId, levelIds);
+                    JSONArray existingtutorJSONPayLists = new JSONArray();
+                    for (Tutor t : existingtutorPayLists) {
+                        JSONObject tObj = new JSONObject();
+                        tObj.put("id", t.getTutorId());
+                        tObj.put("name", t.getName());
+                        tObj.put("hourly_pay", t.getPay());
+
+                        existingtutorJSONPayLists.put(tObj);
+                    }
+                    parentObj.put("oldTutor", existingtutorJSONPayLists);
+
+                    out.println(parentObj);
+                    
+                }
+                
             }else{
-                
-                JSONObject parentObj = new JSONObject();
-                ArrayList<Tutor> newtutorPayLists =  TutorHourlyRateDAO.tutorListNotInPayTable(branchId, subjectId, levelId);
-                JSONArray newtutorJSONPayLists = new JSONArray();
-                
-                for(Tutor t:newtutorPayLists){
-                    JSONObject tObj = new JSONObject();
-                    tObj.put("id", t.getTutorId());
-                    tObj.put("name", t.getName());
-                    
-                    newtutorJSONPayLists.put(tObj);
+               
+                int levelId = 0;
+              
+                if (!request.getParameter("level_id").equals("")) {
+                    levelId = Integer.parseInt(request.getParameter("level_id"));
                 }
-                parentObj.put("newTutor", newtutorJSONPayLists);
-                
-                
-                ArrayList<Tutor> existingtutorPayLists =  TutorHourlyRateDAO.tutorListInPayTable(branchId, subjectId, levelId);
-                JSONArray existingtutorJSONPayLists = new JSONArray();
-                for(Tutor t:existingtutorPayLists){
-                    JSONObject tObj = new JSONObject();
-                    tObj.put("id", t.getTutorId());
-                    tObj.put("name", t.getName());
-                    tObj.put("hourly_pay",t.getPay());
-                    
-                    existingtutorJSONPayLists.put(tObj);
+
+
+                if (branchId == 0 || levelId == 0 || subjectId == 0) {
+                    out.println(-1);
+                } else {
+
+                    JSONObject parentObj = new JSONObject();
+                    ArrayList<Tutor> newtutorPayLists = TutorHourlyRateDAO.tutorListNotInPayTable(branchId, subjectId, levelId);
+                    JSONArray newtutorJSONPayLists = new JSONArray();
+
+                    for (Tutor t : newtutorPayLists) {
+                        JSONObject tObj = new JSONObject();
+                        tObj.put("id", t.getTutorId());
+                        tObj.put("name", t.getName());
+
+                        newtutorJSONPayLists.put(tObj);
+                    }
+                    parentObj.put("newTutor", newtutorJSONPayLists);
+
+                    ArrayList<Tutor> existingtutorPayLists = TutorHourlyRateDAO.tutorListInPayTable(branchId, subjectId, levelId);
+                    JSONArray existingtutorJSONPayLists = new JSONArray();
+                    for (Tutor t : existingtutorPayLists) {
+                        JSONObject tObj = new JSONObject();
+                        tObj.put("id", t.getTutorId());
+                        tObj.put("name", t.getName());
+                        tObj.put("hourly_pay", t.getPay());
+
+                        existingtutorJSONPayLists.put(tObj);
+                    }
+                    parentObj.put("oldTutor", existingtutorJSONPayLists);
+
+                    out.println(parentObj);
                 }
-                parentObj.put("oldTutor", existingtutorJSONPayLists);
-                
-                
-                out.println(parentObj);
             }
-            
-            
+
         }
     }
 

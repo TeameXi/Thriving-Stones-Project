@@ -31,6 +31,13 @@ public class Lvl_Sub_Rel {
         this.cost = cost;
         this.additional_level_ids = additional_level_ids; 
     }
+    
+    // Object for combined class case
+     public Lvl_Sub_Rel(String subject_name,int subject_id,String additional_level_ids){
+        this.subject_name = subject_name;
+        this.subject_id = subject_id;
+        this.additional_level_ids = additional_level_ids; 
+    } 
 
     /**
      * @return the level_id

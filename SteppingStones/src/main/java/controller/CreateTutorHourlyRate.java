@@ -38,9 +38,13 @@ public class CreateTutorHourlyRate extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
+            String action = request.getParameter("action");
             String dataArr = request.getParameter("pay_rate_arr");
-            if(!dataArr.equals("")){
-                JSONArray tutorPayArr = new JSONArray(dataArr);
+            JSONArray tutorPayArr = new JSONArray(dataArr);
+            if(!dataArr.equals("") && action.equals("individual")){
+//                System.out.println("Individual");
+                // individual level case
+                
                 ArrayList<String>payRateRecord = new ArrayList<>();
                 for(int i =0; i < tutorPayArr.length(); i++){
                     String sqlOneRecord = "";
@@ -52,13 +56,9 @@ public class CreateTutorHourlyRate extends HttpServlet {
                     double payRate = currObj.getDouble("hourly_pay");
                     sqlOneRecord +="("+tutorId+","+levelId+","
                             +subjectId+","+branchId+","+payRate+")";
-//                    System.out.println(sqlOneRecord);
-//                    System.out.println(subjectId);
                     payRateRecord.add(sqlOneRecord);
                 }
-                
-                
-                
+
                 if(payRateRecord.size() > 0){
                     if(TutorHourlyRateDAO.massUpdateTutorsHourlyRate(payRateRecord)){
                         out.println(1);
@@ -69,8 +69,34 @@ public class CreateTutorHourlyRate extends HttpServlet {
                     out.println(-1);   
                 }
           
-                    
-            }else{
+            }else if(!dataArr.equals("") && action.equals("combined")){
+                // combined case
+                ArrayList<String>payRateRecord = new ArrayList<>();
+                for(int i =0; i < tutorPayArr.length(); i++){
+                    String sqlOneRecord = "";
+                    JSONObject currObj = tutorPayArr.getJSONObject(i);
+                    int tutorId = Integer.parseInt(currObj.getString("id"));
+                    String levelIds = currObj.getString("level_id");
+                    int levelId = Integer.parseInt(levelIds.split(":")[0]);
+                    int subjectId = currObj.getInt("subject_id");
+                    int branchId = currObj.getInt("branch_id");
+                    double payRate = currObj.getDouble("hourly_pay");
+                    sqlOneRecord +="("+tutorId+","+levelId+","
+                            +subjectId+","+branchId+","+payRate+",'"+levelIds+"',1)";
+                    payRateRecord.add(sqlOneRecord);
+                }
+
+                if(payRateRecord.size() > 0){
+                    if(TutorHourlyRateDAO.massUpdateTutorsHourlyRateForCombine(payRateRecord)){
+                        out.println(1);
+                    }else{
+                        out.println(-1);
+                    }
+                }else{
+                    out.println(-1);   
+                }
+            }
+            else{
                 out.println(-1);  
             }
         }
