@@ -28,7 +28,7 @@
 </style>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.18/datatables.min.css"/>
 <div class="col-md-10">
-    <div style="text-align: center;margin: 20px;">Mass Update Tutor Payrate - <span class="tab_active">Individual</span> / <a href="MassUpdateTutorPay_Combine.jsp">Combine Class</a></div>
+    <div style="text-align: center;margin: 20px;">Mass Update Tutor Payrate - <a href="MassUpdateTutorPay.jsp">Individual</a> / <span class="tab_active">Combine Class</span></div>
     <div class="row">
         <div class="col-md-2"></div>
         <div class="col-md-9">

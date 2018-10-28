@@ -5,10 +5,6 @@
  */
 package entity;
 
-/**
- *
- * @author Riana
- */
 public class Subject {
     private int subjectId;
     private String subjectName;
@@ -29,7 +25,6 @@ public class Subject {
     public Subject(int subjectId, String subjectName, float fees){
         this.subjectId = subjectId;
         this.subjectName = subjectName;
-        this.branchId = branchId;
         this.fees = fees;
     }
     

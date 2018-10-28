@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 public class SubjectDAO {
@@ -135,6 +136,17 @@ public class SubjectDAO {
         return false;
     }
     
+    public static void addSubjectForCombineClass(List<String> subjectLists) {
+        try (Connection conn = ConnectionManager.getConnection()) {
+            String combineSubjectLists = String.join(",", subjectLists);
+            String insert_combine_subject = "insert ignore into lvl_sub_rel values " + combineSubjectLists;
+            PreparedStatement insertStatement = conn.prepareStatement(insert_combine_subject);
+            insertStatement.executeUpdate();
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
     public boolean deleteSubject(int subjectID) {
         boolean status = false;
         String sql = "delete from subject where subject_id = ?";

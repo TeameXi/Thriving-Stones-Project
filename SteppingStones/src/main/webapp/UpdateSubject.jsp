@@ -22,7 +22,7 @@
     }
 </style>
 <div class="col-lg-10">
-    <div id="header" style="text-align: center;margin: 10px;"><span class="tab_active" style="font-size: 14px">Update Subject Fees</span></div>
+    <div id="header" style="text-align: center;margin: 10px;">Update Subject Fees - <span class="tab_active" style="font-size: 14px">Individual</span>/<a href="UpdateSubject_Combine.jsp">Combine Class</a></div>
     <table id="subjectTable" class="table table-bordered table-striped" style="width:100%; font-size: 14px">
         <thead>
             <tr>
@@ -174,7 +174,7 @@
                             if (data) {
                                 $("<div id='errorMsg' class='alert alert-success'>Sucessfully updated subject fees!</div>").insertAfter($("#header"));
                             } else {
-                                $("<div id='errorMsg' class='alert alert-success'>Oops! Something went wrong!</div>").insertAfter($("#header"));
+                                $("<div id='errorMsg' class='alert alert-danger'>Oops! Something went wrong!</div>").insertAfter($("#header"));
                             }
                             $("#errorMsg").fadeTo(2000, 0).slideUp(2000, function () {
                                 $(this).remove();

@@ -19,10 +19,6 @@ import model.LevelDAO;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-/**
- *
- * @author Xin
- */
 @WebServlet(name = "UpdateSubjectFeesServlet", urlPatterns = {"/UpdateSubjectFeesServlet"})
 public class UpdateSubjectFeesServlet extends HttpServlet {
 
@@ -86,6 +82,22 @@ public class UpdateSubjectFeesServlet extends HttpServlet {
                 JSONObject toReturn = new JSONObject().put("data", status);
                 String json = toReturn.toString();
                 out.println(json);
+            }else if(action.equals("combineClassUpdate")){
+                String costStr = request.getParameter("cost");
+                double cost = 0;
+                if(!costStr.equals("")){
+                    cost = Double.parseDouble(costStr);
+                }
+                
+                int branch = Integer.parseInt(request.getParameter("branchId"));
+                
+                String [] ids = request.getParameter("id").split("_");
+                int subjectId = Integer.parseInt(ids[0]);
+                String levelIds = ids[1];
+                
+                boolean status = LevelDAO.updateSubjectFeesForCombineClass(branch, subjectId, levelIds, cost);
+                System.out.println(status);
+                out.println(status);
             }
         }
     }

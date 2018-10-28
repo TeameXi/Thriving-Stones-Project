@@ -19,7 +19,7 @@
             out.println("<div id='errorMsg' class='alert alert-success col-md-12'><strong>"+status+"</strong></div>");
         }
     %> 
-    <div style="text-align: center;margin: 20px;"><span class="tab_active">Add Subject </span></h5></div>
+    <div style="text-align: center;margin: 20px;">Add Subject - <span class="tab_active">Individual </span> / <a href="CreateSubject_Combine.jsp">Combine Class</a></div>
     <div class="row">
         <div class="col-md-2"></div>
         <div class="col-md-9">

@@ -2,6 +2,7 @@ package model;
 
 import connection.ConnectionManager;
 import entity.Level;
+import entity.Lvl_Sub_Rel;
 import entity.Subject;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -153,7 +154,7 @@ public class LevelDAO {
     public static ArrayList<Subject> retrieveAllSubjectsBelongToLevelAndBranch(int levelID, int branchID){
         ArrayList<Subject> subjectLists = new ArrayList<>();
         try(Connection conn = ConnectionManager.getConnection()){
-            String sql = "SELECT s.subject_id,subject_name, l.cost FROM subject as s, lvl_sub_rel as l WHERE s.subject_id = l.subject_id and branch_id = ? and level_id = ?;";
+            String sql = "SELECT s.subject_id,subject_name, l.cost FROM subject as s, lvl_sub_rel as l WHERE s.subject_id = l.subject_id and l.combined_class=0 and branch_id = ? and level_id = ?;";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, branchID);
             stmt.setInt(2, levelID);
@@ -166,6 +167,57 @@ public class LevelDAO {
             System.out.println(ex.getMessage());
         }  
         return subjectLists;
+    }
+    
+    public static ArrayList<Lvl_Sub_Rel> retrieveSubjectsForCombineClass(int branchID){
+        ArrayList<Lvl_Sub_Rel> subjectLists = new ArrayList<>();
+        try(Connection conn = ConnectionManager.getConnection()){
+   
+            String sql = "SELECT s.subject_name,l.level_id,l.subject_id,l.cost,l.additonal_level_id FROM subject as s, lvl_sub_rel as l WHERE s.subject_id = l.subject_id and l.combined_class=1 and branch_id = ?;";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, branchID);
+      
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){
+                Lvl_Sub_Rel lvl_sub = new Lvl_Sub_Rel(rs.getString(1),rs.getInt(2),rs.getInt(3),rs.getDouble(4), rs.getString(5));
+                System.out.println(rs.getString(5));
+                subjectLists.add(lvl_sub);
+            } 
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }  
+        return subjectLists;
+    }
+    
+    public static boolean updateSubjectFeesForCombineClass(int branchID, int subjectID, String additional_levelIds, double fees){
+        String sql = "update lvl_sub_rel set cost = ? where additonal_level_id = ? and subject_id = ? and branch_id = ? and combined_class=1";
+        
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setDouble(1, fees);
+            stmt.setString(2, additional_levelIds);
+            stmt.setInt(3, subjectID);
+            stmt.setInt(4, branchID);
+            
+            int recordsUpdated = stmt.executeUpdate();
+            System.out.println(recordsUpdated);
+            
+            if(recordsUpdated > 0){
+                recordsUpdated = 0;
+                sql = "UPDATE class set fees = ? WHERE additional_lesson_id = ? and subject_id = ? and branch_id = ? and combined=1";
+                stmt = conn.prepareStatement(sql);
+                stmt.setDouble(1, fees);
+                stmt.setString(2, additional_levelIds);
+                stmt.setInt(3, subjectID);
+                stmt.setInt(4, branchID);
+                recordsUpdated = stmt.executeUpdate();
+                
+                return true;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(LevelDAO.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        return false;
     }
     
     // Update subject cost in subject and class tabled

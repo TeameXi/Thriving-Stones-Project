@@ -5,15 +5,13 @@
  */
 package entity;
 
-/**
- *
- * @author MOH MOH SAN
- */
 public class Lvl_Sub_Rel {
     private int level_id;
     private int subject_id;
     private String level_name;
     private String subject_name;
+    private Double cost;
+    private String additional_level_ids;
     
     public Lvl_Sub_Rel(){
         
@@ -24,6 +22,14 @@ public class Lvl_Sub_Rel {
         this.subject_id = subject_id;
         this.level_name = level_name;
         this.subject_name = subject_name;
+    }
+    
+    public Lvl_Sub_Rel(String subject_name,int level_id,int subject_id,double cost,String additional_level_ids){
+        this.subject_name = subject_name;
+        this.level_id = level_id;
+        this.subject_id = subject_id;
+        this.cost = cost;
+        this.additional_level_ids = additional_level_ids; 
     }
 
     /**
@@ -80,6 +86,34 @@ public class Lvl_Sub_Rel {
      */
     public void setSubject_name(String subject_name) {
         this.subject_name = subject_name;
+    }
+
+    /**
+     * @return the cost
+     */
+    public Double getCost() {
+        return cost;
+    }
+
+    /**
+     * @param cost the cost to set
+     */
+    public void setCost(Double cost) {
+        this.cost = cost;
+    }
+
+    /**
+     * @return the additional_level_ids
+     */
+    public String getAdditional_level_ids() {
+        return additional_level_ids;
+    }
+
+    /**
+     * @param additional_level_ids the additional_level_ids to set
+     */
+    public void setAdditional_level_ids(String additional_level_ids) {
+        this.additional_level_ids = additional_level_ids;
     }
     
     
