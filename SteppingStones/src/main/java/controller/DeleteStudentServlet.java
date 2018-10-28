@@ -57,7 +57,6 @@ public class DeleteStudentServlet extends HttpServlet {
             deleteParent = true;
         }     
         boolean deleteTuitionGrade = StudentGradeDAO.deleteStudentTuitionGrade(studentID);
-        System.out.println(deleteTuitionGrade);
         boolean deleteStudentClassRel = StudentClassDAO.deleteStudentClassRel(studentID);
         boolean deletePaymentReminder = PaymentDAO.deletePaymentReminderbyStudentID(studentID);
         boolean deleteRevenue = PaymentDAO.deleteRevenuebyStudentID(studentID);

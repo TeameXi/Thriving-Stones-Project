@@ -10,8 +10,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,7 +24,7 @@ public class ClassDAO {
         String level = LevelDAO.retrieveLevel(level_id);
         HashMap<String, ArrayList<Class>> classList = new HashMap<>();
         try (Connection conn = ConnectionManager.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement("select * from class where branch_id = ? and level_id = ? and end_date > curdate() and "
+            PreparedStatement stmt = conn.prepareStatement("select * from class where branch_id = ? and level_id = ? and combined = 0 and end_date > curdate() and "
                     + "class_id not in (select class_id from class_student_rel where student_id = ?) order by subject_id");
             stmt.setInt(1, branch_id);
             stmt.setInt(2, level_id);
@@ -109,8 +111,47 @@ public class ClassDAO {
                 String subject = SubjectDAO.retrieveSubject(subjectID);
                 String level = LevelDAO.retrieveLevel(levelID);
                 String type = rs.getString("class_type");
-                Class cls = new Class(classID, level, subject, term, startTime, endTime, classDay, mthlyFees, startDate, endDate, type);
+                String combinedLevel = rs.getString("combined_levels");
+                Class cls = new Class(classID, level, subject, term, startTime, endTime, classDay, mthlyFees, startDate, endDate, type, combinedLevel);
                 classList.add(cls);
+            }
+        } catch (SQLException e) {
+            System.out.print(e.getMessage());
+        }
+        return classList;
+    }
+    
+    public static ArrayList<Class> getAllCombinedClass(int branchID, int studentID, int levelID) {
+        ArrayList<Class> classList = new ArrayList();
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("select * from class where branch_id = 1 and combined = 1 "
+                    + "and class_id not in (select class_id from class_student_rel where student_id = ?) order by subject_id;");
+            stmt.setInt(1, studentID);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                int classID = rs.getInt("class_id");
+                int subjectID = rs.getInt("subject_id");
+                int term = rs.getInt("term");
+                String startTime = rs.getString("start_time");
+                String endTime = rs.getString("end_time");
+                String classDay = rs.getString("class_day");
+                String startDate = rs.getString("start_date");
+                String endDate = rs.getString("end_date");
+                int mthlyFees = rs.getInt("fees");
+                String level = rs.getString("combined_levels").trim();
+                level = level.replace("\u0000","");
+                String subject = SubjectDAO.retrieveSubject(subjectID);
+                String type = rs.getString("class_type");
+                String levelStr = String.valueOf(levelID);
+                List<String> levelIDs = Arrays.asList(level.split(","));
+                System.out.println("Combined" + level);
+                for(String level_id: levelIDs){
+                    if(level_id.equals(levelStr)){
+                        Class cls = new Class(classID, level, subject, term, startTime, endTime, classDay, mthlyFees, startDate, endDate, type);
+                        classList.add(cls);
+                    }
+                }
             }
         } catch (SQLException e) {
             System.out.print(e.getMessage());
