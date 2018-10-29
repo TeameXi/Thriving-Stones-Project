@@ -180,6 +180,7 @@
                                 <ul>
                                     <li><a href="CreateExpenses.jsp">Create Expenses</a></li>
                                     <li><a href="DisplayExpenses.jsp">View Expenses</a></li>
+                                    <li><a href="StudentPaymentStatus.jsp">View Student Payment Records</a></li>
                                     <li><a href="GenerateFinancialReport.jsp">Generate Financial Report</a></li>
                                 </ul>
                             </li>

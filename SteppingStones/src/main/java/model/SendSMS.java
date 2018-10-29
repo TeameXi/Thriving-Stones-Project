@@ -13,7 +13,7 @@ public class SendSMS {
         
         Message message = Message
                 .creator(new PhoneNumber(phoneNum), // to
-                        new PhoneNumber("+2728081769"), // from
+                        new PhoneNumber("+19782917132"), // from
                         msg)
                 .create();
 

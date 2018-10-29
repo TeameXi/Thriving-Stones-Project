@@ -797,4 +797,34 @@ public class StudentDAO {
         }
         return workbook;
     }
+    
+        public static ArrayList<Student> listStudentsByLevel(int levelID, int branchID){
+        ArrayList<Student> studentList = new ArrayList<Student>();
+        try (Connection conn = ConnectionManager.getConnection();) {
+            String sql = "select * from student where level_id = ? and branch_id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, levelID);
+            stmt.setInt(2, branchID);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){               
+                int studentID = rs.getInt("student_id");
+                String studentNRIC = rs.getString("student_nric");
+                String name = rs.getString("student_name");
+                String BOD = rs.getString("birth_date");
+                String gender = rs.getString("gender");
+                int branch_ID = rs.getInt("branch_id");
+                int phone = rs.getInt("phone");
+                String address = rs.getString("address");
+                String email = rs.getString("email");
+                double reqAmt = rs.getDouble("required_amount");
+                double outstandingAmt = rs.getDouble("outstanding_amount");
+                String level = LevelDAO.retrieveLevel(levelID);
+                Student student = new Student(studentID, studentNRIC, name, BOD, gender, level, branch_ID, phone, address, email, reqAmt, outstandingAmt);
+                studentList.add(student);
+            } 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return studentList;
+    }
 }

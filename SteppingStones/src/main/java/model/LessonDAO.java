@@ -690,37 +690,37 @@ public class LessonDAO {
 
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = null;
-            
+
             if (type.equals("P")) {
                 sql = "update lesson set reminder_term = ? where lesson_id = ?";
                 stmt = conn.prepareStatement(sql);
-            } else{
+            } else {
                 sql = "update lesson set reminder_status = ? where lesson_id = ?";
                 stmt = conn.prepareStatement(sql);
             }
-            
+
             stmt.setInt(1, lessonNum);
             stmt.setInt(2, lessonID);
-            
+
             stmt.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(LessonDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    public ArrayList<Lesson> retrieveReplacementLessons(int branchID, int tutorID){
+
+    public ArrayList<Lesson> retrieveReplacementLessons(int branchID, int tutorID) {
         ArrayList<Lesson> lessons = new ArrayList<>();
-        
+
         String sql = "select * from lesson where class_id in (select class_id from class where branch_id = ?) and replacement_tutor_id = ?";
-        
-        try(Connection conn = ConnectionManager.getConnection()){
+
+        try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, branchID);
             stmt.setInt(2, tutorID);
-            
+
             ResultSet rs = stmt.executeQuery();
-            
-            while(rs.next()){
+
+            while (rs.next()) {
                 int lessonID = rs.getInt("lesson_id");
                 int classID = rs.getInt("class_id");
                 int tutorAttended = rs.getInt("tutor_attended");
@@ -728,13 +728,68 @@ public class LessonDAO {
                 String endDate = rs.getString("end_date");
                 lessons.add(new Lesson(lessonID, classID, tutorID, tutorAttended, startDate, endDate));
             }
-            
-            if(lessons.size() > 0){
+
+            if (lessons.size() > 0) {
                 return lessons;
             }
         } catch (SQLException ex) {
             Logger.getLogger(LessonDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
+    }
+
+    public static ArrayList<Lesson> retrieveAllLessonListsAfterCurrTS(int classid) {
+        ArrayList<Lesson> lessons = new ArrayList<>();
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("select lesson_id, class_id, reminder_status, start_date, end_date from lesson where class_id = ? and start_date > CURDATE()");
+            stmt.setInt(1, classid);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Lesson lesson = new Lesson(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getTimestamp(4), rs.getTimestamp(5));
+                lessons.add(lesson);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return lessons;
+    }
+
+    public static ArrayList<Lesson> retrieveLessonsForPaymentStatus(int classid) {
+        ArrayList<Lesson> lessons = new ArrayList<>();
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("select lesson_id, class_id, reminder_status, start_date, end_date from lesson where class_id = ? and start_date < CURDATE()");
+            stmt.setInt(1, classid);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Lesson lesson = new Lesson(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getTimestamp(4), rs.getTimestamp(5));
+                lessons.add(lesson);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return lessons;
+    }
+
+    public static int getPaymentStatus(int classid, int studentid, String date) {
+        int paymentDue = -1;
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("select outstanding_charge from payment_reminder where class_id = ? and student_id = ? and payment_due_date = ?");
+            stmt.setInt(1, classid);
+            stmt.setInt(2, studentid);
+            stmt.setString(3, date);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return paymentDue;
     }
 }

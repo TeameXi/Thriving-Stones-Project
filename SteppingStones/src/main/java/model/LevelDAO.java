@@ -17,7 +17,6 @@ public class LevelDAO {
     public ArrayList<String> retrieveAllLevels() {
         ArrayList<String> levels = new ArrayList<>();
         String sql = "select level_name from level";
-        System.out.println(sql);
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
             
@@ -37,7 +36,6 @@ public class LevelDAO {
     public static ArrayList<Level> retrieveAllLevelLists() {
         ArrayList<Level> levels = new ArrayList<>();
         String sql = "select * from level";
-        System.out.println(sql);
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
             
@@ -180,7 +178,6 @@ public class LevelDAO {
             ResultSet rs = stmt.executeQuery();
             while(rs.next()){
                 Lvl_Sub_Rel lvl_sub = new Lvl_Sub_Rel(rs.getString(1),rs.getInt(2),rs.getInt(3),rs.getDouble(4), rs.getString(5));
-                System.out.println(rs.getString(5));
                 subjectLists.add(lvl_sub);
             } 
         } catch (SQLException ex) {
