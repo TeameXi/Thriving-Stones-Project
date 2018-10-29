@@ -14,6 +14,8 @@
 <%@include file="protect_branch_admin.jsp"%>
 <%@include file="header.jsp"%>
 
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css">
+
 <div class="col-md-10">
     <div class="row" id="errorMsg"></div>
     <div style="text-align: center;margin: 20px;"><span class="tab_active">Bulk Class Registration</span></div>
@@ -74,6 +76,9 @@
 <link rel='stylesheet prefetch' href='http://cdnjs.cloudflare.com/ajax/libs/jquery.bootstrapvalidator/0.5.0/css/bootstrapValidator.min.css'>
 <script src='http://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.4.5/js/bootstrapvalidator.min.js'></script>
 
+<script src='https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js'></script>
+<script src='https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js'></script>
+
 <script>
                                 $(function () {
                                     if ($('#status').length) {
@@ -108,7 +113,7 @@
 </script>
 
 <script>
-    (document).ready(function () {
+    $(document).ready(function () {
         $('#BulkRegistration').dataTable({
             "paging": true,
             "info": false,
