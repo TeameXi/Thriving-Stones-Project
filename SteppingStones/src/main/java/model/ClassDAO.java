@@ -88,14 +88,12 @@ public class ClassDAO {
                 if(combined != null){
                     String[] combinedLevels = combined.split(",");
                     combined = "";
+                    combined += LevelDAO.retrieveLevel(Integer.parseInt(combinedLevels[0]));
                     
-                    for(String s: combinedLevels){
-                        int levelAdd = Integer.parseInt(s);
-                        combined += LevelDAO.retrieveLevel(levelAdd) + " ";
+                    for(int i = 1; i < combinedLevels.length; i++){
+                        int levelAdd = Integer.parseInt(combinedLevels[i]);
+                        combined += ", " +LevelDAO.retrieveLevel(levelAdd);
                     }
-                    
-                    combined = combined.trim();
-                    combined = combined.replace(" ", ",");
                     cls.setCombined(combined);
                 }
             }

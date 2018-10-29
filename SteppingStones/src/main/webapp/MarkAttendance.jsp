@@ -3,7 +3,6 @@
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css">
 
 <%@include file="footer.jsp"%>
-<script src='https://code.jquery.com/jquery-3.3.1.js'></script>
 <script src='https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js'></script>
 <script src='https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js'></script>
 <script src='https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js'></script>
@@ -42,8 +41,35 @@
             </tr>
         </thead>
     </table>
+</div><br/><br/>
+<div class="col-lg-10">
+    <table id="replacement" class="table display dt-responsive nowrap" style="width:100%;">
+        <thead class="thead-light">
+            <tr>
+                <th scope="col" style="text-align: center;"></th>
+                <th scope="col" style="text-align: center;">Class</th>
+                <th scope="col" style="text-align: center;">Lesson Date</th>
+            </tr>
+        </thead>
+    </table>
 </div>
-</div>
+
+<div class="modal fade" id="message" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="pc_title centered">Student Attendance Taking</span>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="messageBody">
+            </div>  
+            <div class="modal-footer spaced-top-small centered">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+            </div>
+        </div>       
+    </div>
 </div>
 
 <script type="text/javascript">
@@ -82,7 +108,7 @@
             ],
             "order": [[1, 'asc']]
         });
-        
+
         $('#studentAttendanceTable tbody').on('click', 'td.details-control', function () {
             tr = $(this).parents('tr');
             row = table.row(tr);
@@ -131,7 +157,7 @@
                             html += '</tr>';
                         }
                         html += '</tbody></table></div></div>';
-                        
+
                         // Open this row
                         row.child(html).show();
 
@@ -167,11 +193,11 @@
 
                         $('#updateAttendance').on('click', function () {
                             lessons = '';
-                            
+
                             $(".checkSingle").each(function () {
                                 if (this.checked) {
                                     lessons += this.id + '-' + $(this).closest('tr').attr('id') + '-' + 1 + ' ';
-                                }else{
+                                } else {
                                     lessons += this.id + '-' + $(this).closest('tr').attr('id') + '-' + 0 + ' ';
                                 }
                             });
@@ -188,12 +214,139 @@
                                     } else {
                                         $("<div id='errorMsg' class='alert alert-success'>Oops! Something went wrong!</div>").insertAfter($("#tab"));
                                     }
-                                    
+
                                     console.log(data.attendance);
-                                    
+
                                     $("#errorMsg").fadeTo(2000, 0).slideUp(2000, function () {
                                         $(this).remove();
                                     });
+                                }
+                            });
+                        });
+                    }
+                });
+            }
+        });
+
+        action = 'replacement';
+        replacementTable = $('#replacement').DataTable({
+            "iDisplayLength": 5,
+            "aLengthMenu": [[5, 10, 25, -1], [5, 10, 25, "All"]],
+            'ajax': {
+                "type": "POST",
+                "url": "StudentAttendanceServlet",
+                "data": {
+                    "branchID": branchID,
+                    "action": action,
+                    "tutorID": tutorID
+                }
+            },
+            "columnDefs": [
+                {
+                    "targets": [1, 2],
+                    "data": null,
+                    "defaultContent": '',
+                    "className": 'text'
+                }
+            ],
+            'columns': [
+                {
+                    "className": 'details-control',
+                    "orderable": false,
+                    "data": null,
+                    "defaultContent": ''
+                },
+                {"data": "name"},
+                {"data": "date"}
+            ],
+            "order": [[1, 'asc']]
+        });
+
+        $('#replacement tbody').on('click', 'td.details-control', function () {
+            tr = $(this).parents('tr');
+            row = replacementTable.row(tr);
+            if (row.child.isShown()) {
+                // This row is already open - close it
+                row.child.hide();
+                tr.removeClass('shown');
+            } else {
+                lessonID = row.data().id;
+                action = 'replacementStudents';
+                $.ajax({
+                    type: 'POST',
+                    url: 'StudentAttendanceServlet',
+                    dataType: 'JSON',
+                    data: {action: action, lessonID: lessonID, branchID: branchID},
+                    success: function (data) {
+                        console.log(data);
+                        html = '<div class="innerTable"><table id="students" class="table table-striped"><thead>'
+                                + '<tr>'
+                                + '<th scope="col" style="text-align: center;">Student</th>'
+                                + '<th scope="col" style="text-align: center;">Present?<input class="form-check-input" type="checkbox" style="margin-left:10px;" id="allStudents"/></th></tr></thead><tbody>';
+
+                        for (var i in data) {
+                            html += '<tr><td scope ="col" style="text-align: center;">' + data[i].name + '</td>'
+                                    + '<td scope ="col" style="text-align: center;">';
+
+                            if (data[i].attended === true) {
+                                html += '<input id=' + data[i].id + ' type="checkbox" class="form-check-input studentCheck" checked/>';
+                            } else {
+                                html += '<input id=' + data[i].id + ' type="checkbox" class="form-check-input studentCheck"/>';
+                            }
+
+                            html += '</td></tr>';
+                        }
+
+                        html += '</tbody></table><br/><button class="btn btn-default" style="margin-right: 0px;" id="update">Update Attendance</button></div>';
+
+                        // Open this row
+                        row.child(html).show();
+
+                        $('#students').DataTable({
+                            "dom": 't',
+                            "paging": false,
+                            "bPaginate": false
+                        });
+
+                        tr.addClass('shown');
+
+                        $("#allStudents").change(function () {  //"select all" change 
+                            var status = this.checked; // "select all" checked status
+                            $('.studentCheck').each(function () { //iterate all listed checkbox items
+                                this.checked = status; //change ".checkbox" checked status
+                            });
+                        });
+
+                        $('#update').on('click', function () {
+                            students = [];
+                            index = 0;
+
+                            $('.studentCheck').each(function () {
+                                students[index] = this.id + " " + this.checked;
+                                index++;
+                            });
+                            console.log(students);
+                            action = 'markReplacement';
+
+                            $.ajax({
+                                type: 'POST',
+                                url: 'StudentAttendanceServlet',
+                                dataType: 'JSON',
+                                data: {action: action, students: students.toString(), lessonID: lessonID, tutorID: tutorID},
+                                success: function (data) {
+                                    if (data) {
+                                        $('#message').on('shown.bs.modal', function () {
+                                            $('#messageBody').html('<div class="alert alert-success" role="alert">Student Attendance Updated Successfully!</div>');
+                                        });
+                                        
+                                        $('#message').modal('show');
+                                    } else {
+                                        $('#message').on('shown.bs.modal', function () {
+                                            $('#messageBody').html('<div class="alert alert-danger" role="alert">Oops! Something went wrong...</div>');
+                                        });
+                                        
+                                        $('#message').modal('show');
+                                    }
                                 }
                             });
                         });

@@ -530,11 +530,9 @@ public class AdminScheduleServlet extends HttpServlet {
                     int branchID = Integer.parseInt(request.getParameter("branchID"));
 
                     JSONArray levelOptions = new JSONArray();
-                    JSONArray tutorOptions = new JSONArray();
                     JSONArray subjectOptions = new JSONArray();
 
                     ArrayList<Level> levels = levelDAO.retrieveAllLevelLists();
-                    ArrayList<Tutor> tutors = tutorDAO.retrieveAllTutorsByBranch(branchID);
                     ArrayList<Subject> subjects = subjectDAO.retrieveSubjectsByLevel(1);
 
                     for (Subject s : subjects) {
@@ -551,16 +549,8 @@ public class AdminScheduleServlet extends HttpServlet {
                         levelOptions.put(obj);
                     }
 
-                    for (Tutor t : tutors) {
-                        JSONObject obj = new JSONObject();
-                        obj.put("name", t.getName());
-                        obj.put("id", t.getTutorId());
-                        tutorOptions.put(obj);
-                    }
-
                     JSONObject toReturn = new JSONObject();
                     toReturn.put("level", levelOptions);
-                    toReturn.put("tutor", tutorOptions);
                     toReturn.put("subject", subjectOptions);
                     String json = toReturn.toString();
                     out.println(json);
@@ -585,11 +575,30 @@ public class AdminScheduleServlet extends HttpServlet {
                     out.println(json);
                     break;
                 }
+                case "retrieveTutorOptions": {
+                    int levelID = Integer.parseInt(request.getParameter("levelID"));
+                    int subjectID = Integer.parseInt(request.getParameter("subjectID"));
+                    int branchID = Integer.parseInt(request.getParameter("branchID"));
+
+                    JSONArray tutors = new JSONArray();
+                    ArrayList<Tutor> tutorList = TutorHourlyRateDAO.tutorListInPayTable(branchID, subjectID, levelID);
+
+                    for (Tutor t : tutorList) {
+                        JSONObject obj = new JSONObject();
+                        obj.put("id", t.getTutorId());
+                        obj.put("name", t.getName());
+                        tutors.put(obj);
+                    }
+
+                    JSONObject toReturn = new JSONObject();
+                    toReturn.put("tutor", tutors);
+                    String json = toReturn.toString();
+                    out.println(json);
+                    break;
+                }
                 case "create": {
-                    System.out.println("HEREEEEE");
                     String levels = request.getParameter("levels");
                     List<String> levelList = Arrays.asList(levels.split(","));
-                    System.out.println(levels);
 
                     String holidays = request.getParameter("holidays");
 

@@ -171,11 +171,12 @@ public class LessonDAO {
 
     public static ArrayList<Lesson> retrieveLessonsByTutor(int tutorid) {
         ArrayList<Lesson> lessons = new ArrayList<>();
-        String sql = "select lesson_id, class_id, tutor_id, tutor_attended, start_date, end_date from lesson where tutor_id = ?";
+        String sql = "select lesson_id, class_id, tutor_id, tutor_attended, start_date, end_date from lesson where tutor_id = ? or replacement_tutor_id = ?";
         System.out.println(sql);
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, tutorid);
+            stmt.setInt(2, tutorid);
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -705,5 +706,35 @@ public class LessonDAO {
         } catch (SQLException ex) {
             Logger.getLogger(LessonDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public ArrayList<Lesson> retrieveReplacementLessons(int branchID, int tutorID){
+        ArrayList<Lesson> lessons = new ArrayList<>();
+        
+        String sql = "select * from lesson where class_id in (select class_id from class where branch_id = ?) and replacement_tutor_id = ?";
+        
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, branchID);
+            stmt.setInt(2, tutorID);
+            
+            ResultSet rs = stmt.executeQuery();
+            
+            while(rs.next()){
+                int lessonID = rs.getInt("lesson_id");
+                int classID = rs.getInt("class_id");
+                int tutorAttended = rs.getInt("tutor_attended");
+                String startDate = rs.getString("start_date");
+                String endDate = rs.getString("end_date");
+                lessons.add(new Lesson(lessonID, classID, tutorID, tutorAttended, startDate, endDate));
+            }
+            
+            if(lessons.size() > 0){
+                return lessons;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(LessonDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 }

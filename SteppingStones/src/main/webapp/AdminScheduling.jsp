@@ -528,11 +528,6 @@
                             $(".primaryLevel").append('<option value="' + data.level[i].id + '">' + data.level[i].name + '</option>');
                         }
 
-                        $("#assign_tutor").empty();
-                        for (var i = 0; i < data.tutor.length; i++) {
-                            $("#assign_tutor").append('<option value="' + data.tutor[i].id + '">' + data.tutor[i].name + '</option>');
-                        }
-
                         $("#subject").empty();
 
                         for (var i = 0; i < data.subject.length; i++) {
@@ -541,9 +536,10 @@
                     }
                 });
 
-                $("#level").change(function () {
+                $(".primaryLevel").change(function () {
                     action = 'retrieveSubjectOptions';
-                    levelID = $("#level").val();
+                    console.log(action);
+                    levelID = $(".primaryLevel").val();
                     $.ajax({
                         type: 'POST',
                         url: 'AdminScheduleServlet',
@@ -553,6 +549,24 @@
                             $("#subject").empty();
                             for (var i = 0; i < data.subject.length; i++) {
                                 $("#subject").append('<option value="' + data.subject[i].id + '">' + data.subject[i].name + '</option>');
+                            }
+                        }
+                    });
+                });
+                
+                $("#subject").change(function () {
+                    action = 'retrieveTutorOptions';
+                    subjectID = $('#subject').val();
+                    levelID = $(".primaryLevel").val();
+                    $.ajax({
+                        type: 'POST',
+                        url: 'AdminScheduleServlet',
+                        dataType: 'JSON',
+                        data: {levelID: levelID, subjectID: subjectID, branchID: branchID, action: action},
+                        success: function (data) {
+                            $("#assign_tutor").empty();
+                            for (var i = 0; i < data.tutor.length; i++) {
+                                $("#assign_tutor").append('<option value="' + data.tutor[i].id + '">' + data.tutor[i].name + '</option>');
                             }
                         }
                     });

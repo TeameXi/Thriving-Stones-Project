@@ -5,7 +5,6 @@
  */
 package controller;
 
-import com.google.gson.Gson;
 import entity.Class;
 import entity.Lesson;
 import entity.Student;
@@ -116,7 +115,7 @@ public class StudentAttendanceServlet extends HttpServlet {
                     out.println(json);
                     break;
                 }
-                case "mark":
+                case "mark": {
                     String lessons = request.getParameter("lessons");
                     String[] lesson_student = lessons.split(" ");
                     int classID = Integer.parseInt(request.getParameter("classID"));
@@ -170,6 +169,89 @@ public class StudentAttendanceServlet extends HttpServlet {
                     out.println(obj.toString());
 
                     break;
+                }
+                case "replacement": {
+                    int branchID = Integer.parseInt(request.getParameter("branchID"));
+                    int tutorID = Integer.parseInt(request.getParameter("tutorID"));
+                    
+                    JSONArray array = new JSONArray();
+                    ArrayList<Lesson> replacements = lessonDAO.retrieveReplacementLessons(branchID, tutorID);
+                    
+                    for(Lesson l: replacements){
+                        JSONObject obj = new JSONObject();
+                        obj.put("id", l.getLessonid());
+                        
+                        Class cls = classDAO.getClassByID(l.getClassid());
+                        obj.put("name", cls.getClassDay() + " " + cls.getStartTime() + "-" + cls.getEndTime() 
+                                + "<br/>" + cls.getCombinedLevel() + " " + cls.getSubject());
+                        obj.put("date", l.getLessonDate());
+                        array.put(obj);
+                    }
+                    
+                    JSONObject toReturn = new JSONObject().put("data", array);
+                    out.println(toReturn.toString());
+                    break;
+                }
+                case "replacementStudents": {
+                    int lessonID = Integer.parseInt(request.getParameter("lessonID"));
+                    int branchID = Integer.parseInt(request.getParameter("branchID"));
+                    
+                    JSONArray array = new JSONArray();
+                    Lesson lesson = lessonDAO.getLessonByID(lessonID);
+                    ArrayList<Student> students = classDAO.retrieveStudentsByClass(lesson.getClassid());
+                    
+                    for(Student s: students){
+                        JSONObject obj = new JSONObject();
+                        obj.put("id", s.getStudentID());
+                        obj.put("name", s.getName());
+                        obj.put("attended", a.retrieveStudentAttendances(s.getStudentID(), lessonID));
+                        array.put(obj);
+                    }
+                    
+                    out.println(array.toString());
+                    break;
+                }
+                case "markReplacement": {
+                    String students = request.getParameter("students");
+                    String[] studentList = students.split(",");
+                    int lessonID = Integer.parseInt(request.getParameter("lessonID"));
+                    int tutorID = Integer.parseInt(request.getParameter("tutorID"));
+                    
+                    Lesson lesson = lessonDAO.getLessonByID(lessonID);
+                    int updated = 0;
+
+                    JSONArray attendances = new JSONArray();
+
+                    for (String s : studentList) {
+                        int attended = 0;
+                        String[] status = s.split(" ");
+                        int studentID = Integer.parseInt(status[0]);
+                        
+                        if(status[1].equals("true")){
+                            attended = 1;
+                        }
+                        System.out.println(attended + " YAS " + studentID);
+                        if (attended == 1) {
+                            a.updateStudentAttendance(studentID, lessonID, lesson.getClassid(), tutorID, true);
+                            updated++;
+                        } else {
+                            a.updateStudentAttendance(studentID, lessonID, lesson.getClassid(), tutorID, false);
+                            updated++;
+                        }
+
+                    }
+
+                    JSONObject obj = new JSONObject();
+
+                    if (updated == studentList.length) {
+                        obj.put("data", true);
+                    } else {
+                        obj.put("data", false);
+                    }
+
+                    out.println(obj.toString());
+                    break;
+                }
                 default:
                     break;
             }
