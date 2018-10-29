@@ -40,7 +40,7 @@
 
 <div class="col-md-10">
 <div class="row" id="errorMsg"></div>
-    <div style="text-align: center;margin: 20px;"><span class="tab_active">Register/Delete For Classes </span></h5></div>
+    <div style="text-align: center;margin: 20px;"><span class="tab_active">Register For Classes </span></h5></div>
     <div class="row">
         <div class="col-md-1"></div>
         <div class="col-md-9">
@@ -138,7 +138,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
                 <span class="pc_title centered">Alert</span>
             </div>
-            <div class="modal-body smaller-fonts centered">Are you sure you want to delete the student from the lass?</div>
+            <div class="modal-body smaller-fonts centered">Are you sure you want to delete the student from the class?</div>
             <div class="modal-footer centered">
                 <a id="confirm_btn"><button type="button" class="small_button pw_button del_button autowidth">Yes, Remove</button></a>
                 <button type="button" class="small_button del_button pw_button autowidth" data-dismiss="modal">Close</button>
