@@ -48,7 +48,7 @@ public class PaymentReminderJob implements Runnable {
 //                int classID = c.getClassID();
 //
 //                //check if lesson needs reminder
-//                ArrayList<Lesson> lessons = LessonDAO.retrieveAllLessonListsAfterCurr(classID);
+//                ArrayList<Lesson> lessons = LessonDAO.retrieveAllLessonListsAfterCurrTS(classID);
 //
 //                for (Lesson l : lessons) {
 //                    //get check if is the day to send sms
