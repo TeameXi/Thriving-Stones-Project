@@ -867,7 +867,11 @@ public class AdminScheduleServlet extends HttpServlet {
 
                     JSONObject obj = new JSONObject();
                     obj.put("timing", lessonStart.substring(0, lessonStart.length() - 2) + "-" + lessonEnd.substring(0, lessonEnd.length() - 2));
-                    obj.put("level", cls.getLevel());
+                    if(cls.getCombinedLevel() == null){    
+                        obj.put("level", cls.getLevel());
+                    }else{
+                        obj.put("level", cls.getCombinedLevel());
+                    }
                     obj.put("subject", cls.getSubject());
                     String json = obj.toString();
                     out.println(json);
