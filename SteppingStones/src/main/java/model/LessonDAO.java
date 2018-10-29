@@ -15,27 +15,36 @@ import java.util.logging.Logger;
 
 public class LessonDAO {
 
-    public void updateLesson(String tutorID, String level, String subject) {
-        String lesson = "";
-        String sql = "select lesson_id from lesson where class_id in (select class_id from class where level_id = ? and subject_id = ?)";
-        System.out.println(sql);
+    public void updateLesson(int tutorID, int lessonID, String startDate, String endDate) {
+        String sql = "";
+        PreparedStatement stmt = null;
+
         try (Connection conn = ConnectionManager.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1, level);
-            stmt.setString(2, subject);
-            System.out.println(stmt);
 
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                lesson = rs.getString(1);
+            if (tutorID != 0) {
+                if (startDate != null && endDate != null) {
+                    sql = "update lesson set tutor_id = ?, changed_start_date = ?. changed_end_date = ? where lesson_id = ?";
+                    stmt = conn.prepareStatement(sql);
+                    stmt.setInt(1, tutorID);
+                    stmt.setString(2, startDate);
+                    stmt.setString(3, endDate);
+                    stmt.setInt(4, lessonID);
+                } else {
+                    sql = "update lesson set tutor_id = ? where lesson_id = ?";
+                    stmt = conn.prepareStatement(sql);
+                    stmt.setInt(1, tutorID);
+                    stmt.setInt(2, lessonID);
+                }
+            } else {
+                if (startDate != null && endDate != null) {
+                    sql = "update lesson set changed_start_date = ?. changed_end_date = ? where lesson_id = ?";
+                    stmt = conn.prepareStatement(sql);
+                    stmt.setString(1, startDate);
+                    stmt.setString(2, endDate);
+                    stmt.setInt(3, lessonID);
+                }
             }
 
-            sql = "update lesson set tutor_id = ? where lesson_id = ?";
-            System.out.println(sql + " CORRECT");
-            stmt = conn.prepareStatement(sql);
-            stmt.setString(1, tutorID);
-            stmt.setString(2, lesson);
             stmt.executeUpdate();
         } catch (Exception e) {
             System.out.println(e);
@@ -95,7 +104,7 @@ public class LessonDAO {
         } else {
             sql = "INSERT into lesson (class_id, start_date, end_date, tutor_id, tutor_attended, tutor_payment_status, reminder_status)"
                     + "VALUES (?,?,?,?,?,?,?)";
-            
+
             try (Connection conn = ConnectionManager.getConnection();) {
                 PreparedStatement stmt = conn.prepareStatement(sql);
                 stmt.setInt(1, classid);
@@ -237,6 +246,7 @@ public class LessonDAO {
         }
         return false;
     }
+
     public boolean retrieveAttendanceForLessonAbsent(int lessonID) {
         String sql = "select tutor_attended from lesson where lesson_id = ?";
 
@@ -386,7 +396,7 @@ public class LessonDAO {
 
         return noOfLessons;
     }
-    
+
     public static int retrieveNoOfLessonPremium(int classID, String joinDate) {
         int noOfLessons = 0;
         String sql = "select count(lesson_id) as noOfLessons from lesson where class_id = ? and date(start_date) >= ? and "
@@ -460,8 +470,8 @@ public class LessonDAO {
             while (rs.next()) {
                 String start = rs.getString(1);
                 String end = rs.getString(2);
-                editedDates.put("start", start.substring(2,start.length()-2));
-                editedDates.put("end", end.substring(0, end.length()-2));
+                editedDates.put("start", start.substring(2, start.length() - 2));
+                editedDates.put("end", end.substring(0, end.length() - 2));
             }
         } catch (SQLException ex) {
             Logger.getLogger(LessonDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -563,6 +573,26 @@ public class LessonDAO {
         return lessons;
     }
 
+    public ArrayList<Lesson> retrieveAllLessonListsAfterCurr(int classid) {
+        ArrayList<Lesson> lessons = new ArrayList<>();
+        String sql = "select lesson_id, class_id, tutor_id, tutor_attended, start_date, end_date from lesson where class_id = ? and start_date > CURDATE()";
+        System.out.println(sql);
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, classid);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Lesson lesson = new Lesson(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getString(5), rs.getString(6));
+                lessons.add(lesson);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+        return lessons;
+    }
+
     public int retrieveReplacementTutor(int lessonID) {
         String sql = "select replacement_tutor_id from lesson where lesson_id = ?";
 
@@ -581,9 +611,9 @@ public class LessonDAO {
 
         return 0;
     }
-    
+
     public static Timestamp retrieveFirstClass(int classID) {
-        
+
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareCall("select lesson_id, start_date from lesson where class_id = ? order by lesson_id");
             stmt.setInt(1, classID);
@@ -599,24 +629,81 @@ public class LessonDAO {
 
         return null;
     }
-    
-    public static ArrayList<Lesson> retrieveAllLessonListsAfterCurr(int classid) {
-        ArrayList<Lesson> lessons = new ArrayList<>();
-        String sql = "select lesson_id, class_id, reminder_status, start_date, end_date from lesson where class_id = ? and start_date > CURDATE()";
-        System.out.println(sql);
+
+    public ArrayList<String> retrieveReplacementDates(int lessonID) {
+        ArrayList<String> replacementDates = new ArrayList<>();
+        String sql = "select changed_start_date, changed_end_date from lesson where lesson_id = ?";
+
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setInt(1, classid);
+            stmt.setInt(1, lessonID);
+
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                Lesson lesson = new Lesson(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getTimestamp(4), rs.getTimestamp(5));
-                lessons.add(lesson);
+                if (rs.getString(1) != null && rs.getString(2) != null) {
+                    replacementDates.add(rs.getString(1));
+                    replacementDates.add(rs.getString(2));
+                } else {
+                    return null;
+                }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException ex) {
+            Logger.getLogger(ClassDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return replacementDates;
+    }
+
+    public ArrayList<Lesson> retrieveLessonsAfterDateAndBeforeCurr(String date, int classID) {
+        ArrayList<Lesson> lessons = new ArrayList<>();
+
+        String sql = "select * from lesson where class_id = ? and start_date > ? and start_date > curdate()";
+
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, classID);
+            stmt.setString(2, date);
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                int lessonID = rs.getInt("lesson_id");
+                int tutorID = rs.getInt("tutor_id");
+                String startDate = rs.getString("start_date");
+                String endDate = rs.getString("end_date");
+                int tutorAttended = rs.getInt("tutor_attended");
+                lessons.add(new Lesson(lessonID, classID, tutorID, tutorAttended, startDate, endDate));
+            }
+            if (lessons.size() > 0) {
+                return lessons;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(LessonDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        return lessons;
+        return null;
+    }
+
+    public void updatePaymentStatus(int lessonID, String type, int lessonNum) {
+        String sql = "";
+
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = null;
+            
+            if (type.equals("P")) {
+                sql = "update lesson set reminder_term = ? where lesson_id = ?";
+                stmt = conn.prepareStatement(sql);
+            } else{
+                sql = "update lesson set reminder_status = ? where lesson_id = ?";
+                stmt = conn.prepareStatement(sql);
+            }
+            
+            stmt.setInt(1, lessonNum);
+            stmt.setInt(2, lessonID);
+            
+            stmt.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(LessonDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

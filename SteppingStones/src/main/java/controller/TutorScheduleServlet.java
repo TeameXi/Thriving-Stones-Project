@@ -64,7 +64,7 @@ public class TutorScheduleServlet extends HttpServlet {
                         obj.put("id", l.getLessonid());
                         Class c = ClassDAO.getClassByID(l.getClassid());
 
-                        ArrayList<String> replacements = classDAO.retrieveReplacementDates(l.getLessonid());
+                        ArrayList<String> replacements = lessonDAO.retrieveReplacementDates(l.getLessonid());
 
                         if (!replacements.isEmpty()) {
                             obj.put("start_date", replacements.get(0));

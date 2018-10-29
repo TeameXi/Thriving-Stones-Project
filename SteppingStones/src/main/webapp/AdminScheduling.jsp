@@ -293,11 +293,12 @@
                         <button class="btn btn-success" type="button" id="add_new_hols" onclick="add_hols()"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
                     </div>
                 </div><br/>
-                <div class="row">
+                <div class="row" id="levels">
                     <div class="form-inline">
                         <label class = "form-control-label">Level :</label>
-                        <select class="form-control" id="level" style="width: 30%; margin-left: 10px; text-align: center;">
+                        <select class="form-control levels primaryLevel" id="create_levels[]" style="width: 30%; margin-left: 10px; text-align: center;">
                         </select>
+                        <button class="btn btn-success" type="button" id="add_new_levels" onclick="add_levels()"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
                     </div>
                 </div><br/>
                 <div class="row">
@@ -322,12 +323,6 @@
                             <option value="P">Premium</option>
                             <option value="N">Normal</option>
                         </select>
-                    </div>
-                </div>
-                <div class="row" style="margin-top: 10px;">
-                    <div class="form-inline">
-                        <label class = "form-control-label">Recurring :</label>
-                        <input type="checkbox" class="form-check-input" id="recurring" style="margin-left: 10px; margin-top: 5px;">
                     </div>
                 </div>
                 <div class="row" style="margin-top: 10px;">
@@ -387,9 +382,69 @@
                 + 'placeholder="YYYY-MM-DD"><button class="btn btn-danger minusbtn" type="button" onclick="remove_hols()" style="margin-top: 10px;">'
                 + '<span class="glyphicon glyphicon-minus" aria-hidden="true"></span></button></div></div>');
     }
+    
+    function add_levels() {
+        selectedLevel = parseInt($('.primaryLevel').val());
+        
+        html = '<div class="row" id="new_level"><div class="form-inline"><select class="form-control levels" id="create_levels[]'
+                + '" style="text-align: center; width: 29%; margin-left: 68px; margin-top: 10px; margin-right: 5px;" '
+                + 'placeholder="-Select Level-">';
+        
+        for(var i = 1; i <= 10; i ++){
+            if(i !== selectedLevel){
+                html += '<option value=' + i + '>';
+                
+                level = '';
+                
+                switch(i) {
+                    case 1:
+                        level = 'Primary 1';
+                        break;
+                    case 2:
+                        level = 'Primary 2';
+                        break;
+                    case 3:
+                        level = 'Primary 3';
+                        break;
+                    case 4:
+                        level = 'Primary 4';
+                        break;
+                    case 5:
+                        level = 'Primary 5';
+                        break;
+                    case 6:
+                        level = 'Primary 6';
+                        break;
+                    case 7:
+                        level = 'Secondary 1';
+                        break;
+                    case 8:
+                        level = 'Secondary 2';
+                        break;
+                    case 9:
+                        level = 'Secondary 3';
+                        break;
+                    case 10:
+                        level = 'Secondary 4';
+                        break;
+                }
+  
+                html += level + '</option>';
+            }
+        }
+        
+        html += '</select><button class="btn btn-danger minusbtn" type="button" onclick="remove_levels()" style="margin-top: 10px;">'
+                + '<span class="glyphicon glyphicon-minus" aria-hidden="true"></span></button></div></div>';
+        
+        $("#levels").append(html);
+    }
 
     function remove_hols() {
         $('#new_field').closest('#new_field').remove();
+    }
+    
+    function remove_levels() {
+        $('#new_level').closest('#new_level').remove();
     }
 
     $(document).ready(function () {
@@ -453,8 +508,8 @@
             $("#classCreation").one('shown.bs.modal', function () {
                 action = 'retrieveOptions';
 
-                $('#recurring').prop('checked', false);
                 $('#reminder').prop('checked', false);
+                $('#combined').prop('checked', false);
 
                 $.ajax({
                     type: 'POST',
@@ -468,9 +523,9 @@
                         $("#create_start_time").val(startTime);
                         $("#create_end_time").val(endTime);
 
-                        $("#level").empty();
+                        $(".primaryLevel").empty();
                         for (var i = 0; i < data.level.length; i++) {
-                            $("#level").append('<option value="' + data.level[i].id + '">' + data.level[i].name + '</option>');
+                            $(".primaryLevel").append('<option value="' + data.level[i].id + '">' + data.level[i].name + '</option>');
                         }
 
                         $("#assign_tutor").empty();
@@ -512,16 +567,22 @@
                         index++;
                     });
                     
+                    levels = [];
+                    indexL = 0;
+                    $.each($('.levels'), function () {
+                        console.log($(this).val());
+                        levels[indexL] = $(this).val();
+                        indexL++;
+                    });
+                    
                     e.stopImmediatePropagation();
 
                     startDate = $("#create_start_date").val();
                     endDate = $("#create_end_date").val();
                     startTime = $("#create_start_time").val();
                     end = $("#create_end_time").val();
-                    level = $("#level").val();
                     tutor = $("#assign_tutor").val();
                     subject = $("#subject").val();
-                    recurring = $("#recurring").val();
                     reminder = $("#reminder").val();
                     classType = $("#class_type").val();
                     action = 'create';
@@ -530,7 +591,7 @@
                         type: 'POST',
                         url: 'AdminScheduleServlet',
                         dataType: 'JSON',
-                        data: {classType: classType, branchID: branchID, reminder: reminder, recurring: recurring, endDate: endDate, holidays: holidays.toString(), action: action, startDate: startDate, endTime: end, startTime: startTime, levelID: level, subjectID: subject, tutorID: tutor},
+                        data: {classType: classType, branchID: branchID, reminder: reminder, endDate: endDate, holidays: holidays.toString(), action: action, startDate: startDate, endTime: end, startTime: startTime, levels: levels.toString(), subjectID: subject, tutorID: tutor},
                         success: function (data) {
                             if (data.status) {
                                 action = 'retrieve';

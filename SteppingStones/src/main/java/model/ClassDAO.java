@@ -62,7 +62,7 @@ public class ClassDAO {
     public static Class getClassByID(int classID) {
         Class cls = null;
         try (Connection conn = ConnectionManager.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement("select level_id, subject_id, term, start_time, end_time, class_day, fees, start_date, end_date, class_type, has_reminder_for_fees from class where class_id = ?");
+            PreparedStatement stmt = conn.prepareStatement("select level_id, subject_id, term, start_time, end_time, class_day, fees, start_date, end_date, class_type, has_reminder_for_fees, additional_lesson_id from class where class_id = ?");
             stmt.setInt(1, classID);
             ResultSet rs = stmt.executeQuery();
 
@@ -80,9 +80,24 @@ public class ClassDAO {
                 String subject = SubjectDAO.retrieveSubject(subjectID);
                 String level = LevelDAO.retrieveLevel(levelID);
                 String type = rs.getString(10);
+                String combined = rs.getString("additional_lesson_id");
                 cls = new Class(classID, level, subject, term, startTime, endTime, classDay, mthlyFees, startDate, endDate, type);
                 cls.setHasReminderForFees(rs.getInt(11));
                 cls.setSubjectID(subjectID);
+                
+                if(combined != null){
+                    String[] combinedLevels = combined.split(",");
+                    combined = "";
+                    
+                    for(String s: combinedLevels){
+                        int levelAdd = Integer.parseInt(s);
+                        combined += LevelDAO.retrieveLevel(levelAdd) + " ";
+                    }
+                    
+                    combined = combined.trim();
+                    combined = combined.replace(" ", ",");
+                    cls.setCombined(combined);
+                }
             }
         } catch (SQLException e) {
             System.out.print(e.getMessage());
@@ -111,7 +126,7 @@ public class ClassDAO {
                 String subject = SubjectDAO.retrieveSubject(subjectID);
                 String level = LevelDAO.retrieveLevel(levelID);
                 String type = rs.getString("class_type");
-                String combinedLevel = rs.getString("additional_lesson_id");
+                String combinedLevel = rs.getString("combined_levels");
                 Class cls = new Class(classID, level, subject, term, startTime, endTime, classDay, mthlyFees, startDate, endDate, type, combinedLevel);
                 classList.add(cls);
             }
@@ -162,7 +177,7 @@ public class ClassDAO {
     public static ArrayList<Class> listAllClasses(int branchID) {
         ArrayList<Class> classList = new ArrayList();
         try (Connection conn = ConnectionManager.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement("select * from class where branch_id = ? and end_date > curdate()");
+            PreparedStatement stmt = conn.prepareStatement("select * from class where branch_id = ? and year(end_date) = year(curdate())");
             stmt.setInt(1, branchID);
             ResultSet rs = stmt.executeQuery();
 
@@ -380,10 +395,10 @@ public class ClassDAO {
         }
     }
 
-    public static int createClass(String classType,int level, int subject,double mthlyFees, int hasReminderForFees, String startTime, String endTime, String classDay, String startDate, String endDate, int branch, int tutorId, String holidays) {
+    public static int createClass(String classType,int level, int subject,double mthlyFees, int hasReminderForFees, String startTime, String endTime, String classDay, String startDate, String endDate, int branch, int tutorId, String holidays, String additionalLevels, boolean combined) {
         try (Connection conn = ConnectionManager.getConnection();) {
-            String sql = "INSERT into class (level_id, subject_id,fees,has_reminder_for_fees,start_time, end_time, class_day, start_date, end_date,branch_id,tutor_id, class_type, holiday_date)"
-                    + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            String sql = "INSERT into class (level_id, subject_id,fees,has_reminder_for_fees,start_time, end_time, class_day, start_date, end_date,branch_id,tutor_id, class_type, holiday_date, additional_lesson_id, combined)"
+                    + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
 
             System.out.println(sql);
@@ -400,6 +415,8 @@ public class ClassDAO {
             stmt.setInt(11, tutorId);
             stmt.setString(12, classType);
             stmt.setString(13, holidays);
+            stmt.setString(14, additionalLevels);
+            stmt.setBoolean(15, combined);
             
             int rows = stmt.executeUpdate();
             
@@ -418,8 +435,8 @@ public class ClassDAO {
         return 0;
     }
 
-    public boolean updateClass(int tutorID, int level, int subject, String startTime, String endTime, String startDate, String endDate) {
-        String sql = "update class set start_time = ?, end_time = ?, start_date = ?, end_date = ?, tutor_id = ? where level_id = ? and subject_id = ?";
+    public boolean updateClass(int tutorID, String startTime, String endTime, String startDate, String endDate, int classID) {
+        String sql = "update class set start_time = ?, end_time = ?, start_date = ?, end_date = ?, tutor_id = ? where class_id = ?";
         System.out.println(sql);
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
@@ -428,8 +445,7 @@ public class ClassDAO {
             stmt.setString(3, startDate);
             stmt.setString(4, endDate);
             stmt.setInt(5, tutorID);
-            stmt.setInt(6, level);
-            stmt.setInt(7, subject);
+            stmt.setInt(6, classID);
             System.out.println(stmt);
 
             stmt.executeUpdate();
@@ -443,10 +459,11 @@ public class ClassDAO {
     public static ArrayList<Class> getClassesByLevel(int levelID, int branchID) {
         ArrayList<Class> classList = new ArrayList();
         try (Connection conn = ConnectionManager.getConnection()) {
-            String select_class_sql = "select * from class where branch_id = ? and level_id = ?";
+            String select_class_sql = "select * from class where branch_id = ? and (level_id = ? or find_in_set(?, additional_lesson_id));";
             PreparedStatement stmt = conn.prepareStatement(select_class_sql);
             stmt.setInt(1, branchID);
             stmt.setInt(2, levelID);
+            stmt.setInt(3, levelID);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 int classID = rs.getInt("class_id");
@@ -462,6 +479,23 @@ public class ClassDAO {
                 String level = LevelDAO.retrieveLevel(levelID);
                 String type = rs.getString("class_type");
                 Class cls = new Class(classID, level, subject, term, startTime, endTime, classDay, mthlyFees, startDate, endDate, type);
+                
+                String combined = rs.getString("additional_lesson_id");
+                
+                if(combined != null){
+                    String[] combinedLevels = combined.split(",");
+                    combined = "";
+                    
+                    for(String s: combinedLevels){
+                        int levelAdd = Integer.parseInt(s);
+                        combined += LevelDAO.retrieveLevel(levelAdd) + " ";
+                    }
+                    
+                    combined = combined.trim();
+                    combined = combined.replace(" ", ",");
+                    cls.setCombined(combined);
+                }
+                
                 classList.add(cls);
             }
         } catch (SQLException e) {

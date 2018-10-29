@@ -247,5 +247,9 @@ public class Class {
     public void setHasReminderForFees(int hasReminderForFees) {
         this.hasReminderForFees = hasReminderForFees;
     }
+    
+    public void setCombined(String combined){
+        this.combinedLevel = combined;
+    }
 
 }
