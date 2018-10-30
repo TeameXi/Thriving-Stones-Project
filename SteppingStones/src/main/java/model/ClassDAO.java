@@ -124,7 +124,7 @@ public class ClassDAO {
                 String subject = SubjectDAO.retrieveSubject(subjectID);
                 String level = LevelDAO.retrieveLevel(levelID);
                 String type = rs.getString("class_type");
-                String combinedLevel = rs.getString("combined_levels");
+                String combinedLevel = rs.getString("additional_lesson_id");
                 Class cls = new Class(classID, level, subject, term, startTime, endTime, classDay, mthlyFees, startDate, endDate, type, combinedLevel);
                 classList.add(cls);
             }
