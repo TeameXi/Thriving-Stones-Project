@@ -29,6 +29,6 @@ public class PaymentReminderScheduler implements ServletContextListener {
     public void contextInitialized(ServletContextEvent event) {
         
         scheduler = Executors.newSingleThreadScheduledExecutor();
-        //scheduler.scheduleAtFixedRate(new PaymentReminderJob(event.getServletContext().getRealPath("/temp")), 0, 1, TimeUnit.MINUTES);
+        //scheduler.scheduleAtFixedRate(new PaymentReminderJob(event.getServletContext().getRealPath("/temp")), 0, 1, TimeUnit.DAYS);
     }
 }

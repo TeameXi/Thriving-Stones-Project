@@ -740,7 +740,7 @@ public class LessonDAO {
     public static ArrayList<Lesson> retrieveAllLessonListsAfterCurrTS(int classid) {
         ArrayList<Lesson> lessons = new ArrayList<>();
         try (Connection conn = ConnectionManager.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement("select lesson_id, class_id, reminder_status, start_date, end_date from lesson where class_id = ? and start_date > CURDATE()");
+            PreparedStatement stmt = conn.prepareStatement("select lesson_id, class_id, reminder_status, start_date, end_date from lesson where class_id = ? and start_date > CURDATE() and reminder_status <> 0");
             stmt.setInt(1, classid);
             ResultSet rs = stmt.executeQuery();
 
