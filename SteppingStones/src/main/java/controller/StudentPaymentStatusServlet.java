@@ -58,7 +58,6 @@ public class StudentPaymentStatusServlet extends HttpServlet {
                             JSONObject obj = new JSONObject();
                             obj.put("id", l.getLevel_id());
                             obj.put("level", l.getLevelName());
-                            System.out.println("-----------------------------" + l.getLevel_id());
                             array.put(obj);
                         }       
                         JSONObject toReturn = new JSONObject().put("data", array);
@@ -68,7 +67,6 @@ public class StudentPaymentStatusServlet extends HttpServlet {
                     }
                 case "retrieveStudent":
                     {
-                        System.out.println("-----------------------------" + request.getParameter("levelID"));
                         int levelID = Integer.parseInt(request.getParameter("levelID"));
                         int branchID = Integer.parseInt(request.getParameter("branchID"));
                         ArrayList<Student> studs = studentDAO.listStudentsByLevel(levelID, branchID);
@@ -98,7 +96,6 @@ public class StudentPaymentStatusServlet extends HttpServlet {
                             obj.put("subject", c.getSubject());
                             obj.put("date", date);
                             array.put(obj);
-                            System.out.println(array.toString());
                         }       
                         JSONObject toReturn = new JSONObject().put("data", array);
                         String json = toReturn.toString();
@@ -107,31 +104,36 @@ public class StudentPaymentStatusServlet extends HttpServlet {
                     }
                 case "retrieveLessons":
                     {
-                        System.out.println("IM HEREEEE");
                         int classID = Integer.parseInt(request.getParameter("classID"));
                         int studentID = Integer.parseInt(request.getParameter("studentID"));
                         ArrayList<Class> classes = ClassDAO.getStudentEnrolledClass(studentID);
-                        System.out.println("Class Size: " + classes.size());
                         JSONArray array = new JSONArray();
+                        
                         for (Class c : classes) {
                             ArrayList<Lesson> lessons = LessonDAO.retrieveAllLessonListsBeforeCurr(c.getClassID());
                             ArrayList<Lesson> lessonsWithPaymentStatus = LessonDAO.retrieveLessonsForPaymentStatus(c.getClassID());
+                            
                             for (Lesson l : lessons) {
                                 String date = l.getStartDate().substring(0, l.getStartDate().indexOf(" "));
+                                
                                 for (Lesson lCheck : lessonsWithPaymentStatus) {
-                                    if (date.equals(lCheck.getStartDateTS() + "")) {
-                                        int chargesDue = LessonDAO.getPaymentStatus(classID, studentID, date);
+                                    String checkAgainst = lCheck.getStartDateTS().toLocalDateTime().toLocalDate() + "";
+                                    
+                                    if (date.equals(checkAgainst)) {
+                                        String dateForPayment = lCheck.getStartDateTS().toLocalDateTime().minusDays(1).toLocalDate() + "";
+                                        int chargesDue = LessonDAO.getPaymentStatus(classID, studentID, dateForPayment);
+                                        
                                         if (chargesDue != -1) {
                                             JSONObject obj = new JSONObject();
                                             obj.put("id", l.getLessonid());
                                             obj.put("date", date);
+                                            
                                             if (chargesDue != 0){
                                                 obj.put("paid", "Paid");
                                             } else {
-                                                obj.put("paid", "Not paid/Not fully paid");
+                                                obj.put("paid", chargesDue + " owed");
                                             }
                                             array.put(obj);
-                                            System.out.println(array.toString());
                                         }
                                     }
                                 }
@@ -139,7 +141,6 @@ public class StudentPaymentStatusServlet extends HttpServlet {
                         }       
                         JSONObject toReturn = new JSONObject().put("data", array);
                         String json = toReturn.toString();
-                        System.out.println(json);
                         out.println(json);
                         break;
                     }

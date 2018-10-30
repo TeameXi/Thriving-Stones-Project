@@ -107,7 +107,6 @@
                 tr.removeClass('shown');
             } else {
                 levelID = row.data().id;
-                console.log(row.data());
                 action = 'retrieveStudent';
 
                 // Open this row

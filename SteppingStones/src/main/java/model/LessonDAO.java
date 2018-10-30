@@ -557,7 +557,6 @@ public class LessonDAO {
     public static ArrayList<Lesson> retrieveAllLessonListsBeforeCurr(int classid) {
         ArrayList<Lesson> lessons = new ArrayList<>();
         String sql = "select lesson_id, class_id, tutor_id, tutor_attended, start_date, end_date from lesson where class_id = ? and start_date < CURDATE()";
-        System.out.println(sql);
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, classid);
@@ -759,7 +758,7 @@ public class LessonDAO {
     public static ArrayList<Lesson> retrieveLessonsForPaymentStatus(int classid) {
         ArrayList<Lesson> lessons = new ArrayList<>();
         try (Connection conn = ConnectionManager.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement("select lesson_id, class_id, reminder_status, start_date, end_date from lesson where class_id = ? and start_date < CURDATE()");
+            PreparedStatement stmt = conn.prepareStatement("select lesson_id, class_id, reminder_status, start_date, end_date from lesson where class_id = ? and start_date < CURDATE() and reminder_status <> 0");
             stmt.setInt(1, classid);
             ResultSet rs = stmt.executeQuery();
 
@@ -781,10 +780,11 @@ public class LessonDAO {
             stmt.setInt(1, classid);
             stmt.setInt(2, studentid);
             stmt.setString(3, date);
+            System.out.println(stmt);
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                return rs.getInt(1);
+                paymentDue = rs.getInt(1);
             }
         } catch (Exception e) {
             e.printStackTrace();
