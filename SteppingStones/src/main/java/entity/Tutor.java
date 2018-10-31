@@ -17,6 +17,7 @@ public class Tutor {
     private String email;
     private int branch_id;
     private double pay;
+    private int totalClasses;
 
     public Tutor() {
     }
@@ -31,6 +32,13 @@ public class Tutor {
         this.tutorId = tutorId;
         this.name = name;
         this.pay = pay;
+    }
+    
+    //Tutor Object With Class
+    public Tutor(int totalClasses,int tutorId,String name){
+        this.totalClasses = totalClasses;
+        this.tutorId = tutorId;
+        this.name = name;      
     }
     
     public Tutor(String nric,String name,int phone,String address,String qualification,String birth_date,String gender,String email,int branch_id/*, double pay*/) {
@@ -206,6 +214,20 @@ public class Tutor {
      */
     public String getQualification() {
         return qualification;
+    }
+
+    /**
+     * @return the totalClasses
+     */
+    public int getTotalClasses() {
+        return totalClasses;
+    }
+
+    /**
+     * @param totalClasses the totalClasses to set
+     */
+    public void setTotalClasses(int totalClasses) {
+        this.totalClasses = totalClasses;
     }
 
 

@@ -54,50 +54,32 @@
 
 <%@include file="footer.jsp"%>
 <script type="text/javascript" src="${pageContext.request.contextPath}/styling/js/jquery.fileupload.js"></script>
-<script>
-                    var Password = {
-
-                        _pattern: /[a-zA-Z0-9_\-\+\.]/,
-
-                        _getRandomByte: function ()
-                        {
-                            if (window.crypto && window.crypto.getRandomValues)
-                            {
-                                var result = new Uint8Array(1);
-                                window.crypto.getRandomValues(result);
-                                return result[0];
-                            } else if (window.msCrypto && window.msCrypto.getRandomValues)
-                            {
-                                var result = new Uint8Array(1);
-                                window.msCrypto.getRandomValues(result);
-                                return result[0];
-                            } else
-                            {
-                                return Math.floor(Math.random() * 256);
-                            }
-                        },
-
-                        generate: function (length)
-                        {
-                            return Array.apply(null, {'length': length})
-                                    .map(function ()
-                                    {
-                                        var result;
-                                        while (true)
-                                        {
-                                            result = String.fromCharCode(this._getRandomByte());
-                                            if (this._pattern.test(result))
-                                            {
-                                                return result;
-                                            }
-                                        }
-                                    }, this)
-                                    .join('');
-                        }
-                    };
-
-                    function generatePassword(len) {
-                        var pwd = Password.generate(len);
-                        return pwd;
-                    }
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/xlsx.js">
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/jszip.js">
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.10.8/xlsx.full.min.js">
+</script>
+
+<script>
+    $scope.ExcelExport= function (event) {
+
+      var file_upload_el = $("#" + file_upload_id);
+    var error_el = $("#" + error_lbl_id);
+    var file_name = file_upload_el.prop("files")[0]["name"];
+    var file_extension = file_name.split('.').pop();
+    
+    var reader = new FileReader();
+    reader.onload = function(){
+        var fileData = reader.result;
+        var wb = XLSX.read(fileData, {type : 'binary'});
+
+        wb.SheetNames.forEach(function(sheetName){
+        var rowObj =XLSX.utils.sheet_to_row_object_array(wb.Sheets[sheetName]);
+        var jsonObj = JSON.stringify(rowObj);
+        console.log(jsonObj)
+        })
+    };
+    reader.readAsBinaryString(file_name);
+    };
+</script>-->

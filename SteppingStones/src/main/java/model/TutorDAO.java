@@ -399,23 +399,23 @@ public class TutorDAO {
         return false;
     }
 
-    public static int calculateLessonCount(int tutorID, int classID) {
-        int count = 0;
-        try (Connection conn = ConnectionManager.getConnection();
-                PreparedStatement stmt = conn.prepareStatement("select count(*) from lesson where tutor_id = ? and class_id = ? and tutor_payment_status = 0 and start_date < CURDATE()")) {
-            stmt.setInt(1, tutorID);
-            stmt.setInt(2, classID);
-
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                count = rs.getInt(1);
-            }
-            return count;
-        } catch (SQLException ex) {
-            ex.printStackTrace();;
-        }
-        return count;
-    }
+//    public static int calculateLessonCount(int tutorID, int classID) {
+//        int count = 0;
+//        try (Connection conn = ConnectionManager.getConnection();
+//                PreparedStatement stmt = conn.prepareStatement("select count(*) from lesson where tutor_id = ? and class_id = ? and tutor_payment_status = 0 and start_date < CURDATE()")) {
+//            stmt.setInt(1, tutorID);
+//            stmt.setInt(2, classID);
+//
+//            ResultSet rs = stmt.executeQuery();
+//            while (rs.next()) {
+//                count = rs.getInt(1);
+//            }
+//            return count;
+//        } catch (SQLException ex) {
+//            ex.printStackTrace();;
+//        }
+//        return count;
+//    }
 
     public static boolean updateTutorPayment(int tutorID, int lessonID) {
         try (Connection conn = ConnectionManager.getConnection();
@@ -504,4 +504,46 @@ public class TutorDAO {
         return pay;
 
     }
+    
+    //For Tutor Payment
+    public static ArrayList<Tutor>tutorWithTotalClasses(int branchId){
+        ArrayList<Tutor> tutorLists = new ArrayList<>();
+        
+        String select_tutor = "SELECT count(class_id),c.tutor_id,tutor_fullname FROM class c,tutor "
+                + "WHERE c.tutor_id = tutor.tutor_id and c.branch_id=? GROUP BY tutor_id";
+        try (Connection conn = ConnectionManager.getConnection();
+                PreparedStatement preparedStatement = conn.prepareStatement(select_tutor)) {
+            preparedStatement.setInt(1, branchId);
+
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                Tutor t = new Tutor(rs.getInt(1),rs.getInt(2),rs.getString(3));
+                tutorLists.add(t);
+            }
+
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return tutorLists;
+    }
+    
+    public static int calculateTutorAttendLessonCount(int tutorID, int classID) {
+        int count = 0;
+        try (Connection conn = ConnectionManager.getConnection();
+                PreparedStatement stmt = conn.prepareStatement("select count(*) from lesson where tutor_id = ? and class_id = ? and tutor_payment_status = 0 and tutor_attended=1 and start_date < CURDATE()")) {
+            stmt.setInt(1, tutorID);
+            stmt.setInt(2, classID);
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                count = rs.getInt(1);
+            }
+            return count;
+        } catch (SQLException ex) {
+            ex.printStackTrace();;
+        }
+        return count;
+    }
+    
+   
 }

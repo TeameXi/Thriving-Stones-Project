@@ -20,7 +20,10 @@ public class Class {
     private String holidayDate;
     private String type;
     private String combinedLevel;
-
+    
+    private double tutorRate;
+    private String className;
+    
     public Class(int classID,String level, int subjectID, String startTime, String endTime, String classDay, double mthlyFees, String startDate, String endDate,String holidayDate,int tutorID) {
         this.classID = classID;
         this.level = level;
@@ -76,6 +79,14 @@ public class Class {
         this.endDate = endDate;
         this.tutorID = tutorID;
         this.type = type;  
+    }
+    
+    
+    // Payment Object
+    public Class(int classID,String className,double tutorRate){
+        this.classID = classID;
+        this.className = className;
+        this.tutorRate = tutorRate;
     }
     
     public String getCombinedLevel() {
@@ -250,6 +261,20 @@ public class Class {
     
     public void setCombined(String combined){
         this.combinedLevel = combined;
+    }
+
+    /**
+     * @return the tutorRate
+     */
+    public double getTutorRate() {
+        return tutorRate;
+    }
+
+    /**
+     * @return the className
+     */
+    public String getClassName() {
+        return className;
     }
 
 }
