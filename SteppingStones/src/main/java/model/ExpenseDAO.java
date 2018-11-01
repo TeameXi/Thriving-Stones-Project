@@ -22,18 +22,23 @@ import java.util.logging.Logger;
  */
 public class ExpenseDAO {
 
-    public static void insertExpense(int tutorID, String tutorName, String subject, String level, double amount) {
+    public static boolean insertExpense(int tutorID, String tutorName, String subject, String level, double amount) {
+        boolean status = false;
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement("insert into expense (tutor_id, description, amount, payment_date) values(?,?,?,CURDATE())");
             stmt.setInt(1, tutorID);
             stmt.setString(2, tutorName + " " + subject + " " + level);
             stmt.setDouble(3, amount);
 
-            stmt.executeUpdate();
+            int num = stmt.executeUpdate();
+            if(num > 0){
+                return true;
+            }
 
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+        return status;
     }
 
     public static void insertExpense(List<String> expenseList) {

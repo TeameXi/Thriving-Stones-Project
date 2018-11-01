@@ -417,20 +417,20 @@ public class TutorDAO {
 //        return count;
 //    }
 
-    public static boolean updateTutorPayment(int tutorID, int lessonID) {
-        try (Connection conn = ConnectionManager.getConnection();
-                PreparedStatement stmt = conn.prepareStatement("update lesson set tutor_payment_status = 1 where tutor_id = ? and lesson_id = ?")) {
-            stmt.setInt(1, tutorID);
-            stmt.setInt(2, lessonID);
-
-            stmt.executeUpdate();
-            return true;
-
-        } catch (SQLException ex) {
-            ex.printStackTrace();;
-        }
-        return false;
-    }
+//    public static boolean updateTutorPayment(int tutorID, int lessonID) {
+//        try (Connection conn = ConnectionManager.getConnection();
+//                PreparedStatement stmt = conn.prepareStatement("update lesson set tutor_payment_status = 1 where tutor_id = ? and lesson_id = ?")) {
+//            stmt.setInt(1, tutorID);
+//            stmt.setInt(2, lessonID);
+//
+//            stmt.executeUpdate();
+//            return true;
+//
+//        } catch (SQLException ex) {
+//            ex.printStackTrace();;
+//        }
+//        return false;
+//    }
     
     
     public static ArrayList<Tutor_HourlyRate_Rel> tutorSubjectListsForSpecificLevel(int level_id,int branch_id){
@@ -540,9 +540,28 @@ public class TutorDAO {
             }
             return count;
         } catch (SQLException ex) {
-            ex.printStackTrace();;
+            ex.printStackTrace();
         }
         return count;
+    }
+    
+    public static boolean updateTutorPayment(int tutorID, int classID,int month,int year) {
+        try (Connection conn = ConnectionManager.getConnection();
+                PreparedStatement stmt = conn.prepareStatement("UPDATE lesson SET tutor_payment_status = 1"
+                        + " where tutor_id = ? AND class_id = ? AND"
+                        + " month(start_date)=? AND Year(start_date)=? ")) {
+            stmt.setInt(1, tutorID);
+            stmt.setInt(2, classID);
+            stmt.setInt(3, month);
+            stmt.setInt(4, year);
+
+            stmt.executeUpdate();
+            return true;
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return false;
     }
     
    

@@ -59,6 +59,8 @@ public class TutorPaymentServlet extends HttpServlet {
                     double tutorRate = c.getTutorRate();
                     int classId = c.getClassID();
                     String className = c.getClassName();
+                    String levelName = c.getLevel();
+                    String subjectName = c.getSubject();
                     double duration =  ClassDAO.getClassTime(classId);
 
                     ArrayList<TutorPay> tutorPayListByMonths = LessonDAO.totalLessonTutorAttendForClass(tutorID, classId, tutorRate, duration);
@@ -67,6 +69,8 @@ public class TutorPaymentServlet extends HttpServlet {
                     JSONArray lessonMontlyList = new JSONArray();
                     classObj.put("id", classId);
                     classObj.put("className",className);
+                    classObj.put("levelName",levelName);
+                    classObj.put("subjectName",subjectName);
                     
                     for(TutorPay payForMonthlyLesson:tutorPayListByMonths){
                         JSONObject lessonObj = new JSONObject();
@@ -90,25 +94,35 @@ public class TutorPaymentServlet extends HttpServlet {
                
                 out.println(tutorPayList);
 
-            } else if (action.equals("mark")) {
-//                int lessonID = Integer.parseInt(request.getParameter("lessonID"));
-//                int classID = Integer.parseInt(request.getParameter("classID"));
-//                int tutorID = Integer.parseInt(request.getParameter("tutorID"));
-//
-//                TutorDAO tutorDAO = new TutorDAO();
-//                Class c = ClassDAO.getClassByID(classID);
-//                double amount = TutorDAO.calculateTutorAttendLessonCount(tutorID, c.getClassID()) * 
-//                        ClassDAO.getClassTime(c.getClassID()) * 
-//                        TutorDAO.getHourlyPay(tutorID, LevelDAO.retrieveLevelID(c.getLevel()), SubjectDAO.retrieveSubjectID(c.getSubject()));
-//                
-//                boolean status = TutorDAO.updateTutorPayment(tutorID, lessonID);
-//                if (status){
-//                    ExpenseDAO.insertExpense(tutorID, tutorDAO.retrieveSpecificTutorById(tutorID).getName(), c.getSubject(), c.getLevel(), amount);
-//                }
-//
-//                JSONObject toReturn = new JSONObject().put("data", status);
-//                String json = toReturn.toString();
-//                out.println(json);
+            } else if (action.equals("pay")) {
+                //action
+                String [] ids = request.getParameter("ids").split("_");
+                int tutorID = Integer.parseInt(ids[0]);
+                int classID = Integer.parseInt(ids[1]);
+                int month = Integer.parseInt(ids[2]);
+                int year = Integer.parseInt(ids[3]);
+                
+            
+                // For Expense
+                String tutorName = request.getParameter("tutorName");
+                String levelName = request.getParameter("levelName");
+                String subjectName = request.getParameter("subjectName");
+                double amount = 0;
+                String amountStr = request.getParameter("monthlyAmount");
+                if(!amountStr.equals("")){
+                    amount = Double.parseDouble(amountStr);
+                }
+
+                boolean status = TutorDAO.updateTutorPayment(tutorID,classID,month,year);
+                if (status){
+                    status = ExpenseDAO.insertExpense(tutorID,tutorName,subjectName,levelName,amount);
+                }
+
+                if(status){
+                    out.println(1);
+                }else{
+                    out.println(0);
+                }
 
             }
         }

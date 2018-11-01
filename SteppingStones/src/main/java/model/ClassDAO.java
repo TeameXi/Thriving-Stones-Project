@@ -793,7 +793,7 @@ public class ClassDAO {
                         if(Integer.parseInt(lvlId) < 7){
                             additionalLvl += "P "+lvlId+",";
                         }else{
-                            additionalLvl += "P "+(10-Integer.parseInt(lvlId))+",";
+                            additionalLvl += "S "+(10-Integer.parseInt(lvlId))+",";
                         }
                     }
                 }else{
@@ -801,14 +801,14 @@ public class ClassDAO {
                     if(level_id < 7){
                         additionalLvl += "P "+level_id+",";
                     }else{
-                        additionalLvl += "P "+(10-level_id)+",";
+                        additionalLvl += "S "+(10-level_id)+",";
                     }
                 }
                 
                 additionalLvl = additionalLvl.substring(0, additionalLvl.length() - 1);
                 String subjectName = SubjectDAO.retrieveSubject(subject_id);
                 String className = start_time+"-"+end_time+"("+day+")"+"<br/>"+additionalLvl+"["+subjectName+"]";
-                Class c = new Class(classId,className,pay);
+                Class c = new Class(classId,className,pay,additionalLvl,subjectName);
                 classList.add(c);
             }
         } catch (SQLException e) {

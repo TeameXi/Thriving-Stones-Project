@@ -83,10 +83,12 @@ public class Class {
     
     
     // Payment Object
-    public Class(int classID,String className,double tutorRate){
+    public Class(int classID,String className,double tutorRate,String level,String subjet){
         this.classID = classID;
         this.className = className;
         this.tutorRate = tutorRate;
+        this.level = level;
+        this.subject = subjet;
     }
     
     public String getCombinedLevel() {
