@@ -547,7 +547,7 @@
                     action = 'retrieveSubjectOptions';
                     console.log(action);
                     levelID = $(".primaryLevel").val();
-                    console.log(levelID);
+                    
                     $.ajax({
                         type: 'POST',
                         url: 'AdminScheduleServlet',
@@ -567,13 +567,19 @@
                 $("#subject").change(function () {
                     action = 'retrieveTutorOptions';
                     subjectID = $('#subject').val();
-                    levelID = $(".primaryLevel").val();
-                    console.log(levelID);
+                    
+                    levels = [];
+                    indexL = 0;
+                    $.each($('.levels'), function () {
+                        levels[indexL] = $(this).val();
+                        indexL++;
+                    });
+                    
                     $.ajax({
                         type: 'POST',
                         url: 'AdminScheduleServlet',
                         dataType: 'JSON',
-                        data: {levelID: levelID, subjectID: subjectID, branchID: branchID, action: action},
+                        data: {levels: levels.toString(), subjectID: subjectID, branchID: branchID, action: action},
                         success: function (data) {
                             $("#assign_tutor").empty();
                             if(data.tutor.length <= 0){
