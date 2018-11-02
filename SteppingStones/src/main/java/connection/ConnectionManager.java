@@ -52,7 +52,7 @@ public class ConnectionManager {
 
             if (osName.contains("windows") || osName.contains("mac")) {
                 // in local environment, use db.password
-                dbPassword = props.getProperty("db.password");
+                dbPassword = "s9736659d";
                 dbURL = "jdbc:mysql://" + host + ":" + port + "/" + dbName;
             } else {
                 Properties prop = new Properties();

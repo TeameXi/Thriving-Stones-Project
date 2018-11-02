@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -93,14 +95,17 @@ public class StudentAttendanceServlet extends HttpServlet {
                         obj.put("name", s.getName());
 
                         JSONArray lessons = new JSONArray();
-                        ArrayList<Lesson> lessonList = lessonDAO.retrieveAllLessonListsBeforeCurr(classID);
-
+                        int index = 0;
+                        LinkedList<Lesson> lessonList = lessonDAO.retrieveAllLessonListsBeforeCurr(classID);
+               
                         for (Lesson l : lessonList) {
                             JSONObject lesson = new JSONObject();
                             lesson.put("id", l.getLessonid());
                             lesson.put("date", l.getLessonDate());
-                            lesson.put("attended", a.retrieveStudentAttendances(s.getStudentID(), l.getLessonid()));
-                            lessons.put(lesson);
+                            boolean attended = a.retrieveStudentAttendances(s.getStudentID(), l.getLessonid());
+                            lesson.put("attended", attended);
+                            lessons.put(index, lesson);
+                            index++;
                         }
                         obj.put("lessons", lessons);
 
@@ -110,6 +115,7 @@ public class StudentAttendanceServlet extends HttpServlet {
                         obj.put("attendance", attendance + "%");
                         array.put(obj);
                     }
+                    
                     String json = array.toString();
                     System.out.println(json);
                     out.println(json);

@@ -19,6 +19,7 @@ import entity.Class;
 import entity.Student;
 import java.text.DecimalFormat;
 import java.util.Arrays;
+import java.util.LinkedList;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -82,7 +83,7 @@ public class TutorAttendanceServlet extends HttpServlet {
                                 + c.getEndTime() + "<br/>" + c.getLevel() + " " + c.getSubject());
 
                         JSONArray lessons = new JSONArray();
-                        ArrayList<Lesson> lessonList = lessonDAO.retrieveAllLessonListsBeforeCurr(c.getClassID());
+                        LinkedList<Lesson> lessonList = lessonDAO.retrieveAllLessonListsBeforeCurr(c.getClassID());
 
                         for (Lesson l : lessonList) {
                             JSONObject lesson = new JSONObject();
@@ -159,7 +160,7 @@ public class TutorAttendanceServlet extends HttpServlet {
                    
                     obj.put("attendance", lessonDAO.retrieveNumberTutorAttendancePerClass(classID, tutorID) + "%");
                     
-                    ArrayList<Lesson> lessons = lessonDAO.retrieveAllLessonListsBeforeCurr(classID);
+                    LinkedList<Lesson> lessons = lessonDAO.retrieveAllLessonListsBeforeCurr(classID);
                     
                     for(Lesson l: lessons){
                         JSONObject lesson = new JSONObject();
