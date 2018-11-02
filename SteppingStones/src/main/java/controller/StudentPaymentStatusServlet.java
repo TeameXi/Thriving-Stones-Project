@@ -12,6 +12,7 @@ import entity.Student;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -110,7 +111,7 @@ public class StudentPaymentStatusServlet extends HttpServlet {
                         JSONArray array = new JSONArray();
                         
                         for (Class c : classes) {
-                            ArrayList<Lesson> lessons = LessonDAO.retrieveAllLessonListsBeforeCurr(c.getClassID());
+                            LinkedList<Lesson> lessons = LessonDAO.retrieveAllLessonListsBeforeCurr(c.getClassID());
                             ArrayList<Lesson> lessonsWithPaymentStatus = LessonDAO.retrieveLessonsForPaymentStatus(c.getClassID());
                             
                             for (Lesson l : lessons) {

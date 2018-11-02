@@ -576,13 +576,28 @@ public class AdminScheduleServlet extends HttpServlet {
                     break;
                 }
                 case "retrieveTutorOptions": {
-                    int levelID = Integer.parseInt(request.getParameter("levelID"));
+                    ArrayList<Tutor> tutorList = new ArrayList<>();
+                    
+                    String levels = request.getParameter("levels");
+                    String[] levelsList = levels.split(",");
+                    
                     int subjectID = Integer.parseInt(request.getParameter("subjectID"));
                     int branchID = Integer.parseInt(request.getParameter("branchID"));
-
+                    
                     JSONArray tutors = new JSONArray();
-                    ArrayList<Tutor> tutorList = TutorHourlyRateDAO.tutorListInPayTable(branchID, subjectID, levelID);
 
+                    for(String level: levelsList){
+                        int levelID = Integer.parseInt(level);
+                        
+                        ArrayList<Tutor> tutor = TutorHourlyRateDAO.tutorListInPayTable(branchID, subjectID, levelID);
+                        
+                        for(Tutor t: tutor){
+                            if(!tutorList.contains(t)){
+                                tutorList.add(t);
+                            }
+                        }
+                    }
+                    
                     for (Tutor t : tutorList) {
                         JSONObject obj = new JSONObject();
                         obj.put("id", t.getTutorId());
