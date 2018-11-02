@@ -243,7 +243,7 @@ public class SubjectDAO {
         ArrayList<Lvl_Sub_Rel> lvlWithSubLists = new ArrayList<>();
          String sql = "SELECT rel.level_id,rel.subject_id,lvl.level_name,sub.subject_name " +
             "FROM lvl_sub_rel as rel,level as lvl,subject as sub WHERE rel.level_id = lvl.level_id AND " +
-            "rel.subject_id = sub.subject_id AND rel.branch_id = ? ORDER by level_name,subject_name";
+            "rel.subject_id = sub.subject_id AND rel.branch_id = ? AND rel.combined_class=0 ORDER by level_name,subject_name";
         
         try(Connection conn = ConnectionManager.getConnection()){
             PreparedStatement stmt = conn.prepareStatement(sql);

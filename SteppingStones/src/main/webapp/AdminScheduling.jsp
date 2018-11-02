@@ -1,3 +1,4 @@
+
 <%@include file="protect_branch_admin.jsp"%>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/vendor/scheduler/dhtmlxscheduler_material.css" type="text/css" charset="utf-8">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.css" rel="stylesheet">
@@ -12,7 +13,11 @@
         margin:0px;
         padding:0px;
         height:100%;
-    }   
+    }  
+    
+    #no_tutor{
+        color:red;
+    }
 
     .student-text{
         text-align: center;
@@ -314,6 +319,7 @@
                         <select class="form-control" id="assign_tutor" style="width: 30%; margin-left: 10px; text-align: center;">
                             <option value="0">Select Tutor</option>
                         </select>
+                        <p id="no_tutor" style="display:none;">No Tutor. Assign tutor for the class in Tutor Hourly Rate First.</p>
                     </div>
                 </div>
                 <div class="row">
@@ -529,7 +535,8 @@
                         }
 
                         $("#subject").empty();
-
+                        
+                        $("#subject").append('<option value="0">Select Subject</option>');
                         for (var i = 0; i < data.subject.length; i++) {
                             $("#subject").append('<option value="' + data.subject[i].id + '">' + data.subject[i].name + '</option>');
                         }
@@ -540,6 +547,7 @@
                     action = 'retrieveSubjectOptions';
                     console.log(action);
                     levelID = $(".primaryLevel").val();
+                    console.log(levelID);
                     $.ajax({
                         type: 'POST',
                         url: 'AdminScheduleServlet',
@@ -547,6 +555,8 @@
                         data: {levelID: levelID, action: action},
                         success: function (data) {
                             $("#subject").empty();
+                            $("#assign_tutor").empty();
+                            $("#subject").append('<option value="0">Select Subject</option>');
                             for (var i = 0; i < data.subject.length; i++) {
                                 $("#subject").append('<option value="' + data.subject[i].id + '">' + data.subject[i].name + '</option>');
                             }
@@ -558,6 +568,7 @@
                     action = 'retrieveTutorOptions';
                     subjectID = $('#subject').val();
                     levelID = $(".primaryLevel").val();
+                    console.log(levelID);
                     $.ajax({
                         type: 'POST',
                         url: 'AdminScheduleServlet',
@@ -565,8 +576,15 @@
                         data: {levelID: levelID, subjectID: subjectID, branchID: branchID, action: action},
                         success: function (data) {
                             $("#assign_tutor").empty();
-                            for (var i = 0; i < data.tutor.length; i++) {
-                                $("#assign_tutor").append('<option value="' + data.tutor[i].id + '">' + data.tutor[i].name + '</option>');
+                            if(data.tutor.length <= 0){
+                               $("#no_tutor").css('display','block');
+                               $("#assign_tutor").hide();
+                            }else{
+                                $("#assign_tutor").show();
+                                $("#no_tutor").hide();
+                                for (var i = 0; i < data.tutor.length; i++) {
+                                    $("#assign_tutor").append('<option value="' + data.tutor[i].id + '">' + data.tutor[i].name + '</option>');
+                                }
                             }
                         }
                     });
@@ -576,7 +594,7 @@
                     holidays = [];
                     index = 0;
                     $.each($('.holidays'), function () {
-                        console.log($(this).val());
+//                        console.log($(this).val());
                         holidays[index] = $(this).val();
                         index++;
                     });
@@ -584,7 +602,6 @@
                     levels = [];
                     indexL = 0;
                     $.each($('.levels'), function () {
-                        console.log($(this).val());
                         levels[indexL] = $(this).val();
                         indexL++;
                     });

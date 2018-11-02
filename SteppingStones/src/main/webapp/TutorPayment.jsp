@@ -34,18 +34,61 @@
         font-color:#333;
     }
     
-     .paid{
+    .paid{
         font-size:11px;
         padding:2px;
         font-color:#333;
         border: 1px solid #F7A4A3;
     }
+    
+    .innerTable{
+        padding-left:50px;
+        padding-right:50px;
+        max-width: 1000px;
+    }
+    
+    .scrolling table {
+        table-layout: inherit;
+        *margin-left: -100px;/*ie7*/
+    }
+
+    .scrolling td,th {
+        vertical-align: top;
+        padding: 10px;
+
+    }
+
+    .scrolling th {
+        position: absolute;
+        *position: relative; /*ie7*/
+        left: 0;
+        width: 165px;
+        background-color:#717171;
+        color:white;
+    }
+    
+    th#no_lessons{
+        font-size:11px;
+        min-height:20px;
+    }
+    
+    th#got_lessons{
+        min-height:87px;
+    }
+    .outer {
+        position: relative
+    }
+        
+    .inner {
+        overflow-x: hidden;
+        margin-left: 180px;
+    }
 </style>
 <div class="col-lg-10">
     <div style="text-align: center;margin: 10px;"><span class="tab_active" style="font-size: 14px">Tutor Payment</span></div>
     <div class="row" id="statusMsg"></div>
-    <table id="tutorPaymentTable" class="table table-bordered table-striped" style="width:100%; font-size: 14px">
-        <thead>
+    <table id="tutorPaymentTable" class="table display responsive nowrap" style="width:100%; font-size: 14px">
+        <thead class="thead-light">
             <tr>
                 <th></th>
                 <th style="text-align: center">Tutor Name</th>
@@ -112,7 +155,6 @@
                 levelName:levelName,monthlyAmount:monthlySalary},
             dataType: "json",
             success: function(response) {
-                console.log(response);
                 if(response === 1){
                     
                     // Update Total Owed View
@@ -179,17 +221,22 @@
                         if(result.length <= 0){
                             html = "<div class='alert alert-warning col-md-12'>Currently No Pay for this tutor</div>";
                         }else{
-                            html = '<div class="innerTable"><div style="text-align: right; margin-bottom: 10px; margin-right: 50px;">'
+                            html = '<div class="innerTable"><h3>Monthly Salary With Lesson BreakDown</h3>'
+                                +'<div style="text-align: right; margin-bottom: 10px; margin-right: 50px;">'
                                 + '<img class="leftArrow" src="${pageContext.request.contextPath}/styling/img/left-arrow.svg" height="15" '
                                 + 'width="15" style="margin-right: 58px;"><img '
                                 + 'class="rightArrow" src="${pageContext.request.contextPath}/styling/img/right-arrow.svg" height="15" '
-                                + 'width="15"></div><div id="table-wrapper"><table id=' + tutorID
-                                + ' class="table table-striped table-bordered nowrap" style="width:100%">'
-                                + '<thead><tr><th style="text-align: center;">Class</th>';
+                                + 'width="15"></div>';
+                               
+                            
+                            html += '<div class="scrolling outer">'+
+                                        '<div class="inner">'+
+                                        '<table class="table table-striped table-bordered nowrap"'+
+                                            '<thead><tr><th style="text-align: center;">Class</th>';
 
                             var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
                             for (var i = 0; i < 12; i++) {
-                               html += '<th style="text-align: center;"> ' + months[i] + '</th>';
+                               html += '<td style="text-align: center;"> ' + months[i] + '</td>';
                             }
                             html += '</tr></thead><tbody>';
                         }
@@ -203,12 +250,20 @@
                             
                             
                             var lessonMontlyLists = cls.lessonMontlySalary;
-                            html += '<tr id="'+classId+'"><td style="text-align:center;">' + className + '</td>';
+                            
+                            classInputId = "no_lessons";
+                            if(lessonMontlyLists.length > 0){
+                                classInputId = "got_lessons";
+                            }
+                            html += '<tr id="'+classId+'"><th id='+classInputId+' style="text-align:center;">' + className + '</th>';
                             
                             // Adding row
-                            firstMonth = lessonMontlyLists[0].month-1;
+                            firstMonth = 0;
+                            if(lessonMontlyLists.length > 0){
+                                firstMonth = lessonMontlyLists[0].month-1;
+                            }
                             for(mc=0;mc<firstMonth;mc++){
-                                html += "<td>-</td>";
+                                html += "<td style='text-align:center;' >-</td>";
                             }
                             
                             for(l=0;l<lessonMontlyLists.length;l++){
@@ -223,29 +278,49 @@
                                     btnId =tutorID+"_"+cls.id+"_"+m+"_"+y;
                                     btnInput ='<a id="payBtn_'+btnId+'" data-toggle="modal" class="btn btn1 btn-sm" href="#small" onclick="payMontlhySalary('+"'"+btnId+"'"+','+"'"+tutorName+"'"+','+"'"+subjectName+"'"+','+"'"+levelName+"'"+','+monthlySalary+')" >Pay</a>';
                                 }else if(btnStatus === "shouldn't pay"){
-                                    btnInput = "<span class='pending'>Pending</span>";
+                                    btnInput = "<span class='pending'>Pending</span><br/>";
                                 }else{
-                                    btnInput = "<span class='paid'>Paid</span>";
+                                    btnInput = "<span class='paid'>Paid</span><br/>";
                                 }
                                 month = lessonMontlyLists[l].month-1;
                                 html += "<td style='text-align: center;'><b>"+lessonName+"["+months[month]+"]"+"</b></br>Lessons : <b>"+totalLesson+"</b><br/>Amount : <b>$"+monthlySalary+"</b><br/><div id='payBtnContainer_"+btnId+"'>"+btnInput+"</div></td>";
                             }
                             
                             // Adding last row
-                            lastMonth = lessonMontlyLists[lessonMontlyLists.length-1].month;
+                            lastMonth = 0;
+                            if(lessonMontlyLists.length > 0){
+                                lastMonth = lessonMontlyLists[lessonMontlyLists.length-1].month;
+                            }
                             if(lastMonth !== 12){
                                 leftColumn = 12 - lastMonth;
                                 for(mc=0;mc<leftColumn;mc++){
-                                    html += "<td>-</td>";
+                                    html += "<td style='text-align:center;'>-</td>";
                                 }
                             }
                         }
                         
-                        html += '</table></div></div>';
+                        html += '</table></div></div></div>';
                         // Open this row
                         row.child(html).show();
 
                         tr.addClass('shown');
+                        
+                        $(".leftArrow").on("click", function () {
+                            var leftPos = $('.inner').scrollLeft();
+                            console.log(leftPos);
+                            $(".inner").animate({
+                                scrollLeft: leftPos - 200
+                            }, 800);
+                        });
+
+                        $(".rightArrow").on("click", function () {
+                            var leftPos = $('.inner').scrollLeft();
+                            console.log(leftPos);
+                            $(".inner").animate({
+                                scrollLeft: leftPos + 200
+                            }, 800);
+                        });
+
                     }                    
                 });
             }

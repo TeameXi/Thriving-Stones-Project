@@ -107,7 +107,7 @@ public class TutorHourlyRateDAO {
         ArrayList<Tutor> tutorListsWithoutHourlyPay = new ArrayList<>();
         String mysql = "SELECT t.tutor_id,t.tutor_fullname,r.hourly_pay FROM tutor as t, tutor_hourly_rate as r "
                 + "WHERE t.tutor_id = r.tutor_id "
-                + "AND t.branch_id = ? AND r.subject_id = ? AND r.level_id = ? ORDER BY t.tutor_fullname;";
+                + "AND t.branch_id = ? AND r.subject_id = ? AND r.level_id = ? AND combined_class=0 ORDER BY t.tutor_fullname;";
         try (Connection conn = ConnectionManager.getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(mysql)) {
          

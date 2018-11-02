@@ -713,7 +713,7 @@ public class AdminScheduleServlet extends HttpServlet {
                                 if (levelList.size() > 1) {
                                     classID = classDAO.createClass(type, levelID, subjectID, fees, payment, pattern.print(start_time), pattern.print(end_time), dayOfWeek, date.print(start_date), date.print(end_date), branchID, tutorID, holidays, levels, true);
                                 } else {
-                                    classID = classDAO.createClass(type, levelID, subjectID, fees, payment, pattern.print(start_time), pattern.print(end_time), dayOfWeek, date.print(start_date), date.print(end_date), branchID, tutorID, holidays, null, false);
+                                    classID = classDAO.createClass(type, levelID, subjectID, fees, payment, pattern.print(start_time), pattern.print(end_time), dayOfWeek, date.print(start_date), date.print(end_date), branchID, tutorID, holidays,"-1", false);
                                 }
 
                                 ArrayList<Integer> reminders = new ArrayList<>();

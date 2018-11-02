@@ -238,7 +238,7 @@
                             payRate:params["value"]},
                     dataType: "json",
                     success: function(response) {
-                        console.log(response);
+                        //console.log(response);
                         if(response === 1){
                             html = '<br/><div class="alert alert-success col-md-12"><strong>Success!</strong> Updated successfully</div>';
                         }else{
@@ -352,7 +352,6 @@
                             "name":tutor_name[i],
                             "hourly_pay": pay_rate[i]};
                 tutorPayArr[i] = tutorPayObj;
-                console.log(tutorPayObj);
             }
 
 
@@ -467,7 +466,7 @@ function UIUpadateUponSuccessfulCreation(tutorPayArr,levelID,subjectID,branchID)
                         
                         oldTutorLists = responseData["oldTutor"];
                         newTutorLists = responseData["newTutor"];
-                        console.log(responseData);
+                        //console.log(responseData);
                       
                         if (responseData === -1) {
                             html = '<div class="alert alert-danger col-md-5"><strong>Sorry!</strong> Something went wrong</div>';

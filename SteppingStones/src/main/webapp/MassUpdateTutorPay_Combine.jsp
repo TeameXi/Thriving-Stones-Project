@@ -255,7 +255,6 @@
                             payRate:params["value"]},
                     dataType: "json",
                     success: function(response) {
-                        console.log(response);
                         if(response === 1){
                             html = '<br/><div class="alert alert-success col-md-12"><strong>Success!</strong> Updated successfully</div>';
                         }else{
@@ -364,7 +363,6 @@
                             "branch_id": branchID,
                             "name":tutor_name[i],
                             "hourly_pay": pay_rate[i]};
-                console.log(tutorPayObj);
                 tutorPayArr[i] = tutorPayObj;
             }
 
@@ -460,10 +458,6 @@
                 ids = row.data()["ID"];
                 subjectID = ids.split("_")[0];
                 levelID = ids.split("_")[1];
-                
-//                console.log(levelID);
-//                console.log(branchID);
-//                console.log(subjectID);
                 
                 var select_dropdown = "";
                 // Open this row
