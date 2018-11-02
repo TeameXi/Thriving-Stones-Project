@@ -31,30 +31,6 @@
     .text{
         text-align: center;
     }
-    
-    .nested > thead:first-child > tr:first-child > th:nth-child(2) {
-        padding-left: 200px;
-    }
-
-    .nested > tbody > tr > td:nth-child(2) {
-        padding-left: 200px !important;
-    }
-
-    .nested > thead:first-child > tr:first-child > th:first-child {
-        position: absolute;
-        display: inline-block;
-        background-color: gray;
-        width: 15%;
-        height: 26px;
-    }
-
-    .nested > tbody > tr > td:first-child {
-        position: absolute;
-        display: inline-block;
-        background-color: gray;
-        width: 15%;
-        height: 26px;
-    }
 </style>
 <div class="col-lg-10">
     <div id="tab" style="text-align: center;margin: 10px;"><span class="tab_active" style="font-size: 14px">Attendance Taking</span></div>
@@ -106,7 +82,7 @@
             ],
             "order": [[1, 'asc']]
         });
-
+        
         $('#studentAttendanceTable tbody').on('click', 'td.details-control', function () {
             tr = $(this).parents('tr');
             row = table.row(tr);
@@ -123,37 +99,39 @@
                     dataType: 'JSON',
                     data: {action: action, classID: classID, branchID: branchID},
                     success: function (data) {
+                        console.log(data);
                         html = '<div class="innerTable"><div style="text-align: right; margin-bottom: 10px; margin-right: 50px;">'
                                 + '<button class="btn btn-default" id="updateAttendance">Update Attendance</button>'
+                                + '<button class="btn btn-default" id="uncheckAll" style="margin-left: 370px;">Uncheck All</button>'
+                                + '<button class="btn btn-default" id="checkAll" style="margin-left: 10px; margin-right: 20px;">Check All</button>'
                                 + '<img class="leftArrow" src="${pageContext.request.contextPath}/styling/img/left-arrow.svg" height="15" '
                                 + 'width="15" style="margin-right: 58px;"><img '
                                 + 'class="rightArrow" src="${pageContext.request.contextPath}/styling/img/right-arrow.svg" height="15" '
                                 + 'width="15"></div><div id="table-wrapper"><table id=' + classID
-                                + ' class="table table-striped table-bordered nowrap nested" style="width:100%">'
-                                + '<thead><tr><th style="text-align: center;">Student / Attendance</th>';
+                                + ' class="table table-striped table-bordered nowrap" style="width:100%">'
+                                + '<thead><tr><th style="text-align: center;">Student</th><th style="text-align: center;">Attendance</th>';
                         for (var i = 0; i < data[0].lessons.length; i++) {
                             lessonNum = i + 1;
-                            html += '<th style="text-align: center;">Lesson ' + lessonNum + '<input class="checkAll form-check-input" style="margin-left: 10px;" type="checkbox" id=' +  lessonNum + ' ></input></th>';
+                            html += '<th style="text-align: center;">Lesson ' + lessonNum + '</th>';
                         }
 
                         html += '</tr></thead><tbody>';
                         for (var i = 0; i < data.length; i++) {
                             lessons = data[i].lessons;
-                            html += '<tr id=' + data[i].id + '><td style="text-align:center;">' + data[i].name + ' / ' + data[i].attendance + '</td>';
+                            html += '<tr id=' + data[i].id + '><td style="text-align:center;">' + data[i].name + '</td><td id=' + data[i].id + ' style="text-align: center;">' + data[i].attendance + '</td>';
                             for (var j = 0; j < lessons.length; j++) {
-                                lessonNum = j + 1;
                                 if (lessons[j].attended) {
                                     html += '<td style="text-align: center;"><label style="margin-right: 10px;">' + lessons[j].date + '</label><input type="checkbox" id='
-                                            + lessons[j].id + ' class="checkSingle ' + lessonNum + '" checked></td>';
+                                            + lessons[j].id + ' class="checkSingle" checked></td>';
                                 } else {
                                     html += '<td style="text-align: center;"><label style="margin-right: 10px;">' + lessons[j].date + '</label><input type="checkbox" id='
-                                            + lessons[j].id + ' class="checkSingle ' + lessonNum +'"></td>';
+                                            + lessons[j].id + ' class="checkSingle"></td>';
                                 }
                             }
                             html += '</tr>';
                         }
                         html += '</tbody></table></div></div>';
-
+                        
                         // Open this row
                         row.child(html).show();
 
@@ -174,29 +152,26 @@
                                 scrollLeft: leftPos + 200
                             }, 800);
                         });
-                        
-                        $(".checkAll").on('click', function () {
-                            status = this.checked;
-                            console.log(status);
-                            
-                            if(status === 'true'){
-                                $('.' + this.id).each(function(){
-                                   this.checked = true; 
-                                });
-                            }else{
-                                $('.' + this.id).each(function(){
-                                   this.checked = false;; 
-                                });
-                            }
+
+                        $("#checkAll").on('click', function () {
+                            $(".checkSingle").each(function () {
+                                this.checked = true;
+                            });
+                        });
+
+                        $("#uncheckAll").on('click', function () {
+                            $(".checkSingle").each(function () {
+                                this.checked = false;
+                            });
                         });
 
                         $('#updateAttendance').on('click', function () {
                             lessons = '';
-
+                            
                             $(".checkSingle").each(function () {
                                 if (this.checked) {
                                     lessons += this.id + '-' + $(this).closest('tr').attr('id') + '-' + 1 + ' ';
-                                } else {
+                                }else{
                                     lessons += this.id + '-' + $(this).closest('tr').attr('id') + '-' + 0 + ' ';
                                 }
                             });
@@ -213,9 +188,9 @@
                                     } else {
                                         $("<div id='errorMsg' class='alert alert-success'>Oops! Something went wrong!</div>").insertAfter($("#tab"));
                                     }
-
+                                    
                                     console.log(data.attendance);
-
+                                    
                                     $("#errorMsg").fadeTo(2000, 0).slideUp(2000, function () {
                                         $(this).remove();
                                     });

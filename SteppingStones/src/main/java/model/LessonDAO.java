@@ -11,7 +11,6 @@ import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -556,9 +555,9 @@ public class LessonDAO {
         return false;
     }
 
-    public static LinkedList<Lesson> retrieveAllLessonListsBeforeCurr(int classid) {
-        LinkedList<Lesson> lessons = new LinkedList<>();
-        String sql = "select lesson_id, class_id, tutor_id, tutor_attended, start_date, end_date from lesson where class_id = ? and start_date <= CURDATE() order by start_date asc";
+    public static ArrayList<Lesson> retrieveAllLessonListsBeforeCurr(int classid) {
+        ArrayList<Lesson> lessons = new ArrayList<>();
+        String sql = "select lesson_id, class_id, tutor_id, tutor_attended, start_date, end_date from lesson where class_id = ? and start_date < CURDATE()";
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, classid);

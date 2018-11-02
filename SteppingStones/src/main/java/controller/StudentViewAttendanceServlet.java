@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -75,7 +74,7 @@ public class StudentViewAttendanceServlet extends HttpServlet {
                 
                 JSONArray array = new JSONArray();
                 AttendanceDAO attendanceDAO = new AttendanceDAO();
-                LinkedList<Lesson> lessons = LessonDAO.retrieveAllLessonListsBeforeCurr(classID);
+                ArrayList<Lesson> lessons = LessonDAO.retrieveAllLessonListsBeforeCurr(classID);
                 
                 for(Lesson l:lessons){
                     JSONObject obj = new JSONObject();
