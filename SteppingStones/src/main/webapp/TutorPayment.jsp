@@ -1,3 +1,4 @@
+<%@page import="entity.TutorPay"%>
 <%@page import="org.json.JSONArray"%>
 <%@page import="model.SubjectDAO"%>
 <%@page import="model.LevelDAO"%>
@@ -100,15 +101,23 @@
         <tbody>
             <%
                 ArrayList<Tutor> tutors = TutorDAO.tutorWithTotalClasses(branch_id);
+                
                 for(Tutor t : tutors){
-                    ArrayList<entity.Class> classes = ClassDAO.listAllClassesBelongToTutors(t.getTutorId(), branch_id);
                     double totalOwed = 0.0;
+                    System.out.println(t.getName());
+                    ArrayList<entity.Class> classes = ClassDAO.listAllClassesBelongToTutors(t.getTutorId(), branch_id);   
                     for (entity.Class c : classes) {
                         double classDuration = ClassDAO.getClassTime(c.getClassID());
-                        int totalAttendLessons = TutorDAO.calculateTutorAttendLessonCount(t.getTutorId(), c.getClassID());
+                        int totalAttendLessons = TutorDAO.calculateTutorAttendLessonCount(t.getTutorId(), c.getClassID());                        
                         totalOwed += totalAttendLessons*classDuration* c.getTutorRate();
                     }
-                    out.println("<tr id='"+t.getTutorId()+"'><td class='details-control'></td><td class='text-center'>"+t.getName()+"</td><td class='text-center'>"+t.getTotalClasses()+"</td><td class='text-center' id='totalOwed_"+t.getTutorId()+"'> $ "+totalOwed+"</td></tr>");
+                    ArrayList<TutorPay> replacementClasses = ClassDAO.totalReplacementClasses(t.getTutorId(), branch_id);
+                    for(TutorPay replacementClass:replacementClasses){
+                        System.out.println("Replacement");
+                        totalOwed += replacementClass.getMonthlySalary();
+                    }
+                    System.out.println(totalOwed);
+                    out.println("<tr id='"+t.getTutorId()+"'><td></td><td class='text-center'>"+t.getName()+"</td><td class='text-center'>"+t.getTotalClasses()+"</td><td class='text-center' id='totalOwed_"+t.getTutorId()+"'> $ "+totalOwed+"</td></tr>");
                 }
             %>
         </tbody>
@@ -137,6 +146,50 @@
 <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
 
 <script type="text/javascript">
+    //For replacement 
+    function payReplacementSalary(ids,tutorName,subjectName,levelName,replacementAmount){
+        $("#confirm_btn").prop('onclick', null).off('click');
+        $("#confirm_btn").click(function () {
+            payReplacementQueryAjax(ids,tutorName,subjectName,levelName,replacementAmount);
+        });
+        return false;
+    }
+    
+    function payReplacementQueryAjax(ids,tutorName,subjectName,levelName,replacementAmount){
+        $('#small').modal('hide');
+       
+        
+        $.ajax({    
+            type:'POST',
+            url: 'TutorPaymentServlet',
+            data:{ ids:ids,action:"replacementPay",
+                tutorName:tutorName,subjectName:subjectName,
+                levelName:levelName,replacementAmount:replacementAmount},
+            dataType: "json",
+            success: function(response) {
+                if(response === 1){
+
+                    // Update Total Owed View
+                    td_id = "totalOwed_"+ids.split("_")[0];
+                    originalTotalOwedToTutor = $("#"+td_id).html();
+                    originalTotalOwedToTutor = parseFloat(originalTotalOwedToTutor.slice(1));
+                    updatedValue = originalTotalOwedToTutor-parseFloat(replacementAmount);
+                    $("#"+td_id).html("$ "+updatedValue);
+                    
+                    // Update the current row
+                    $('#'+ids).remove();
+                    
+                    html = '<br/><div class="alert alert-success col-md-12"><strong>Success!</strong> Updated Paid Status successfully</div>';
+                }else{
+                    html = '<br/><div class="alert alert-danger col-md-12"><strong>Sorry!</strong> Something went wrong</div>';   
+                }
+                $("#statusMsg").html(html);
+                $('#statusMsg').fadeIn().delay(1000).fadeOut();
+            }
+        });
+    }
+    
+    
     function payMontlhySalary(ids,tutorName,subjectName,levelName,monthlySalary) {
         $("#confirm_btn").prop('onclick', null).off('click');
         $("#confirm_btn").click(function () {
@@ -201,13 +254,16 @@
 
         
         $('#tutorPaymentTable tbody').on('click', 'td.details-control', function () {
-            tr = $(this).parents('tr');
-            row = table.row(tr);
-            if (row.child.isShown()) {
-                // This row is already open - close it
+            var tr = $(this).parents('tr');
+            var row = table.row(tr);
+            if ( row.child.isShown() ) {
                 row.child.hide();
-                tr.removeClass('shown');
-            } else {
+                tr.removeClass('shown');     
+            }else {
+                if (table.row( '.shown' ).length ) {
+
+                    $('.details-control', table.row( '.shown' ).node()).click();
+                }
                 tutorID = row.data().DT_RowId;
                 tutorName = row.data().name;
                 action = 'retrieveClasses';
@@ -218,10 +274,14 @@
                     data: {action: action, tutorID: tutorID, branchID: branchID},
                     success: function (result) {
                         console.log(result);
-                        if(result.length <= 0){
+                        
+                        var monthlyPayList = result.monthlyPay;
+                        var replacementPayList = result.replacementPay;
+                        
+                        if(monthlyPayList.length <= 0){
                             html = "<div class='alert alert-warning col-md-12'>Currently No Pay for this tutor</div>";
                         }else{
-                            html = '<div class="innerTable"><h3>Monthly Salary With Lesson BreakDown</h3>'
+                            html = '<div class="innerTable"><h4>Monthly Salary With Lesson BreakDown</h4>'
                                 +'<div style="text-align: right; margin-bottom: 10px; margin-right: 50px;">'
                                 + '<img class="leftArrow" src="${pageContext.request.contextPath}/styling/img/left-arrow.svg" height="15" '
                                 + 'width="15" style="margin-right: 58px;"><img '
@@ -241,8 +301,8 @@
                             html += '</tr></thead><tbody>';
                         }
                         
-                        for(c=0;c<result.length;c++){
-                            cls = result[c];
+                        for(c=0;c<monthlyPayList.length;c++){
+                            cls = monthlyPayList[c];
                             className = cls.className;
                             levelName = cls.levelName;
                             subjectName = cls.subjectName;
@@ -299,10 +359,37 @@
                             }
                         }
                         
-                        html += '</table></div></div></div>';
+                        html += '</table></div></div>';
+                        
+                        if(replacementPayList.length > 0){
+                            html += '<h4>Replacement Pay</h4><br/>';
+                            html += '<table class="table table-bordered"><thead><th>Replacement Class </th><th>Total Lesson</th><th>Amount</th><th>Action</th></thead><tbody>';
+                            
+                            for(var r = 0 ; r < replacementPayList.length;r++){
+                                replacementClass = replacementPayList[r];
+                                replacementClassId = replacementClass.replacementClassId;
+                                replacementTutorId = replacementClass.replacementTutorId;
+                                replacementClassName = replacementClass.replacementClassName;
+                                replacementPayPerClass = replacementClass.replacementPayPerClass;
+                                totalReplacementLesson = replacementClass.totalReplacementLesson;
+                                subjectName = replacementClass.subject;
+                                levelName = replacementClass.levels;
+                                
+                                replacementBtnId =replacementTutorId+"_"+replacementClassId;
+                                replacementBtnInput ='<a id="replacementPayBtn_'+replacementBtnId+'" data-toggle="modal" class="btn btn1 btn-sm" href="#small" onclick="payReplacementSalary('+"'"+replacementBtnId+"'"+','+"'"+tutorName+"'"+','+"'"+subjectName+"'"+','+"'"+levelName+"'"+','+replacementPayPerClass+')" >Pay</a>';
+                              
+                                
+                                html+= '<tr id="'+replacementBtnId+'"><td>'+replacementClassName+'</td><td>'+totalReplacementLesson+'</td>';
+                                html+= '<td>$'+replacementPayPerClass+'</td><td>'+replacementBtnInput+'</td></tr>';
+                                
+                            }
+                            html += '</tbody></table>';
+                        }
+                        
+                        html += '</div>';
+
                         // Open this row
                         row.child(html).show();
-
                         tr.addClass('shown');
                         
                         $(".leftArrow").on("click", function () {

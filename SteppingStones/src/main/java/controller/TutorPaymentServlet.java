@@ -52,9 +52,12 @@ public class TutorPaymentServlet extends HttpServlet {
                 int tutorID = Integer.parseInt(request.getParameter("tutorID"));
                 int branchID = Integer.parseInt(request.getParameter("branchID"));
                 
+                // JSON OUTPUT
+                JSONObject resultObj = new JSONObject();
+                
+                // FOR NORMAL CLASS PAY MONTHLY
                 ArrayList<Class> classes = ClassDAO.listAllClassesBelongToTutors(tutorID, branchID);
-
-                JSONArray tutorPayList = new JSONArray();
+                JSONArray tutorPayListJSON = new JSONArray();
                 for (Class c : classes) {
                     double tutorRate = c.getTutorRate();
                     int classId = c.getClassID();
@@ -65,13 +68,14 @@ public class TutorPaymentServlet extends HttpServlet {
 
                     ArrayList<TutorPay> tutorPayListByMonths = LessonDAO.totalLessonTutorAttendForClass(tutorID, classId, tutorRate, duration);
                     
+                    // FOR MONTHLY PAY
                     JSONObject classObj = new JSONObject();
-                    JSONArray lessonMontlyList = new JSONArray();
                     classObj.put("id", classId);
                     classObj.put("className",className);
                     classObj.put("levelName",levelName);
                     classObj.put("subjectName",subjectName);
                     
+                    JSONArray lessonMontlyList = new JSONArray();
                     for(TutorPay payForMonthlyLesson:tutorPayListByMonths){
                         JSONObject lessonObj = new JSONObject();
                         String lessonName = payForMonthlyLesson.getLessonName();
@@ -87,14 +91,37 @@ public class TutorPaymentServlet extends HttpServlet {
                         lessonMontlyList.put(lessonObj);
                     }
                     classObj.put("lessonMontlySalary",lessonMontlyList);
-
-                    tutorPayList.put(classObj);
-                    
+                    tutorPayListJSON.put(classObj);
                 }
-               
-                out.println(tutorPayList);
+                resultObj.put("monthlyPay", tutorPayListJSON);
+                
+                //REPLACEMENT 
+                JSONArray replacementClassListJSON = new JSONArray();
+                ArrayList<TutorPay> replacementPayListByClass = ClassDAO.totalReplacementClasses(tutorID, branchID);
+                for(TutorPay replacementPayForEachClass: replacementPayListByClass){
+                    JSONObject replacementClassObj = new JSONObject();
+                    int replacementClassId = replacementPayForEachClass.getClassId();
+                    int replacementTutorId = replacementPayForEachClass.getTutorId();
+                    String replacementClassName = replacementPayForEachClass.getClassName();
+                    int totalReplacementLesson = replacementPayForEachClass.getTotalLesson();
+                    double replacementPayPerClass = replacementPayForEachClass.getMonthlySalary();
+                    String subject = replacementPayForEachClass.getSubjectName();
+                    String levels = replacementPayForEachClass.getLevelIds();
 
-            } else if (action.equals("pay")) {
+                    replacementClassObj.put("replacementClassId", replacementClassId);
+                    replacementClassObj.put("replacementTutorId",replacementTutorId);
+                    replacementClassObj.put("replacementClassName", replacementClassName);
+                    replacementClassObj.put("totalReplacementLesson",totalReplacementLesson);
+                    replacementClassObj.put("replacementPayPerClass",replacementPayPerClass);
+                    replacementClassObj.put("subject",subject);
+                    replacementClassObj.put("levels",levels);
+                    replacementClassListJSON.put(replacementClassObj);
+                }
+                
+                resultObj.put("replacementPay", replacementClassListJSON);
+                out.println(resultObj);
+
+            }else if (action.equals("pay")) {
                 //action
                 String [] ids = request.getParameter("ids").split("_");
                 int tutorID = Integer.parseInt(ids[0]);
@@ -124,6 +151,33 @@ public class TutorPaymentServlet extends HttpServlet {
                     out.println(0);
                 }
 
+            }else if(action.equals("replacementPay")){
+                String [] ids = request.getParameter("ids").split("_");
+                int tutorID = Integer.parseInt(ids[0]);
+                int classID = Integer.parseInt(ids[1]);
+                
+                // For Expense
+                String tutorName = request.getParameter("tutorName");
+                String levelName = request.getParameter("levelName");
+                String subjectName = request.getParameter("subjectName");
+                double amount = 0;
+                String amountStr = request.getParameter("replacementAmount");
+                if(!amountStr.equals("")){
+                    amount = Double.parseDouble(amountStr);
+                }
+                
+                boolean status = TutorDAO.updateTutorPaymentForReplacement(tutorID,classID);
+                if (status){
+                    status = ExpenseDAO.insertExpense(tutorID,tutorName,subjectName,levelName,amount);
+                }
+                
+                if(status){
+                    out.println(1);
+                }else{
+                    out.println(0);
+                }
+                
+                
             }
         }
     }

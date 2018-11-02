@@ -454,6 +454,9 @@
                 tr.removeClass('shown');
             }
             else {
+                if ( table.row( '.shown' ).length ) {
+                    $('.details-control', table.row( '.shown' ).node()).click();
+                }
                 branchID = <%=branch_id%>;
                 ids = row.data()["ID"];
                 subjectID = ids.split("_")[0];

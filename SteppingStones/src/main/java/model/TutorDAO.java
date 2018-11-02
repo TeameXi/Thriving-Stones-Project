@@ -530,7 +530,9 @@ public class TutorDAO {
     public static int calculateTutorAttendLessonCount(int tutorID, int classID) {
         int count = 0;
         try (Connection conn = ConnectionManager.getConnection();
-                PreparedStatement stmt = conn.prepareStatement("select count(*) from lesson where tutor_id = ? and class_id = ? and tutor_payment_status = 0 and tutor_attended=1 and start_date < CURDATE()")) {
+                PreparedStatement stmt = conn.prepareStatement("select count(*) from lesson where tutor_id = ? and class_id = ? "
+                        + "and tutor_payment_status = 0 "
+                        + "and tutor_attended=1 and replacement_tutor_id=0 and start_date < CURDATE()")) {
             stmt.setInt(1, tutorID);
             stmt.setInt(2, classID);
 
@@ -555,14 +557,37 @@ public class TutorDAO {
             stmt.setInt(3, month);
             stmt.setInt(4, year);
 
-            stmt.executeUpdate();
-            return true;
+            int num = stmt.executeUpdate();
+            if(num > 0){
+                return true;
+            }
 
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
         return false;
     }
+    
+    
+    public static boolean updateTutorPaymentForReplacement(int tutorID, int classID) {
+        String sql = "UPDATE lesson SET tutor_payment_status = 1 WHERE replacement_tutor_id = ? AND class_id = ? AND tutor_attended = 1";
+        try (Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, tutorID);
+            stmt.setInt(2, classID);
+
+            int num = stmt.executeUpdate();
+            if(num > 0){
+                return true;
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return false;
+    }
+    
+    
     
    
 }

@@ -49,7 +49,7 @@
                 <tbody>
                     <%
                         for(Lvl_Sub_Rel ref:lvlSubRefLists){
-                            out.println("<tr><td class='details-control'></td><td>"+ref.getLevel_id()+"</td><td>"+ref.getLevel_name()+"</td><td>"+ref.getSubject_id()+"</td><td>"+ref.getSubject_name()+"</td></tr>");
+                            out.println("<tr><td></td><td>"+ref.getLevel_id()+"</td><td>"+ref.getLevel_name()+"</td><td>"+ref.getSubject_id()+"</td><td>"+ref.getSubject_name()+"</td></tr>");
                         }
                     %>
                 </tbody>
@@ -428,7 +428,7 @@ function UIUpadateUponSuccessfulCreation(tutorPayArr,levelID,subjectID,branchID)
                 {"data": "LevelID"},
                 {"data": "Level"},
                 {"data": "SubjectID"},
-                {"data": "Subject"},
+                {"data": "Subject"}
             ],
             "columnDefs": [
                 {
@@ -449,25 +449,26 @@ function UIUpadateUponSuccessfulCreation(tutorPayArr,levelID,subjectID,branchID)
                 tr.removeClass('shown');
             }
             else {
+                if ( table.row( '.shown' ).length ) {
+                    $('.details-control', table.row( '.shown' ).node()).click();
+                }
                 branchID = <%=branch_id%>;
                 levelID = row.data()["LevelID"];
                 subjectID = row.data()["SubjectID"];
-//                console.log(subjectID);
-//                console.log(levelID);
-                
+
                 var select_dropdown = "";
                 // Open this row
-                  $.ajax({
+                $.ajax({
                     url: 'RetrieveTutorHourlyRate',
                     data: {branch_id:branchID,level_id:levelID,subject_id:subjectID,action:"individual"},
                     dataType: "json",
                     complete: function (response) {
                         var responseData = JSON.parse(response.responseText);
-                        
+
                         oldTutorLists = responseData["oldTutor"];
                         newTutorLists = responseData["newTutor"];
                         //console.log(responseData);
-                      
+
                         if (responseData === -1) {
                             html = '<div class="alert alert-danger col-md-5"><strong>Sorry!</strong> Something went wrong</div>';
                             row.child(format(1,html,oldTutorLists,levelID,subjectID,branchID)).show();
@@ -489,47 +490,16 @@ function UIUpadateUponSuccessfulCreation(tutorPayArr,levelID,subjectID,branchID)
                             // Existing Tutor
                             if(oldTutorLists.length > 0){  
                                 editHourlyRate();
-//                                $('.edit_payrate').editable({
-//                                    url: function(params) {
-//                                        $.ajax({    
-//                                            type:'POST',
-//                                            url: 'UpdateAndDeleteTutorHourlyRate',
-//                                            data:{ tutorID:params["pk"],action:"edit",
-//                                                    payRate:params["value"]},
-//                                            dataType: "json",
-//                                            success: function(response) {
-//                                                console.log(response);
-//                                                if(response === 1){
-//                                                    html = '<br/><div class="alert alert-success col-md-12"><strong>Success!</strong> Updated successfully</div>';
-//                                                }else{
-//                                                    html = '<br/><div class="alert alert-danger col-md-12"><strong>Sorry!</strong> Something went wrong</div>';   
-//                                                }
-//                                                $(".statusMsg").html(html);
-//                                                $('.statusMsg').fadeIn().delay(1000).fadeOut();
-//                                            }
-//                                        });
-//                                    },
-//                                    send: 'always',
-//                                    type: 'number',
-//                                    step:'any',
-//                                    pk: 1
-//                                });
                             }
-                            
-                            
+
                             //New Tutor
                             createNewTutorPayRate(select_dropdown,levelID,subjectID,branchID);
-                                  
-                                
-                         
-                         
                         }
                     },
                     error: function () {
                         $('#output').html('There was an error!');
                     }
                 });
-                
                 tr.addClass('shown');
             }
         });

@@ -3,11 +3,13 @@ package model;
 import entity.Class;
 import connection.ConnectionManager;
 import entity.Student;
+import entity.TutorPay;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -770,7 +772,8 @@ public class ClassDAO {
         String sql = "select r.hourly_pay,c.class_day,c.class_id,c.level_id,c.class_type,c.subject_id,c.end_time,c.start_time,"
                 + "c.additional_lesson_id,c.combined FROM class as c,tutor_hourly_rate as r"
                 + " WHERE c.tutor_id = ? AND c.branch_id=? AND r.subject_id=c.subject_id AND"
-                + " r.level_id=c.level_id AND r.additonal_level_id=c.additional_lesson_id AND r.combined_class=c.combined AND"
+                + " r.tutor_id = c.tutor_id AND r.level_id=c.level_id AND r.additonal_level_id=c.additional_lesson_id AND"
+                + " r.combined_class=c.combined AND"
                 + " DATE_ADD(end_date, INTERVAL 3 MONTH) > curdate() ORDER BY combined";
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
@@ -790,10 +793,11 @@ public class ClassDAO {
                 if(combine == 1){
                     String [] lvlIds = rs.getString("additional_lesson_id").split(":");
                     for(String lvlId:lvlIds){
-                        if(Integer.parseInt(lvlId) < 7){
+                        int lvlIdInt = Integer.parseInt(lvlId);
+                        if(lvlIdInt < 7){
                             additionalLvl += "P "+lvlId+",";
                         }else{
-                            additionalLvl += "S "+(10-Integer.parseInt(lvlId))+",";
+                            additionalLvl += "S "+(lvlIdInt-6)+",";
                         }
                     }
                 }else{
@@ -801,7 +805,7 @@ public class ClassDAO {
                     if(level_id < 7){
                         additionalLvl += "P "+level_id+",";
                     }else{
-                        additionalLvl += "S "+(10-level_id)+",";
+                        additionalLvl += "S "+(level_id-6)+",";
                     }
                 }
                 
@@ -815,6 +819,88 @@ public class ClassDAO {
             System.out.print(e.getMessage());
         }
         return classList;
+    }
+    
+    public static ArrayList<TutorPay>totalReplacementClasses(int tutorID,int branchID){
+        ArrayList<TutorPay> tutorReplacementPayList = new ArrayList<>();
+        String sql = "SELECT class_id, count(*) as total_lessons FROM lesson WHERE replacement_tutor_id = ? "
+                + "AND tutor_payment_status = 0 AND tutor_attended = 1  GROUP BY class_id";
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, tutorID);
+            ResultSet rs = stmt.executeQuery();
+            ArrayList<Integer>classIds = new ArrayList<>();
+            HashMap<Integer,Integer> totalLessonMaps = new HashMap<>();
+            while (rs.next()) {
+                int classId = rs.getInt(1);
+                int totalLessons = rs.getInt(2);
+                classIds.add(classId);
+                totalLessonMaps.put(classId, totalLessons);
+            }
+            
+            if(classIds.size() > 0){
+                String classStrIds =  classIds.toString();
+                String classIdLists = String.join("','",classStrIds.substring(1,classStrIds.length()-1));
+                sql = "SELECT c.class_id,c.level_id,c.subject_id,sub.subject_name,c.class_day,c.additional_lesson_id,"
+                        + "c.combined,c.end_time,c.start_time,t.hourly_pay FROM "
+                        + "class as c,subject as sub,tutor_hourly_rate as t WHERE "
+                        + "c.class_id IN("+classIdLists+") AND c.branch_id = ? AND "
+                        + "c.subject_id = sub.subject_id AND c.level_id = t.level_id AND"
+                        + " c.subject_id = t.subject_id AND c.additional_lesson_id = t.additonal_level_id AND "
+                        + "c.combined = t.combined_class AND t.tutor_id = ?";
+
+                stmt = conn.prepareStatement(sql);
+                stmt.setInt(1, branchID);
+                stmt.setInt(2,tutorID);
+
+                ResultSet rs2 = stmt.executeQuery();
+                while(rs2.next()){
+                    int classId = rs2.getInt("class_id");
+                    int levelId = rs2.getInt("level_id");
+                    int subjectId = rs2.getInt("subject_id");
+                    String subjectName = rs2.getString("subject_name");
+                    String classDay = rs2.getString("class_day");
+                    int combined = rs2.getInt("combined");
+                    Time startTime = rs2.getTime("start_time");
+                    Time endTime = rs2.getTime("end_time");
+                    double pay = rs2.getDouble("hourly_pay");
+                    double duration = (double) (endTime.getTime() - startTime.getTime()) /1000 /60 /60;
+                 
+                    String additionalLvl = "";
+                    if(combined == 1){
+                        String [] lvlIds = rs2.getString("additional_lesson_id").split(":");
+                        for(String lvlId:lvlIds){
+                            int lvlIdInt = Integer.parseInt(lvlId);
+                            if(lvlIdInt < 7){
+                                additionalLvl += "P "+lvlId+",";
+                            }else{
+                                additionalLvl += "S "+(lvlIdInt-6)+",";
+                            }
+                        }
+                    }else{
+                        int level_id = rs2.getInt("level_id");
+                        if(level_id < 7){
+                            additionalLvl += "P "+level_id+",";
+                        }else{
+                            additionalLvl += "S "+(level_id-6)+",";
+                        }
+                    }
+                    
+                    additionalLvl = additionalLvl.substring(0, additionalLvl.length() - 1);
+                    int totalLessonsPerClass = totalLessonMaps.get(classId);
+                    String className = startTime+"-"+endTime+"("+classDay+")"+"<br/>"+additionalLvl+"["+subjectName+"]";
+                    double totalAmountByClass = totalLessonsPerClass*duration*pay;
+                    TutorPay tutorPay = new TutorPay(classId, tutorID, className, totalLessonsPerClass, totalAmountByClass,subjectName,additionalLvl);
+                    tutorReplacementPayList.add(tutorPay);
+                }
+                
+            }
+            
+            
+        }catch (SQLException e) {
+            System.out.print(e.getMessage());
+        }
+        return tutorReplacementPayList;
     }
 
     
