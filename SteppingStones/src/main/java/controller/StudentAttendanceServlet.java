@@ -73,7 +73,7 @@ public class StudentAttendanceServlet extends HttpServlet {
                         if(studentsExist && lessons.size() > 0){
                             JSONObject obj = new JSONObject();
                             obj.put("id", c.getClassID());
-                            System.out.println(c.getClassID());
+                   
                             obj.put("name", c.getClassDay() + " " + c.getStartTime() + "-" + c.getEndTime()
                                     + "<br/>" + c.getLevel() + " " + c.getSubject());
 
@@ -188,15 +188,17 @@ public class StudentAttendanceServlet extends HttpServlet {
                     JSONArray array = new JSONArray();
                     ArrayList<Lesson> replacements = lessonDAO.retrieveReplacementLessons(branchID, tutorID);
                     
-                    for(Lesson l: replacements){
-                        JSONObject obj = new JSONObject();
-                        obj.put("id", l.getLessonid());
-                        
-                        Class cls = classDAO.getClassByID(l.getClassid());
-                        obj.put("name", cls.getClassDay() + " " + cls.getStartTime() + "-" + cls.getEndTime() 
-                                + "<br/>" + cls.getCombinedLevel() + " " + cls.getSubject());
-                        obj.put("date", l.getLessonDate());
-                        array.put(obj);
+                    if(replacements != null){
+                        for(Lesson l: replacements){
+                            JSONObject obj = new JSONObject();
+                            obj.put("id", l.getLessonid());
+
+                            Class cls = classDAO.getClassByID(l.getClassid());
+                            obj.put("name", cls.getClassDay() + " " + cls.getStartTime() + "-" + cls.getEndTime() 
+                                    + "<br/>" + cls.getCombinedLevel() + " " + cls.getSubject());
+                            obj.put("date", l.getLessonDate());
+                            array.put(obj);
+                        }
                     }
                     
                     JSONObject toReturn = new JSONObject().put("data", array);

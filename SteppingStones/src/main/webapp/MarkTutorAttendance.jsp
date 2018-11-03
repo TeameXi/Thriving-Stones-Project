@@ -39,7 +39,7 @@
     .nested > thead:first-child > tr:first-child > th:first-child {
         position: absolute;
         display: inline-block;
-        background-color: gray;
+        background-color: #dee8eb;
         width: 15%;
         height: 39px;
     }
@@ -47,7 +47,7 @@
     .nested > tbody > tr > td:first-child {
         position: absolute;
         display: inline-block;
-        background-color: gray;
+        background-color: #dee8eb;
         width: 15%;
         height: 39px;
     }
