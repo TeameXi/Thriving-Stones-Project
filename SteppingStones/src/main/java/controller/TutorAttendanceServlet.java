@@ -16,8 +16,6 @@ import model.TutorDAO;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import entity.Class;
-import entity.Student;
-import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.LinkedList;
 
@@ -58,12 +56,16 @@ public class TutorAttendanceServlet extends HttpServlet {
 
                     ArrayList<Tutor> tutors = new TutorDAO().retrieveAllTutorsByBranch(branchID);
                     for (Tutor t : tutors) {
-                        JSONObject obj = new JSONObject();
-                        obj.put("id", t.getTutorId());
-                        obj.put("phone", t.getPhone());
-                        obj.put("name", t.getName());
-                        obj.put("attendance", lessonDAO.retrieveTotalPercentageAttendance(t.getTutorId()) + "%");
-                        array.put(obj);
+                        ArrayList<Integer> classes = lessonDAO.checkForExistingLessons(t.getTutorId());
+                        
+                        if(classes != null){
+                            JSONObject obj = new JSONObject();
+                            obj.put("id", t.getTutorId());
+                            obj.put("phone", t.getPhone());
+                            obj.put("name", t.getName());
+                            obj.put("attendance", lessonDAO.retrieveTotalPercentageAttendance(t.getTutorId()) + "%");
+                            array.put(obj);
+                        }
                     }
                     JSONObject toReturn = new JSONObject().put("data", array);
                     String json = toReturn.toString();
@@ -77,23 +79,26 @@ public class TutorAttendanceServlet extends HttpServlet {
                     ArrayList<Class> classes = ClassDAO.listAllClassesByTutorID(tutorID, branchID);
                     JSONArray array = new JSONArray();
                     for (Class c : classes) {
-                        JSONObject obj = new JSONObject();
-                        obj.put("id", c.getClassID());
-                        obj.put("name", c.getClassDay() + " " + c.getStartTime() + "-"
-                                + c.getEndTime() + "<br/>" + c.getLevel() + " " + c.getSubject());
-
-                        JSONArray lessons = new JSONArray();
                         LinkedList<Lesson> lessonList = lessonDAO.retrieveAllLessonListsBeforeCurr(c.getClassID());
 
-                        for (Lesson l : lessonList) {
-                            JSONObject lesson = new JSONObject();
-                            lesson.put("id", l.getLessonid());
-                            lesson.put("date", l.getLessonDate());
-                            lesson.put("attended", lessonDAO.retrieveAttendanceForLesson(l.getLessonid()));
-                            lessons.put(lesson);
+                        if (lessonList.size() > 0) {
+                            JSONObject obj = new JSONObject();
+                            obj.put("id", c.getClassID());
+                            obj.put("name", c.getClassDay() + " " + c.getStartTime() + "-"
+                                    + c.getEndTime() + "<br/>" + c.getLevel() + " " + c.getSubject());
+
+                            JSONArray lessons = new JSONArray();
+
+                            for (Lesson l : lessonList) {
+                                JSONObject lesson = new JSONObject();
+                                lesson.put("id", l.getLessonid());
+                                lesson.put("date", l.getLessonDate());
+                                lesson.put("attended", lessonDAO.retrieveAttendanceForLesson(l.getLessonid()));
+                                lessons.put(lesson);
+                            }
+                            obj.put("lessons", lessons);
+                            array.put(obj);
                         }
-                        obj.put("lessons", lessons);
-                        array.put(obj);
                     }
                     String json = array.toString();
                     System.out.println(json);
@@ -152,25 +157,25 @@ public class TutorAttendanceServlet extends HttpServlet {
                     int classID = Integer.parseInt(request.getParameter("classID"));
                     int branchID = Integer.parseInt(request.getParameter("branchID"));
                     int tutorID = Integer.parseInt(request.getParameter("tutorID"));
-                    
+
                     JSONObject obj = new JSONObject();
                     JSONArray array = new JSONArray();
-                    
+
                     Class c = classDAO.getClassByID(classID);
-                   
+
                     obj.put("attendance", lessonDAO.retrieveNumberTutorAttendancePerClass(classID, tutorID) + "%");
-                    
+
                     LinkedList<Lesson> lessons = lessonDAO.retrieveAllLessonListsBeforeCurr(classID);
-                    
-                    for(Lesson l: lessons){
+
+                    for (Lesson l : lessons) {
                         JSONObject lesson = new JSONObject();
                         lesson.put("name", l.getLessonDate());
                         lesson.put("attendance", lessonDAO.retrieveAttendanceForLesson(l.getLessonid()));
                         array.put(lesson);
                     }
-                    
+
                     obj.put("lessons", array);
-                    
+
                     String json = obj.toString();
                     System.out.println(json);
                     out.println(json);
