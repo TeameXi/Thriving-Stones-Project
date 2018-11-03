@@ -180,6 +180,8 @@
                     $('#'+ids).remove();
                     
                     html = '<br/><div class="alert alert-success col-md-12"><strong>Success!</strong> Updated Paid Status successfully</div>';
+                    window.open("${pageContext.request.contextPath}/GeneratePayslipServlet?t=r&i=" + ids + "&a=" + replacementAmount , '_blank');
+                    
                 }else{
                     html = '<br/><div class="alert alert-danger col-md-12"><strong>Sorry!</strong> Something went wrong</div>';   
                 }
@@ -188,7 +190,6 @@
             }
         });
     }
-    
     
     function payMontlhySalary(ids,tutorName,subjectName,levelName,monthlySalary) {
         $("#confirm_btn").prop('onclick', null).off('click');
@@ -207,6 +208,7 @@
                 tutorName:tutorName,subjectName:subjectName,
                 levelName:levelName,monthlyAmount:monthlySalary},
             dataType: "json",
+            target: "_blank",
             success: function(response) {
                 if(response === 1){
                     
@@ -222,6 +224,8 @@
                     $("#payBtnContainer_"+ids).html("<span class='paid'>Paid</span>");
         
                     html = '<br/><div class="alert alert-success col-md-12"><strong>Success!</strong> Updated Paid Status successfully</div>';
+                    window.open("${pageContext.request.contextPath}/GeneratePayslipServlet?t=m&i=" + ids + "&a=" + monthlySalary , '_blank');
+                    
                 }else{
                     html = '<br/><div class="alert alert-danger col-md-12"><strong>Sorry!</strong> Something went wrong</div>';   
                 }
