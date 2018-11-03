@@ -899,4 +899,34 @@ public class LessonDAO {
         }
         return payListByMonthlyLessons;
     }
+    
+    public ArrayList<Integer> checkForExistingLessons(int tutorID){
+        ArrayList<Integer> classes = new ArrayList<>();
+        
+        String sql = "select class_id, count(distinct lesson_id) from lesson where tutor_id = ? and start_date <= curdate() group by class_id";
+        
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, tutorID);
+            
+            ResultSet rs = stmt.executeQuery();
+            
+            while(rs.next()){
+                int classID = rs.getInt(1);
+                int numLessons = rs.getInt(2);
+                
+                if(numLessons > 0){
+                    classes.add(classID);
+                }
+            }
+            
+            if(classes.size() > 0){
+                return classes;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(LessonDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return null;
+    }
 }

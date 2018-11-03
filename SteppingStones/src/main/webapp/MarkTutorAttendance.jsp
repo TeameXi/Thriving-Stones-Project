@@ -28,6 +28,29 @@
         overflow-x: hidden;
     }
 
+    .nested > thead:first-child > tr:first-child > th:nth-child(2) {
+        padding-left: 180px;
+    }
+
+    .nested > tbody > tr > td:nth-child(2) {
+        padding-left: 180px !important;
+    }
+
+    .nested > thead:first-child > tr:first-child > th:first-child {
+        position: absolute;
+        display: inline-block;
+        background-color: gray;
+        width: 15%;
+        height: 39px;
+    }
+
+    .nested > tbody > tr > td:first-child {
+        position: absolute;
+        display: inline-block;
+        background-color: gray;
+        width: 15%;
+        height: 39px;
+    }
 </style>
 <div class="col-lg-10">
     <div id="tab" style="text-align: center;margin: 10px;"><span class="tab_active" style="font-size: 14px">Attendance Taking</span></div>
@@ -107,7 +130,7 @@
                                 + 'width="15" style="margin-right: 58px;"><img '
                                 + 'class="rightArrow" src="${pageContext.request.contextPath}/styling/img/right-arrow.svg" height="15" '
                                 + 'width="15"></div><div id="table-wrapper"><table id=' + tutorID
-                                + ' class="table table-striped table-bordered nowrap" style="width:100%">'
+                                + ' class="table table-striped table-bordered nowrap nested" style="width:100%">'
                                 + '<thead><tr><th style="text-align: center;">Class</th>';
                         for (var i = 0; i < data[0].lessons.length; i++) {
                             lessonNum = i + 1;
