@@ -903,5 +903,22 @@ public class ClassDAO {
         return tutorReplacementPayList;
     }
 
-    
+    public boolean checkForStudents(int classID){
+        String sql = "select * from class_student_rel where class_id = ?";
+        
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, classID);
+            
+            ResultSet rs = stmt.executeQuery();
+            
+            if(rs.next()){
+                return true;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ClassDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return false;
+    }
 }

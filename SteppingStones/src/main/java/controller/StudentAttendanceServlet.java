@@ -67,18 +67,23 @@ public class StudentAttendanceServlet extends HttpServlet {
                     
                     JSONArray array = new JSONArray();
                     for (Class c : classes) {
-                        JSONObject obj = new JSONObject();
-                        obj.put("id", c.getClassID());
-                        System.out.println(c.getClassID());
-                        obj.put("name", c.getClassDay() + " " + c.getStartTime() + "-" + c.getEndTime()
-                                + "<br/>" + c.getLevel() + " " + c.getSubject());
+                        boolean studentsExist = classDAO.checkForStudents(c.getClassID());
+                        LinkedList<Lesson> lessons = lessonDAO.retrieveAllLessonListsBeforeCurr(c.getClassID());
                         
-                        if(tutorID != null){
-                            obj.put("tutor", new TutorDAO().retrieveSpecificTutorById(Integer.parseInt(tutorID)).getName());
-                        }else{
-                            obj.put("tutor", new TutorDAO().retrieveSpecificTutorById(c.getTutorID()).getName());
+                        if(studentsExist && lessons.size() > 0){
+                            JSONObject obj = new JSONObject();
+                            obj.put("id", c.getClassID());
+                            System.out.println(c.getClassID());
+                            obj.put("name", c.getClassDay() + " " + c.getStartTime() + "-" + c.getEndTime()
+                                    + "<br/>" + c.getLevel() + " " + c.getSubject());
+
+                            if(tutorID != null){
+                                obj.put("tutor", new TutorDAO().retrieveSpecificTutorById(Integer.parseInt(tutorID)).getName());
+                            }else{
+                                obj.put("tutor", new TutorDAO().retrieveSpecificTutorById(c.getTutorID()).getName());
+                            }
+                            array.put(obj);
                         }
-                        array.put(obj);
                     }
                     JSONObject obj = new JSONObject().put("data", array);
                     out.println(obj.toString());
