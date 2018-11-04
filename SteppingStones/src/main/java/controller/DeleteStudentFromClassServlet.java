@@ -39,9 +39,10 @@ public class DeleteStudentFromClassServlet extends HttpServlet {
         if(request.getParameter("studentID") != null && request.getParameter("classID") != null){
             int studentID = Integer.parseInt(request.getParameter("studentID"));
             int classID = Integer.parseInt(request.getParameter("classID"));
-            boolean deleteStudentClassRel = StudentClassDAO.deleteStudentClassRel(studentID, classID);
+            double deposit = StudentClassDAO.retrieveStudentDepositAmt(studentID, classID);
+            boolean updateStudentClassRelStatus = StudentClassDAO.updateStudentClassRelStatus(studentID, classID, deposit);
             boolean deleteStudentClassPaymentReminder = PaymentDAO.deleteStudentClassPaymentReminder(studentID, classID); 
-            if(deleteStudentClassRel && deleteStudentClassPaymentReminder){
+            if(updateStudentClassRelStatus && deleteStudentClassPaymentReminder){
                 out.println(1);
             }else{
                 out.println(0);

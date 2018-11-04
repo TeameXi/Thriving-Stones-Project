@@ -142,13 +142,36 @@ public class StudentClassDAO {
             String sql = "delete from class_student_rel where student_id = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, studentID);
-            stmt.executeUpdate();
+            int delete = stmt.executeUpdate();
             conn.commit();
-            deletedStatus = true;
+            if(delete > 0){
+                deletedStatus = true;
+            }
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
         return deletedStatus;
+    }
+    
+    public static boolean updateStudentClassRelStatus(int studentID, int classID, double deposit) {
+        boolean updatedStatus = false;
+        try (Connection conn = ConnectionManager.getConnection();) {
+            conn.setAutoCommit(false);
+            String sql = "update class_student_rel set status = 1, deposit_activation_date = curdate(), "
+                    + "deposit_activated_amount = ? where student_id = ? and class_id = ?;";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setDouble(1, deposit);
+            stmt.setInt(2, studentID);
+            stmt.setInt(3, classID);
+            int update = stmt.executeUpdate();
+            conn.commit();
+            if(update > 0){
+                updatedStatus = true;
+            }
+        } catch (Exception e) {
+            System.out.println("Error in updateStudentClassRelStatus method" + e.getMessage());
+        }
+        return updatedStatus;
     }
     
     public static boolean deleteStudentClassRel(int studentID, int classID) {
@@ -159,13 +182,35 @@ public class StudentClassDAO {
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, studentID);
             stmt.setInt(2, classID);
-            stmt.executeUpdate();
+            int delete = stmt.executeUpdate();
             conn.commit();
-            deletedStatus = true;
+            if(delete > 0){
+                deletedStatus = true;
+            }
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
         return deletedStatus;
+    }
+    
+    public static double retrieveStudentDepositAmt(int studentID, int classID) {
+        double depositAmt = 0;
+        try (Connection conn = ConnectionManager.getConnection();) {
+            String sql = "select deposit_fees, outstanding_deposit from class_student_rel where student_id = ? and class_id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, studentID);
+            stmt.setInt(2, classID);
+            
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                double deposit = rs.getDouble("deposit_fees");
+                double outstanding = rs.getDouble("outstanding_deposit");
+                depositAmt = deposit - outstanding;
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return depositAmt;
     }
 
     public static Map<Integer, String> retrieveStudentClassSub(int studentID) {

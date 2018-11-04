@@ -108,7 +108,8 @@ public class ClassDAO {
     public static ArrayList<Class> getStudentEnrolledClass(int student_id) {
         ArrayList<Class> classList = new ArrayList();
         try (Connection conn = ConnectionManager.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement("select * from class c, class_student_rel cs where c.class_id = cs.class_id and end_date > curdate() and student_id = ?");
+            PreparedStatement stmt = conn.prepareStatement("select * from class c, class_student_rel cs where c.class_id = cs.class_id and "
+                    + "end_date > curdate() and student_id = ? and status = 0");
             stmt.setInt(1, student_id);
             ResultSet rs = stmt.executeQuery();
 
