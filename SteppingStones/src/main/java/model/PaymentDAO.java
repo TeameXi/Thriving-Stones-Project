@@ -124,6 +124,23 @@ public class PaymentDAO {
         }
         return status;
     }
+    
+    public static int retrieveNoOfLessonPaymentReminder(int studentID, int classID) {
+        int noOfLesson = 0;
+        try(Connection conn = ConnectionManager.getConnection()){
+            String sql = "select no_of_lessons from payment_reminder where student_id = ? and class_id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, studentID);
+            stmt.setInt(2, classID);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){
+                noOfLesson = rs.getInt("no_of_lessons");
+            } 
+        } catch (SQLException ex) {
+            System.out.println("error in retrieveNoOfLessonPaymentReminder sql");
+        }  
+        return noOfLesson;
+    }
 
     public static HashMap<String, Integer> getReminders(int classID, String joinDate) {
         HashMap<String, Integer> reminders = new HashMap<>();
@@ -278,15 +295,16 @@ public class PaymentDAO {
         return updatedStatus;
     }
     
-    public static boolean updateDepositOutstandingAmount(int studentID, int classID, double outstandingFees) {
+    public static boolean updateTuitionFees(int studentID, int classID, double monthlyFees) {
         boolean updatedStatus = false;
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            String sql = "update class_student_rel set outstanding_deposit = ? where student_id = ? and class_id = ?;";
+            String sql = "update payment_reminder set amount_charged = ?, outstanding_charge = ? where student_id = ? and class_id = ?;";
             PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setDouble(1, outstandingFees);
-            stmt.setInt(2, studentID);
-            stmt.setInt(3, classID);
+            stmt.setDouble(1, monthlyFees);
+            stmt.setDouble(2, monthlyFees);
+            stmt.setInt(3, studentID);
+            stmt.setInt(4, classID);
             stmt.executeUpdate();
             conn.commit();
             updatedStatus = true;
@@ -294,6 +312,42 @@ public class PaymentDAO {
             System.out.println(e.getMessage());
         }
         return updatedStatus;
+    }
+    
+    public static boolean updateDepositOutstandingAmount(int studentID, int classID, double outstandingFees, double depositAmt) {
+        boolean updatedStatus = false;
+        try (Connection conn = ConnectionManager.getConnection();) {
+            conn.setAutoCommit(false);
+            String sql = "update class_student_rel set deposit_fees = ?, outstanding_deposit = ? where student_id = ? and class_id = ?;";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setDouble(1, depositAmt);
+            stmt.setDouble(2, outstandingFees);
+            stmt.setInt(3, studentID);
+            stmt.setInt(4, classID);
+            stmt.executeUpdate();
+            conn.commit();
+            updatedStatus = true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return updatedStatus;
+    }
+    
+    public static double retrieveDepositAmt(int studentID, int classID) {
+        double deposit = 0;
+        try(Connection conn = ConnectionManager.getConnection()){
+            String sql = "select deposit_fees from class_student_rel where student_id = ? and class_id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, studentID);
+            stmt.setInt(2, classID);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){
+                deposit = rs.getDouble("deposit_fees");
+            } 
+        } catch (SQLException ex) {
+            System.out.println("error in retrieveDepositAmt sql");
+        }  
+        return deposit;
     }
     
     public static boolean updateFirstInstallmentOutstandingAmount(int studentID, int classID, double outstandingFees) {

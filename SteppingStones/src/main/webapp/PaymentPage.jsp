@@ -58,7 +58,7 @@
                     <div class="col-md-4 inputGroupContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-badge-check"></i></span>
-                            <select name="payment_mode" class="form-control" onchange="dynamic(this)" id="payment_mode">
+                            <select required name="payment_mode" class="form-control" onchange="dynamic(this)" id="payment_mode">
                                 <option value="" >Select Payment Mode</option>
                                 <option value="Cash">Cash </option>
                                 <option value="Cheque">Cheque</option>
@@ -101,12 +101,22 @@
                             %>
                         <input name="<%=payment.getClassID()%>" class="form-control" type="number" step="0.01">
                         <%
-                                        out.println("</td><td>");
+                                        out.println("</td><td>-");
                         %>
                         <!--<input name="regFees" id="phone" class="form-control" type="number">-->
                         <%
                                         out.println("</td><td>");
-                                    } else {
+                                    } else if(payment.getPaymentType().equals("Deposit")){
+                                        out.println("<td>");
+                            %>
+                        <input name="<%=payment.getClassID()%>" class="form-control" type="text" step="0.01" value="<%=payment.getChargeAmount()%>">
+                        <%
+                                        out.println("</td><td>-");
+                        %>
+                        <!--<input name="regFees" id="phone" class="form-control" type="number">-->
+                        <%
+                                        out.println("</td><td>");
+                                    }else {
                                         out.println("<td>" + payment.getChargeAmount() + "</td>");
                                         out.println("<td>" + payment.getOutstandingCharges() + "</td><td>");
                                     }
@@ -119,14 +129,14 @@
                         <input type="hidden" value="<%=payment.getNoOfLessons()%>" name="noOfLessons[]">
                         <input type="hidden" value="<%=payment.getDetails()%>" name="subject[]">
                         <input type="hidden" value="<%=payment.getChargeAmount()%>" name="chargeAmount[]">
-                        <input name="paymentAmount[]" id="paymentAmount" class="form-control calculate" type="number" step="0.01">
+                        <div class="col-md-6"><input name="paymentAmount[]" id="paymentAmount" class="form-control calculate" type="number" step="0.01"></div>
                         <%        
                                     out.println("</td></tr>");
                                 }
 
                                 out.println("<tr><td> </td><td> </td><td> </td><td><label>Total</label></td><td>");
                         %>
-                        <input name="totalAmount" id="totalAmount" class="form-control calculate" type="number" readonly>
+                        <div class="col-md-6"><input name="totalAmount" id="totalAmount" class="form-control calculate" type="number" readonly></div>
                         <%        
                                 out.println("</td></tr>");
                         %>
@@ -135,8 +145,15 @@
                     </table>
                 </div>
                 <div class="form-group">
-                    <div>
-                        <button type="submit" class="btn btn-default" name="select" value="select">Update Payment</button>
+                    <div class="col-md-3">
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn2" name="update" value="updatePayment">Update Payment</button>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn1" name="update" value="updateStudentFees">Update Student Fees</button>
+                    </div>
+                    <div class="col-md-3">
                     </div>
                 </div>
             </form>
@@ -217,37 +234,37 @@
         
         
 
-        $('#paymentPage').bootstrapValidator({
-        // To use feedback icons, ensure that you use Bootstrap v3.1.0 or later
-            feedbackIcons: {
-                valid: 'glyphicon glyphicon-ok',
-                invalid: 'glyphicon glyphicon-remove',
-                validating: 'glyphicon glyphicon-refresh'
-            },
-            fields: {
-//                'paymentAmount[]': {
-//                    validators: { 
-//                        integer: {
-//                            message: 'Integer Only'
+//        $('#paymentPage').bootstrapValidator({
+//        // To use feedback icons, ensure that you use Bootstrap v3.1.0 or later
+//            feedbackIcons: {
+//                valid: 'glyphicon glyphicon-ok',
+//                invalid: 'glyphicon glyphicon-remove',
+//                validating: 'glyphicon glyphicon-refresh'
+//            },
+//            fields: {
+////                'paymentAmount[]': {
+////                    validators: { 
+////                        integer: {
+////                            message: 'Integer Only'
+////                        }
+////                    }
+////                },
+//                payment_mode: {
+//                    validators: {
+//                        notEmpty: {
+//                            message: 'Please select payment mode'
 //                        }
 //                    }
 //                },
-                payment_mode: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Please select payment mode'
-                        }
-                    }
-                },
-                payment_date: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Please select payment date'
-                        }
-                    }
-                }
-            }
-        });
+//                payment_date: {
+//                    validators: {
+//                        notEmpty: {
+//                            message: 'Please select payment date'
+//                        }
+//                    }
+//                }
+//            }
+//        });
     });
 
 </script>
