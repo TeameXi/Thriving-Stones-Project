@@ -222,144 +222,144 @@ public class PaymentHandlerServlet extends HttpServlet {
             return;
         }
         
-        String from = (String) request.getSession().getAttribute("from");       
-        //String from = "registration";  
-        ReceiptDAO receiptDAO = new ReceiptDAO();
-        int receiptNo = receiptDAO.retrieveReceiptNo();
-        String formattedReceiptNo = "R" + String.format("%05d", receiptNo);
-        String nos = "";
-        String descriptions = "";
-        String payment_amounts = "";
-        
-        //String from = "registration";
-         // Get servlet output stream
-        ServletOutputStream sOut = response.getOutputStream();
-        response.setContentType("application/pdf");
-        response.setHeader("Content-disposition", "attachment; filename=" + formattedReceiptNo + ".pdf" );
-
-        // Create pageformat for the document
-        PageFormat pf = new PageFormat();
-        Paper paper = new Paper();
-        paper.setSize(72 * 8.5, 72 * 11.0);
-        pf.setOrientation(PageFormat.PORTRAIT);
-        pf.setPaper(paper);
-
-        // Create a document and a page in the document
-        PDFDocument pdfDoc = new PDFDocument();
-        PDFPage newPage = pdfDoc.createPage(pf);
-        
-        PDFGraphics g2d = (PDFGraphics) newPage.createGraphics();
-
-        // set image compression to JPEG2000
-        //g2d.setImageCompression(new ImageCompression(ImageCompression.COMPRESSION_JPEG2000, 0.8f));
-        //System.out.println(getServletContext().getResource);
-        // load image 
-        BufferedImage logo = ImageIO.read(getServletContext().getResource("/styling/img/Stepping-stones-receipt-logo.png"));
-
-        // draw image on the graphics object of the page 
-        g2d.drawImage(logo, 100, 75, 150, 75, null);
-        // Draw to the page
-        //Graphics2D g2d = newPage.createGraphics();
-        g2d.setFont(new Font ("Calibri", Font.BOLD, 14));
-        g2d.drawString("Stepping Stones Learning Center", 260, 90);
-
-        g2d.setFont(new Font ("Calibri", Font.PLAIN, 11));
-        g2d.drawString("Blk 145 Teck Whye Ave #01-159 Singapore 680145", 260, 110);
-        g2d.drawString("Phone No.:1231231 Email: contact@steppingstoneslc.com.sg ", 260, 130);
-        g2d.drawString("UEN No.: T16LL1821J", 260, 150);
-        
-        g2d.setFont(new Font ("Calibri", Font.BOLD, 16));
-        g2d.drawString("Official Receipt", 260, 180);
-        
-        g2d.setFont(new Font ("Calibri", Font.BOLD, 11));
-        g2d.drawString("Received From: ", 100, 200);
-        
-        g2d.drawString("Receipt No.: ", 380, 200);
-        g2d.drawString("Receipt Date: ", 380, 215);
-        g2d.drawString("Payment Mode: ", 380, 230);
-        
-        g2d.setFont(new Font ("Calibri", Font.PLAIN, 11));
-        g2d.drawString(studentName, 100, 215);
-        g2d.drawString(formattedReceiptNo, 450, 200);
-        String pattern = "dd/MM/yyyy";
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-
-        String date = simpleDateFormat.format(new Date());
-        g2d.drawString(date, 450, 215);
-        g2d.drawString(paymentMode, 460, 230);
-        
-        g2d.setStroke(new BasicStroke(1));
-        g2d.setColor(Color.RED);
-        g2d.drawLine(100, 240, 650, 240);
-        g2d.drawLine(100, 280, 650, 280);
-        
-        g2d.setColor(Color.BLACK);
-        g2d.setFont(new Font ("Calibri", Font.BOLD, 11));
-        g2d.drawString("No.", 110, 260);
-        g2d.drawString("Description", 160, 260);
-        g2d.drawString("Amount Paid", 400, 260);
-        
-        int lengthCount = 300;
-        for (int i = 0; i < paymentType.length; i++) {
-            String type = paymentType[i];
-            //int classID = Integer.parseInt(classIDs[i]);
-            //Class cls = ClassDAO.getClassByID(classID);
-            String subject = subjects[i];
-            String lvlSubject = level + " " + subject;
-            double paymentAmount = 0;
-            if (!paymentAmounts[i].isEmpty()) {
-                paymentAmount = Double.parseDouble(paymentAmounts[i]);
-            }
-            DecimalFormat df = new DecimalFormat("0.00##");
-            String result = df.format(paymentAmount);
-            //itemsssss
-            g2d.setFont(new Font ("Calibri", Font.PLAIN, 11));
-            g2d.drawString("" + (i+1), 110, lengthCount);
-            g2d.drawString(type + " for " + lvlSubject , 160, lengthCount);
-            g2d.drawString("" + result, 400, lengthCount);
-            if(i==0){
-                nos = "" + (i+1);
-                descriptions = type + " for " + lvlSubject;
-                payment_amounts = "" + result;
-            }else{
-                nos = "#" + (i+1);
-                descriptions = "#" + type + " for " + lvlSubject;
-                payment_amounts = "#" + result; 
-            }
-            lengthCount += 20;
-        }
-        
-        
-        g2d.setColor(Color.RED);
-        g2d.drawLine(100, 650, 650, 650);
-        
-        g2d.setColor(Color.BLACK);
-        g2d.setFont(new Font ("Calibri", Font.BOLD, 11));
-        g2d.drawString("Total Amount Paid", 300, 670);
-        
-        DecimalFormat df = new DecimalFormat("0.00##");
-        String totalAmountResult = df.format(totalAmount);
-        
-        g2d.setFont(new Font ("Calibri", Font.PLAIN, 11));
-        g2d.drawString("S$" + totalAmountResult, 400, 670);
-        
-        g2d.setColor(Color.RED);
-        g2d.drawLine(100, 680, 650, 680);
-        
-        g2d.setFont(new Font ("Calibri", Font.ITALIC, 9));
-        g2d.setColor(Color.BLACK);
-        g2d.drawString("This is computer generated receipt. Therefore, no signature is required", 200, 710);
-        
-        receiptDAO.addReceipt(date, paymentMode, nos, descriptions, payment_amounts, "S$" + totalAmountResult, studentID);
-        
-        // Add the page to the document
-        pdfDoc.addPage(newPage);
-
-        // Save the document to the servlet output stream.  This goes directly to the browser
-        pdfDoc.saveDocument(sOut);
-
-        // Close the server output stream
-        sOut.close();
+        //String from = (String) request.getSession().getAttribute("from");       
+        String from = "registration";  
+//        ReceiptDAO receiptDAO = new ReceiptDAO();
+//        int receiptNo = receiptDAO.retrieveReceiptNo();
+//        String formattedReceiptNo = "R" + String.format("%05d", receiptNo);
+//        String nos = "";
+//        String descriptions = "";
+//        String payment_amounts = "";
+//        
+//        //String from = "registration";
+//         // Get servlet output stream
+//        ServletOutputStream sOut = response.getOutputStream();
+//        response.setContentType("application/pdf");
+//        response.setHeader("Content-disposition", "attachment; filename=" + formattedReceiptNo + ".pdf" );
+//
+//        // Create pageformat for the document
+//        PageFormat pf = new PageFormat();
+//        Paper paper = new Paper();
+//        paper.setSize(72 * 8.5, 72 * 11.0);
+//        pf.setOrientation(PageFormat.PORTRAIT);
+//        pf.setPaper(paper);
+//
+//        // Create a document and a page in the document
+//        PDFDocument pdfDoc = new PDFDocument();
+//        PDFPage newPage = pdfDoc.createPage(pf);
+//        
+//        PDFGraphics g2d = (PDFGraphics) newPage.createGraphics();
+//
+//        // set image compression to JPEG2000
+//        //g2d.setImageCompression(new ImageCompression(ImageCompression.COMPRESSION_JPEG2000, 0.8f));
+//        //System.out.println(getServletContext().getResource);
+//        // load image 
+//        BufferedImage logo = ImageIO.read(getServletContext().getResource("/styling/img/Stepping-stones-receipt-logo.png"));
+//
+//        // draw image on the graphics object of the page 
+//        g2d.drawImage(logo, 100, 75, 150, 75, null);
+//        // Draw to the page
+//        //Graphics2D g2d = newPage.createGraphics();
+//        g2d.setFont(new Font ("Calibri", Font.BOLD, 14));
+//        g2d.drawString("Stepping Stones Learning Center", 260, 90);
+//
+//        g2d.setFont(new Font ("Calibri", Font.PLAIN, 11));
+//        g2d.drawString("Blk 145 Teck Whye Ave #01-159 Singapore 680145", 260, 110);
+//        g2d.drawString("Phone No.:1231231 Email: contact@steppingstoneslc.com.sg ", 260, 130);
+//        g2d.drawString("UEN No.: T16LL1821J", 260, 150);
+//        
+//        g2d.setFont(new Font ("Calibri", Font.BOLD, 16));
+//        g2d.drawString("Official Receipt", 260, 180);
+//        
+//        g2d.setFont(new Font ("Calibri", Font.BOLD, 11));
+//        g2d.drawString("Received From: ", 100, 200);
+//        
+//        g2d.drawString("Receipt No.: ", 380, 200);
+//        g2d.drawString("Receipt Date: ", 380, 215);
+//        g2d.drawString("Payment Mode: ", 380, 230);
+//        
+//        g2d.setFont(new Font ("Calibri", Font.PLAIN, 11));
+//        g2d.drawString(studentName, 100, 215);
+//        g2d.drawString(formattedReceiptNo, 450, 200);
+//        String pattern = "dd/MM/yyyy";
+//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+//
+//        String date = simpleDateFormat.format(new Date());
+//        g2d.drawString(date, 450, 215);
+//        g2d.drawString(paymentMode, 460, 230);
+//        
+//        g2d.setStroke(new BasicStroke(1));
+//        g2d.setColor(Color.RED);
+//        g2d.drawLine(100, 240, 650, 240);
+//        g2d.drawLine(100, 280, 650, 280);
+//        
+//        g2d.setColor(Color.BLACK);
+//        g2d.setFont(new Font ("Calibri", Font.BOLD, 11));
+//        g2d.drawString("No.", 110, 260);
+//        g2d.drawString("Description", 160, 260);
+//        g2d.drawString("Amount Paid", 400, 260);
+//        
+//        int lengthCount = 300;
+//        for (int i = 0; i < paymentType.length; i++) {
+//            String type = paymentType[i];
+//            //int classID = Integer.parseInt(classIDs[i]);
+//            //Class cls = ClassDAO.getClassByID(classID);
+//            String subject = subjects[i];
+//            String lvlSubject = level + " " + subject;
+//            double paymentAmount = 0;
+//            if (!paymentAmounts[i].isEmpty()) {
+//                paymentAmount = Double.parseDouble(paymentAmounts[i]);
+//            }
+//            DecimalFormat df = new DecimalFormat("0.00##");
+//            String result = df.format(paymentAmount);
+//            //itemsssss
+//            g2d.setFont(new Font ("Calibri", Font.PLAIN, 11));
+//            g2d.drawString("" + (i+1), 110, lengthCount);
+//            g2d.drawString(type + " for " + lvlSubject , 160, lengthCount);
+//            g2d.drawString("" + result, 400, lengthCount);
+//            if(i==0){
+//                nos = "" + (i+1);
+//                descriptions = type + " for " + lvlSubject;
+//                payment_amounts = "" + result;
+//            }else{
+//                nos = "#" + (i+1);
+//                descriptions = "#" + type + " for " + lvlSubject;
+//                payment_amounts = "#" + result; 
+//            }
+//            lengthCount += 20;
+//        }
+//        
+//        
+//        g2d.setColor(Color.RED);
+//        g2d.drawLine(100, 650, 650, 650);
+//        
+//        g2d.setColor(Color.BLACK);
+//        g2d.setFont(new Font ("Calibri", Font.BOLD, 11));
+//        g2d.drawString("Total Amount Paid", 300, 670);
+//        
+//        DecimalFormat df = new DecimalFormat("0.00##");
+//        String totalAmountResult = df.format(totalAmount);
+//        
+//        g2d.setFont(new Font ("Calibri", Font.PLAIN, 11));
+//        g2d.drawString("S$" + totalAmountResult, 400, 670);
+//        
+//        g2d.setColor(Color.RED);
+//        g2d.drawLine(100, 680, 650, 680);
+//        
+//        g2d.setFont(new Font ("Calibri", Font.ITALIC, 9));
+//        g2d.setColor(Color.BLACK);
+//        g2d.drawString("This is computer generated receipt. Therefore, no signature is required", 200, 710);
+//        
+//        receiptDAO.addReceipt(date, paymentMode, nos, descriptions, payment_amounts, "S$" + totalAmountResult, studentID);
+//        
+//        // Add the page to the document
+//        pdfDoc.addPage(newPage);
+//
+//        // Save the document to the servlet output stream.  This goes directly to the browser
+//        pdfDoc.saveDocument(sOut);
+//
+//        // Close the server output stream
+//        sOut.close();
         
         if (from.equals("registration")) {
             response.sendRedirect("RegisterForClasses.jsp?status=Payment successful.");

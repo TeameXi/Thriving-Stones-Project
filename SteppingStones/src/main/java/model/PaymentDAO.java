@@ -259,6 +259,22 @@ public class PaymentDAO {
         }
     }
     
+    public static double getStudentTutionFeeToAdd(int studentID){
+        double amtToBeAdded = 0;
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("select * from payment_reminder where student_id = ? and outstanding_charge = amount_charged "
+                    + "and (SELECT DATE_ADD(payment_due_date, INTERVAL -7 DAY) as payment_start_date) <= curdate() order by payment_due_date limit 1;"); 
+            stmt.setInt(1, studentID);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                amtToBeAdded = rs.getDouble("outstanding_charge");
+            }
+        } catch (SQLException e) {
+            System.out.print("Error in getStudentTutionFeeToAdd method" + e.getMessage());
+        }
+        return amtToBeAdded;
+    }
+    
     public static boolean updateRegFeesOutstandingAmount(int studentID, double outstandingFees) {
         boolean updatedStatus = false;
         try (Connection conn = ConnectionManager.getConnection();) {

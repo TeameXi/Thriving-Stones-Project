@@ -900,4 +900,22 @@ public class StudentDAO {
         }
         return levelID;
     }
+    
+    public static double retrieveStudentOutstandingAmt(int studentID) {
+        double outstandingAmt = 0;
+        try (Connection conn = ConnectionManager.getConnection()) {
+            conn.setAutoCommit(false);
+            String sql = "select outstanding_amount from student where student_id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, studentID);
+            conn.commit();
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                outstandingAmt = rs.getDouble("outstanding_amount");
+            }
+        } catch (SQLException ex) {
+            System.out.println("error in retrieveStudentTotalOutstandingAmt sql");
+        }
+        return outstandingAmt;
+    }
 }

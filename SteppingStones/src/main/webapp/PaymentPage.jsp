@@ -42,10 +42,13 @@
                     PaymentDAO.getStudentRegFeesData(studentID, paymentData);
                     PaymentDAO.getStudentDepositData(studentID, paymentData);
                     PaymentDAO.getStudentTutionFeesData(studentID, paymentData);
+                    double totalOutstandingAmt = PaymentDAO.getStudentTutionFeeToAdd(studentID) + StudentDAO.retrieveStudentOutstandingAmt(studentID);
+                    
                     //System.out.println(paymentData.size());
                 %>
                 Student Name: <label> <%out.println(studentName);%></label><br>
-                Level: <label> <%out.println(level);%></label><br><br>
+                Level: <label> <%out.println(level);%></label><br>
+                Total Outstanding Charges: <label><%out.println("$" + totalOutstandingAmt);%></label><br><br>
                 <input type="hidden" value="<%=studentID%>" name="student_id">
                 <input type="hidden" value="<%=level%>" name="level">
                  
