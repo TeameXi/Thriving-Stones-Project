@@ -632,4 +632,22 @@ public class PaymentDAO {
         return status;
     }
     
+    public static boolean updateOutstandingChargeForNextYear(int studentID, double outstandingCharge, int classID) {
+        boolean updatedStatus = false;
+        try (Connection conn = ConnectionManager.getConnection();) {
+            conn.setAutoCommit(false);
+            String sql = "update payment_reminder set outstanding_charge = ? where student_id = ? and class_id = ? order by payment_due_date limit 1;";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setDouble(1, outstandingCharge);
+            stmt.setInt(2 , studentID);
+            stmt.setInt(3 , classID);
+            stmt.executeUpdate();
+            conn.commit();
+            updatedStatus = true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return updatedStatus;
+    }
+    
 }

@@ -922,4 +922,23 @@ public class ClassDAO {
         
         return false;
     }
+    
+    public static boolean checkForBulkRegistrationType(int classID){
+        String sql = "select * from class where class_id = ? and start_date < curdate();";
+        
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, classID);
+            
+            ResultSet rs = stmt.executeQuery();
+            System.out.println(rs);
+            if(rs.next()){
+                return true;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ClassDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return false;
+    }
 }

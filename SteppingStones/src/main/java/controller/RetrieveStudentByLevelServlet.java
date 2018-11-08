@@ -53,11 +53,14 @@ public class RetrieveStudentByLevelServlet extends HttpServlet {
                 for(Student s: studentList){
                     int studentID = s.getStudentID();
                     String studentName = s.getName();
+                    double totalDepositUnused = StudentDAO.retrieveTotalDepositUnused(studentID);
                     
                     JSONObject obj = new JSONObject();
                     obj.put("student", studentID);
                     obj.put("name", studentName);
                     obj.put("type", cls.getType());
+                    obj.put("classFees", cls.getMthlyFees());
+                    obj.put("totalDepositUnused", totalDepositUnused);
                     
                     array.put(obj);
                 }

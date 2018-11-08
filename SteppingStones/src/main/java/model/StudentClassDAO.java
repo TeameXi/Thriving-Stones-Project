@@ -36,24 +36,42 @@ public class StudentClassDAO {
 //        }
 //        return status;
 //    }
-
-    public static boolean saveStudentToRegisterClass(int classID, int studentID, double deposit, double outstandingDeposit, String joinDate) {
+    
+        public static boolean saveStudentToRegisterClass(int classID, int studentID, double deposit, double outstandingDeposit, String joinDate) {
         boolean status = false;
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            String sql = "insert into class_student_rel(class_id, student_id, deposit_fees, outstanding_deposit, "
+            if(deposit == 0){
+                String sql = "insert into class_student_rel(class_id, student_id, deposit_fees, outstanding_deposit, "
                     + "join_date, first_installment, outstanding_first_installment) value(?, ?, ?, ?, ?, ?, ?)";
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setInt(1, classID);
-            stmt.setInt(2, studentID);
-            stmt.setDouble(3, deposit);
-            stmt.setDouble(4, outstandingDeposit);
-            stmt.setString(5, joinDate);
-            stmt.setDouble(6, 0);
-            stmt.setDouble(7, 0);
-            stmt.executeUpdate();
-            conn.commit();
-            status = true;
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                stmt.setInt(1, classID);
+                stmt.setInt(2, studentID);
+                stmt.setDouble(3, deposit);
+                stmt.setDouble(4, outstandingDeposit);
+                stmt.setString(5, joinDate);
+                stmt.setDouble(6, 0);
+                stmt.setDouble(7, 0);
+                stmt.executeUpdate();
+                conn.commit();
+                status = true;
+            }else{
+                String sql = "insert into class_student_rel(class_id, student_id, deposit_fees, outstanding_deposit, deposit_payment_date, "
+                    + "join_date, first_installment, outstanding_first_installment) value(?, ?, ?, ?, curdate(), ?, ?, ?)";
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                stmt.setInt(1, classID);
+                stmt.setInt(2, studentID);
+                stmt.setDouble(3, deposit);
+                stmt.setDouble(4, outstandingDeposit);
+                stmt.setString(5, joinDate);
+                stmt.setDouble(6, 0);
+                stmt.setDouble(7, 0);
+                stmt.executeUpdate();
+                conn.commit();
+                status = true;
+            }
+            
+            
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

@@ -852,5 +852,52 @@ public class StudentDAO {
             e.printStackTrace();
         }
         return studentList;
+    }       
+            
+    public static double retrieveTotalDepositUnused(int studentID) {
+        double totalDepositUnused = 0;
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("select required_amount from student where student_id = ?");
+            stmt.setInt(1, studentID);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                totalDepositUnused = rs.getDouble("required_amount");
+            }
+        } catch (SQLException e) {
+            System.out.print("Error in totalDepositUnused method?" + e.getMessage());
+        }
+        return totalDepositUnused;
+    }
+    
+    public static boolean updateTotalDepositUnused(int studentID, double remainingUnusedDeposit) {
+        boolean updatedStatus = false;
+        try (Connection conn = ConnectionManager.getConnection();) {
+            conn.setAutoCommit(false);
+            String sql = "update student set required_amount = ? where student_id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setDouble(1, remainingUnusedDeposit);
+            stmt.setDouble(2 , studentID);
+            stmt.executeUpdate();
+            conn.commit();
+            updatedStatus = true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return updatedStatus;
+    }
+    
+    public static int retrieveStudentLevelbyIDD(int studentID) {
+        int levelID = 0;
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("select level_id from student where student_id = ?");
+            stmt.setInt(1, studentID);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                levelID = rs.getInt("level_id");
+            }
+        } catch (SQLException e) {
+            System.out.print(e.getMessage());
+        }
+        return levelID;
     }
 }
