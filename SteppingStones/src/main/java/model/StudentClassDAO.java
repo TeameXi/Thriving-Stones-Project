@@ -212,6 +212,45 @@ public class StudentClassDAO {
         }
         return depositAmt;
     }
+    
+    public static boolean updateStatus(int studentID, int status) {
+        boolean updatedStatus = false;
+        try (Connection conn = ConnectionManager.getConnection();) {
+            conn.setAutoCommit(false);
+            String sql = "update class_student_rel set status = 1 where student_id = ? and status = ?;";                    
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setDouble(1, studentID);
+            stmt.setInt(2, status);           
+            int update = stmt.executeUpdate();
+            conn.commit();
+            if(update > 0){
+                updatedStatus = true;
+            }
+        } catch (Exception e) {
+            System.out.println("Error in updateStatus method" + e.getMessage());
+        }
+        return updatedStatus;
+    }
+    
+    public static double retrieveStudentTotalDepositAmt(int studentID, int status) {
+        double totalDeposit = 0;
+        try (Connection conn = ConnectionManager.getConnection();) {
+            String sql = "SELECT SUM(deposit_fees) AS 'totalDeposit' FROM class_student_rel WHERE status=? AND student_id=? ";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, status);
+            stmt.setInt(2, studentID);
+            
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                totalDeposit = rs.getDouble("totalDeposit");                
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return totalDeposit;
+    }
+    
+    
 
     public static Map<Integer, String> retrieveStudentClassSub(int studentID) {
         Map<Integer, String> classSub = new HashMap<>();

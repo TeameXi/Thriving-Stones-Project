@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.LevelDAO;
+import model.StudentClassDAO;
 import model.StudentDAO;
 
 /**
@@ -89,9 +90,14 @@ public class AutoPromoteServlet extends HttpServlet {
             String[] studentValue = request.getParameterValues("studentValue");
             if(studentValue != null){
                 for(String stuValue: studentValue){
+                    double totalDeposit = 0;
                     int stuID = Integer.parseInt(stuValue);
                     Student student = StudentDAO.retrieveStudentbyID(stuID);
-                    
+                    totalDeposit = StudentClassDAO.retrieveStudentTotalDepositAmt(stuID,0);
+                    if (totalDeposit>0){
+                        boolean updateClassStudentRelStatus=updateClassStudentRelStatus =StudentClassDAO.updateStatus(stuID,0);
+                        boolean updateReqAmt = StudentDAO.updateStudentFees(stuID,totalDeposit,student.getOutstandingAmt());
+                    }
                     out.println("student id" +stuID);
                     out.println("name" +student.getName());
                     String level = student.getLevel();

@@ -33,18 +33,16 @@
                     <label class="col-lg-2 control-label">Level</label>  
                     <div class="col-lg-7 inputGroupContainer">
                         <div class="input-group">
+                            <%
+                                LevelDAO lvlDao = new LevelDAO();
+                                ArrayList<Level> lvlLists = lvlDao.retrieveAllLevelLists();
+                            %>
                             <select id="lvlSelect" multiple="multiple" name="level" class="form-control">
                                 <option value='0'>Select All</option>
-                                <option value='1'>Primary 1</option>
-                                <option value='2'>Primary 2</option>
-                                <option value='3'>Primary 3</option>
-                                <option value='4'>Primary 4</option>
-                                <option value='5'>Primary 5</option>
-                                <option value='6'>Primary 6</option>
-                                <option value='7'>Secondary 1</option>
-                                <option value='8'>Secondary 2</option>
-                                <option value='9'>Secondary 3</option>
-                                <option value='10'>Secondary 4</option>
+                                <%  for (Level lvl : lvlLists) {
+                                        out.println("<option value='" + lvl.getLevel_id() + "'>" + lvl.getLevelName() + "</option>");
+                                    }
+                                %>
                                 
                             </select>
                         </div>
