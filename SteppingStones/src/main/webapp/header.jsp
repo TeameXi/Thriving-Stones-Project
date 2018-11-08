@@ -170,7 +170,18 @@
                                     <li><a href="PaymentPage.jsp">Student Payment</a></li>
                                 </ul>
                             </li>
-                            
+                            <li class="submenu">
+                                <a href="#">
+                                    <i class="zmdi zmdi-book"></i> Rewards
+                                    <span class="caret pull-right"></span>
+                                </a>
+                                <!-- Sub menu -->
+                                <ul>
+                                    <li><a href="DisplayReward.jsp">View Reward</a></li>
+                                    <li><a href="CreateReward.jsp">Create Reward</a></li>
+                                    <li><a href="RedeemReward.jsp">Redeem Reward</a></li>
+                                </ul>
+                            </li>
                             <li class="submenu">
                                 <a href="#">
                                     <i class="zmdi zmdi-book"></i> Financial Reports
@@ -219,6 +230,7 @@
                                     <li><a href="DisplayGradeForClasses.jsp">View Grades</a></li>
                                 </ul>
                             </li>
+                            <li><a href="TutorReward.jsp"><i class="zmdi zmdi-chart"></i>Reward Student</a></li>
                     <%
                         }else if(role != null && user != null && role == "parent" ){
                     %>
@@ -232,7 +244,7 @@
                     %>
                             <li><a href="StudentViewGrade.jsp"><i class="zmdi zmdi-money-box"></i>Grades</a></li>
                             <li><a href="StudentViewAttendance.jsp"><i class="zmdi zmdi-money-box"></i>View Attendance</a></li>
-                            <li><a href=""><i class="zmdi zmdi-money-box"></i>Rewards</a></li>
+                            <li><a href="StudentViewReward.jsp"><i class="zmdi zmdi-money-box"></i>Rewards</a></li>
 
                     <%
                         }

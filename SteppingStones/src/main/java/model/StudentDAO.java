@@ -217,6 +217,32 @@ public class StudentDAO {
         return studentList;
     }
     
+    public static ArrayList<String> listAllStudentsByTutor(int tutor_id) {
+        ArrayList<String> studentList = new ArrayList();
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("SELECT DISTINCT * from student where student_id in (SELECT student_id from class_student_rel where class_id in (SELECT class_id from class where tutor_id = ?))");
+            stmt.setInt(1, tutor_id);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                String name = rs.getString("student_name");
+                int phone = rs.getInt("phone");
+                String email = rs.getString("email");
+                String stu = "";
+                if(email != null && !email.isEmpty()){
+                    stu = name + "  -  " + email;
+                }else{
+                    stu = name + "  -  " + phone;
+                }
+                
+                studentList.add(stu);
+            }
+        } catch (SQLException e) {
+            System.out.print(e.getMessage());
+        }
+        return studentList;
+    }
+    
     public static ArrayList<Student> listAllStudentsByBranch(int branch_id) {
         ArrayList<Student> studentList = new ArrayList();
         try (Connection conn = ConnectionManager.getConnection()) {
