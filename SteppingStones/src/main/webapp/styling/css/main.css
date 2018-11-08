@@ -622,6 +622,7 @@ footer .copy{
 .header .navbar{
    background:none !important;
    border:0px !important;
+   float: right;
 }
 
 .header .navbar i{
