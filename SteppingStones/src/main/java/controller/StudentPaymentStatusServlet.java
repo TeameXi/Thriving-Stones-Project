@@ -93,7 +93,7 @@ public class StudentPaymentStatusServlet extends HttpServlet {
                         for (Class c : classes) {
                             JSONObject obj = new JSONObject();
                             String date = c.getClassDay() + " " + c.getStartTime() + "-" + c.getEndTime();
-                            obj.put("id", c.getClassID());
+                            obj.put("id", studentID + "" + c.getClassID());
                             obj.put("subject", c.getSubject());
                             obj.put("date", date);
                             array.put(obj);
@@ -105,8 +105,12 @@ public class StudentPaymentStatusServlet extends HttpServlet {
                     }
                 case "retrieveLessons":
                     {
-                        int classID = Integer.parseInt(request.getParameter("classID"));
-                        int studentID = Integer.parseInt(request.getParameter("studentID"));
+                        String student_id = request.getParameter("studentID");
+                        int studentID = Integer.parseInt(student_id);
+                        String classstudent = request.getParameter("classID");
+                        String class_id = classstudent.substring(student_id.length());
+                        int classID = Integer.parseInt(class_id);
+                        
                         ArrayList<Class> classes = ClassDAO.getStudentEnrolledClass(studentID);
                         JSONArray array = new JSONArray();
                         
@@ -126,7 +130,7 @@ public class StudentPaymentStatusServlet extends HttpServlet {
                                         
                                         if (chargesDue != -1) {
                                             JSONObject obj = new JSONObject();
-                                            obj.put("id", l.getLessonid());
+                                            obj.put("id", l.getLessonid() + " " + studentID);
                                             obj.put("date", date);
                                             
                                             if (chargesDue != 0){

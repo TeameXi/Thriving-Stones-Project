@@ -154,10 +154,8 @@
                         childRow.child.hide();
                         childTR.removeClass('shown');
                     } else {
-                        studentID = childRow.data().id;
-                        console.log(levelID);
+                        studentID = childRow.data().id
                         action = 'retrieveClasses';
-                        console.log(studentID + ' yayyy');
 
                         // Open this row
                         childRow.child(formatStudentList(childRow.data(), studentID)).show();
@@ -206,7 +204,6 @@
                             } else {
                                 classID = studentRow.data().id;
                                 action = 'retrieveLessons';
-                                console.log(studentID);
 
                                 // Open this row
                                 studentRow.child(formatLessonList(studentRow.data(), classID)).show();
