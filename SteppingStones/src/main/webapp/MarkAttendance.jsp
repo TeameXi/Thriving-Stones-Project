@@ -55,7 +55,7 @@
         height: 26px;
     }
 </style>
-<div class="col-lg-10">
+<div class="col-md-10">
     <div id="tab" style="text-align: center;margin: 10px;"><span class="tab_active" style="font-size: 14px">Attendance Taking</span></div>
     <table id="studentAttendanceTable" class="table display dt-responsive nowrap" style="width:100%;">
         <thead class="thead-light">
@@ -66,7 +66,7 @@
         </thead>
     </table>
 </div><br/><br/>
-<div class="col-lg-10">
+<div class="col-md-10 col-md-offset-2">
     <table id="replacement" class="table display dt-responsive nowrap" style="width:100%;">
         <thead class="thead-light">
             <tr>

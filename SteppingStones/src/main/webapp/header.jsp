@@ -26,14 +26,14 @@
     <div class="header" id="header_<%=role%>">
         <div class="container">
             <div class="row">
-               <div class="col-md-5">
+               <div class="col-sm-5">
                   <!-- Logo -->
                   <div class="logo">
                     <a href="Dashboard.jsp"><img src="${pageContext.request.contextPath}/styling/img/logo_white.png"></img></a>
                   </div>
                </div>
-               <div class="col-md-5"></div>
-               <div class="col-md-2">
+               <div class="col-sm-4"></div>
+               <div class="col-sm-3">
                   <div class="navbar" role="banner">
                       <nav style="text-align: center;">
                         <ul class="nav navbar-nav">
