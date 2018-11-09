@@ -22,12 +22,13 @@
         }
         int branchID = user.getBranchId();
     %> 
+    <div class="row" id="errorMessage"></div>
     <div style="text-align: center;margin: 20px;">Auto Promote </h5></div>
     <div class="row">
         <div class="col-md-3" style="width: 15%"></div>
         <div class="col-md-7" style="width: 65%">
             <form id="filterLevelForm" method="POST" class="form-horizontal" action="AutoPromoteServlet">
-                <input type='hidden' name='branch' value='<%=branchID%>'>
+                <input type='hidden' id='branch' name='branch' value='<%=branchID%>'>
 
                 <div class="form-group">
                     <label class="col-lg-2 control-label">Level</label>  
@@ -50,10 +51,8 @@
                 </div>
                             
                 <div class="form-group">
-                    <div class="col-lg-2 col-lg-offset-2">
-                        <!-- Do NOT use name="submit" or id="submit" for the Submit button -->
-                        <button type="submit" class="btn btn-default" name="search">Search</button>
-                        
+                    <div class="col-lg-2 col-lg-offset-2">                        
+                        <button type="submit" class="btn btn-default" name="search">Search</button>                        
                     </div>
                 </div>
                 
@@ -97,8 +96,10 @@
                 </table> 
                             
                 <div class="form-group">
-                    <div class="col-lg-2 col-lg-offset-2">
-                        <button type="submit" class="btn btn-default" name="promote">Promote</button>
+                    <div class="col-lg-2 col-lg-offset-2">                        
+                        <a href="#small" onclick="promoteAlert()" data-toggle="modal">
+                            <button type="submit" class="btn btn-default" name="promote">Promote</button>
+                        </a>
                     </div>
                 </div>
             </form>    
@@ -108,7 +109,7 @@
                         ArrayList<Student> allStudents = StudentDAO.listAllStudentsByBranch(1);
                         if(allStudents.size() > 0){
             %>
-            <table class="table table-bordered">
+            <table id="stuTable" class="table table-bordered">
                 <thead class="table_title"><tr><th width="20%">Name</th><th width="15%">Level</th><th width="30%">Email</th>
                         <%--<th width="35%">Action</th> --%></tr></thead>
                 <tbody>
@@ -143,108 +144,24 @@
 </div>
 </div>
 </div>
-<!-- Detail Dialog -->
-<div class="modal fade" id="viewParent" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
+<div class="modal fade bs-modal-sm" id="small" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
-
-                <span class="pc_title centered">Parent Details</span>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <span class="pc_title centered">Alert</span>
             </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class = "col-sm-4">
-                        <p class = "form-control-label">Fullname :</p>
-                    </div>
-                    <div class = "col-sm-8">
-                        <p><label id="view_parent_name">-</label></p>
-                    </div>
-                </div><br/>
-
-                <div class="row">
-                    <div class = "col-sm-4">
-                        <p class = "form-control-label">Nationality :</p>
-                    </div>
-                    <div class = "col-sm-8">
-                        <p><label id="view_parent_nationality"></label></p>
-                    </div>
-                </div><br/>
-                
-                <div class="row">
-                    <div class = "col-sm-4">
-                        <p class = "form-control-label">Company :</p>
-                    </div>
-                    <div class = "col-sm-8">
-                        <p><label id="view_company"></label></p>
-                    </div>
-                </div><br/>
-
-                <div class="row">
-                    <div class = "col-sm-4">
-                        <p class = "form-control-label">Designation :</p>
-                    </div>
-                    <div class = "col-sm-8">
-                        <p><label id="view_designation">-</label></p>
-                    </div>
-                </div><br/>
-
-                <div class="row">
-                    <div class = "col-sm-4">
-                        <p class = "form-control-label">Mobile :</p>
-                    </div>
-                    <div class = "col-sm-8">
-                        <p><label id="view_phone">-</label></p>
-                    </div>
-                </div><br/>
-
-                <div class="row">
-                    <div class = "col-sm-4">
-                        <p class = "form-control-label">Email :</p>
-                    </div>
-                    <div class = "col-sm-8">
-                        <p><label id="view_email">-</label></p>
-                    </div>
-                </div><br/>
-            </div>  
-
-            <div class="modal-footer spaced-top-small centered">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <div class="modal-body smaller-fonts centered">Are you sure you want to promote these students?</div>
+            <div class="modal-footer centered">
+                <a id="confirm_btn"><button type="button" class="small_button pw_button del_button autowidth">Yes, Promote</button></a>
+                <button type="button" class="small_button del_button pw_button autowidth" data-dismiss="modal">Cancel</button>
             </div>
-        </div>       
+        </div>
+        <!-- /.modal-content -->
     </div>
+    <!-- /.modal-dialog -->
 </div>
-<!-- End of Detail Dialog -->
 
-<!-- Detail Dialog -->
-<div class="modal fade" id="viewAttendance" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-
-                <span class="pc_title centered">Attendance Details</span>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <table>
-                    <tr>
-                        <th>Lesson Date</th><th>Present/Absent</th>
-                    </tr>
-                    
-                </table>
-            </div>  
-
-            <div class="modal-footer spaced-top-small centered">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
-        </div>       
-    </div>
-</div>
-<!-- End of Detail Dialog -->
 
 <%@include file="footer.jsp"%>
 <script src='http://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.4.5/js/bootstrapvalidator.min.js'></script>
@@ -298,42 +215,70 @@
         }
 
     }
+    function promoteAlert() {
+        $("#confirm_btn").prop('onclick', null).off('click');
+        $("#confirm_btn").click(function () {
+            showAlert();
+        });
+    }
+    function showAlert() {
+        $('#small').modal('hide');
+        var selchbox =[];
+        var check = document.getElementsByTagName("input");
+        for (var i = 0; i < check.length; i++) {
+            if (check[i].checked === true) {
+                selchbox.push(check[i].value);
+            } 
+        }                      
+        $.ajax({
+            type: 'POST',
+            url: 'PromoteStudentServlet',
+            dataType: 'JSON',
+            data: {selStuID: selchbox.toString()},
+            success: function (data) {
+                if (data === 1) {                    
+                    html = '<div class="alert alert-success col-md-5"><strong>Success!</strong> Successfully Promoted.</div>';
+                } else if (data === 2) {
+                    html = '<div class="alert alert-danger col-md-5"><strong>Alert!</strong> Secondary 5 students cannot be promoted to next level</div>';
+                }else{
+                    html = '<div class="alert alert-danger col-md-5"><strong>Sorry!</strong> Something went wrong</div>';
+                }
+                $("#errorMessage").html(html);
+                $('#errorMessage').fadeIn().delay(2500).fadeOut();                
+            }
+        });
+       
+    }
+
 </script>
 
 <script>
-    $(document).ready(function () {
-        $("#viewParent").on("show.bs.modal", function (e) { 
-            var student_id = $(e.relatedTarget).data('target-id');
-            var branch_id = $("#branch").val();
-            $.ajax({
-                url: 'RetrieveParentServlet',
-                dataType: 'JSON',
-                data: {studentID: student_id, branch_id: branch_id},
-                success: function (data) {
-                    if(data["fullname"] != ""){
-                        $("#view_parent_name").text(data["fullname"]);
-                    }
-                    if (data["nationality"] !== "") {
-                        $("#view_parent_nationality").text(data["nationality"]);
-                    }
-                    if (data["company"] !== "") {
-                        $("#view_company").val(data["company"]);
-                    }
-                    if (data["designation"] !== "") {
-                        $("#view_designation").text(data["designation"]);
-                    }
-                    if (data["phone"] !== "") {
-                        $("#view_phone").text(data["phone"]);
-                    }
-                    if (data["email"] !== "") {
-                        $("#view_email").text(data["email"]);
-                    }
+    function updateStudentAccount() {
+        
+        branchID = $("#branch").val();
+        multipleValues = $("#lvlSelect").val() || [];
+        alert (multipleValues);
+
+        $.ajax({
+            type: 'POST',
+            url: 'UpdateStudentServlet',
+            dataType: 'JSON',
+            data: {studentID: id, name: name, address: address, phone: phone, email: email},
+            success: function (data) {
+                if (data === 1) {
+                    html = '<div class="alert alert-success col-md-12"><strong>Success!</strong> Updated successfully</div>';
+                } else {
+                    html = '<div class="alert alert-danger col-md-12"><strong>Sorry!</strong> Something went wrong</div>';
                 }
-            });
+
+                $("#update_status").html(html);
+                $('#update_status').fadeIn().delay(2000).fadeOut();
+            }
         });
-    });
-    
-    </script>
+        return false;
+    }
+
+</script>
 
 
 
