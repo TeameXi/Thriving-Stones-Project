@@ -48,51 +48,57 @@ public class StudentViewAttendanceServlet extends HttpServlet {
             Gson gson = new Gson();
             String action = request.getParameter("action");
 
+            ClassDAO classDAO = new ClassDAO();
+            LessonDAO lessonDAO = new LessonDAO();
+            AttendanceDAO attendanceDAO = new AttendanceDAO();
+
             if (action.equals("retrieve")) {
                 int studentID = Integer.parseInt(request.getParameter("studentID"));
-                int branchID = Integer.parseInt(request.getParameter("branchID"));
-                
+
                 JSONArray array = new JSONArray();
-                LessonDAO lessonDAO = new LessonDAO();
-                ArrayList<Class> classes = ClassDAO.getStudentEnrolledClass(studentID);
+                ArrayList<Class> classes = classDAO.getStudentEnrolledClass(studentID);
 
                 for (Class c : classes) {
-                    JSONObject obj = new JSONObject();
-                    obj.put("id", c.getClassID());
-                    obj.put("date", c.getClassDay() + " " +  c.getStartTime() + "-" + c.getEndTime());
-                    obj.put("level", c.getLevel());
-                    obj.put("subject", c.getSubject());
-                    array.put(obj);
-                }
-                JSONObject toReturn = new JSONObject().put("data", array);
-                String json = toReturn.toString();
-                System.out.println(json);
-                out.println(json);
-            
-            }else if(action.equals("displayLessons")){
-                int studentID = Integer.parseInt(request.getParameter("studentID"));
-                int classID = Integer.parseInt(request.getParameter("classID"));
-                
-                JSONArray array = new JSONArray();
-                AttendanceDAO attendanceDAO = new AttendanceDAO();
-                LinkedList<Lesson> lessons = LessonDAO.retrieveAllLessonListsBeforeCurr(classID);
-                
-                for(Lesson l:lessons){
-                    JSONObject obj = new JSONObject();
-                    obj.put("id", l.getLessonid());
-                    String date = l.getStartDate();
-                    obj.put("date", date.substring(0, date.indexOf(" ")));
-                    
-                    
-                    if(attendanceDAO.retrieveStudentAttendances(studentID, l.getLessonid())){
-                        obj.put("attendance", "Present");
-                    } else {
-                        obj.put("attendance", "Absent");
+                    LinkedList<Lesson> lessons = lessonDAO.retrieveAllLessonListsBeforeCurr(c.getClassID());
+
+                    if (lessons.size() > 0) {
+                        JSONObject obj = new JSONObject();
+                        obj.put("id", c.getClassID());
+                        obj.put("name", c.getClassDay() + " " + c.getStartTime() + "-" + c.getEndTime() + "<br/>" + c.getLevel() + " " + c.getSubject());
+                        array.put(obj);
                     }
                 }
-                
                 JSONObject toReturn = new JSONObject().put("data", array);
                 String json = toReturn.toString();
+                out.println(json);
+
+            } else if (action.equals("displayAttendances")) {
+                int classID = Integer.parseInt(request.getParameter("classID"));
+                int studentID = Integer.parseInt(request.getParameter("studentID"));
+
+                JSONObject obj = new JSONObject();
+                JSONArray array = new JSONArray();
+
+                Class c = classDAO.getClassByID(classID);
+                
+                double attendance = attendanceDAO.retrieveNumberOfStudentAttendances(studentID, classID) / lessonDAO.retrieveNumberOfLessons(classID);
+                
+                DecimalFormat df = new DecimalFormat("#.##");
+                
+                obj.put("attendance", df.format(attendance) + "%");
+
+                LinkedList<Lesson> lessons = lessonDAO.retrieveAllLessonListsBeforeCurr(classID);
+
+                for (Lesson l : lessons) {
+                    JSONObject lesson = new JSONObject();
+                    lesson.put("name", l.getLessonDate());
+                    lesson.put("attendance", lessonDAO.retrieveAttendanceForLesson(l.getLessonid()));
+                    array.put(lesson);
+                }
+
+                obj.put("lessons", array);
+
+                String json = obj.toString();
                 System.out.println(json);
                 out.println(json);
             }

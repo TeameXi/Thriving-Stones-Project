@@ -1,79 +1,96 @@
 <%@include file="protect_student.jsp"%>
 <%@include file="header.jsp"%>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css">
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.dataTables.min.css">
-<style type="text/css">
-    td.details-control {
-        background: url("${pageContext.request.contextPath}/styling/img/add.png") no-repeat center center;
-        cursor: pointer;
-        background-size: 15px 15px;
-    }
-    tr.shown td.details-control {
-        background: url("${pageContext.request.contextPath}/styling/img/minus.png") no-repeat center center;
-        background-size: 15px 15px;
-    }
 
-    .tutor-text {
-        text-align: center;
-    }
-
-    .attendance-button {
-        text-align: center;
-    }
-</style>
-<div class="col-lg-10">
-    <div style="text-align: center;margin: 10px;"><span class="tab_active" style="font-size: 14px">Your Attendance</span></div>
-    <table id="tutorAttendance" class="table table-bordered" style="background-color: #cdcddf; width:100%; font-size: 14px">
-        <thead>
-            <tr>
-                <th></th>
-                <th style="text-align: center">Class</th>
-                <th style="text-align: center">Level</th>
-                <th style="text-align: center">Subject</th>
-            </tr>
-        </thead>
-    </table>
-    
-    <div class="inline">
-        <button class="btn btn-default" id="expand">Expand All</button>
-        <button class="btn btn-default" id="collaspe">Collapse All</button>
-    </div>
-</div>
-</div>
 <%@include file="footer.jsp"%>
+<script src='https://code.jquery.com/jquery-3.3.1.js'></script>
 <script src='https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js'></script>
 <script src='https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js'></script>
 <script src='https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js'></script>
-
-<script type="text/javascript">
-    function format(rowData, classID) {
-        return '<table id=' + classID + ' class="table table-bordered" style="background-color: #dddde9; width: 100%;">'
-                + '<thead><tr><th style="text-align: center">Lesson</th><th style="text-align: center">Present?</th></tr></thead></table>';
+<style type="text/css">
+    td.details-control {
+        background: url('${pageContext.request.contextPath}/styling/img/list_metro.png') no-repeat center center;
+        cursor: pointer;
+    }
+    tr.shown td.details-control {
+        background: url('${pageContext.request.contextPath}/styling/img/close.png') no-repeat center center;
     }
 
+    .innerTable{
+        padding-left:50px;
+        padding-right:50px;
+        max-width: 1000px;
+    }
+
+    #table-wrapper {
+        width: 95%;
+        float: left;
+        overflow-x: hidden;
+    }
+
+    .text{
+        text-align: center;
+    }
+    
+    .nested > thead:first-child > tr:first-child > th:nth-child(2) {
+        padding-left: 180px;
+    }
+
+    .nested > tbody > tr > td:nth-child(2) {
+        padding-left: 180px !important;
+    }
+
+    .nested > thead:first-child > tr:first-child > th:first-child {
+        position: absolute;
+        display: inline-block;
+        background-color: #dee8eb;
+        width: 15%;
+        height: 26px;
+    }
+
+    .nested > tbody > tr > td:first-child {
+        position: absolute;
+        display: inline-block;
+        background-color: #dee8eb;
+        width: 15%;
+        height: 26px;
+    }
+</style>
+<div class="col-lg-10">
+    <div id="tab" style="text-align: center;margin: 10px;"><span class="tab_active" style="font-size: 14px">Attendance Taking</span></div>
+    <table id="studentAttendanceTable" class="table display dt-responsive nowrap" style="width:100%;">
+        <thead class="thead-light">
+            <tr>
+                <th scope="col" style="text-align: center;"></th>
+                <th scope="col" style="text-align: center;">Class</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+</div>
+</div>
+
+<script type="text/javascript">
     $(document).ready(function () {
         studentID = <%=user.getRespectiveID()%>
-        branchID = <%=branch_id%>
         action = 'retrieve';
-
-        table = $('#tutorAttendance').DataTable({
+        table = $('#studentAttendanceTable').DataTable({
             "iDisplayLength": 5,
             "aLengthMenu": [[5, 10, 25, -1], [5, 10, 25, "All"]],
             'ajax': {
                 "type": "POST",
                 "url": "StudentViewAttendanceServlet",
                 "data": {
-                    "studentID": studentID,
-                    "branchID": branchID,
-                    "action": action
+                    "action": action,
+                    "studentID": studentID
                 }
             },
             "columnDefs": [
                 {
-                    "targets": [1, 2, 3],
+                    "targets": [1],
                     "data": null,
                     "defaultContent": '',
-                    "className": 'tutor-text'
+                    "className": 'text'
                 }
             ],
             'columns': [
@@ -83,72 +100,75 @@
                     "data": null,
                     "defaultContent": ''
                 },
-                {"data": "date"},
-                {"data": "level"},
-                {"data": "subject"}
+                {"data": "name"}
             ],
             "order": [[1, 'asc']]
         });
-        
-        // Handle click on "Expand All" button
-        $('#expand').on('click', function () {
-            // Expand row details
-            table.rows(':not(.parent)').nodes().to$().find('td:first-child').trigger('click');
-        });
 
-        // Handle click on "Collapse All" button
-        $('#collaspe').on('click', function () {
-            // Collapse row details
-            table.rows().every(function () {
-                // If row has details expanded
-                if (this.child.isShown()) {
-                    // Collapse row details
-                    this.child.hide();
-                    $(this.node()).removeClass('shown');
-                }
-            });
-        });
-
-        $('#tutorAttendance tbody').on('click', 'td.details-control', function () {
+        $('#studentAttendanceTable tbody').on('click', 'td.details-control', function () {
             tr = $(this).parents('tr');
             row = table.row(tr);
-
             if (row.child.isShown()) {
                 // This row is already open - close it
                 row.child.hide();
                 tr.removeClass('shown');
             } else {
                 classID = row.data().id;
-                action = 'displayLessons';
+                action = 'displayAttendances';
+                $.ajax({
+                    type: 'POST',
+                    url: 'StudentViewAttendanceServlet',
+                    dataType: 'JSON',
+                    data: {action: action, classID: classID, studentID: studentID},
+                    success: function (data) {
+                        console.log(data);
+                        html = '<div class="innerTable"><div style="text-align: right; margin-bottom: 10px; margin-right: 50px;">'
+                                + '<img class="leftArrow" src="${pageContext.request.contextPath}/styling/img/left-arrow.svg" height="15" '
+                                + 'width="15" style="margin-right: 58px;"><img '
+                                + 'class="rightArrow" src="${pageContext.request.contextPath}/styling/img/right-arrow.svg" height="15" '
+                                + 'width="15"></div><div id="table-wrapper"><table id=' + classID
+                                + ' class="table table-striped table-bordered nowrap nested" style="width:100%">'
+                                + '<thead><tr><th style="text-align: center;">Attendance</th>';
+                        for (var i = 0; i < data.lessons.length; i++) {
+                            lessonNum = i + 1;
+                            html += '<th style="text-align: center;">Lesson ' + lessonNum + '</th>';
+                        }
 
-                // Open this row
-                row.child(format(row.data(), classID)).show();
-                var childTable = $("#" + classID).DataTable({
-                    "dom": 'tpr',
-                    "iDisplayLength": 5,
-                    'ajax': {
-                        "type": "POST",
-                        "url": "StudentViewAttendanceServlet",
-                        "data": {
-                            "classID": classID,
-                            "action": action,
-                            "studentID": studentID
+                        html += '</tr></thead><tbody>';
+                        lessons = data.lessons;
+                        html += '<tr><td style="text-align:center;">' + data.attendance + '</td>';
+                        for (var j = 0; j < lessons.length; j++) {
+                            if (lessons[j].attendance) {
+                                html += '<td style="text-align: center;"><label style="margin-right: 10px;">' + lessons[j].name + '</label><input type="checkbox" class="checkSingle" checked disabled="disabled"></td>';
+                            } else {
+                                html += '<td style="text-align: center;"><label style="margin-right: 10px;">' + lessons[j].name + '</label><input type="checkbox" class="checkSingle" disabled="disabled"></td>';
+                            }
                         }
-                    },
-                    "columnDefs": [
-                        {
-                            "targets": [0,1],
-                            "data": null,
-                            "defaultContent": '',
-                            "className": 'tutor-text'
-                        }
-                    ],
-                    'columns': [
-                        {"data": "date"},
-                        {"data": "attendance"}
-                    ]
+                        html += '</tr>';
+                        html += '</tbody></table></div></div>';
+
+                        // Open this row
+                        row.child(html).show();
+
+                        tr.addClass('shown');
+
+                        $(".leftArrow").on("click", function () {
+                            var leftPos = $('#table-wrapper').scrollLeft();
+                            console.log(leftPos);
+                            $("#table-wrapper").animate({
+                                scrollLeft: leftPos - 200
+                            }, 800);
+                        });
+
+                        $(".rightArrow").on("click", function () {
+                            var leftPos = $('#table-wrapper').scrollLeft();
+                            console.log(leftPos);
+                            $("#table-wrapper").animate({
+                                scrollLeft: leftPos + 200
+                            }, 800);
+                        });
+                    }
                 });
-                tr.addClass('shown');
             }
         });
     });
