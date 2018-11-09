@@ -5,29 +5,34 @@
  */
 package controller;
 
-import entity.Level;
 import entity.Student;
+import entity.Tutor;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.LessonDAO;
 import model.LevelDAO;
+import model.ParentChildRelDAO;
+import model.ParentDAO;
+import model.PaymentDAO;
 import model.StudentClassDAO;
 import model.StudentDAO;
+import model.StudentGradeDAO;
+import model.TutorHourlyRateDAO;
+import model.UsersDAO;
 
 /**
  *
  * @author Zang Yu
  */
-@WebServlet(name = "AutoPromoteServlet", urlPatterns = {"/AutoPromoteServlet"})
-public class AutoPromoteServlet extends HttpServlet {
+@WebServlet(name = "PromoteStudentServlet", urlPatterns = {"/PromoteStudentServlet"})
+public class PromoteStudentServlet extends HttpServlet {
+
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -40,54 +45,37 @@ public class AutoPromoteServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        boolean status = false;
         
-        if(request.getParameter("search")!=null){
-            String branch = request.getParameter("branch");
-            int branchID = 0;
-            if(branch != null && !branch.equals("")){
-                branchID = Integer.parseInt(branch);
-            }
-            out.println(branchID);
-            String[] level = request.getParameterValues("level");
-            boolean contains = Arrays.asList(level).contains("0");
-            ArrayList<Student> allSelectedStudents = new ArrayList<Student>();
-           
-            if(level != null && !contains){
-                for(String lvl: level){
-                    int levelID = Integer.parseInt(lvl);                    
-                    int totalNumber = StudentDAO.retrieveNumberOfStudentByLevel(levelID);
-                    if(totalNumber > 0){
-                       ArrayList<Student> students = StudentDAO.listAllStudentsByLimit(branchID, levelID, 0, totalNumber);
-                       allSelectedStudents.addAll(students); 
-                       status = true;
+        
+        PrintWriter out = response.getWriter();
+        
+        String selStuID = request.getParameter("selStuID");
+        String[] selStuList = selStuID.split(",");
+        if(selStuList != null){
+            for(String studentStr: selStuList){                
+                int studentID = Integer.parseInt(studentStr);
+                Student student = StudentDAO.retrieveStudentbyID(studentID);
+                String level = student.getLevel();                    
+                int levelID = LevelDAO.retrieveLevelID(level);
+                if(levelID<11){
+                    double totalDeposit = 0;                
+                    totalDeposit = StudentClassDAO.retrieveStudentTotalDepositAmt(studentID,0);
+                    if (totalDeposit>0){
+                        boolean updateClassStudentRelStatus=updateClassStudentRelStatus =StudentClassDAO.updateStatus(studentID,0);
+                        boolean updateReqAmt = StudentDAO.updateStudentFees(studentID,totalDeposit,student.getOutstandingAmt());
                     }
-                }   
+
+                        boolean update = StudentDAO.promoteStudentLevel(studentID, levelID+1);
+                        if(update){                        
+                            out.println(1);
+                        }else{
+                            out.println(0);
+                        }
+                }else{
+                    out.println(2);
+                }
             }
-            if(level != null && contains){
-                ArrayList<Level> allLevels = LevelDAO.retrieveAllLevelLists();
-                for(int i=0; i<allLevels.size(); i++ ){
-                    Level lvl = allLevels.get(i);                
-                    int totalNumber = StudentDAO.retrieveNumberOfStudentByLevel(lvl.getLevel_id());
-                    if(totalNumber > 0){
-                       ArrayList<Student> students = StudentDAO.listAllStudentsByLimit(branchID, lvl.getLevel_id(), 0, totalNumber);
-                       allSelectedStudents.addAll(students); 
-                       status = true;
-                    }
-                }   
-            }
-            if(status) {
-                
-            }else{
-                request.setAttribute("errorMsg", "No student found!");
-            }
-            request.setAttribute("selectedStudents",allSelectedStudents );
-            RequestDispatcher view = request.getRequestDispatcher("AutoPromote.jsp");
-            view.forward(request,response);
-        }              
-       
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
