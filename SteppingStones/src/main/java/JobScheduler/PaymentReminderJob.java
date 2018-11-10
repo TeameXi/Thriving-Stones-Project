@@ -21,6 +21,7 @@ import model.ParentChildRelDAO;
 import model.ParentDAO;
 import model.SendSMS;
 import model.StudentClassDAO;
+import model.StudentDAO;
 
 /**
  *
@@ -42,35 +43,57 @@ public class PaymentReminderJob implements Runnable {
 
         for (Branch b : branches) {
             int branchID = b.getBranchId();
-            ArrayList<Class> classes = ClassDAO.listAllClasses(branchID);
+            ArrayList<Student> students = StudentDAO.listAllStudentsByBranch(branchID);
 
-            for (Class c : classes) {
-                int classID = c.getClassID();
+            for (Student s : students) {
+                int studentID = s.getStudentID();
+                ArrayList<Class> classes = ClassDAO.getStudentEnrolledClass(studentID);
+                ArrayList<Lesson> notify = new ArrayList<>();
 
-                //check if lesson needs reminder
-                ArrayList<Lesson> lessons = LessonDAO.retrieveAllLessonListsAfterCurrTS(classID);
+                for (Class c : classes) {
+                    int classID = c.getClassID();
 
-                for (Lesson l : lessons) {
-                    //get check if is the day to send sms
+                    //check if lesson needs reminder
+                    ArrayList<Lesson> lessons = LessonDAO.retrieveAllLessonListsAfterCurrTS(classID);
+
+                    for (Lesson l : lessons) {
+                        //get check if is the day to send sms
+                        LocalDateTime currTime = LocalDateTime.now();
+                        Timestamp lessonTimestamp = l.getStartDateTS();
+                        LocalDateTime lessonLDT = lessonTimestamp.toLocalDateTime().minusDays(7);
+                        Period p = Period.between(currTime.toLocalDate(), lessonLDT.toLocalDate());
+
+                        int yearDiff = p.getYears();
+                        int monthDiff = p.getMonths();
+                        int dayDiff = p.getDays();
+
+                        // send sms
+                        if (yearDiff <= 7 & monthDiff <= 7 & dayDiff <= 7) {
+                            notify.add(l);
+                        }
+                    }
+                }
+
+                for (Lesson le : notify) {
                     LocalDateTime currTime = LocalDateTime.now();
-                    Timestamp lessonTimestamp = l.getStartDateTS();
+                    Timestamp lessonTimestamp = le.getStartDateTS();
                     LocalDateTime lessonLDT = lessonTimestamp.toLocalDateTime().minusDays(7);
                     Period p = Period.between(currTime.toLocalDate(), lessonLDT.toLocalDate());
-                    
+
                     int yearDiff = p.getYears();
                     int monthDiff = p.getMonths();
                     int dayDiff = p.getDays();
 
-                    //send sms
                     if (yearDiff == 0 & monthDiff == 0 & dayDiff == 0) {
                         //get number of parents
-                        ArrayList<Student> studs = StudentClassDAO.listAllStudentsByClass(classID);
-                        for (Student s : studs) {
-                            int parentID = ParentChildRelDAO.getParentID(s.getStudentID());
-                            ParentDAO pDAO = new ParentDAO();
-                            Parent currParent = pDAO.retrieveSpecificParentById(parentID);
-                            int currPhoneNo = currParent.getPhone();
-                            SendSMS.sendingSMS("+65" + currPhoneNo, "Please be reminded to submit your child/children's tuition fee to Stepping Stones Learning Centre.");
+                        int parentID = ParentChildRelDAO.getParentID(studentID);
+                        ParentDAO pDAO = new ParentDAO();
+                        Parent currParent = pDAO.retrieveSpecificParentById(parentID);
+                        int currPhoneNo = currParent.getPhone();
+                        SendSMS.sendingSMS("+65" + currPhoneNo, "Please be reminded to submit your child's tuition fees to Stepping Stones Learning Centre on " + currTime.toLocalDate() + ".");
+                        for (Lesson les : notify) {
+                            //set reminded to 1
+                            LessonDAO.setReminded(le.getClassid(), le.getLessonid());
                         }
                     }
                 }
