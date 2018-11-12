@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.ClassDAO;
 import model.LessonDAO;
+import model.ParentChildRelDAO;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -70,6 +71,42 @@ public class StudentScheduleServlet extends HttpServlet {
                             array.put(obj);
                         }
                     }
+                    JSONObject toReturn = new JSONObject().put("data", array);
+                    String json = toReturn.toString();
+                    out.println(json);
+                    break;
+                }
+                case "retrieveParent": {
+                    int parentID = Integer.parseInt(request.getParameter("parentID"));
+                    
+                    ArrayList<Integer> children = ParentChildRelDAO.retrieveChildren(parentID);
+                    
+                    JSONArray array = new JSONArray();
+                    
+                    for(int studentID: children){
+                        ArrayList<Class> classes = classDAO.getStudentEnrolledClass(studentID);
+                        for (Class c : classes) {
+                            ArrayList<Lesson> lessons = lessonDAO.retrieveAllLessonLists(c.getClassID());
+
+                            for(Lesson l : lessons){
+                                JSONObject obj = new JSONObject();
+                                obj.put("id", l.getLessonid());
+
+                                ArrayList<String> replacements = lessonDAO.retrieveReplacementDates(l.getLessonid());
+
+                                if (replacements != null) {
+                                    obj.put("start_date", replacements.get(0));
+                                    obj.put("end_date", replacements.get(1));
+                                } else {
+                                    obj.put("start_date", l.getStartDate());
+                                    obj.put("end_date", l.getEndDate());
+                                }
+                                obj.put("text", c.getLevel() + " " + c.getSubject());
+                                array.put(obj);
+                            }
+                        }
+                    }
+                
                     JSONObject toReturn = new JSONObject().put("data", array);
                     String json = toReturn.toString();
                     out.println(json);

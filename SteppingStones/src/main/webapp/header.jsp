@@ -233,14 +233,15 @@
                     <%
                         }else if(role != null && user != null && role == "parent" ){
                     %>
-                            
+                            <li><a href="ParentViewSchedule.jsp"><i class="zmdi zmdi-calendar"></i>Schedule</a></li>
                             <li><a href="ParentViewGrade.jsp"><i class="zmdi zmdi-money-box"></i>View Child's Grades</a></li>
                             <li><a href="ParentViewAttendance.jsp"><i class="zmdi zmdi-money-box"></i>View Child's Attendance</a></li>
                             <li><a href=""><i class="zmdi zmdi-money-box"></i>Rewards</a></li>
                             
                     <%
                         }else if(role != null && user != null && role == "student" ){
-                    %>      <li><a href="StudentViewSchedule.jsp"><i class="zmdi zmdi-calendar"></i>Schedule</a></li>
+                    %>      
+                            <li><a href="StudentViewSchedule.jsp"><i class="zmdi zmdi-calendar"></i>Schedule</a></li>
                             <li><a href="StudentViewGrade.jsp"><i class="zmdi zmdi-money-box"></i>Grades</a></li>
                             <li><a href="StudentViewAttendance.jsp"><i class="zmdi zmdi-money-box"></i>View Attendance</a></li>
                             <li><a href="StudentViewReward.jsp"><i class="zmdi zmdi-money-box"></i>Rewards</a></li>

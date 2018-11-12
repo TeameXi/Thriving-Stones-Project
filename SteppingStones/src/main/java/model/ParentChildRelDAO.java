@@ -1,10 +1,14 @@
 package model;
 
 import connection.ConnectionManager;
+import entity.Student;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ParentChildRelDAO {
     public static void insertParentChildRel(int parentPhone, int studentID, int branchID, String relationship) {
@@ -88,6 +92,31 @@ public class ParentChildRelDAO {
             System.out.println("error in getParentID sql");
         }  
         return numOfChild;
+    }
+    
+    public static ArrayList<Integer> retrieveChildren(int parentID){
+        ArrayList<Integer> children = new ArrayList<>();
+        
+        String sql = "select child_id from parent_child_rel where parent_id = ?";
+        
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, parentID);
+            
+            ResultSet rs = stmt.executeQuery();
+            
+            while(rs.next()){
+                children.add(rs.getInt(1));
+            }
+            
+            if(!children.isEmpty()){
+                return children;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ParentChildRelDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return null;
     }
     
 }
