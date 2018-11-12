@@ -167,7 +167,7 @@
                                 <!-- Sub menu -->
                                 <ul>
                                     <li><a href="TutorPayment.jsp">Tutor Payment</a></li>
-                                    <li><a href="PaymentPage.jsp">Student Payment</a></li>
+                                    <li><a href="StudentPaymentStatus.jsp">Student Payment Summary</a></li>
                                 </ul>
                             </li>
                             <li class="submenu">
@@ -191,7 +191,6 @@
                                 <ul>
                                     <li><a href="CreateExpenses.jsp">Create Expenses</a></li>
                                     <li><a href="DisplayExpenses.jsp">View Expenses</a></li>
-                                    <li><a href="StudentPaymentStatus.jsp">View Student Payment Records</a></li>
                                     <li><a href="GenerateFinancialReport.jsp">Generate Financial Report</a></li>
                                 </ul>
                             </li>
