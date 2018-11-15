@@ -368,6 +368,7 @@ public class PaymentHandlerServlet extends HttpServlet {
             response.sendRedirect("PaymentStudent.jsp?status=Payment successful.");
             return;
         }
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

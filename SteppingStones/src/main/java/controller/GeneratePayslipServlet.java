@@ -5,8 +5,7 @@
  */
 package controller;
 
-//import com.qoppa.pdf.settings.ImageCompression;
-//import com.qoppa.pdfProcess.PDFGraphics;
+
 import com.qoppa.pdfWriter.PDFGraphics;
 import com.qoppa.pdfWriter.PDFDocument;
 import com.qoppa.pdfWriter.PDFPage;
@@ -15,19 +14,14 @@ import entity.Class;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
 import java.awt.print.Paper;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -91,6 +85,7 @@ public class GeneratePayslipServlet extends HttpServlet {
         pf.setPaper(paper);
 
         // Create a document and a page in the document
+        
         PDFDocument pdfDoc = new PDFDocument();
         PDFPage newPage = pdfDoc.createPage(pf);
         
@@ -178,6 +173,7 @@ public class GeneratePayslipServlet extends HttpServlet {
 
         // Close the server output stream
         sOut.close();
+        
 
     }
     private String getMonthName(int month){
