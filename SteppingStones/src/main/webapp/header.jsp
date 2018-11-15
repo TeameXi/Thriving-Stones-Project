@@ -6,6 +6,7 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 	<link href="${pageContext.request.contextPath}/styling/css/main.css" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styling/fonts/iconic/css/material-design-iconic-font.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
     <%
@@ -26,14 +27,22 @@
     <div class="header" id="header_<%=role%>">
         <div class="container">
             <div class="row">
+                <div class="col-sm-4" id="HamburgerMenu">
+                    <button type="button" class="menu-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+
+                        <span class="icon-bar"></span><span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
                <div class="col-sm-5">
                   <!-- Logo -->
                   <div class="logo">
                     <a href="Dashboard.jsp"><img src="${pageContext.request.contextPath}/styling/img/logo_white.png"></img></a>
                   </div>
                </div>
-               <div class="col-sm-4"></div>
-               <div class="col-sm-3">
+                  <div class="col-sm-4" id="NotHamburgerMenu"></div>
+                  <div class="col-sm-3">
                   <div class="navbar" role="banner">
                       <nav style="text-align: center;">
                         <ul class="nav navbar-nav">
@@ -58,6 +67,7 @@
                         </ul>
                       </nav>
                   </div>
+                  </div>
                </div>
             </div>
         </div>
@@ -68,7 +78,8 @@
 <div class="page-content">	
     <div class="row">
         <div class="col-md-2">
-            <div class="sidebar content-box" style="display: block;">
+            <div id="navbar" class="navbar collapse">
+            <div class="sidebar content-box">
                 <ul class="nav">
                     <!-- Main menu -->
                     <li><a href="Dashboard.jsp"><i class="glyphicon glyphicon-dashboard"></i> Dashboard</a></li>
@@ -255,6 +266,7 @@
 
                 </ul>
             </div>
+        </div>
         </div>
        
    
