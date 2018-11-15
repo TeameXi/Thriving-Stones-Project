@@ -195,6 +195,7 @@
                                     <li><a href="GenerateFinancialReport.jsp">Generate Financial Report</a></li>
                                 </ul>
                             </li>
+                            <li><a href="StudentAnalytic.jsp"><i class="zmdi zmdi-chart"></i>Analytic</a></li>
                             
                       
                             <!-- <li><a href="RegisterForClasses.jsp"><i class="zmdi zmdi-library"></i>Register For Classes</a></li> -->
