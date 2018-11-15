@@ -19,7 +19,9 @@ import java.awt.print.Paper;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -235,7 +237,7 @@ public class PaymentHandlerServlet extends HttpServlet {
         
         //String from = "registration";
          // Get servlet output stream
-        ServletOutputStream sOut = response.getOutputStream();
+        
         response.setContentType("application/pdf");
         response.setHeader("Content-disposition", "attachment; filename=" + formattedReceiptNo + ".pdf" );
 
@@ -352,27 +354,47 @@ public class PaymentHandlerServlet extends HttpServlet {
         g2d.setColor(Color.BLACK);
         g2d.drawString("This is computer generated receipt. Therefore, no signature is required", 200, 710);
         
-        receiptDAO.addReceipt(date, paymentMode, nos, descriptions, payment_amounts, "S$" + totalAmountResult, studentID);
+        
+        if(checkReceipt(receiptNo, date, paymentMode, nos, descriptions, payment_amounts, "S$" + totalAmountResult, studentID)){
+            receiptDAO.addReceipt(date, paymentMode, nos, descriptions, payment_amounts, "S$" + totalAmountResult, studentID);
+        }else{
+            if (from.equals("registration")) {
+                response.sendRedirect("RegisterForClasses.jsp?status=Payment successful.");
+                return;
+            } else if (from.equals("payment")) {
+                response.sendRedirect("PaymentStudent.jsp?status=Payment successful.");
+                return;
+            }
+        }
+        
         
         // Add the page to the document
         pdfDoc.addPage(newPage);
 
+        ServletOutputStream sOut = response.getOutputStream();
         // Save the document to the servlet output stream.  This goes directly to the browser
         pdfDoc.saveDocument(sOut);
 
         // Close the server output stream
         sOut.close();
         
-        if (from.equals("registration")) {
-            response.sendRedirect("RegisterForClasses.jsp?status=Payment successful.");
-            return;
-        } else if (from.equals("payment")) {
-            response.sendRedirect("PaymentStudent.jsp?status=Payment successful.");
-            return;
-        }
+        
         
     }
-
+private boolean checkReceipt(int receiptNo, String receipt_date, String payment_mode, String no, String description, String amount_paid, String total_amount_paid, int student_id){
+    ReceiptDAO receiptDAO = new ReceiptDAO();
+    List<String> lastReceipt = receiptDAO.retrieveReceipt(receiptNo);
+    if(lastReceipt.get(0).equals(receipt_date) 
+            && lastReceipt.get(1).equals(payment_mode) 
+            && lastReceipt.get(2).equals(no) 
+            && lastReceipt.get(3).equals(description) 
+            && lastReceipt.get(4).equals(amount_paid) 
+            && lastReceipt.get(5).equals(total_amount_paid) 
+            && lastReceipt.get(6).equals("" + student_id)){
+        return false;
+    }
+    return true;
+}
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
