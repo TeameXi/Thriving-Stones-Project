@@ -167,7 +167,7 @@
                                 <!-- Sub menu -->
                                 <ul>
                                     <li><a href="TutorPayment.jsp">Tutor Payment</a></li>
-                                    <li><a href="PaymentPage.jsp">Student Payment</a></li>
+                                    <li><a href="StudentPaymentStatus.jsp">Student Payment Summary</a></li>
                                 </ul>
                             </li>
                             <li class="submenu">
@@ -191,7 +191,6 @@
                                 <ul>
                                     <li><a href="CreateExpenses.jsp">Create Expenses</a></li>
                                     <li><a href="DisplayExpenses.jsp">View Expenses</a></li>
-                                    <li><a href="StudentPaymentStatus.jsp">View Student Payment Records</a></li>
                                     <li><a href="GenerateFinancialReport.jsp">Generate Financial Report</a></li>
                                 </ul>
                             </li>
@@ -235,14 +234,15 @@
                     <%
                         }else if(role != null && user != null && role == "parent" ){
                     %>
-                            
+                            <li><a href="ParentViewSchedule.jsp"><i class="zmdi zmdi-calendar"></i>Schedule</a></li>
                             <li><a href="ParentViewGrade.jsp"><i class="zmdi zmdi-money-box"></i>View Child's Grades</a></li>
                             <li><a href="ParentViewAttendance.jsp"><i class="zmdi zmdi-money-box"></i>View Child's Attendance</a></li>
                             <li><a href=""><i class="zmdi zmdi-money-box"></i>Rewards</a></li>
                             
                     <%
                         }else if(role != null && user != null && role == "student" ){
-                    %>
+                    %>      
+                            <li><a href="StudentViewSchedule.jsp"><i class="zmdi zmdi-calendar"></i>Schedule</a></li>
                             <li><a href="StudentViewGrade.jsp"><i class="zmdi zmdi-money-box"></i>Grades</a></li>
                             <li><a href="StudentViewAttendance.jsp"><i class="zmdi zmdi-money-box"></i>View Attendance</a></li>
                             <li><a href="StudentViewReward.jsp"><i class="zmdi zmdi-money-box"></i>Rewards</a></li>
