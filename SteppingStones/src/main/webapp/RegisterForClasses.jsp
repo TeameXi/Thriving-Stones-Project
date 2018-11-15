@@ -152,10 +152,10 @@
                         if(cls.getType().equals("P")){
                             out.println("<td>"+cls.getSubject()+" (Premium)</td>");
                         }else{
-                            if(!cls.getCombinedLevel().equals("")){
-                                out.println("<td>"+cls.getSubject()+" (Combined)</td>");
-                            }else{
+                            if(cls.getCombinedLevel().equals("-1")){
                                 out.println("<td>"+cls.getSubject()+"</td>");
+                            }else{
+                                out.println("<td>"+cls.getSubject() +" (Combined)</td>");
                             }
                         }
                         

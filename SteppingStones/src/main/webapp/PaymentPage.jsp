@@ -114,7 +114,8 @@
                             %>
                         <input name="<%=payment.getClassID()%>" class="form-control" type="text" step="0.01" value="<%=payment.getChargeAmount()%>">
                         <%
-                                        out.println("</td><td>-");
+                                        out.println("<td>" + payment.getOutstandingCharges() + "</td>");
+                                        //out.println("</td><td>-");
                         %>
                         <!--<input name="regFees" id="phone" class="form-control" type="number">-->
                         <%

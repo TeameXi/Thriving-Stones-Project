@@ -5,22 +5,18 @@
  */
 package controller;
 
-import entity.Class;
-import entity.Lesson;
 import entity.Level;
 import entity.Student;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.ClassDAO;
-import model.LessonDAO;
 import model.LevelDAO;
+import model.PaymentDAO;
 import model.StudentDAO;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -70,78 +66,17 @@ public class StudentPaymentStatusServlet extends HttpServlet {
                     {
                         int levelID = Integer.parseInt(request.getParameter("levelID"));
                         int branchID = Integer.parseInt(request.getParameter("branchID"));
-                        ArrayList<Student> studs = studentDAO.listStudentsByLevel(levelID, branchID);
+                        ArrayList<Student> studs = StudentDAO.listStudentsByLevel(levelID, branchID);
                         JSONArray array = new JSONArray();
                         for (Student s : studs) {
+                            int studentID = s.getStudentID();
+                            double totalOutstandingAmt = PaymentDAO.getStudentTutionFeeToAdd(studentID) + StudentDAO.retrieveStudentOutstandingAmt(studentID);
                             JSONObject obj = new JSONObject();
-                            
-                            obj.put("id", s.getStudentID());
-                            obj.put("studentName", s.getName());
-                            obj.put("noOfClass", ClassDAO.getStudentEnrolledClass(s.getStudentID()).size());
-                            array.put(obj);
-                        }       
-                        JSONObject toReturn = new JSONObject().put("data", array);
-                        String json = toReturn.toString();
-                        out.println(json);
-                        break;
-                    }
-                case "retrieveClasses":
-                    {
-                        int studentID = Integer.parseInt(request.getParameter("studentID"));
-                        ArrayList<Class> classes = ClassDAO.getStudentEnrolledClass(studentID);
-                        JSONArray array = new JSONArray();
-                        for (Class c : classes) {
-                            JSONObject obj = new JSONObject();
-                            String date = c.getClassDay() + " " + c.getStartTime() + "-" + c.getEndTime();
-                            obj.put("id", studentID + "" + c.getClassID());
-                            obj.put("subject", c.getSubject());
-                            obj.put("date", date);
-                            array.put(obj);
-                        }       
-                        JSONObject toReturn = new JSONObject().put("data", array);
-                        String json = toReturn.toString();
-                        out.println(json);
-                        break;
-                    }
-                case "retrieveLessons":
-                    {
-                        String student_id = request.getParameter("studentID");
-                        int studentID = Integer.parseInt(student_id);
-                        String classstudent = request.getParameter("classID");
-                        String class_id = classstudent.substring(student_id.length());
-                        int classID = Integer.parseInt(class_id);
-                        
-                        ArrayList<Class> classes = ClassDAO.getStudentEnrolledClass(studentID);
-                        JSONArray array = new JSONArray();
-                        
-                        for (Class c : classes) {
-                            LinkedList<Lesson> lessons = LessonDAO.retrieveAllLessonListsBeforeCurr(c.getClassID());
-                            ArrayList<Lesson> lessonsWithPaymentStatus = LessonDAO.retrieveLessonsForPaymentStatus(c.getClassID());
-                            
-                            for (Lesson l : lessons) {
-                                String date = l.getStartDate().substring(0, l.getStartDate().indexOf(" "));
-                                
-                                for (Lesson lCheck : lessonsWithPaymentStatus) {
-                                    String checkAgainst = lCheck.getStartDateTS().toLocalDateTime().toLocalDate() + "";
-                                    
-                                    if (date.equals(checkAgainst)) {
-                                        String dateForPayment = lCheck.getStartDateTS().toLocalDateTime().minusDays(1).toLocalDate() + "";
-                                        int chargesDue = LessonDAO.getPaymentStatus(classID, studentID, dateForPayment);
-                                        
-                                        if (chargesDue != -1) {
-                                            JSONObject obj = new JSONObject();
-                                            obj.put("id", l.getLessonid() + " " + studentID);
-                                            obj.put("date", date);
-                                            
-                                            if (chargesDue != 0){
-                                                obj.put("paid", "Paid");
-                                            } else {
-                                                obj.put("paid", chargesDue + " owed");
-                                            }
-                                            array.put(obj);
-                                        }
-                                    }
-                                }
+                            if(totalOutstandingAmt > 0){
+                                obj.put("id", studentID);
+                                obj.put("studentName", s.getName());
+                                obj.put("totalOutstandingAmt", totalOutstandingAmt);
+                                array.put(obj);
                             }
                         }       
                         JSONObject toReturn = new JSONObject().put("data", array);

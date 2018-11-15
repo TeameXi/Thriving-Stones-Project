@@ -129,48 +129,50 @@ public class PaymentHandlerServlet extends HttpServlet {
                 System.out.println("After Deposit Payment" + totalOutstandingAmt + "  " + stu.getOutstandingAmt() + "  " + paymentAmount);
 
             } else if (type.equals("First Installment")) {
+                
+                if(request.getParameter("update").equals("updatePayment")){
+                    String joinDate = StudentClassDAO.retrieveJoinDateOfStudentByClass(studentID, classID);
+                    System.out.print("JoinDate " + joinDate);
+                    if(cls.getType().equals("P")){
+                        noOfLesson = LessonDAO.retrieveNoOfLessonPremium(classID, joinDate);
+                        //System.out.println(noOfLesson);
+                    }else{
+                        noOfLesson = LessonDAO.retrieveNoOfLessonForFirstInstallment(classID, joinDate);
+                    }
+                    Student stu = StudentDAO.retrieveStudentbyID(studentID);
+                    String firstInstallmentStr = request.getParameter("" + classID);
 
-                String joinDate = StudentClassDAO.retrieveJoinDateOfStudentByClass(studentID, classID);
-                System.out.print("JoinDate " + joinDate);
-                if(cls.getType().equals("P")){
-                    noOfLesson = LessonDAO.retrieveNoOfLessonPremium(classID, joinDate);
-                    //System.out.println(noOfLesson);
-                }else{
-                    noOfLesson = LessonDAO.retrieveNoOfLessonForFirstInstallment(classID, joinDate);
-                }
-                Student stu = StudentDAO.retrieveStudentbyID(studentID);
-                String firstInstallmentStr = request.getParameter("" + classID);
-
-                System.out.println("Installment Fees" + firstInstallmentStr);
-                if (firstInstallmentStr == null) {
-                    PaymentDAO.updateFirstInstallmentOutstandingAmount(studentID, classID, calculatedOutstandingAmount);
-                    double totalOutstandingAmt = stu.getOutstandingAmt() - paymentAmount;
-                    StudentDAO.updateStudentTotalOutstandingFees(studentID, totalOutstandingAmt);
-                    System.out.println("After FirstInstallment Pay" + totalOutstandingAmt + "  " + stu.getOutstandingAmt() + "  " + paymentAmount);
-                }
-
-                double firstInstallment = -1;
-                if (firstInstallmentStr != null && firstInstallmentStr.isEmpty()) {
-                    PaymentDAO.updateFirstInstallmentAmount(studentID, classID, firstInstallment, calculatedOutstandingAmount);
-                }
-
-                if (firstInstallmentStr != null && !firstInstallmentStr.isEmpty()) {
-                    firstInstallment = Double.parseDouble(firstInstallmentStr);
-                    calculatedOutstandingAmount = firstInstallment - paymentAmount;
-                    PaymentDAO.updateFirstInstallmentAmount(studentID, classID, firstInstallment, calculatedOutstandingAmount);
-                    if (chargeAmount == outstandingAmount) {
-                        double totalOutstandingAmt = stu.getOutstandingAmt() + calculatedOutstandingAmount;
-                        StudentDAO.updateStudentTotalOutstandingFees(studentID, totalOutstandingAmt);
-                        System.out.println("After FirstInstallment Out" + totalOutstandingAmt + "  " + stu.getOutstandingAmt() + "  " + paymentAmount);
-                    } else {
+                    System.out.println("Installment Fees" + firstInstallmentStr);
+                    if (firstInstallmentStr == null) {
+                        PaymentDAO.updateFirstInstallmentOutstandingAmount(studentID, classID, calculatedOutstandingAmount);
                         double totalOutstandingAmt = stu.getOutstandingAmt() - paymentAmount;
                         StudentDAO.updateStudentTotalOutstandingFees(studentID, totalOutstandingAmt);
                         System.out.println("After FirstInstallment Pay" + totalOutstandingAmt + "  " + stu.getOutstandingAmt() + "  " + paymentAmount);
                     }
-                }
 
-                if (paymentAmount != 0) {
-                    PaymentDAO.insertPaymentToRevenue(studentID, studentName, noOfLesson, "First Installment", lvlSubject, paymentAmount, paymentDate);
+                    double firstInstallment = -1;
+                    if (firstInstallmentStr != null && firstInstallmentStr.isEmpty()) {
+                        PaymentDAO.updateFirstInstallmentAmount(studentID, classID, firstInstallment, calculatedOutstandingAmount);
+                    }
+
+                    if (firstInstallmentStr != null && !firstInstallmentStr.isEmpty()) {
+                        firstInstallment = Double.parseDouble(firstInstallmentStr);
+                        calculatedOutstandingAmount = firstInstallment - paymentAmount;
+                        PaymentDAO.updateFirstInstallmentAmount(studentID, classID, firstInstallment, calculatedOutstandingAmount);
+                        if (chargeAmount == outstandingAmount) {
+                            double totalOutstandingAmt = stu.getOutstandingAmt() + calculatedOutstandingAmount;
+                            StudentDAO.updateStudentTotalOutstandingFees(studentID, totalOutstandingAmt);
+                            System.out.println("After FirstInstallment Out" + totalOutstandingAmt + "  " + stu.getOutstandingAmt() + "  " + paymentAmount);
+                        } else {
+                            double totalOutstandingAmt = stu.getOutstandingAmt() - paymentAmount;
+                            StudentDAO.updateStudentTotalOutstandingFees(studentID, totalOutstandingAmt);
+                            System.out.println("After FirstInstallment Pay" + totalOutstandingAmt + "  " + stu.getOutstandingAmt() + "  " + paymentAmount);
+                        }
+                    }
+
+                    if (paymentAmount != 0) {
+                        PaymentDAO.insertPaymentToRevenue(studentID, studentName, noOfLesson, "First Installment", lvlSubject, paymentAmount, paymentDate);
+                    }
                 }
 
             } else if (type.equals("Reg Fees")) {
