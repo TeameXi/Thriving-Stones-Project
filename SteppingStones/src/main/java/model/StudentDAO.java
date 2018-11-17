@@ -418,6 +418,23 @@ public class StudentDAO {
         }
         return levelID;
     }
+    
+    public static String retrieveStudentLevelbyID(int studentID) {
+        int levelID = 0;
+        String level = "";
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("select level_id from student where student_id = ?");
+            stmt.setInt(1, studentID);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                levelID = rs.getInt("level_id");
+            }
+            level = LevelDAO.retrieveLevel(levelID);
+        } catch (SQLException e) {
+            System.out.print(e.getMessage());
+        }
+        return level;
+    }
 
     public static boolean deleteStudentbyID(int studentID) {
         boolean deletedStatus = false;

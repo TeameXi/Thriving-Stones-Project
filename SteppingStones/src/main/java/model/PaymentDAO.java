@@ -259,6 +259,169 @@ public class PaymentDAO {
         }
     }
     
+    public static void getAllDueRegFees(ArrayList<Payment> paymentData){
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("select student_id, reg_fees, outstanding_reg_fees, date(updated) as due_date from student "
+                    + "where outstanding_reg_fees > 0 and updated < curdate();");
+            ResultSet rs = stmt.executeQuery();
+            
+            while (rs.next()) {
+                int studentID = rs.getInt("student_id");
+                double chargeAmount = rs.getDouble("reg_fees");
+                double outstandingCharge = rs.getDouble("outstanding_reg_fees");
+                String dueDate = rs.getString("due_date");
+                Payment p = new Payment(studentID, StudentDAO.retrieveStudentLevelbyID(studentID), "Reg Fees", dueDate, chargeAmount, outstandingCharge, 0, 0);
+                paymentData.add(p);
+            }
+        } catch (SQLException e) {
+            System.out.print("Error in getAllDueRegFees method" + e.getMessage());
+        }
+    }
+    
+    public static void getAllDueStudentDeposit(ArrayList<Payment> paymentData){
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("select student_id, class_id, date(registration_date) as due_date, deposit_fees, outstanding_deposit, "
+                    + "first_installment, outstanding_first_installment from class_student_rel where (outstanding_first_installment > 0 or outstanding_deposit > 0) "
+                    + "and registration_date < curdate();");
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                int studentID = rs.getInt("student_id");
+                int classID = rs.getInt("class_id");
+                Class cls = ClassDAO.getClassByID(classID);
+                String subject = cls.getLevel() + " (" + cls.getSubject();
+                if(cls.getType().equals("P")){
+                    subject = cls.getLevel() + " (" + cls.getSubject() + " Premium";
+                }
+                double depositAmount = rs.getDouble("deposit_fees");
+                double outstandingDeposit = rs.getDouble("outstanding_deposit");
+                double firstInstallment = rs.getDouble("first_installment");
+                double outstandingFirstInstallment = rs.getDouble("outstanding_first_installment");
+                
+                //System.out.println("Payment DAO depo" + depositAmount + " out depo "+ outstandingDeposit + " first " + firstInstallment + "first out" + outstandingFirstInstallment );
+                String dueDate = rs.getString("due_date");
+                if(outstandingDeposit > 0){
+                    Payment p = new Payment(studentID, "Deposit)", subject, dueDate, depositAmount, outstandingDeposit, classID, 0);
+                    paymentData.add(p);
+                }
+                
+                if(outstandingFirstInstallment > 0){
+                    Payment p = new Payment(studentID, "First Installment)", subject, dueDate, firstInstallment, outstandingFirstInstallment, classID, 0);
+                    paymentData.add(p);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.print("Error in getAllDueStudentTutionFees method" + e.getMessage());
+        }
+    }
+    
+    public static void getAllDueStudentTutionFees(ArrayList<Payment> paymentData){
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("select * from payment_reminder where outstanding_charge > 0 and payment_due_date < curdate();");
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                int studentID = rs.getInt("student_id");
+                int classID = rs.getInt("class_id");
+                Class cls = ClassDAO.getClassByID(classID);
+                String subject = cls.getSubject();
+                if(cls.getType().equals("P")){
+                    subject = cls.getLevel() + " (" + cls.getSubject() + " Premium";
+                }
+                double chargeAmount = rs.getDouble("amount_charged");
+                double outstandingCharge = rs.getDouble("outstanding_charge");
+                String dueDate = rs.getString("payment_due_date");
+                int noOfLessons = rs.getInt("no_of_lessons");
+                Payment p = new Payment(studentID, "Tuition Fees)", subject, dueDate, chargeAmount, outstandingCharge, classID, noOfLessons);
+                paymentData.add(p);
+            }
+        } catch (SQLException e) {
+            System.out.print("Error in getPaymentData method" + e.getMessage());
+        }
+    }
+    
+    public static void getAllRegFees(ArrayList<Payment> paymentData){
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("select student_id, reg_fees, outstanding_reg_fees, date(updated) as due_date from student "
+                    + "where outstanding_reg_fees > 0 and updated > curdate();");
+            ResultSet rs = stmt.executeQuery();
+            
+            while (rs.next()) {
+                int studentID = rs.getInt("student_id");
+                double chargeAmount = rs.getDouble("reg_fees");
+                double outstandingCharge = rs.getDouble("outstanding_reg_fees");
+                String dueDate = rs.getString("due_date");
+                Payment p = new Payment(studentID, StudentDAO.retrieveStudentLevelbyID(studentID), "Reg Fees", dueDate, chargeAmount, outstandingCharge, 0, 0);
+                paymentData.add(p);
+            }
+        } catch (SQLException e) {
+            System.out.print("Error in getAllRegFees method" + e.getMessage());
+        }
+    }
+    
+    public static void getAllStudentDeposit(ArrayList<Payment> paymentData){
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("select student_id, class_id, date(registration_date) as due_date, deposit_fees, outstanding_deposit, "
+                    + "first_installment, outstanding_first_installment from class_student_rel where (outstanding_first_installment > 0 or outstanding_deposit > 0) "
+                    + "and registration_date > curdate();");
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                int studentID = rs.getInt("student_id");
+                System.out.println("machine learning" +studentID);
+                int classID = rs.getInt("class_id");
+                Class cls = ClassDAO.getClassByID(classID);
+                String subject = cls.getLevel() + " (" + cls.getSubject();
+                if(cls.getType().equals("P")){
+                    subject = cls.getLevel() + " (" + cls.getSubject() + " Premium";
+                }
+                double depositAmount = rs.getDouble("deposit_fees");
+                double outstandingDeposit = rs.getDouble("outstanding_deposit");
+                double firstInstallment = rs.getDouble("first_installment");
+                double outstandingFirstInstallment = rs.getDouble("outstanding_first_installment");
+                
+                String dueDate = rs.getString("due_date");
+                if(outstandingDeposit > 0){
+                    Payment p = new Payment(studentID, "Deposit)", subject, dueDate, depositAmount, outstandingDeposit, classID, 0);
+                    paymentData.add(p);
+                }
+                
+                if(outstandingFirstInstallment > 0){
+                    Payment p = new Payment(studentID, "First Installment)", subject, dueDate, firstInstallment, outstandingFirstInstallment, classID, 0);
+                    paymentData.add(p);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.print("Error in getAllStudentDeposit method" + e.getMessage());
+        }
+    }
+    
+    public static void getAllStudentTutionFees(ArrayList<Payment> paymentData){
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("select * from payment_reminder where outstanding_charge > 0 and "
+                    + "(SELECT DATE_ADD(payment_due_date, INTERVAL -7 DAY) as payment_start_date) <= curdate() and (not payment_due_date < curdate());");
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                int studentID = rs.getInt("student_id");
+                int classID = rs.getInt("class_id");
+                Class cls = ClassDAO.getClassByID(classID);
+                String subject = cls.getSubject();
+                if(cls.getType().equals("P")){
+                    subject = cls.getLevel() + " (" + cls.getSubject() + " Premium";
+                }
+                double chargeAmount = rs.getDouble("amount_charged");
+                double outstandingCharge = rs.getDouble("outstanding_charge");
+                String dueDate = rs.getString("payment_due_date");
+                int noOfLessons = rs.getInt("no_of_lessons");
+                Payment p = new Payment(studentID, "Tuition Fees)", subject, dueDate, chargeAmount, outstandingCharge, classID, noOfLessons);
+                paymentData.add(p);
+            }
+        } catch (SQLException e) {
+            System.out.print("Error in getAllStudentTutionFees method" + e.getMessage());
+        }
+    }
+    
     public static double getStudentTutionFeeToAdd(int studentID){
         double amtToBeAdded = 0;
         try (Connection conn = ConnectionManager.getConnection()) {

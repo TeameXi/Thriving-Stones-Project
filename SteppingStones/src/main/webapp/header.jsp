@@ -178,7 +178,7 @@
                                 <!-- Sub menu -->
                                 <ul>
                                     <li><a href="TutorPayment.jsp">Tutor Payment</a></li>
-                                    <li><a href="StudentPaymentStatus.jsp">Student Payment Summary</a></li>
+                                    <li><a href="PaymentSummaryPage.jsp">Student Payment Summary</a></li>
                                 </ul>
                             </li>
                             <li class="submenu">

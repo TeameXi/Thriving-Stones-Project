@@ -130,7 +130,7 @@
         action = 'retrieve';
         table = $('#expensesTable').DataTable({
             'responsive': true,
-            "iDisplayLength": 6,
+            "iDisplayLength": 9,
             "aLengthMenu": [[5, 10, 25, -1], [5, 10, 25, "All"]],
             'ajax': {
                 "type": "POST",
