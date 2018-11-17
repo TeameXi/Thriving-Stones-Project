@@ -31,7 +31,8 @@
                             <span class="input-group-addon"><i class="zmdi zmdi-badge-check"></i></span>
                             <select name="levelID" class="form-control" onchange="retrieveClasses(this)" id="levelID">
                                 <option value="">Select Level</option>
-                                <%                                    LevelDAO levels = new LevelDAO();
+                                <%  
+                                    LevelDAO levels = new LevelDAO();
                                     ArrayList<String> levelList = levels.retrieveAllLevels();
 
                                     for (String level : levelList) {

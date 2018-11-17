@@ -56,7 +56,7 @@
                 <tbody>
                     <%
                         for(Lvl_Sub_Rel combineClass:lvlSubRefLists){
-                            String [] lvlIds = combineClass.getAdditional_level_ids().split(":");
+                            String [] lvlIds = combineClass.getAdditional_level_ids().split(",");
                             String lvlNames = "";
                             int subjectId = combineClass.getSubject_id();
                             for(String lvlId : lvlIds){

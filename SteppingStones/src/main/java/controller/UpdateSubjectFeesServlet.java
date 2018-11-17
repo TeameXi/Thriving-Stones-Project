@@ -90,13 +90,14 @@ public class UpdateSubjectFeesServlet extends HttpServlet {
                 }
                 
                 int branch = Integer.parseInt(request.getParameter("branchId"));
-                
+             
                 String [] ids = request.getParameter("id").split("_");
+                System.out.println("SErvlet Side");
+                System.out.println(cost);
                 int subjectId = Integer.parseInt(ids[0]);
                 String levelIds = ids[1];
-                
+               
                 boolean status = LevelDAO.updateSubjectFeesForCombineClass(branch, subjectId, levelIds, cost);
-                System.out.println(status);
                 out.println(status);
             }
         }

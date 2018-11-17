@@ -6,7 +6,6 @@
 package controller;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.ServletException;
@@ -55,7 +54,7 @@ public class CreateCombineSubjectServlet extends HttpServlet {
             
             String addtional_level_ids = "";
             for(int i=0;i<lvl_id_lists.length;i++){
-                addtional_level_ids += lvl_id_lists[i]+":";
+                addtional_level_ids += lvl_id_lists[i]+",";
             }
            
             combineClassLists.add("("+primary_level_id+","+subjectId+","+branchId+","+courseFees+",'"+addtional_level_ids+"'"+","+1+ ")");

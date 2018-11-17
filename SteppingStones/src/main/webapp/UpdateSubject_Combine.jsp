@@ -47,14 +47,15 @@
            
             
             for(Lvl_Sub_Rel combineClass : combine_classLists){
-                String [] lvlIds = combineClass.getAdditional_level_ids().split(":");
+                String [] lvlIds = combineClass.getAdditional_level_ids().split(",");
                 String lvlNames = "";
+                System.out.println(lvlIds);
                 int subjectId = combineClass.getSubject_id();
                 String tmpId = "";
                 for(String lvlId : lvlIds){
                     int lvl = Integer.parseInt(lvlId);
                     lvlNames += levelMap.get(lvl)+" , ";
-                    tmpId = lvlId+"_";
+                    tmpId += lvlId+"_";
                 }
                 lvlNames = lvlNames.substring(0, lvlNames.length()-2);
                 String id = subjectId+"_"+combineClass.getAdditional_level_ids();
