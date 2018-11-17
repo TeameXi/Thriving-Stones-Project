@@ -68,10 +68,13 @@ public class ReceiptDAO {
             
 
             int num = preparedStatement.executeUpdate();
-            
-            if (num != 0) {
-                return num;
+            ResultSet rs = preparedStatement.getGeneratedKeys();
+            int generatedKey = 0;
+            if (rs.next()) {
+                generatedKey = rs.getInt(1);
             }
+            return generatedKey;
+            
 
         } catch (SQLException ex) {
             ex.printStackTrace();
