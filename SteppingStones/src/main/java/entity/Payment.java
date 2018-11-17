@@ -11,6 +11,7 @@ package entity;
  */
 public class Payment {
 
+    private int studentID;
     private String paymentType;
     private String details;
     private String dueDate;
@@ -28,7 +29,23 @@ public class Payment {
         this.classID = classID;
         this.noOfLessons = noOfLessons;
     }
+    
+    public Payment(int studentID, String paymentType, String details, String dueDate, double chargeAmount, double outstandingCharges, int classID, int noOfLessons) {
+        this.studentID = studentID;
+        this.paymentType = paymentType;
+        this.details = details;
+        this.dueDate = dueDate;
+        this.outstandingCharges = outstandingCharges;
+        this.chargeAmount = chargeAmount;
+        this.classID = classID;
+        this.noOfLessons = noOfLessons;
+    }
 
+    
+    public int getStudentID() {
+        return this.studentID;
+    }
+    
     public String getPaymentType() {
         return this.paymentType;
     }
@@ -55,6 +72,10 @@ public class Payment {
     
     public int getNoOfLessons() {
         return this.noOfLessons;
+    }
+    
+    public void setStudentID(int studentID) {
+        this.studentID = studentID;
     }
     
     public void setPaymentType(String paymentType) {

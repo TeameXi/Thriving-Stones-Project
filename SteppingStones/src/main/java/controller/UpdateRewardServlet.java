@@ -24,7 +24,7 @@ import model.RewardItemDAO;
  * @author Desmond
  */
 @WebServlet(name = "UpdateRewardServlet", urlPatterns = {"/UpdateRewardServlet"})
-@MultipartConfig(maxFileSize = 16177215)
+@MultipartConfig()
 public class UpdateRewardServlet extends HttpServlet {
 
     /**

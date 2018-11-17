@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import javax.servlet.ServletException;
@@ -442,48 +443,89 @@ public class AdminScheduleServlet extends HttpServlet {
 
                                 int num = 0;
                                 String type = cls.getType();
-
-                                ArrayList<Integer> reminders = new ArrayList<>();
-                                ArrayList<Integer> premiumReminders = new ArrayList<>();
-
-                                reminders.add(3);
-                                reminders.add(7);
-                                reminders.add(10);
-                                reminders.add(13);
-                                reminders.add(17);
-                                reminders.add(20);
-                                reminders.add(23);
-                                reminders.add(27);
-                                reminders.add(30);
-                                reminders.add(33);
-                                reminders.add(37);
-                                reminders.add(40);
-                                reminders.add(43);
+                                
+                                HashMap<Integer, Integer> reminders = new HashMap<>();
+                                HashMap<Integer, Integer> premiumReminders = new HashMap<>();
+                                reminders.put(3, 3);
+                                reminders.put(7, 4);
+                                reminders.put(10, 3);
+                                reminders.put(13, 3);
+                                reminders.put(17, 4);
+                                reminders.put(20, 3);
+                                reminders.put(23, 3);
+                                reminders.put(27, 4);
+                                reminders.put(30, 3);
+                                reminders.put(33, 3);
+                                reminders.put(37, 4);
+                                reminders.put(40, 3);
+                                reminders.put(43, 3);
 
                                 if (type.equals("P")) {
-                                    premiumReminders.add(11);
-                                    premiumReminders.add(22);
-                                    premiumReminders.add(33);
-                                    premiumReminders.add(44);
+                                    premiumReminders.put(11, 11);
+                                    premiumReminders.put(22, 11);
+                                    premiumReminders.put(33, 11);
+                                    premiumReminders.put(44, 11);
                                 }
 
+//                                ArrayList<Integer> reminders = new ArrayList<>();
+//                                ArrayList<Integer> premiumReminders = new ArrayList<>();
+//
+//                                reminders.add(3);
+//                                reminders.add(7);
+//                                reminders.add(10);
+//                                reminders.add(13);
+//                                reminders.add(17);
+//                                reminders.add(20);
+//                                reminders.add(23);
+//                                reminders.add(27);
+//                                reminders.add(30);
+//                                reminders.add(33);
+//                                reminders.add(37);
+//                                reminders.add(40);
+//                                reminders.add(43);
+//
+//                                if (type.equals("P")) {
+//                                    premiumReminders.add(11);
+//                                    premiumReminders.add(22);
+//                                    premiumReminders.add(33);
+//                                    premiumReminders.add(44);
+//                                }
+                                
                                 for (Lesson l : allLessons) {
                                     num++;
-
-                                    if (reminders.contains(num)) {
-                                        lessonDAO.updatePaymentStatus(l.getLessonid(), "N", num);
-                                    } else {
+                                    
+                                    if(reminders.get(num) == null){
                                         lessonDAO.updatePaymentStatus(l.getLessonid(), "N", 0);
+                                    }else{
+                                        lessonDAO.updatePaymentStatus(l.getLessonid(), "N", reminders.get(num));
                                     }
 
                                     if (type.equals("P")) {
-                                        if (premiumReminders.contains(num)) {
-                                            lessonDAO.updatePaymentStatus(l.getLessonid(), type, num);
-                                        } else {
+                                        if(premiumReminders.get(num) == null){
                                             lessonDAO.updatePaymentStatus(l.getLessonid(), type, 0);
+                                        }else{
+                                            lessonDAO.updatePaymentStatus(l.getLessonid(), type, reminders.get(num));
                                         }
                                     }
                                 }
+
+//                                for (Lesson l : allLessons) {
+//                                    num++;
+//                                    
+//                                    if (reminders.contains(num)) {
+//                                        lessonDAO.updatePaymentStatus(l.getLessonid(), "N", num);
+//                                    } else {
+//                                        lessonDAO.updatePaymentStatus(l.getLessonid(), "N", 0);
+//                                    }
+//
+//                                    if (type.equals("P")) {
+//                                        if (premiumReminders.contains(num)) {
+//                                            lessonDAO.updatePaymentStatus(l.getLessonid(), type, num);
+//                                        } else {
+//                                            lessonDAO.updatePaymentStatus(l.getLessonid(), type, 0);
+//                                        }
+//                                    }
+//                                }
                             }
 
                             obj.put("status", true);
@@ -730,30 +772,53 @@ public class AdminScheduleServlet extends HttpServlet {
                                 } else {
                                     classID = classDAO.createClass(type, levelID, subjectID, fees, payment, pattern.print(start_time), pattern.print(end_time), dayOfWeek, date.print(start_date), date.print(end_date), branchID, tutorID, holidays,"-1", false);
                                 }
-
-                                ArrayList<Integer> reminders = new ArrayList<>();
-                                ArrayList<Integer> premiumReminders = new ArrayList<>();
-
-                                reminders.add(3);
-                                reminders.add(7);
-                                reminders.add(10);
-                                reminders.add(13);
-                                reminders.add(17);
-                                reminders.add(20);
-                                reminders.add(23);
-                                reminders.add(27);
-                                reminders.add(30);
-                                reminders.add(33);
-                                reminders.add(37);
-                                reminders.add(40);
-                                reminders.add(43);
+                                
+                                HashMap<Integer, Integer> reminders = new HashMap<>();
+                                HashMap<Integer, Integer> premiumReminders = new HashMap<>();
+                                reminders.put(3, 3);
+                                reminders.put(7, 4);
+                                reminders.put(10, 3);
+                                reminders.put(13, 3);
+                                reminders.put(17, 4);
+                                reminders.put(20, 3);
+                                reminders.put(23, 3);
+                                reminders.put(27, 4);
+                                reminders.put(30, 3);
+                                reminders.put(33, 3);
+                                reminders.put(37, 4);
+                                reminders.put(40, 3);
+                                reminders.put(43, 3);
 
                                 if (type.equals("P")) {
-                                    premiumReminders.add(11);
-                                    premiumReminders.add(22);
-                                    premiumReminders.add(33);
-                                    premiumReminders.add(44);
+                                    premiumReminders.put(11, 11);
+                                    premiumReminders.put(22, 11);
+                                    premiumReminders.put(33, 11);
+                                    premiumReminders.put(44, 11);
                                 }
+
+//                                ArrayList<Integer> reminders = new ArrayList<>();
+//                                ArrayList<Integer> premiumReminders = new ArrayList<>();
+//
+//                                reminders.add(3);
+//                                reminders.add(7);
+//                                reminders.add(10);
+//                                reminders.add(13);
+//                                reminders.add(17);
+//                                reminders.add(20);
+//                                reminders.add(23);
+//                                reminders.add(27);
+//                                reminders.add(30);
+//                                reminders.add(33);
+//                                reminders.add(37);
+//                                reminders.add(40);
+//                                reminders.add(43);
+//
+//                                if (type.equals("P")) {
+//                                    premiumReminders.add(11);
+//                                    premiumReminders.add(22);
+//                                    premiumReminders.add(33);
+//                                    premiumReminders.add(44);
+//                                }
 
                                 if (classID != 0) {
                                     insertClass = true;
@@ -781,41 +846,65 @@ public class AdminScheduleServlet extends HttpServlet {
                                         numLesson++;
                                         String lessonStart = date.print(t) + " " + startTime;
                                         String lessonEnd = date.print(t) + " " + endTime;
-
+                                        
                                         if (type.equals("N")) {
-                                            if (reminders.contains(numLesson)) {
-                                                les.add(new Lesson(classID, tutorID, lessonStart, lessonEnd, numLesson));
-                                            } else {
+                                            if(reminders.get(numLesson) == null){
                                                 les.add(new Lesson(classID, tutorID, lessonStart, lessonEnd, 0));
+                                            }else{
+                                                les.add(new Lesson(classID, tutorID, lessonStart, lessonEnd, reminders.get(numLesson)));
                                             }
-                                        } else {
+                                            
+                                        } else {                                           
                                             Lesson less = null;
-                                            if (reminders.contains(numLesson)) {
-                                                less = new Lesson(classID, tutorID, lessonStart, lessonEnd, numLesson);
-                                            } else {
+                                            if(reminders.get(numLesson) == null){
                                                 less = new Lesson(classID, tutorID, lessonStart, lessonEnd, 0);
+                                            }else{
+                                                less = new Lesson(classID, tutorID, lessonStart, lessonEnd, reminders.get(numLesson));
                                             }
-
-                                            if (premiumReminders.contains(numLesson)) {
-                                                less.setReminderTerm(numLesson);
-                                            } else {
+                                            
+                                            if(premiumReminders.get(numLesson) == null){
                                                 less.setReminderTerm(0);
+                                            }else{
+                                                less.setReminderTerm(premiumReminders.get(numLesson));
                                             }
                                             les.add(less);
                                         }
+
+//                                        if (type.equals("N")) {
+//                                            if (reminders.contains(numLesson)) {
+//                                                les.add(new Lesson(classID, tutorID, lessonStart, lessonEnd, numLesson));
+//                                            } else {
+//                                                les.add(new Lesson(classID, tutorID, lessonStart, lessonEnd, 0));
+//                                            }
+//                                        } else {
+//                                            Lesson less = null;
+//                                            if (reminders.contains(numLesson)) {
+//                                                less = new Lesson(classID, tutorID, lessonStart, lessonEnd, numLesson);
+//                                            } else {
+//                                                less = new Lesson(classID, tutorID, lessonStart, lessonEnd, 0);
+//                                            }
+//
+//                                            if (premiumReminders.contains(numLesson)) {
+//                                                less.setReminderTerm(numLesson);
+//                                            } else {
+//                                                less.setReminderTerm(0);
+//                                            }
+//                                            les.add(less);
+//                                        }
                                     }
 
                                     if (weeklyLessons.size() == les.size()) {
                                         for (Lesson le : les) {
-                                            if (le.getReminderTerm() != 0 && le.getReminderStatus() != 0) {
-                                                lessonDAO.createLesson(le.getClassid(), tutorID, le.getStartDate(), le.getEndDate(), le.getReminderTerm(), le.getReminderStatus(), type);
-                                            } else if (le.getReminderStatus() != 0) {
-                                                lessonDAO.createLesson(le.getClassid(), tutorID, le.getStartDate(), le.getEndDate(), le.getReminderStatus(), 0, type);
-                                            } else if (le.getReminderTerm() != 0) {
-                                                lessonDAO.createLesson(le.getClassid(), tutorID, le.getStartDate(), le.getEndDate(), 0, le.getReminderTerm(), type);
-                                            } else {
-                                                lessonDAO.createLesson(le.getClassid(), tutorID, le.getStartDate(), le.getEndDate(), 0, 0, type);
-                                            }
+                                            lessonDAO.createLesson(le.getClassid(), tutorID, le.getStartDate(), le.getEndDate(), le.getReminderStatus(), le.getReminderTerm(), type);
+//                                            if (le.getReminderTerm() != 0 && le.getReminderStatus() != 0) {
+//                                                lessonDAO.createLesson(le.getClassid(), tutorID, le.getStartDate(), le.getEndDate(), le.getReminderTerm(), le.getReminderStatus(), type);
+//                                            } else if (le.getReminderStatus() != 0) {
+//                                                lessonDAO.createLesson(le.getClassid(), tutorID, le.getStartDate(), le.getEndDate(), le.getReminderStatus(), 0, type);
+//                                            } else if (le.getReminderTerm() != 0) {
+//                                                lessonDAO.createLesson(le.getClassid(), tutorID, le.getStartDate(), le.getEndDate(), 0, le.getReminderTerm(), type);
+//                                            } else {
+//                                                lessonDAO.createLesson(le.getClassid(), tutorID, le.getStartDate(), le.getEndDate(), 0, 0, type);
+//                                            }
                                         }
                                         obj.put("status", true);
                                     } else {
