@@ -62,13 +62,15 @@ public class GenerateReceiptServlet extends HttpServlet {
         String descriptionstr = receipt.get(3);
         String payment_amountstr = receipt.get(4);
         String total_amount_paid = receipt.get(5);
-        String studentidstr = receipt.get(6);
+        String outstanding_amountstr = receipt.get(6);
+        String studentidstr = receipt.get(7);
         
         String studentName = StudentDAO.retrieveStudentName(Integer.parseInt(studentidstr));
         
         String[] nos = nostr.split("#");
         String[] descriptions = descriptionstr.split("#");
         String[] payment_amounts = payment_amountstr.split("#");
+        String[] outstanding_amount = outstanding_amountstr.split("#");
         
         response.setContentType("application/pdf");
         response.setHeader("Content-disposition", "attachment; filename=" + formattedReceiptNo + ".pdf" );
@@ -126,7 +128,8 @@ public class GenerateReceiptServlet extends HttpServlet {
         g2d.setFont(new Font ("Calibri", Font.BOLD, 11));
         g2d.drawString("No.", 110, 260);
         g2d.drawString("Description", 160, 260);
-        g2d.drawString("Amount Paid", 400, 260);
+        g2d.drawString("Amount Paid", 380, 260);
+        g2d.drawString("Outstanding Amount", 445, 260);
         
         int lengthCount = 300;
         for (int i = 0; i < nos.length; i++) {
@@ -134,8 +137,8 @@ public class GenerateReceiptServlet extends HttpServlet {
             g2d.setFont(new Font ("Calibri", Font.PLAIN, 11));
             g2d.drawString(nos[i], 110, lengthCount);
             g2d.drawString(descriptions[i], 160, lengthCount);
-            g2d.drawString(payment_amounts[i], 400, lengthCount);
-            
+            g2d.drawString(payment_amounts[i], 380, lengthCount);
+            g2d.drawString(outstanding_amount[i], 445, lengthCount);
             lengthCount += 20;
         }
         

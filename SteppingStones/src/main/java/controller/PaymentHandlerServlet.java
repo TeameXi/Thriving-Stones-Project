@@ -222,6 +222,7 @@ public class PaymentHandlerServlet extends HttpServlet {
         String nos = "";
         String descriptions = "";
         String payment_amounts = "";
+        String outstanding_amounts = "";
         DecimalFormat df = new DecimalFormat("0.00##");
         String totalAmountResult = df.format(totalAmount);
         for (int i = 0; i < paymentType.length; i++) {
@@ -233,22 +234,28 @@ public class PaymentHandlerServlet extends HttpServlet {
             if (!paymentAmounts[i].isEmpty()) {
                 paymentAmount = Double.parseDouble(paymentAmounts[i]);
             }
-            
+            double outstandingAmountdb = 0;
+            if (!outstandingAmounts[i].isEmpty()) {
+                outstandingAmountdb = Double.parseDouble(outstandingAmounts[i]) - paymentAmount;
+            }
             String result = df.format(paymentAmount);
+            String outstandingAmountResult = df.format(outstandingAmountdb);
             
             if(i==0){
                 nos = "" + (i+1);
                 descriptions = type + " for " + lvlSubject;
                 payment_amounts = "" + result;
+                outstanding_amounts = "" + outstandingAmountResult;
             }else{
                 nos = nos + "#" + (i+1);
                 descriptions = descriptions + "#" + type + " for " + lvlSubject;
                 payment_amounts = payment_amounts + "#" + result; 
+                outstanding_amounts = outstanding_amounts + "#" + outstandingAmountResult;
             }
             
         }
         ReceiptDAO receiptDAO = new ReceiptDAO();
-        int receiptid = receiptDAO.addReceipt(date, paymentMode, nos, descriptions, payment_amounts, "S$" + totalAmountResult, studentID);
+        int receiptid = receiptDAO.addReceipt(date, paymentMode, nos, descriptions, payment_amounts, outstanding_amounts, "S$" + totalAmountResult, studentID);
         PrintWriter out = response.getWriter(); 
 
         out.println("<HTML>");
