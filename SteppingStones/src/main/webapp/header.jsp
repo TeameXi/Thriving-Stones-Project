@@ -190,6 +190,7 @@
                                 <ul>
                                     <li><a href="DisplayReward.jsp">View Reward</a></li>
                                     <li><a href="CreateReward.jsp">Create Reward</a></li>
+                                    <li><a href="AdminReward.jsp">Reward Student</a></li>
                                     <li><a href="RedeemReward.jsp">Redeem Reward</a></li>
                                 </ul>
                             </li>
