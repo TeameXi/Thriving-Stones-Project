@@ -200,7 +200,7 @@ public class RegisterForClassesServlet extends HttpServlet {
                     }
                 }
                 request.getSession().setAttribute("from", "registration");
-                response.sendRedirect("PaymentPage.jsp?studentID="+studentID);
+                response.sendRedirect("PaymentPage.jsp?studentID="+studentID+"&from=registration");
                 return;
             }
             request.setAttribute("errorMsg", "Please select at least 1 class to register");

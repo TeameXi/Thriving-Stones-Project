@@ -27,7 +27,11 @@
                     if (user != null) {
                         out.println("<input type='hidden' name='branch' value='" + user.getBranchId() + "'/>");
                     }
-                    String redirectStudentID = "";
+                    String redirectStudentID = "";    
+                    String redirectFrom = "";
+                    if (request.getParameter("from") != null) {
+                        redirectFrom = request.getParameter("from").trim();
+                    }
                     if (request.getParameter("studentID") != null) {
                         redirectStudentID = request.getParameter("studentID").trim();
                     }
@@ -110,11 +114,16 @@
                         <%
                                         out.println("</td><td>");
                                     } else if(payment.getPaymentType().equals("Deposit")){
-                                        out.println("<td>");
+                                        if(redirectFrom.equals("registration")){
+                                            out.println("<td>");
                             %>
                         <input name="<%=payment.getClassID()%>" class="form-control" type="text" step="0.01" value="<%=payment.getChargeAmount()%>">
                         <%
-                                        out.println("<td>" + payment.getOutstandingCharges() + "</td>");
+                                        }else{
+                                            out.println("<td>" + payment.getChargeAmount() + "</td>");
+                                        }
+                                            out.println("<td>" + payment.getOutstandingCharges() + "</td>");
+                                            
                                         //out.println("</td><td>-");
                         %>
                         <!--<input name="regFees" id="phone" class="form-control" type="number">-->
@@ -154,9 +163,20 @@
                     <div class="col-md-3">
                         <button type="submit" class="btn btn2" name="update" value="updatePayment">Update Payment</button>
                     </div>
+                    <%
+                        
+                        if (request.getParameter("from") != null) {
+                            redirectFrom = request.getParameter("from").trim();
+                        }
+                        if(redirectFrom.equals("registration")){
+                    %>
                     <div class="col-md-3">
                         <button type="submit" class="btn btn1" name="update" value="updateStudentFees">Update Student Fees</button>
                     </div>
+                    <%
+                            
+                        }
+                    %>
                     <div class="col-md-3">
                     </div>
                 </div>
