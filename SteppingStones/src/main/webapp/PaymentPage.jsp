@@ -122,7 +122,7 @@
                                         }else{
                                             out.println("<td>" + payment.getChargeAmount() + "</td>");
                                         }
-                                            out.println("<td>" + payment.getOutstandingCharges() + "</td>");
+                                            out.println("<td><strong>" + payment.getOutstandingCharges() + "</td>");
                                             
                                         //out.println("</td><td>-");
                         %>
@@ -131,7 +131,7 @@
                                         out.println("</td><td>");
                                     }else {
                                         out.println("<td>" + payment.getChargeAmount() + "</td>");
-                                        out.println("<td>" + payment.getOutstandingCharges() + "</td><td>");
+                                        out.println("<td><strong>" + payment.getOutstandingCharges() + "</td><td>");
                                     }
                                 
                         %>
