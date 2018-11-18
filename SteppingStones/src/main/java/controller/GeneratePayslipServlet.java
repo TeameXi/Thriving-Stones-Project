@@ -20,8 +20,12 @@ import java.awt.print.Paper;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -30,7 +34,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.ClassDAO;
+import model.LevelDAO;
 import model.TutorDAO;
+import org.joda.time.Duration;
+import org.joda.time.Interval;
 
 @WebServlet(name = "GeneratePayslipServlet", urlPatterns = {"/GeneratePayslipServlet"})
 public class GeneratePayslipServlet extends HttpServlet {
@@ -140,10 +147,18 @@ public class GeneratePayslipServlet extends HttpServlet {
         //itemsssss
         g2d.setFont(new Font ("Calibri", Font.PLAIN, 11));
         g2d.drawString("1", 110, 300);
+        
+        String strlesson = request.getParameter("c");
+        int lesson = Integer.parseInt(strlesson);
+        double duration = ClassDAO.getClassTime(classID);
+            
+            
         if("r".equals(type)){
             g2d.drawString("Salary for replacement for " + cls.getSubject() + " " + cls.getLevel(), 160, 300);
+            g2d.drawString("" + duration + "hours x " + lesson + "lesson(s) x $" + TutorDAO.getHourlyPay(tutorID, LevelDAO.retrieveLevelID(cls.getLevel()), cls.getSubjectID()) , 160, 320);
         }else{
             g2d.drawString("Salary for " + cls.getSubject() + " " + cls.getLevel() + " for " + getMonthName(month) + ", " + year, 160, 300);
+            g2d.drawString("" + duration + "hours x " + lesson + "lesson(s) x $" + TutorDAO.getHourlyPay(tutorID, LevelDAO.retrieveLevelID(cls.getLevel()), cls.getSubjectID()) , 160, 320);
         }
         
         g2d.drawString(result, 400, 300);
@@ -175,6 +190,10 @@ public class GeneratePayslipServlet extends HttpServlet {
         sOut.close();
         
 
+    }
+    private long getDateDiff(Date date1, Date date2, TimeUnit timeUnit) {
+        long diffInMillies = date2.getTime() - date1.getTime();
+        return timeUnit.convert(diffInMillies,TimeUnit.MILLISECONDS);
     }
     private String getMonthName(int month){
         if(month == 1){
