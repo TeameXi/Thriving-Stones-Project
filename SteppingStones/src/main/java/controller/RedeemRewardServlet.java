@@ -92,7 +92,7 @@ public class RedeemRewardServlet extends HttpServlet {
                 int point = Integer.parseInt(request.getParameter("point"));
                 String name = request.getParameter("name");
 
-                boolean success = RewardDAO.insertReward(studentid, 0, "redeem for " + name, 0 - point) > 0;
+                boolean success = RewardDAO.insertReward(studentid, 0, name + " Redemption", 0 - point) > 0;
                 JSONObject toReturn = new JSONObject().put("data", success);
                 String json = toReturn.toString();
                 out.println(json);
