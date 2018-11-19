@@ -88,8 +88,25 @@ public class RewardItemDAO {
             preparedStatement.setString(1, item_name);
             preparedStatement.setString(2, description);
             preparedStatement.setInt(3, quantity);
-            preparedStatement.setInt(4, item_id);
-            preparedStatement.setInt(5, point);
+            preparedStatement.setInt(4, point);
+            preparedStatement.setInt(5, item_id);
+
+            int num = preparedStatement.executeUpdate();
+            if (num != 0) {
+                return true;
+            }
+
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return false;
+    }
+      public static boolean updateQuantity(int item_id, int quantity) {
+        String update_Tutor = "update reward_item set quantity=? WHERE reward_item_id =? ";
+        try (Connection conn = ConnectionManager.getConnection();
+                PreparedStatement preparedStatement = conn.prepareStatement(update_Tutor)) {
+            preparedStatement.setInt(1, quantity);
+            preparedStatement.setInt(2, item_id);
 
             int num = preparedStatement.executeUpdate();
             if (num != 0) {
