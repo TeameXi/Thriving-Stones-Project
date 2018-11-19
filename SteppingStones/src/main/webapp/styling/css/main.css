@@ -1042,7 +1042,7 @@ footer .copy{
         display: none;
     }
     .header .dropdown-menu{
-        position: relative !important;
+        position: absolute !important;
     }
     .navbar-toggle {
         margin-right:0px !important;
