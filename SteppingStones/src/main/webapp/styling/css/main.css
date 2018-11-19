@@ -24,7 +24,10 @@
     font-family: Poppins-SemiBold;
     src: url('../fonts/poppins/Poppins-SemiBold.ttf'); 
 }
-
+@font-face {
+    font-family: BebasNeue-bold;
+    src: url('../fonts/Bebas_Neue/BebasNeue-Bold.ttf'); 
+}
 
 
 
@@ -601,7 +604,7 @@ footer .copy{
     position: relative;
     float: right;
     padding: 8px 10px;
-    margin-top: 8px;
+    margin-top: 30px;
     margin-right: 15px;
     margin-bottom: 8px;
     background-color: transparent;
@@ -618,9 +621,22 @@ footer .copy{
 .menu-toggle:focus .icon-bar{
     background-color: #9ccbce;
 }
-
+#HamburgerMenu{
+    text-align: center;
+    float: left;
+    display: none;
+}
+.logo{
+    float: left;
+}
+.logoWord{
+    font-family: BebasNeue-bold;
+    font-size: 40px;
+    font-weight: bolder;
+    color: #ffffff;
+}
 .header{
-    height:50px;
+    height:60px;
     width: 100%;
     background-color: #9ccbce;
 }
@@ -783,7 +799,9 @@ footer .copy{
     border-top-color: #fff !important;
     border-bottom-color: #fff !important;
 }
-
+.header .navbar .withIcon{
+    display: none;
+}
 /* Sidebar navigation */
 
 .content-box{
@@ -968,7 +986,7 @@ footer .copy{
 /* Responsive CSS */
 
 /* Mobile phones */
-@media (max-width: 480px){
+@media screen and (max-width: 480px){
     .menu-toggle{
         display: block;
     }
@@ -978,10 +996,22 @@ footer .copy{
     #NotHamburgerMenu{
         display:none;
     }
+    .header .navbar .withIcon{
+        display: block;
+    }
+    .header .navbar .withWord{
+        display: none;
+    }
+    .logoWord{
+        font-size: 30px !important;  
+    }
+    .header .logo{
+        margin-top: 20px;
+    }
 }
 
 /* Tablets */
-@media (max-width: 767px){
+@media screen and (max-width: 767px){
     .container{
         width:100%;
     }
@@ -992,10 +1022,24 @@ footer .copy{
     .header .logo{
         text-align:center;
         padding-bottom:10px;
+        
+    }
+    .header .navbar {
+        font-size: 11.2pt;
+        margin-top: 5px !important;
     }
     .header .navbar .nav > li > a:hover{
         background:#0fa6bc;
         border-radius:5px;
+    }
+    .header .navbar .withIcon{
+        display: block;
+    }
+    .header .navbar .withWord{
+        display: none;
+    }
+    .header .dropdown-menu{
+        position: relative !important;
     }
     .navbar-toggle {
         margin-right:0px !important;
@@ -1009,29 +1053,28 @@ footer .copy{
     #NotHamburgerMenu{
         display:none;
     }
+    .logoWord{
+        font-size: 35px;  
+    }
 }
 /* Other Screen Size */
-@media (min-width: 992px){
+@media screen and (min-width: 992px){
     #navbar{
         display: block;
     }
-    #HamburgerMenu{
-        display:none;
-    }
-    #NotHamburgerMenu{
-        display:block;
-    }
+    
 }
 /* Desktop */
 
-@media (max-width: 991px){
+@media screen and (max-width: 991px){
     .header{
-        height:auto;
+        height:100px;
         padding:15px 0px;
     }  
     .header .logo{
         text-align:center;
         padding-bottom:10px;
+        margin-left: 6%;
     }
     .header .form{
         margin:10px auto;
@@ -1070,6 +1113,13 @@ footer .copy{
     }
     #NotHamburgerMenu{
         display:none;
+    }
+    .logoWord{
+        font-size: 50px;
+    }
+    .header .navbar {
+        float: none;
+        margin-top: 20px;
     }
 }
 
