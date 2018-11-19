@@ -31,7 +31,9 @@ ul, ol {
   background-image: -webkit-linear-gradient(90deg, #ee0979 0%, #ff6a00 100%);
 }
 .item4 { 
-  background: #f1a130;
+  background-image: -webkit-linear-gradient(90deg, #24b629 0%, #d1db34 100%);
+  padding: 0 25px;
+  padding-top: 25px;
 }
 .item5 { 
   background: #f1a130;

@@ -177,7 +177,7 @@ strong {
     text-transform: capitalize;
     font-weight: 400;
     font-size: 24px;
-    color: #333;
+    color: white;
 }
 
 .title-3 i {
@@ -4156,8 +4156,8 @@ section {
 
 .statistic-chart-1, .top-campaign, .chart-percent-2 {
     background: #fff;
-    padding: 0 40px;
-    padding-top: 45px;
+    padding: 0 25px;
+    padding-top: 25px;
     padding-bottom: 50px;
     -webkit-box-shadow: 0px 10px 20px 0px rgba(0, 0, 0, 0.03);
     -moz-box-shadow: 0px 10px 20px 0px rgba(0, 0, 0, 0.03);
@@ -4457,12 +4457,13 @@ section {
 }
 
 .table-top-campaign.table tr td:first-child {
-    color: #808080;
+    color: white;
 }
 
 .table-top-campaign.table tr td:last-child {
-    color: #4272d7;
-    text-align: right;
+    color: white;
+    text-align: center;
+    font-weight: bold;
 }
 
 .table-top-campaign.table tr:last-child td {
@@ -6200,7 +6201,7 @@ section {
 }
 
 .m-b-30 {
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
 .m-t-30 {

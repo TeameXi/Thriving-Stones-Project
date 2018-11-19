@@ -33,10 +33,14 @@
         <link href="styling/css/jquery.gridster.css" rel="stylesheet" type="text/css"/>
         <link href="styling/css/styles.css" rel="stylesheet" type="text/css"/>
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styling/css/theme.css">
+        <link href="styling/css/jquery.scrollable.css" rel="stylesheet" type="text/css"/>
+        <style>
+            .box { height: 190px; width:390px; overflow: auto; font-size: 18px;}
+        </style>
     </head>
     <body>
         <div class="col-md-10">
-            <div style="margin: 20px;"><h3>Dashboard</h3></div>
+            <div style="margin: 10px;"><h3>Dashboard</h3></div>
                 <div class="row"> 
                     <div class="demo">
                             <div class="gridster">
@@ -89,48 +93,27 @@
                                                     </div>
                                                 </div>
                                         </li>
-                                        <li data-row="1" data-col="4" data-sizex="3" data-sizey="2" class="item2">
-                                            <div class="top-campaign">
-                                            <h3 class="title-3 m-b-30">top campaigns</h3>
-                                            <div class="scrollbar-inner">
+                                        <li data-row="1" data-col="4" data-sizex="3" data-sizey="2" class="item4">
+                                            <h3 class="title-3 m-b-30">number of student per level </h3>
+                                            <div class="box">
+                                                <%
+                                                Set<String> levels = studentPerLevelByBranch.keySet();                                                    
+                                                if (levels.size() != 0) {
+                                                %>
                                                 <table class="table table-top-campaign">
                                                     <tbody>
+                                                        <%
+                                                        for (int j=0; j<levels.size(); j++){
+                                                        %>
                                                         <tr>
-                                                            <td>1. Australia</td>
-                                                            <td>$70,261.65</td>
+                                                            <td><%=levels.toArray()[j]%></td>
+                                                            <td><%=studentPerLevelByBranch.get(levels.toArray()[j])%></td>
                                                         </tr>
-                                                        <tr>
-                                                            <td>2. United Kingdom</td>
-                                                            <td>$46,399.22</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>3. Turkey</td>
-                                                            <td>$35,364.90</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>4. Germany</td>
-                                                            <td>$20,366.96</td>
-                                                        </tr> 
-                                                        <tr>
-                                                            <td>1. Australia</td>
-                                                            <td>$70,261.65</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>2. United Kingdom</td>
-                                                            <td>$46,399.22</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>3. Turkey</td>
-                                                            <td>$35,364.90</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>4. Germany</td>
-                                                            <td>$20,366.96</td>
-                                                        </tr> 
+                                                        <% } %>
                                                     </tbody>
                                                 </table>
+                                                <%}%>
                                             </div>
-                                        </div>
                                         </li>
                                         
                                         <li data-row="2" data-col="1" data-sizex="2" data-sizey="2" class="item2">hi</li>
@@ -142,33 +125,30 @@
 
                                         <li data-row="3" data-col="5" data-sizex="1" data-sizey="1" class="item1"></li>
                                         <li data-row="3" data-col="5" data-sizex="1" data-sizey="1" class="item5"></li>
-
-                                        
-                                        <li data-row="2" data-col="6" data-sizex="1" data-sizey="2" class="item4"></li>	
+	
                     <% } %>
                                     </ul>
                             </div>
-                    </div>
-                    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>		
-
+                    </div>     
+                    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.13/jquery.mousewheel.min.js"></script>
+                    <script src="styling/js/jquery.scrollable.js" type="text/javascript"></script>                    
+                    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
                     <script src="styling/js/jquery.gridster.js" type="text/javascript"></script>
                     <script src="styling/js/jquery.gridster.min.js" type="text/javascript"></script>
                     <script type="text/javascript">
-                            var gridster;
+                        var gridster;
 
-                            $(function() {
-                                    gridtster = $(".gridster ul").gridster({
-                                            widget_margins: [10, 10],
-                                            widget_base_dimensions: [140, 140],
-                                            min_cols: 6
-                                    }).data('gridster');
-                            });
-                            
-                            
-                            
-                            $(document).ready(function() {
-                                $('.scrollbar-inner').scrollbar();
-                            });
+                        $(function() {
+                                gridtster = $(".gridster ul").gridster({
+                                        widget_margins: [10, 10],
+                                        widget_base_dimensions: [140, 140],
+                                        min_cols: 6
+                                }).data('gridster');
+                        });
+
+                        $('.box').scrollable();
+                                                        
                     </script>
             </div>
         </div>
