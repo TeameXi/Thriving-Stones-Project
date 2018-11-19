@@ -39,12 +39,16 @@
     -moz-osx-font-smoothing: grayscale;
 }
 .info-box-numbers {
-    display: block;
-    font-weight: bold;
-    font-size: 18px;
+    color: white;    
+    font-size: 19px;
+    text-align: center;
 }
 .info-box-texts {
+    color: white;
+    font-weight: bold;
     text-transform: uppercase;
+    text-align: center;
+    font-size: 17px;
 }
 .info-box-contents {
     padding: 5px 10px;
