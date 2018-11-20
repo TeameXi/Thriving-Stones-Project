@@ -157,7 +157,6 @@
     
     function payReplacementQueryAjax(ids,tutorName,subjectName,levelName,replacementAmount,totalLesson){
         $('#small').modal('hide');
-       alert(totalLesson);
         
         $.ajax({    
             type:'POST',
