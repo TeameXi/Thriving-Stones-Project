@@ -53,6 +53,11 @@ public class RetrieveRewardServlet extends HttpServlet {
                 ArrayList<RewardItem> rewards = RewardItemDAO.listAllRewardItem();
 
                 for (RewardItem e : rewards) {
+                    if(request.getParameter("from")!= null){
+                        if(e.getQuantity() == 0){
+                            continue;
+                        }
+                    }
                     JSONObject obj = new JSONObject();
                     obj.put("id", e.getReward_item_id());
                     obj.put("name", e.getItem_name() );

@@ -150,14 +150,13 @@
     function payReplacementSalary(ids,tutorName,subjectName,levelName,replacementAmount){
         $("#confirm_btn").prop('onclick', null).off('click');
         $("#confirm_btn").click(function () {
-            payReplacementQueryAjax(ids,tutorName,subjectName,levelName,replacementAmount);
+            payReplacementQueryAjax(ids,tutorName,subjectName,levelName,replacementAmount,totalLesson);
         });
         return false;
     }
     
-    function payReplacementQueryAjax(ids,tutorName,subjectName,levelName,replacementAmount){
+    function payReplacementQueryAjax(ids,tutorName,subjectName,levelName,replacementAmount,totalLesson){
         $('#small').modal('hide');
-       
         
         $.ajax({    
             type:'POST',
@@ -180,7 +179,7 @@
                     $('#'+ids).remove();
                     
                     html = '<br/><div class="alert alert-success col-md-12"><strong>Success!</strong> Updated Paid Status successfully</div>';
-                    window.open("${pageContext.request.contextPath}/GeneratePayslipServlet?t=r&i=" + ids + "&a=" + replacementAmount , '_blank');
+                    window.open("${pageContext.request.contextPath}/GeneratePayslipServlet?t=r&i=" + ids + "&a=" + replacementAmount + "&c=" + totalLesson , '_blank');
                     
                 }else{
                     html = '<br/><div class="alert alert-danger col-md-12"><strong>Sorry!</strong> Something went wrong</div>';   
@@ -191,15 +190,15 @@
         });
     }
     
-    function payMontlhySalary(ids,tutorName,subjectName,levelName,monthlySalary) {
+    function payMontlhySalary(ids,tutorName,subjectName,levelName,monthlySalary,totalLesson) {
         $("#confirm_btn").prop('onclick', null).off('click');
         $("#confirm_btn").click(function () {
-            payTutorMonthlySalaryQueryAjax(ids,tutorName,subjectName,levelName,monthlySalary);
+            payTutorMonthlySalaryQueryAjax(ids,tutorName,subjectName,levelName,monthlySalary,totalLesson);
         });
         return false;
     }
     
-    function payTutorMonthlySalaryQueryAjax(ids,tutorName,subjectName,levelName,monthlySalary) {
+    function payTutorMonthlySalaryQueryAjax(ids,tutorName,subjectName,levelName,monthlySalary,totalLesson) {
         $('#small').modal('hide');
         $.ajax({    
             type:'POST',
@@ -224,7 +223,7 @@
                     $("#payBtnContainer_"+ids).html("<span class='paid'>Paid</span>");
         
                     html = '<br/><div class="alert alert-success col-md-12"><strong>Success!</strong> Updated Paid Status successfully</div>';
-                    window.open("${pageContext.request.contextPath}/GeneratePayslipServlet?t=m&i=" + ids + "&a=" + monthlySalary , '_blank');
+                    window.open("${pageContext.request.contextPath}/GeneratePayslipServlet?t=m&i=" + ids + "&a=" + monthlySalary + "&c=" + totalLesson, '_blank');
                     
                 }else{
                     html = '<br/><div class="alert alert-danger col-md-12"><strong>Sorry!</strong> Something went wrong</div>';   
@@ -340,7 +339,7 @@
                                 var btnId = 0;
                                 if(btnStatus === "should pay"){
                                     btnId =tutorID+"_"+cls.id+"_"+m+"_"+y;
-                                    btnInput ='<a id="payBtn_'+btnId+'" data-toggle="modal" class="btn btn1 btn-sm" href="#small" onclick="payMontlhySalary('+"'"+btnId+"'"+','+"'"+tutorName+"'"+','+"'"+subjectName+"'"+','+"'"+levelName+"'"+','+monthlySalary+')" >Pay</a>';
+                                    btnInput ='<a id="payBtn_'+btnId+'" data-toggle="modal" class="btn btn1 btn-sm" href="#small" onclick="payMontlhySalary('+"'"+btnId+"'"+','+"'"+tutorName+"'"+','+"'"+subjectName+"'"+','+"'"+levelName+"'"+','+monthlySalary+','+"'"+totalLesson+"'" + ')" >Pay</a>';
                                 }else if(btnStatus === "shouldn't pay"){
                                     btnInput = "<span class='pending'>Pending</span><br/>";
                                 }else{
@@ -380,7 +379,7 @@
                                 levelName = replacementClass.levels;
                                 
                                 replacementBtnId =replacementTutorId+"_"+replacementClassId;
-                                replacementBtnInput ='<a id="replacementPayBtn_'+replacementBtnId+'" data-toggle="modal" class="btn btn1 btn-sm" href="#small" onclick="payReplacementSalary('+"'"+replacementBtnId+"'"+','+"'"+tutorName+"'"+','+"'"+subjectName+"'"+','+"'"+levelName+"'"+','+replacementPayPerClass+')" >Pay</a>';
+                                replacementBtnInput ='<a id="replacementPayBtn_'+replacementBtnId+'" data-toggle="modal" class="btn btn1 btn-sm" href="#small" onclick="payReplacementSalary('+"'"+replacementBtnId+"'"+','+"'"+tutorName+"'"+','+"'"+subjectName+"'"+','+"'"+levelName+"'"+','+replacementPayPerClass+','+"'" + totalReplacementLesson +"'" +')" >Pay</a>';
                               
                                 
                                 html+= '<tr id="'+replacementBtnId+'"><td>'+replacementClassName+'</td><td>'+totalReplacementLesson+'</td>';

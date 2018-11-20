@@ -135,9 +135,10 @@ public class LevelDAO {
     }
     public Map<String, Integer> retrieveStudentPerLevelByBranch(int branchID){
         Map<String, Integer> returnList = new TreeMap<String, Integer>();
-        String sql = "SELECT level_name, count(student_id) FROM level inner join student on student.level_id = level.level_id group by level.level_id";
+        String sql = "SELECT level_name, count(student_id) FROM level inner join student on student.level_id = level.level_id where student.branch_id = ? group by level.level_id ";
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, branchID);
             ResultSet rs = stmt.executeQuery();
             while(rs.next()){
                 returnList.put(rs.getString(1),rs.getInt(2));

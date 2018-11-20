@@ -33,6 +33,9 @@
         background-color: DodgerBlue !important; 
         color: #ffffff; 
     }
+    .action{
+        display: none;
+    }
 </style>
 <div class="col-md-10">
     <div style="text-align: center;margin: 10px;"><span class="tab_active" style="font-size: 14px">Reward Student</span></div>
@@ -106,7 +109,9 @@
                         <th style="text-align: center">Quantity Available</th>
                         <th style="text-align: center">Point to redeem</th>
                         <th style="text-align: center">Description</th>
+                        <th style="display:none"></th>
                         <th style="text-align: center">Action</th>
+                        
                     </tr>
                 </thead>
             </table>
@@ -148,8 +153,8 @@
             myPoint = <%=(Integer) request.getAttribute("pointAvail")%>
         action = 'retrieve';
         table = $('#rewardTable').DataTable({
-            'responsive': true,
-            "iDisplayLength": 6,
+            "responsive": true,
+            "iDisplayLength": 7,
             "aLengthMenu": [[5, 10, 25, -1], [5, 10, 25, "All"]],
             'ajax': {
                 "type": "POST",
@@ -157,7 +162,8 @@
                 "data": {
                     //"tutorID": tutorID,
                     //"branchID": branchID,
-                    "action": action
+                    "action": action,
+                    "from": "redeem"
                 }
             },
             "columnDefs": [
@@ -170,8 +176,14 @@
                 {
                     "targets": 5,
                     "data": null,
-                    "defaultContent": '<button class="btn btn-default edit">Redeem</button>',
+                    "defaultContent": '<a class="btn btn-default edit" style="display: block">Redeem</a>',
                     "class": 'details'
+                },
+                {
+                    "targets": 6,
+                    "data": null,
+                    "defaultContent": null,
+                    "class": 'details action'
                 }
             ],
             'columns': [
@@ -196,17 +208,25 @@
                 rewardID = table.row($(this).parents('tr')).data().id;
                 point = table.row($(this).parents('tr')).data().point;
                 name = table.row($(this).parents('tr')).data().name;
+                quantity = table.row($(this).parents('tr')).data().quantity;
                 action = 'redeem';
                 $.ajax({
                     type: 'POST',
                     url: 'RedeemRewardServlet',
                     dataType: 'JSON',
-                    data: {rewardID: rewardID, action: action, studentID: <%=student_id%>, point: point, name: name},
+                    data: {rewardID: rewardID, action: action, studentID: <%=student_id%>, point: point, name: name, quantity: quantity},
                     success: function (data) {
                         if (data) {
                            
                             myPoint = (myPoint - point);
                              $('#lblPoint').text(myPoint);
+                             if(data.quantity === 0){
+                                 table.row($(this).parents('tr')).remove();
+                             }else{
+                                 table.cell(table.row($(this).parents('tr')).index(), 2).data(data.quantity).draw();
+                             }
+                             
+                             table.ajax.reload();
                         }
 
                         /*if (data) {

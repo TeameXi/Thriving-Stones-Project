@@ -3,7 +3,7 @@
 <%@page import="java.util.List"%>
 <%@page import="model.StudentDAO"%>
 <%@page import="java.util.ArrayList"%>
-<%@include file="protect_tutor.jsp"%>
+<%@include file="protect_branch_admin.jsp"%>
 <%@include file="header.jsp"%>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css">
 <style>
@@ -33,56 +33,13 @@
         background-color: DodgerBlue !important; 
         color: #ffffff; 
     }
-    @media screen and (max-width: 480px){
-        body{
-            font-size: 10px;
-        } 
-        .form-control, .btn{
-            font-size: 10px;
-        }
-        a {
-            font-size: 10px;
-        }
-        #tab{
-            margin-bottom: 20px !important;
-        }
-        .submitReward{
-            float: right;
-        }
-    }
-    @media screen and (min-width:481px) and (max-width: 767px) {
-        body{
-            font-size: 12px !important;
-        } 
-        .form-control, .btn{
-            font-size: 12px !important;
-        }
-        a {
-            font-size: 12px ;
-        }
-        #tab{
-            margin-bottom: 20px !important;
-        }
-        .submitReward{
-            float: right;
-        }
-        
-    }
-    @media screen and (min-width:768px) and (max-width: 991px) {
-        #studentAttendanceTable_filter{
-            float: right;
-        }
-        .submitReward{
-            float: right;
-        }
-    }
 </style>
 <div class="col-md-10">
-    <div style="text-align: center;margin: 10px;"><span class="tab_active">Reward Student</span></div>
+    <div style="text-align: center;margin: 10px;"><span class="tab_active" style="font-size: 14px">Reward Student</span></div>
     <div class="row" id="statusMsg"></div>
     <div class="col-md-1"></div>
         <div class="col-md-9">
-    <form action="TutorRewardServlet" method="post" autocomplete = "off">
+    <form action="AdminRewardServlet" method="post" autocomplete = "off">
 
                 <div class="form-group">
                     <label class="col-lg-2 control-label">Student</label>  
@@ -90,7 +47,7 @@
                         <div class="input-group">
                             <span class="input-group-addon"><i class="zmdi zmdi-account-box"></i></span>
                                 <%  
-                                    ArrayList<String> stu = StudentDAO.listAllStudentsByTutor(user_id);
+                                    ArrayList<String> stu = StudentDAO.listAllStudents(branch_id);
                                     String redirectStudentName = "";
                                     if (request.getParameter("studentName") != null) {
                                         redirectStudentName = request.getParameter("studentName").trim();
@@ -134,11 +91,11 @@
                 Integer student_id = (Integer) request.getAttribute("student_id");
                 if(studentName != null){
             %>
-            <form action="TutorRewardServlet" method="post" id="rewardForm">
+            <form action="AdminRewardServlet" method="post" id="rewardForm">
             Student Name: <label> <%out.println(studentName);%></label>
                     &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;Level: <label> <%out.println(level);%></label><br><br>
             <input type="hidden" name="studentiiD" value="${student_id}"id="studentiiD"> 
-            <input type="hidden" name="tutorid" value="<%=user_id%>"id="tutorid">
+            <input type="hidden" name="tutorid" value="0"id="tutorid">
             <input type="hidden" value="<%=branch_id%>" name="branch_id"/>
             <%
                 List<Reward> rewardList = (ArrayList<Reward>) request.getAttribute("rewardList");
@@ -162,9 +119,9 @@
                 
             %>
             <div class="form-group">
-                <div class="col-md-10"></div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn2 submitReward" name="select" value="select">Submit Rewards</button>
+                <div class="col-lg-10"></div>
+                <div class="col-lg-2">
+                    <button type="submit" class="btn btn2 " name="select" value="select">Submit Rewards</button>
                 </div>
             </div>    
             </form>

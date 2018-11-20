@@ -23,6 +23,148 @@
     .student-text{
         text-align: center;
     }
+    .dhx_cal_navline .dhx_cal_date {
+        padding-left:100px;
+    }
+    @media screen and (max-width: 480px){
+        body{
+            font-size: 7px;
+        }
+        .dhx_cal_tab, .dhx_cal_tab.active{
+            font-size: 7px;
+            width: 45px;
+            height: 20px;
+        }
+        .dhx_scale_bar, .dhx_month_body, .dhx_scale_holder, .dhx_body, .dhx_title, .dhx_cal_event_clear {
+            font-size: 7px !important;
+        }
+        .dhx_month_head, .dhx_scale_hour{
+            font-size: 9px;
+        }
+        .week{
+            left: 62px !important;
+        }
+        .month{
+            left: 109px !important;
+        }
+        .year{
+            left: 158px !important;
+        }
+        .dhx_cal_navline .dhx_cal_date{
+            font-size: 11px;
+            padding-left: 0px;
+            top: 35px;
+            font-weight: bold;
+        }
+        .dhx_cal_prev_button, .dhx_cal_next_button{
+            height: 5px !important;
+            width: 5px !important;
+            top: 20px !important;
+        }
+        .dhx_cal_prev_button{
+            left: 77% !important;
+        }
+        .dhx_cal_today_button{
+            font-size: 9px;
+            left: 76% !important;
+            top: 8px !important;
+        }
+        #studentAttendanceTable, .form-control, .btn, .paginate_button>a{
+            font-size: 9px !important;
+        }
+        .pc_title {
+            font-size: 11px !important;
+        }
+        
+    }
+    @media screen and (max-width: 767px) and (min-width: 481px){
+        body{
+            font-size: 12px;
+        }
+        .dhx_cal_tab, .dhx_cal_tab.active{
+            font-size: 12px;
+            width: 50px;
+            height: 25px;
+        }
+        .dhx_scale_bar, .dhx_month_body, .dhx_scale_holder, .dhx_body, .dhx_title {
+            font-size: 12px;
+        }
+        .dhx_month_head, .dhx_scale_hour{
+            font-size: 13px;
+        }
+        .week{
+            left: 68px !important;
+        }
+        .month{
+            left: 120px !important;
+        }
+        .year{
+            left: 177px !important;
+        }
+        .dhx_cal_navline .dhx_cal_date{
+            font-size: 13px;
+            padding-left: 0px;
+            top: 35px;
+            font-weight: bold;
+        }
+        .dhx_cal_prev_button, .dhx_cal_next_button{
+            height: 13px !important;
+            width: 13px !important;
+            top: 20px !important;
+        }
+        .dhx_cal_prev_button{
+            left: 77% !important;
+        }
+        .dhx_cal_today_button{
+            font-size: 12px;
+            left: 79% !important;
+            top: 10px !important;
+        }
+    }
+    @media screen and (max-width: 991px) and (min-width: 768px){
+        body{
+            font-size: 14px;
+        }
+        .dhx_cal_tab, .dhx_cal_tab.active{
+            font-size: 14px;
+            width: 60px;
+            height: 28px;
+        }
+        .dhx_scale_bar, .dhx_month_body, .dhx_scale_holder, .dhx_body, .dhx_title {
+            font-size: 14px;
+        }
+        .dhx_month_head, .dhx_scale_hour{
+            font-size: 15px;
+        }
+        .week{
+            left: 78px !important;
+        }
+        .month{
+            left: 140px !important;
+        }
+        .year{
+            left: 205px !important;
+        }
+        .dhx_cal_navline .dhx_cal_date{
+            font-size: 15px;
+            padding-left: 0px;
+            top: 35px;
+            font-weight: bold;
+        }
+        .dhx_cal_prev_button, .dhx_cal_next_button{
+            height: 15px !important;
+            width: 15px !important;
+            top: 20px !important;
+        }
+        .dhx_cal_prev_button{
+            left: 77% !important;
+        }
+        .dhx_cal_today_button{
+            font-size: 14px;
+            left: 82% !important;
+            top: 10px !important;
+        }
+    }
 </style>
 
 <div class="col-md-10">
@@ -32,10 +174,10 @@
             <div class="dhx_cal_next_button">&nbsp;</div>
             <div class="dhx_cal_today_button"></div>
             <div class="dhx_cal_date"></div>
-            <div class="dhx_cal_tab" name="day_tab" style="right:204px;"></div>
-            <div class="dhx_cal_tab" name="week_tab" style="right:140px;"></div>
-            <div class="dhx_cal_tab" name="month_tab" style="right:76px;"></div>
-            <div class="dhx_cal_tab" name="year_tab" style="right:280px;"></div>
+            <div class="dhx_cal_tab day" name="day_tab"></div>
+            <div class="dhx_cal_tab week" name="week_tab"></div>
+            <div class="dhx_cal_tab month" name="month_tab"></div>
+            <div class="dhx_cal_tab year" name="year_tab"></div>
         </div>
         <div class="dhx_cal_header"></div>
         <div class="dhx_cal_data"></div>       
@@ -104,7 +246,7 @@
                 </div><br/>
 
                 <div class="table-responsive">
-                    <table id="studentAttendanceTable" class="table table-bordered table-striped" style="width:100%; font-size: 14px">
+                    <table id="studentAttendanceTable" class="table table-bordered table-striped" style="width:100%;">
                         <thead>
                             <tr>
                                 <th style="text-align: center">Student Name</th>

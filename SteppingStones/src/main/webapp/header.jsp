@@ -27,7 +27,7 @@
     <div class="header" id="header_<%=role%>">
         <div class="container">
             <div class="row">
-                <div class="col-sm-4" id="HamburgerMenu">
+                <div class="col-sm-2" id="HamburgerMenu">
                     <button type="button" class="menu-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
                         <span class="sr-only">Toggle navigation</span>
 
@@ -38,16 +38,18 @@
                <div class="col-sm-5">
                   <!-- Logo -->
                   <div class="logo">
-                    <a href="Dashboard.jsp"><img src="${pageContext.request.contextPath}/styling/img/logo_white.png"></img></a>
+                    <a href="Dashboard.jsp" class="logoWord">Stepping Stones<!--<img src="${pageContext.request.contextPath}/styling/img/logo_white.png"></img>--></a>
                   </div>
                </div>
-                  <div class="col-sm-4" id="NotHamburgerMenu"></div>
-                  <div class="col-sm-3">
+                  <div class="col-sm-2" id="NotHamburgerMenu"></div>
+                  <div class="col-sm-5">
                   <div class="navbar" role="banner">
                       <nav style="text-align: center;">
                         <ul class="nav navbar-nav">
                           <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span><%=role.toUpperCase()%> - </span> <%=account %><b class="caret"></b></a>
+                            <a href="#" class="dropdown-toggle withWord" data-toggle="dropdown"><span><%=role.toUpperCase()%> - </span> <%=account %><b class="caret"></b></a>
+                            <a href="#" class="dropdown-toggle withIcon" data-toggle="dropdown"><span><i class="fa fa-user-circle fa-3x"></i></span></a>
+                            <a href="#" class="dropdown-toggle withSmallIcon" data-toggle="dropdown"><span><i class="fa fa-user-circle fa-2x"></i></span></a>
                             <ul class="dropdown-menu animated fadeInUp">
                                 <%
                                     if(role != null && role == "admin" && branch_id != 0){
@@ -190,6 +192,7 @@
                                 <ul>
                                     <li><a href="DisplayReward.jsp">View Reward</a></li>
                                     <li><a href="CreateReward.jsp">Create Reward</a></li>
+                                    <li><a href="AdminReward.jsp">Reward Student</a></li>
                                     <li><a href="RedeemReward.jsp">Redeem Reward</a></li>
                                 </ul>
                             </li>

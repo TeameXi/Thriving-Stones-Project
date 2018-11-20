@@ -941,4 +941,37 @@ public class ClassDAO {
         
         return false;
     }
+    
+    public static ArrayList<Class> getStudentEnrolledClass(int student_id, int branch_id) {
+        ArrayList<Class> classList = new ArrayList();
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("select * from class c, class_student_rel cs where c.class_id = cs.class_id and "
+                    + "end_date > curdate() and student_id = ? and c.branch_id = ? and status = 0");
+            stmt.setInt(1, student_id);
+            stmt.setInt(2, branch_id);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                int classID = rs.getInt("class_id");
+                int subjectID = rs.getInt("subject_id");
+                int levelID = rs.getInt("level_id");
+                int term = rs.getInt("term");
+                String startTime = rs.getString("start_time");
+                String endTime = rs.getString("end_time");
+                String classDay = rs.getString("class_day");
+                String startDate = rs.getString("start_date");
+                String endDate = rs.getString("end_date");
+                int mthlyFees = rs.getInt("fees");
+                String subject = SubjectDAO.retrieveSubject(subjectID);
+                String level = LevelDAO.retrieveLevel(levelID);
+                String type = rs.getString("class_type");
+                String combinedLevel = rs.getString("additional_lesson_id");
+                Class cls = new Class(classID, level, subject, term, startTime, endTime, classDay, mthlyFees, startDate, endDate, type, combinedLevel);
+                classList.add(cls);
+            }
+        } catch (SQLException e) {
+            System.out.print(e.getMessage());
+        }
+        return classList;
+    }
 }

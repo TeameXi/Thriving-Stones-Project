@@ -3,10 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package controller;
 
-import com.google.gson.Gson;
 import entity.Reward;
+import entity.Student;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
@@ -18,16 +17,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.LevelDAO;
 import model.RewardDAO;
-import model.RewardItemDAO;
 import model.StudentDAO;
-import org.json.JSONObject;
 
 /**
  *
  * @author Desmond
  */
-@WebServlet(name = "RedeemRewardServlet", urlPatterns = {"/RedeemRewardServlet"})
-public class RedeemRewardServlet extends HttpServlet {
+@WebServlet(urlPatterns = {"/AdminRewardServlet"})
+public class AdminRewardServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -40,74 +37,70 @@ public class RedeemRewardServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        if (request.getParameter("search") != null) {
-            if (request.getParameter("branch_id") == null) {
-            response.sendRedirect("RedeemReward.jsp");
+        if(request.getParameter("branch_id") == null){
+            response.sendRedirect("AdminReward.jsp");
             return;
         }
         int branchID = Integer.parseInt(request.getParameter("branch_id"));
+       if(request.getParameter("search") != null){
             String student = (String) request.getParameter("student");
             String[] parts = student.split("-");
             String studentName = "";
             String studentEmail = "";
             int phone = 0;
-
-            if (parts.length == 2) {
+            
+            if(parts.length == 2){
                 studentName = parts[0].trim();
-                if (parts[1].contains("@")) {
+                if(parts[1].contains("@")){
                     studentEmail = parts[1].trim();
-                } else {
+                }else{
                     phone = Integer.parseInt(parts[1].trim());
                 }
             }
 //            System.out.println(phone + "& " + studentEmail);
             int studentID = 0;
-            if (studentEmail.isEmpty()) {
+            if(studentEmail.isEmpty()){
                 studentID = StudentDAO.retrieveStudentIDWithPhone(studentName, phone);
-            } else {
+            }else{
                 studentID = StudentDAO.retrieveStudentIDWithEmail(studentName, studentEmail);
             }
 //            System.out.println(studentID);
-            int levelID = StudentDAO.retrieveStudentLevelbyID(studentID, branchID);
-            if (levelID == 0) {
-                request.setAttribute("errorMsg", studentName + " Not Exists in Database, Please Create Student First.");
-            } else {
-
-                //List<Reward> rewardList = RewardDAO.listAllRewardsByStudent(studentID);
-                request.setAttribute("pointAvail", RewardDAO.countStudentPoint(studentID));
-                request.setAttribute("level", LevelDAO.retrieveLevel(levelID));
+            int levelID = StudentDAO.retrieveStudentLevelbyID(studentID,branchID);
+            if(levelID == 0){
+                request.setAttribute("errorMsg", studentName + " Not Exists in Database, Please Create Student First.");           
+            }else{
+                List<Reward> rewardList = RewardDAO.listAllRewardsByStudent(studentID);
+                request.setAttribute("rewardList", rewardList);
+                request.setAttribute("level", LevelDAO.retrieveLevel(levelID));    
                 request.setAttribute("studentName", studentName);
                 request.setAttribute("student_id", studentID);
-
-            }
-            RequestDispatcher view = request.getRequestDispatcher("RedeemReward.jsp");
-            view.forward(request, response);
-        }
-        if ("redeem".equals(request.getParameter("action"))) {
-            try (PrintWriter out = response.getWriter()) {
-                Gson gson = new Gson();
-                int studentid = Integer.parseInt(request.getParameter("studentID"));
-                int rewardid = Integer.parseInt(request.getParameter("rewardID"));
-                int point = Integer.parseInt(request.getParameter("point"));
-                int quantity = Integer.parseInt(request.getParameter("quantity"));
-                String name = request.getParameter("name");
-
-                if(quantity == 0){
-                    JSONObject toReturn = new JSONObject().put("data", false);
-                    String json = toReturn.toString();
-                    out.println(json);
-                }else{
-                    boolean success = RewardDAO.insertReward(studentid, 0, name + " Redemption", 0 - point) > 0;
-                    RewardItemDAO.updateQuantity(rewardid, quantity -1);
-                    JSONObject toReturn = new JSONObject().put("data", success);
-                    toReturn.put("quantity", quantity-1);
-                    String json = toReturn.toString();
-                    out.println(json);
-                }
                 
             }
+            RequestDispatcher view = request.getRequestDispatcher("AdminReward.jsp");
+            view.forward(request, response);
         }
+        
+       if(request.getParameter("amount") != null){
+           int student_id = Integer.parseInt(request.getParameter("studentiiD"));
+           int tutor_id = Integer.parseInt(request.getParameter("tutorid"));
+           String description = request.getParameter("description");
+           int amount = Integer.parseInt(request.getParameter("amount"));
+           
+           int status = RewardDAO.insertReward(student_id, tutor_id, description, amount);
+           List<Reward> rewardList = RewardDAO.listAllRewardsByStudent(student_id);
+           Student student = StudentDAO.retrieveStudentbyID(student_id);
+            request.setAttribute("rewardList", rewardList);
+            request.setAttribute("level", student.getLevel());    
+            request.setAttribute("studentName", student.getName());
+            request.setAttribute("student_id", student_id);
+            
+            if(status == 0){
+                request.setAttribute("errorMsg", "Error occurred when adding rewards"); 
+            }
+             
+            RequestDispatcher view = request.getRequestDispatcher("AdminReward.jsp");
+            view.forward(request, response);
+       }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

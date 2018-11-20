@@ -53,6 +53,40 @@
     }
 /*    #child_table tr:nth-child(even) {background: #FFF}*/
 
+    @media screen and (max-width: 480px){
+        body{
+            font-size: 10px;
+        } 
+        .form-control{
+            font-size: 10px;
+        }
+        a {
+            font-size: 10px;
+        }
+        #tab{
+            margin-bottom: 20px !important;
+        }
+    }
+    @media screen and (min-width:481px) and (max-width: 767px) {
+        body{
+            font-size: 12px !important;
+        } 
+        .form-control{
+            font-size: 12px !important;
+        }
+        a {
+            font-size: 12px ;
+        }
+        #tab{
+            margin-bottom: 20px !important;
+        }
+    }
+    @media screen and (min-width:768px) and (max-width: 991px) {
+        #gradeTable_filter{
+            float: right;
+            margin-top: -39px;
+        }
+    }
 
 </style>
 <div class="col-md-10">
