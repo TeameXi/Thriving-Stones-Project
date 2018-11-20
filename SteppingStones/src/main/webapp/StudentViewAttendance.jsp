@@ -55,9 +55,42 @@
         width: 15%;
         height: 26px;
     }
+    @media screen and (max-width: 480px){
+        body{
+            font-size: 10px;
+        } 
+        .form-control{
+            font-size: 10px;
+        }
+        a {
+            font-size: 10px;
+        }
+        #tab{
+            margin-bottom: 20px !important;
+        }
+    }
+    @media screen and (min-width:481px) and (max-width: 767px) {
+        body{
+            font-size: 12px !important;
+        } 
+        .form-control{
+            font-size: 12px !important;
+        }
+        a {
+            font-size: 12px ;
+        }
+        #tab{
+            margin-bottom: 20px !important;
+        }
+    }
+    @media screen and (min-width:768px) and (max-width: 991px) {
+        #studentAttendanceTable_filter{
+            float: right;
+        }
+    }
 </style>
-<div class="col-lg-10">
-    <div id="tab" style="text-align: center;margin: 10px;"><span class="tab_active" style="font-size: 14px">Attendance Taking</span></div>
+<div class="col-md-10">
+    <div id="tab" style="text-align: center;margin: 10px;"><span class="tab_active" >Attendance Taking</span></div>
     <table id="studentAttendanceTable" class="table display dt-responsive nowrap" style="width:100%;">
         <thead class="thead-light">
             <tr>

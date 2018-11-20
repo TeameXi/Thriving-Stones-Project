@@ -10,8 +10,57 @@
     .details{
         text-align: center;
     }
+    @media screen and (max-width: 480px){
+        body{
+            font-size: 10px;
+        } 
+        .form-control{
+            font-size: 10px;
+        }
+        a {
+            font-size: 10px;
+        }
+        #tab{
+            margin-bottom: 20px !important;
+        }
+        .tableImage{
+            width: 20px;
+            heigth: 20px;
+        }
+        .availablePoint{
+            text-align: center;
+            margin-top: 25px;
+        }
+    }
+    @media screen and (min-width:481px) and (max-width: 767px) {
+        body{
+            font-size: 12px !important;
+        } 
+        .form-control{
+            font-size: 12px !important;
+        }
+        a {
+            font-size: 12px ;
+        }
+        #tab{
+            margin-bottom: 20px !important;
+        }
+        .tableImage{
+            width: 50px;
+            heigth: 50px;
+        }
+        .availablePoint{
+            text-align: center;
+            margin-top: 25px;
+        }
+    }
+    @media screen and (min-width:768px) and (max-width: 991px) {
+        #rewardTable_filter{
+            float: right;
+        }
+    }
 </style>
-<div class="col-lg-10">
+<div class="col-md-10">
     <%        
         String success = (String) request.getAttribute("status");
         if (success != null) {
@@ -20,11 +69,11 @@
     %>
     
     <div class="col-lg-12">
-    <div style="text-align: center;margin: 10px;"><span class="tab_active" style="font-size: 14px">Rewards</span></div>
+    <div style="text-align: center;margin: 10px;"><span class="tab_active">Rewards</span></div>
     
-    My Available Point : <label><%=RewardDAO.countStudentPoint(user_id)%></label>
-    <br><br>
-    <table id="rewardTable" class="table table-bordered">
+    <div class="availablePoint"> My Available Point : <label><%=RewardDAO.countStudentPoint(user_id)%></label></div>
+    <br>
+    <table id="rewardTable" class="table table-bordered" style="width:100% !important;">
         <thead class="thead-light">
             <tr>
                 <th style="text-align: center">Item Name</th>
@@ -103,7 +152,9 @@
                 {"data": "image",
                 "render": function (data) {
                         
-                    return '<img src="data:image/jpeg;base64,' + data + '" width="90px" height="90px" />';
+                    return '<img src="data:image/jpeg;base64,' + data + '" class="tableImage" />';
+                    
+                    
 
                 }  
                },
