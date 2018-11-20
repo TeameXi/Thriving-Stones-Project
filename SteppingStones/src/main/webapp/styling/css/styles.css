@@ -19,29 +19,40 @@ ul, ol {
   margin-left: 5px;
 }
 
-.item1 { 
+.item1 {
+  padding-top: 10px;
   background-image: -webkit-linear-gradient(90deg, #3f5efb 0%, #fc466b 100%);
 }
 
-.item2 { 
+.item2 {
+  padding-top: 10px;
   background-image: -webkit-linear-gradient(90deg, #11998e 0%, #38ef7d 100%);
 }
 
-.item3 { 
+.item3 {
+  padding-top: 10px;
   background-image: -webkit-linear-gradient(90deg, #ee0979 0%, #ff6a00 100%);
 }
 .item4 { 
   background-image: -webkit-linear-gradient(90deg, #059125 0%, #d1db34 100%);
   padding: 0 15px;
-  padding-top: 25px;
+  padding-top: 15px;
 }
 .item5 { 
-  background:#fffffe;
+  background-image: -webkit-linear-gradient(90deg, #d85605 0%, #f7d637 100%);
+  padding: 0 15px;
+  padding-top: 15px;
 }
 .item6 { 
   background-image: -webkit-linear-gradient(90deg, #2d47d2 0%, #37c7ce 100%);
   padding: 0 15px;
-  padding-top: 25px;
+  padding-top: 15px;
+}
+
+.item7 { 
+  background-image: -webkit-linear-gradient(90deg, #2d47d2 0%, #37c7ce 100%);
+  padding: 0 15px;
+  padding-top: 15px;
 }
 
 .title { 

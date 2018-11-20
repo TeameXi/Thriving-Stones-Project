@@ -3,6 +3,12 @@
     Created on : 16 Nov, 2018, 5:45:34 PM
     Author     : Zang Yu
 --%>
+<%@page import="java.text.DateFormat"%>
+<%@page import="java.text.SimpleDateFormat"%>
+<%@page import="java.util.Date"%>
+<%@page import="java.util.Calendar"%>
+<%@page import="entity.Expense"%>
+<%@page import="model.ExpenseDAO"%>
 <%@page import="entity.TutorPay"%>
 <%@page import="entity.Tutor"%>
 <%@page import="java.util.ArrayList"%>
@@ -37,9 +43,9 @@
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styling/css/theme.css">
         <link href="styling/css/jquery.scrollable.css" rel="stylesheet" type="text/css"/>
         <style>
-            .box { height: 170px; width:260px; overflow: auto; font-size: 18px;}
-            .box2 { height: 250px; width:290px; overflow: auto;}
-            .box3 { height: 200px; width:260px; overflow: auto; font-size: 18px;}
+            .box { height: 200px; width:260px; overflow: auto; font-size: 18px;}
+            .box2 { height: 225px; width:260px; overflow: auto;}
+            .box3 { height: 85px; width:400px; overflow: auto;}
         </style>
     </head>
     <body>
@@ -121,17 +127,17 @@
                                         </li>
                                         
                                         <li data-row="2" data-col="1" data-sizex="2" data-sizey="2" class="item5">
-                                            <h3 class="title">tutor payment details</h3>
+                                            <h3 class="title-3 m-b-30">tutor payment details</h3>
                                             <div class="box2">
-                                            <table class="table table-borderless table-data3">
-                                                <thead>
-                                                    <tr>
-                                                        <th>name</th>
-                                                        <th>status</th>
-                                                        <th>salary</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody class="tableContent">
+                                                <table class="table table-data2">
+                                                    <thead>
+                                                        <tr>                                                                
+                                                            <th>name</th>
+                                                            <th>status</th>
+                                                            <th>salary</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>                                            
                                                 <%
                                                     ArrayList<Tutor> tutors = TutorDAO.tutorWithTotalClasses(branch_id);
 
@@ -154,10 +160,43 @@
                                             </table>
                                         </div>
                                         </li>                                        
-                                        <li data-row="1" data-col="4" data-sizex="3" data-sizey="1" class="item2"><h4 class="content">WORLD</h4></li>
+                                        <li data-row="1" data-col="4" data-sizex="3" data-sizey="1" class="item7">
+                                            <h3 class="title-3 m-b-30">Replacement lesson dates</h3>
+                                            <div class="box3">
+                                                <table class="table table-data2">
+                                                    <thead>
+                                                        <tr>                                                                
+                                                            <th>date</th>
+                                                            <th>replaced class</th>
+                                                            <th>name</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>                                            
+                                                <%
+                                                    ArrayList<Tutor> tutorss = TutorDAO.tutorWithTotalClasses(branch_id);
+
+                                                    for(Tutor t : tutorss){
+                                                        double totalOwed = 0.0;
+                                                        ArrayList<entity.Class> classList = ClassDAO.listAllClassesBelongToTutors(t.getTutorId(), user.getBranchId());   
+                                                        for (entity.Class c : classList) {
+                                                            double classDuration = ClassDAO.getClassTime(c.getClassID());
+                                                            int totalAttendLessons = TutorDAO.calculateTutorAttendLessonCount(t.getTutorId(), c.getClassID());                        
+                                                            totalOwed += totalAttendLessons*classDuration* c.getTutorRate();
+                                                        }
+                                                        ArrayList<TutorPay> replacementClasses = ClassDAO.totalReplacementClasses(t.getTutorId(), user.getBranchId());
+                                                        for(TutorPay replacementClass:replacementClasses){
+                                                            totalOwed += replacementClass.getMonthlySalary();
+                                                        }
+                                                        out.println("<tr><td>"+t.getName()+"</td><td class='denied'>Pending</td><td class='text-center'> $ "+totalOwed+"</td></tr>");
+                                                    }
+                                                %>                                                                                                     
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        </li>
                                         <li data-row="2" data-col="3" data-sizex="2" data-sizey="2" class="item6">
                                             <h3 class="title-3 m-b-30">Current week expenses</h3>
-                                            <div class="box3">
+                                            <div class="box2">
                                                 <table class="table table-data2">
                                                     <thead>
                                                         <tr>                                                                
@@ -167,29 +206,20 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr class="tr-shadow">                                                            
-                                                            <td class="desc">Samsung S8 Black</td>
-                                                            <td>2018-09-27 02:12</td>
-                                                            <td>$679.00</td>
-                                                        </tr>                                                        
-                                                        <tr class="tr-shadow">                                                            
-                                                            <td class="desc">Samsung S8 Black</td>
-                                                            <td>2018-09-27 02:12</td>
-                                                            <td>$679.00</td>
-                                                        </tr>
+                                                    <%
+                                                        ArrayList<Expense> expenses = ExpenseDAO.listAllExpenses();
+                                                        Calendar cal = Calendar.getInstance();
+                                                        cal.set(Calendar.DAY_OF_WEEK,cal.getActualMinimum(Calendar.DAY_OF_WEEK));
+                                                        Date firstDayOfTheWeek = cal.getTime();
+                                                        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
                                                         
-                                                        <tr class="tr-shadow">
-                                                        <tr class="tr-shadow">                                                            
-                                                            <td class="desc">Samsung S8 Black</td>
-                                                            <td>2018-09-27 02:12</td>
-                                                            <td>$679.00</td>
-                                                        </tr>
-                                                        
-                                                        <tr class="tr-shadow">                                                            
-                                                            <td class="desc">Samsung S8 Black</td>
-                                                            <td>2018-09-27 02:12</td>
-                                                            <td>$679.00</td>
-                                                        </tr>
+                                                        for (Expense e : expenses) {                                                        
+                                                            Date parsed = df.parse(e.getDate());
+                                                            if(parsed.after(firstDayOfTheWeek) || (parsed.equals(firstDayOfTheWeek))){
+                                                                out.println("<tr><td class='desc'>"+e.getDescription()+"</td><td>"+df.format(parsed)+"</td><td>$"+e.getAmount()+"</td></tr>");
+                                                            }                                                            
+                                                        }
+                                                    %>                                                        
                                                     </tbody>
                                                 </table>
                                             </div>
