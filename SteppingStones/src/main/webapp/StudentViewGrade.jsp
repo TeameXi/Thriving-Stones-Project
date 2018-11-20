@@ -229,7 +229,7 @@
                 }
                 
 
-                tbody += '<tr><th scope="row">' + d.studentName + '</th>' +
+                tbody += '<tr><th scope="row"></th>' +
                         '<td>' + CA1_1_arr+ '</td>' +
                         '<td>' + CA1_0_arr + '</td>' +
 //                          '<td>' + CA1_1_arr+ '</td>' +
