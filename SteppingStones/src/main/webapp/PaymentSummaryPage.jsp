@@ -17,7 +17,7 @@
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.18/datatables.min.css"/>
 <div class="col-md-10">
 
-    <div style="text-align: center;margin: 20px;"><span class="tab_active">Student Payment Summary</span></div><br>
+    <div id="header" style="text-align: center;margin: 10px;">Student Payment - <span class="tab_active" style="font-size: 14px">View 1</span>/<a href="StudentPaymentStatus.jsp">View 2</a></div>
     <div class="row">
         <div class="col-md-1"></div>
         <div class="col-md-9">
@@ -125,7 +125,7 @@
             "ordering": false,
             "info":     true,
             "searching": true,
-            "iDisplayLength": 8,
+            "iDisplayLength": 8
         });
     });
     

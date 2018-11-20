@@ -420,6 +420,37 @@ public class LessonDAO {
 
         return noOfLessons;
     }
+    
+//    public boolean updateLessonDate(int lessonID, int tutorID, String changedStart, String changedEnd) {
+//        String sql = "select tutor_id from lesson where lesson_id = ?";
+//        
+//        try (Connection conn = ConnectionManager.getConnection()) {
+//            PreparedStatement stmt = conn.prepareStatement(sql);
+//            stmt.setInt(1, lessonID);
+//            
+//            ResultSet rs = stmt.executeQuery();
+//            int originalTutorId = 0;
+//            if(rs.next()){
+//                originalTutorId = rs.getInt(1);
+//            }
+//            
+//            sql = "update lesson set start_date = ?, end_date = ?, tutor_id = ?, replacement_tutor_id = ? where lesson_id = ?";
+//            stmt = conn.prepareStatement(sql);
+//            
+//            stmt.setString(1, changedStart);
+//            stmt.setString(2, changedEnd);
+//            stmt.setInt(3, tutorID);
+//            stmt.setInt(4, originalTutorId);
+//            stmt.setInt(5, lessonID);
+//            int rowsUpdated = stmt.executeUpdate();
+//            if (rowsUpdated > 0) {
+//                return true;
+//            }
+//        } catch (SQLException ex) {
+//            Logger.getLogger(LessonDAO.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return false;
+//    }
 
     public boolean updateLessonDate(int lessonID, int tutorID, String changedStart, String changedEnd) {
         String sql = "update lesson set start_date = ?, end_date = ?, replacement_tutor_id = ? where lesson_id = ?";
@@ -558,7 +589,7 @@ public class LessonDAO {
 
     public static LinkedList<Lesson> retrieveAllLessonListsBeforeCurr(int classid) {
         LinkedList<Lesson> lessons = new LinkedList<>();
-        String sql = "select lesson_id, class_id, tutor_id, tutor_attended, start_date, end_date from lesson where class_id = ? and start_date <= CURDATE() order by start_date asc";
+        String sql = "select lesson_id, class_id, tutor_id, tutor_attended, start_date, end_date from lesson where class_id = ? and date(start_date) <= CURDATE() order by start_date asc";
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, classid);
@@ -574,7 +605,7 @@ public class LessonDAO {
 
         return lessons;
     }
-
+    
     public ArrayList<Lesson> retrieveAllLessonListsAfterCurr(int classid) {
         ArrayList<Lesson> lessons = new ArrayList<>();
         String sql = "select lesson_id, class_id, tutor_id, tutor_attended, start_date, end_date from lesson where class_id = ? and start_date > CURDATE()";

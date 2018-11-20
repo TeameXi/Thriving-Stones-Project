@@ -318,15 +318,18 @@ public class PaymentDAO {
     public static void getAllDueStudentTutionFees(ArrayList<Payment> paymentData){
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement("select * from payment_reminder where outstanding_charge > 0 and payment_due_date < curdate();");
-
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 int studentID = rs.getInt("student_id");
                 int classID = rs.getInt("class_id");
                 Class cls = ClassDAO.getClassByID(classID);
-                String subject = cls.getSubject();
-                if(cls.getType().equals("P")){
-                    subject = cls.getLevel() + " (" + cls.getSubject() + " Premium";
+                String subject ="";
+                if(cls != null){
+                    if(cls.getType().equals("P")){
+                        subject = cls.getLevel() + " (" + cls.getSubject() + " Premium";
+                    }else{
+                        subject= cls.getLevel() + " (" + cls.getSubject();
+                    }
                 }
                 double chargeAmount = rs.getDouble("amount_charged");
                 double outstandingCharge = rs.getDouble("outstanding_charge");
@@ -406,9 +409,13 @@ public class PaymentDAO {
                 int studentID = rs.getInt("student_id");
                 int classID = rs.getInt("class_id");
                 Class cls = ClassDAO.getClassByID(classID);
-                String subject = cls.getSubject();
-                if(cls.getType().equals("P")){
-                    subject = cls.getLevel() + " (" + cls.getSubject() + " Premium";
+                String subject ="";
+                if(cls != null){
+                    if(cls.getType().equals("P")){
+                        subject = cls.getLevel() + " (" + cls.getSubject() + " Premium";
+                    }else{
+                        subject= cls.getLevel() + " (" + cls.getSubject();
+                    }
                 }
                 double chargeAmount = rs.getDouble("amount_charged");
                 double outstandingCharge = rs.getDouble("outstanding_charge");

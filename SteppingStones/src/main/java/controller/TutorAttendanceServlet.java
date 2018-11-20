@@ -73,6 +73,8 @@ public class TutorAttendanceServlet extends HttpServlet {
                     break;
                 }
                 case "retrieveClasses": {
+                    
+                    System.out.println("retrieveClasses");
                     int tutorID = Integer.parseInt(request.getParameter("tutorID"));
                     int branchID = Integer.parseInt(request.getParameter("branchID"));
 

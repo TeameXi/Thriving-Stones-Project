@@ -29,7 +29,7 @@
     }
 </style>
 <div class="col-lg-10">
-    <div id="tab" style="text-align: center;margin: 10px;"><span class="tab_active" style="font-size: 14px">Student Payment Summary</span></div>
+    <div id="header" style="text-align: center;margin: 10px;">Student Payment - <a href="PaymentSummaryPage.jsp">View 1</a>/ <span class="tab_active" style="font-size: 14px">View 2</span></div>
     <table id="studentPaymentStatusTable" class="table display dt-responsive nowrap" style="width:100%;">
         <thead class="thead-light">
             <tr>

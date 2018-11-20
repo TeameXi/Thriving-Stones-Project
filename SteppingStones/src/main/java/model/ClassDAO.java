@@ -273,7 +273,7 @@ public class ClassDAO {
     public static ArrayList<Class> listAllClassesByTutorID(int tutorID, int branchID) {
         ArrayList<Class> classList = new ArrayList();
         try (Connection conn = ConnectionManager.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement("select * from class where branch_id = ? and tutor_id = ? and DATE_ADD(end_date, INTERVAL 3 MONTH) > curdate()");
+            PreparedStatement stmt = conn.prepareStatement("select * from class where branch_id = ? and tutor_id = ? and DATE_ADD(end_date, INTERVAL 3 MONTH) >= curdate()");
             stmt.setInt(1, branchID);
             stmt.setInt(2, tutorID);
             ResultSet rs = stmt.executeQuery();
