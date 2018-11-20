@@ -31,16 +31,22 @@ ul, ol {
   background-image: -webkit-linear-gradient(90deg, #ee0979 0%, #ff6a00 100%);
 }
 .item4 { 
-  background-image: -webkit-linear-gradient(90deg, #24b629 0%, #d1db34 100%);
-  padding: 0 25px;
+  background-image: -webkit-linear-gradient(90deg, #059125 0%, #d1db34 100%);
+  padding: 0 15px;
   padding-top: 25px;
 }
 .item5 { 
   background:#fffffe;
 }
+.item6 { 
+  background-image: -webkit-linear-gradient(90deg, #2d47d2 0%, #37c7ce 100%);
+  padding: 0 15px;
+  padding-top: 25px;
+}
 
 .title { 
-  text-transform: capitalize;  
+  text-transform: capitalize; 
+  font-weight: 400;
   font-size: 20px;
   color: #333;
   margin-bottom: 10px;

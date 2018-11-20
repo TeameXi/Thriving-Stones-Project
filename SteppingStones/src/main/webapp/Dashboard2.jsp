@@ -37,8 +37,9 @@
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styling/css/theme.css">
         <link href="styling/css/jquery.scrollable.css" rel="stylesheet" type="text/css"/>
         <style>
-            .box { height: 170px; width:240px; overflow: auto; font-size: 18px;}
+            .box { height: 170px; width:260px; overflow: auto; font-size: 18px;}
             .box2 { height: 250px; width:290px; overflow: auto;}
+            .box3 { height: 200px; width:260px; overflow: auto; font-size: 18px;}
         </style>
     </head>
     <body>
@@ -154,7 +155,45 @@
                                         </div>
                                         </li>                                        
                                         <li data-row="1" data-col="4" data-sizex="3" data-sizey="1" class="item2"><h4 class="content">WORLD</h4></li>
-                                        <li data-row="2" data-col="3" data-sizex="2" data-sizey="2" class="item2"><h4 class="content">OR ELSE</h4></li>
+                                        <li data-row="2" data-col="3" data-sizex="2" data-sizey="2" class="item6">
+                                            <h3 class="title-3 m-b-30">Current week expenses</h3>
+                                            <div class="box3">
+                                                <table class="table table-data2">
+                                                    <thead>
+                                                        <tr>                                                                
+                                                            <th>description</th>
+                                                            <th>date</th>                                                            
+                                                            <th>amount</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr class="tr-shadow">                                                            
+                                                            <td class="desc">Samsung S8 Black</td>
+                                                            <td>2018-09-27 02:12</td>
+                                                            <td>$679.00</td>
+                                                        </tr>                                                        
+                                                        <tr class="tr-shadow">                                                            
+                                                            <td class="desc">Samsung S8 Black</td>
+                                                            <td>2018-09-27 02:12</td>
+                                                            <td>$679.00</td>
+                                                        </tr>
+                                                        
+                                                        <tr class="tr-shadow">
+                                                        <tr class="tr-shadow">                                                            
+                                                            <td class="desc">Samsung S8 Black</td>
+                                                            <td>2018-09-27 02:12</td>
+                                                            <td>$679.00</td>
+                                                        </tr>
+                                                        
+                                                        <tr class="tr-shadow">                                                            
+                                                            <td class="desc">Samsung S8 Black</td>
+                                                            <td>2018-09-27 02:12</td>
+                                                            <td>$679.00</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </li>
 
                                         
                     <% } %>
