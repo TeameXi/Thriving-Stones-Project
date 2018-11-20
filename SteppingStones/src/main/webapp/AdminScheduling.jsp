@@ -595,6 +595,38 @@
                         }
                     });
                 });
+                
+                $("#levels").change(function () {
+                    action = 'retrieveTutorOptions';
+                    subjectID = $('#subject').val();
+                    
+                    levels = [];
+                    indexL = 0;
+                    $.each($('.levels'), function () {
+                        levels[indexL] = $(this).val();
+                        indexL++;
+                    });
+                    
+                    $.ajax({
+                        type: 'POST',
+                        url: 'AdminScheduleServlet',
+                        dataType: 'JSON',
+                        data: {levels: levels.toString(), subjectID: subjectID, branchID: branchID, action: action},
+                        success: function (data) {
+                            $("#assign_tutor").empty();
+                            if(data.tutor.length <= 0){
+                               $("#no_tutor").css('display','block');
+                               $("#assign_tutor").hide();
+                            }else{
+                                $("#assign_tutor").show();
+                                $("#no_tutor").hide();
+                                for (var i = 0; i < data.tutor.length; i++) {
+                                    $("#assign_tutor").append('<option value="' + data.tutor[i].id + '">' + data.tutor[i].name + '</option>');
+                                }
+                            }
+                        }
+                    });
+                });
 
                 $('#createClass').on('click', function (e) {
                     holidays = [];

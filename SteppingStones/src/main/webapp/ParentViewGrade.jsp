@@ -1,3 +1,5 @@
+<%@page import="model.StudentDAO"%>
+<%@page import="java.util.HashMap"%>
 <%@page import="model.ParentDAO"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="model.ClassDAO"%>
@@ -84,7 +86,7 @@
 
 </style>
 <div class="col-md-10">
-    <div style="text-align: center;margin: 20px;"><span class="tab_active">My Grades </span></h5></div>
+    <div style="text-align: center;margin: 20px;"><span class="tab_active">Children's Grades</span></h5></div>
 
     <div class="table-responsive-sm">
         <table id="gradeTable" class="table display responsive nowrap" style="width:100%">
@@ -92,6 +94,7 @@
                 <tr>
                     <th scope="col"></th>
                     <th scope="col">ID</th>
+                    <th scope="col">Name</th>
                     <th scope="col">Level</th>
                     <th scope="col">Subject</th>
                     <th scope="col">Class Timing</th>
@@ -102,8 +105,10 @@
                     ArrayList<Integer> childIDs = ParentDAO.retrieveChildrenIDs(user.getRespectiveID(),branch_id);
                     ArrayList<Class> classes = new ArrayList<>();
                     String childIDChain = "";
+                    HashMap<Integer, ArrayList<Class>> classToStudent = new HashMap<>();
                     for (int child_id: childIDs){
                         ArrayList<Class> tempClass = ClassDAO.getStudentEnrolledClass(child_id);
+                        classToStudent.put(child_id,tempClass);
                         for (Class tempCls: tempClass){
                             boolean exists = false;
                             for (Class currCls: classes){
@@ -117,10 +122,13 @@
                         childIDChain += child_id + " ";
                     }
                     childIDChain = childIDChain.substring(0,childIDChain.length()-1);
-                    childIDChain += "";
-                    for (Class cls : classes) {
-                        out.println("<tr><td class='details-control'></td><td>" + cls.getClassID() + "</td><td>" + cls.getLevel() + "</td><td>" + cls.getSubject() + "</td><td>" + cls.getStartTime() + "-" + cls.getEndTime() + " ( " + cls.getClassDay() + " )");
-                        request.setAttribute("ClassID", cls.getClassID());
+                    childIDChain += "";                   
+                    for (int i: classToStudent.keySet()){
+                        ArrayList<Class> temp = classToStudent.get(i);
+                        for (Class cls : temp) {
+                            out.println("<tr><td class='details-control'></td><td>" + cls.getClassID() + "</td><td>" + StudentDAO.retrieveStudentName(i) + "</td><td>" + cls.getLevel() + "</td><td>" + cls.getSubject() + "</td><td>" + cls.getStartTime() + "-" + cls.getEndTime() + " ( " + cls.getClassDay() + " )");
+                            request.setAttribute("ClassID", cls.getClassID());
+                        } 
                     }
                 %>
             </tbody> 
@@ -144,6 +152,7 @@
                     "defaultContent": ''
                 },
                 {"data": "ID"},
+                {"data": "Name"},
                 {"data": "Level"},
                 {"data": "Subject"},
                 {"data": "Class Timing"}
@@ -248,7 +257,7 @@
                 }
                 
 
-                tbody += '<tr><th scope="row">' + d.studentName + '</th>' +
+                tbody += '<tr><th scope="row"></th>' +
                         '<td>' + CA1_1_arr+ '</td>' +
                         '<td>' + CA1_0_arr + '</td>' +
 //                          '<td>' + CA1_1_arr+ '</td>' +
