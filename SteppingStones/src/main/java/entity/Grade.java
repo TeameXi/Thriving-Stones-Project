@@ -14,47 +14,51 @@ public class Grade {
     private int studentId;
     private int class_id;
     
-    private int CA1_tuition_top;
+    private double CA1_tuition_top;
     private int CA1_tuition_base;
     private double CA1_tuition_grade;
     
-    private int SA1_tuition_top;
+    private double SA1_tuition_top;
     private int SA1_tuition_base;
     private double SA1_tuition_grade;
     
-    private int CA2_tuition_top;
+    private double CA2_tuition_top;
     private int CA2_tuition_base;
     private double CA2_tuition_grade;
     
-    private int SA2_tuition_top;
+    private double SA2_tuition_top;
     private int SA2_tuition_base;
     private double SA2_tuition_grade;
     
-    private int CA1_school_top;
+    private double CA1_school_top;
     private int CA1_school_base;
     private double CA1_school_grade;
     
-    private int SA1_school_top;
+    private double SA1_school_top;
     private int SA1_school_base;
     private double SA1_school_grade;
     
-    private int CA2_school_top;
+    private double CA2_school_top;
     private int CA2_school_base;
     private double CA2_school_grade;
     
-    private int SA2_school_top;
+    private double SA2_school_top;
     private int SA2_school_base;
     private double SA2_school_grade;
     
     private String level;
+    
+    private int subjectId;
+    private String subjectName;
+    private int levelId;
     
     public Grade(){
         
     }
     
     
-    public Grade(String studentName,int studentId,int class_id,int CA1_tuition_top,int CA1_tuition_base,int SA1_tuition_top,int SA1_tuition_base,int CA2_tuition_top,int CA2_tuition_base,int SA2_tuition_top,int SA2_tuition_base,
-            int CA1_school_top,int CA1_school_base,int SA1_school_top,int SA1_school_base,int CA2_school_top,int CA2_school_base,int SA2_school_top,int SA2_school_base){
+    public Grade(String studentName,int studentId,int class_id,double CA1_tuition_top,int CA1_tuition_base,double SA1_tuition_top,int SA1_tuition_base,double CA2_tuition_top,int CA2_tuition_base,double SA2_tuition_top,int SA2_tuition_base,
+            double CA1_school_top,int CA1_school_base,double SA1_school_top,int SA1_school_base,double CA2_school_top,int CA2_school_base,double SA2_school_top,int SA2_school_base){
         this.studentName = studentName;
         this.studentId = studentId;
         this.class_id = class_id;
@@ -104,6 +108,24 @@ public class Grade {
         this.CA2_school_top = CA2_school_top;this.CA2_school_base = CA2_school_base;this.CA2_school_grade = CA2_school_grade;
         this.SA2_school_top = SA2_school_top;this.SA2_school_base = SA2_school_base;this.SA2_school_grade = SA2_school_grade;
     }
+    
+    // Grade For analytic
+    public Grade(String studentName,int subjectId,String subjectName,int levelId,double CA1_tuition_grade,double SA1_tuition_grade,double CA2_tuition_grade,double SA2_tuition_grade,double CA1_school_grade,double SA1_school_grade,double CA2_school_grade,double SA2_school_grade){
+        this.studentName = studentName;
+        this.subjectId = subjectId;
+        this.subjectName = subjectName;
+        this.levelId = levelId;
+        
+        this.CA1_tuition_grade = CA1_tuition_grade;
+        this.SA1_tuition_grade = SA1_tuition_grade;
+        this.CA2_tuition_grade = CA2_tuition_grade;
+        this.SA2_tuition_grade = SA2_tuition_grade;
+        
+        this.CA1_school_grade = CA1_school_grade;
+        this.SA1_school_grade = SA1_school_grade;
+        this.CA2_school_grade = CA2_school_grade;
+        this.SA2_school_grade = SA2_school_grade;
+    }
 
     /**
      * @return the studentName
@@ -136,14 +158,14 @@ public class Grade {
     /**
      * @return the CA1_tuition_top
      */
-    public int getCA1_tuition_top() {
+    public double getCA1_tuition_top() {
         return CA1_tuition_top;
     }
 
     /**
      * @param CA1_tuition_top the CA1_tuition_top to set
      */
-    public void setCA1_tuition_top(int CA1_tuition_top) {
+    public void setCA1_tuition_top(double CA1_tuition_top) {
         this.CA1_tuition_top = CA1_tuition_top;
     }
 
@@ -178,14 +200,14 @@ public class Grade {
     /**
      * @return the SA1_tuition_top
      */
-    public int getSA1_tuition_top() {
+    public double getSA1_tuition_top() {
         return SA1_tuition_top;
     }
 
     /**
      * @param SA1_tuition_top the SA1_tuition_top to set
      */
-    public void setSA1_tuition_top(int SA1_tuition_top) {
+    public void setSA1_tuition_top(double SA1_tuition_top) {
         this.SA1_tuition_top = SA1_tuition_top;
     }
 
@@ -220,14 +242,14 @@ public class Grade {
     /**
      * @return the CA2_tuition_top
      */
-    public int getCA2_tuition_top() {
+    public double getCA2_tuition_top() {
         return CA2_tuition_top;
     }
 
     /**
      * @param CA2_tuition_top the CA2_tuition_top to set
      */
-    public void setCA2_tuition_top(int CA2_tuition_top) {
+    public void setCA2_tuition_top(double CA2_tuition_top) {
         this.CA2_tuition_top = CA2_tuition_top;
     }
 
@@ -262,14 +284,14 @@ public class Grade {
     /**
      * @return the SA2_tuition_top
      */
-    public int getSA2_tuition_top() {
+    public double getSA2_tuition_top() {
         return SA2_tuition_top;
     }
 
     /**
      * @param SA2_tuition_top the SA2_tuition_top to set
      */
-    public void setSA2_tuition_top(int SA2_tuition_top) {
+    public void setSA2_tuition_top(double SA2_tuition_top) {
         this.SA2_tuition_top = SA2_tuition_top;
     }
 
@@ -304,14 +326,14 @@ public class Grade {
     /**
      * @return the CA1_school_top
      */
-    public int getCA1_school_top() {
+    public double getCA1_school_top() {
         return CA1_school_top;
     }
 
     /**
      * @param CA1_school_top the CA1_school_top to set
      */
-    public void setCA1_school_top(int CA1_school_top) {
+    public void setCA1_school_top(double CA1_school_top) {
         this.CA1_school_top = CA1_school_top;
     }
 
@@ -346,14 +368,14 @@ public class Grade {
     /**
      * @return the SA1_school_top
      */
-    public int getSA1_school_top() {
+    public double getSA1_school_top() {
         return SA1_school_top;
     }
 
     /**
      * @param SA1_school_top the SA1_school_top to set
      */
-    public void setSA1_school_top(int SA1_school_top) {
+    public void setSA1_school_top(double SA1_school_top) {
         this.SA1_school_top = SA1_school_top;
     }
 
@@ -388,14 +410,14 @@ public class Grade {
     /**
      * @return the CA2_school_top
      */
-    public int getCA2_school_top() {
+    public double getCA2_school_top() {
         return CA2_school_top;
     }
 
     /**
      * @param CA2_school_top the CA2_school_top to set
      */
-    public void setCA2_school_top(int CA2_school_top) {
+    public void setCA2_school_top(double CA2_school_top) {
         this.CA2_school_top = CA2_school_top;
     }
 
@@ -430,14 +452,14 @@ public class Grade {
     /**
      * @return the SA2_school_top
      */
-    public int getSA2_school_top() {
+    public double getSA2_school_top() {
         return SA2_school_top;
     }
 
     /**
      * @param SA2_school_top the SA2_school_top to set
      */
-    public void setSA2_school_top(int SA2_school_top) {
+    public void setSA2_school_top(double SA2_school_top) {
         this.SA2_school_top = SA2_school_top;
     }
 
@@ -488,6 +510,48 @@ public class Grade {
      */
     public int getStudentId() {
         return studentId;
+    }
+
+    /**
+     * @return the subjectId
+     */
+    public int getSubjectId() {
+        return subjectId;
+    }
+
+    /**
+     * @param subjectId the subjectId to set
+     */
+    public void setSubjectId(int subjectId) {
+        this.subjectId = subjectId;
+    }
+
+    /**
+     * @return the levelId
+     */
+    public int getLevelId() {
+        return levelId;
+    }
+
+    /**
+     * @param levelId the levelId to set
+     */
+    public void setLevelId(int levelId) {
+        this.levelId = levelId;
+    }
+
+    /**
+     * @return the subjectName
+     */
+    public String getSubjectName() {
+        return subjectName;
+    }
+
+    /**
+     * @param subjectName the subjectName to set
+     */
+    public void setSubjectName(String subjectName) {
+        this.subjectName = subjectName;
     }
 
 }

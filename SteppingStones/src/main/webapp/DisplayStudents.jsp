@@ -320,7 +320,14 @@
                     </div>
                 </div><br/>
 
-
+                <div class="col-sm-4">
+<!--                    <form method="POST" action="">
+                        <input type="hidden" id="performanceId" />
+                        <button class="btn btn1">View Student Performance</button>
+                    </form>-->
+                    <a href="IndividualGradeTracking.jsp" id="performanceLink" class="btn btn1">View Student Performance</a>
+                </div><br/><br/>
+                
 
             </div>  
 
@@ -469,6 +476,12 @@
                     if (data["outstandingAmt"] !== "") {
                         $("#view_outstandingAmt").text(data["outstandingAmt"]);
                     }
+                    
+                    var href = $("#performanceLink").attr("href");
+                    href += "?studentID="+student_id;
+                    $("#performanceLink").attr('href',href);
+                    
+                    
                 }
             });
         });

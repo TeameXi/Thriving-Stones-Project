@@ -43,13 +43,16 @@
     </form>
 </div>
 <br/><br/>
+
 <div class="col-md-10">
-    <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+    <div id="tutitionChart" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 </div>
 
 <div class="col-md-10">
-    <div id="container2" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+    <div id="schoolChart" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 </div>
+
+
     
 </div>
 </div>
@@ -90,9 +93,9 @@
             var subName = $("#subject option:selected").html();
             $(function () {
                 // Create the chart
-                $('#container').highcharts({
+                $('#tutitionChart').highcharts({
                     "title": {
-                        text: 'Center Grade for '+subName+"-"+lvlName +"[SChool]"
+                        text: 'Grade for '+subName+"-"+lvlName +"[School]"
                     },
                     "subtitle": {
                         text: 'Can be further breakdown by clicking on each bar'
@@ -223,7 +226,7 @@
                         "data": [
                           {
                             "name": "CA1",
-                            "y": 2,
+                            "y": 3,
                             "drilldown": "4|CA1"
                           },
                           {
@@ -1011,9 +1014,9 @@
                     }
                 });
                 
-                $('#container2').highcharts({
+                $('#schoolChart').highcharts({
                     "title": {
-                        text: 'Grade for '+subName+"-"+lvlName +"[School]"
+                        text: 'Center Grade for '+subName+"-"+lvlName +"[School]"
                     },
                     "subtitle": {
                         text: 'Can be further breakdown by clicking on each bar'
@@ -1063,22 +1066,22 @@
                         "data": [
                           {
                             "name": "CA1",
-                            "y": 2,
+                            "y": 0,
                             "drilldown": "0|CA1"
                           },
                           {
                             "name": "SA1",
-                            "y": 3,
+                            "y": 0,
                             "drilldown": "0|SA1"
                           },
                           {
                             "name": "CA2",
-                            "y": 4,
+                            "y": 0,
                             "drilldown": "0|CA2"
                           },
                           {
                             "name": "SA2",
-                            "y": 2,
+                            "y": 1,
                             "drilldown": "0|SA2"
                           }
                         ]
@@ -1090,7 +1093,7 @@
                         "data": [
                           {
                             "name": "CA1",
-                            "y": 4,
+                            "y": 1,
                             "drilldown": "1|CA1"
                           },
                           {
@@ -1100,12 +1103,12 @@
                           },
                           {
                             "name": "CA2",
-                            "y": 5,
+                            "y": 1,
                             "drilldown": "1|CA2"
                           },
                           {
                             "name": "SA2",
-                            "y": 3,
+                            "y": 1,
                             "drilldown": "1|SA2"
                           }
                         ]
@@ -1117,7 +1120,7 @@
                         "data": [
                           {
                             "name": "CA1",
-                            "y": 3,
+                            "y": 1,
                             "drilldown": "3|CA1"
                           },
                           {
@@ -1127,12 +1130,12 @@
                           },
                           {
                             "name": "CA2",
-                            "y": 1,
+                            "y": 2,
                             "drilldown": "3|CA2"
                           },
                           {
                             "name": "SA2",
-                            "y": 4,
+                            "y": 2,
                             "drilldown": "3|SA2"
                           }
                         ]
@@ -1144,22 +1147,22 @@
                         "data": [
                           {
                             "name": "CA1",
-                            "y": 2,
+                            "y": 3,
                             "drilldown": "4|CA1"
                           },
                           {
                             "name": "SA1",
-                            "y": 4,
+                            "y": 3,
                             "drilldown": "4|SA1"
                           },
                           {
                             "name": "CA2",
-                            "y": 3,
+                            "y": 2,
                             "drilldown": "4|CA2"
                           },
                           {
                             "name": "SA2",
-                            "y": 1,
+                            "y": 4,
                             "drilldown": "4|SA2"
                           }
                         ]
@@ -1171,22 +1174,22 @@
                         "data": [
                           {
                             "name": "CA1",
-                            "y": 5,
+                            "y": 0,
                             "drilldown": "5|CA1"
                           },
                           {
                             "name": "SA1",
-                            "y": 1,
+                            "y": 0,
                             "drilldown": "5|SA1"
                           },
                           {
                             "name": "CA2",
-                            "y": 4,
+                            "y": 1,
                             "drilldown": "5|CA2"
                           },
                           {
                             "name": "SA2",
-                            "y": 2,
+                            "y": 1,
                             "drilldown": "5|SA2"
                           }
                         ]
@@ -1198,12 +1201,12 @@
                         "data": [
                           {
                             "name": "CA1",
-                            "y": 2,
+                            "y": 1,
                             "drilldown": "6|CA1"
                           },
                           {
                             "name": "SA1",
-                            "y": 5,
+                            "y": 1,
                             "drilldown": "6|SA1"
                           },
                           {
@@ -1213,7 +1216,7 @@
                           },
                           {
                             "name": "SA2",
-                            "y": 3,
+                            "y": 0,
                             "drilldown": "6|SA2"
                           }
                         ]
@@ -1238,16 +1241,17 @@
                           "name": [
                             "Grade A students for CA1"
                           ],
+                           "tooltip:":{
+                            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                              '<td style="padding:0"><b>{point.y:.1f} students</b></td></tr>',
+                            footerFormat: '</table>',
+                            shared: true,
+                            useHTML: true
+                          },
                           "type": "column",
                           "data": [
-                            [
-                              "Norman Leow Teck",
-                              87
-                            ],
-                            [
-                              "Jannel koh",
-                              83
-                            ]
+                          
                           ]
                         },
                         {
@@ -1257,18 +1261,6 @@
                           ],
                           "type": "column",
                           "data": [
-                            [
-                              "James Tan",
-                              91
-                            ],
-                            [
-                              "Jannel koh",
-                              89
-                            ],
-                            [
-                              "Noman Leow Teck",
-                              87
-                            ]
                           ]
                         },
                         {
@@ -1278,22 +1270,6 @@
                           ],
                           "type": "column",
                           "data": [
-                            [
-                              "Jannel koh",
-                              93
-                            ],
-                            [
-                              "James Tan",
-                              92
-                            ],
-                            [
-                              "Norman Leow Teck",
-                              89
-                            ],
-                            [
-                              "Elizabeth Joy Nooh",
-                              86
-                            ]
                           ]
                         },
                         {
@@ -1303,14 +1279,7 @@
                           ],
                           "type": "column",
                           "data": [
-                            [
-                              "James Tan",
-                              88
-                            ],
-                            [
-                              "Jannel Koh",
-                              86
-                            ]
+                              [ "Wan Ik",88]
                           ]
                         },
 
@@ -1323,20 +1292,8 @@
                           "type": "column",
                           "data": [
                             [
-                              "Syed Shaik Aifa",
-                              78
-                            ],
-                            [
-                              "Tang Jia Heng",
-                              76
-                            ],
-                            [
-                              "Sheerie Oon",
-                              75
-                            ],
-                            [
-                              "Carrene Tan",
-                              75
+                              "Elton Lee",
+                              63
                             ]
                           ]
                         },
@@ -1348,16 +1305,16 @@
                           "type": "column",
                           "data": [
                             [
-                              "Norman Leow Teck",
-                              79
+                              "Cybele Hu",
+                              69.5
                             ],
                             [
-                              "Sherie Oo",
-                              78
+                              "Elton Lee",
+                              60
                             ],
                             [
-                              "Elizabeth Joy Nooh",
-                              77
+                              "Ellie Oon",
+                              60
                             ]
                           ]
                         },
@@ -1369,20 +1326,8 @@
                           "type": "column",
                           "data": [
                             [
-                              "Elizabeth Joy Nooh",
-                              79
-                            ],
-                            [
-                              "Linette Evelyn Natalrary",
-                              77
-                            ],
-                            [
-                              "Carrene Tan",
-                              75
-                            ],
-                            [
-                              "RU",
-                              67276
+                              "Ellie Oon",
+                              64
                             ]
                           ]
                         },
@@ -1394,48 +1339,8 @@
                           "type": "column",
                           "data": [
                             [
-                              "James Tan",
-                              77
-                            ],
-                            [
-                              "Elizabeth Joy Nooh",
-                              75
-                            ],
-                            [
-                              "SK",
-                              291
-                            ],
-                            [
-                              "PDC",
-                              278
-                            ],
-                            [
-                              "BG",
-                              254
-                            ],
-                            [
-                              "RO",
-                              212
-                            ],
-                            [
-                              "AR",
-                              176
-                            ],
-                            [
-                              "CY",
-                              112
-                            ],
-                            [
-                              "IN",
-                              24
-                            ],
-                            [
-                              "Jannel koh",
-                              14
-                            ],
-                            [
-                              "MT",
-                              14
+                              "Elton Lee",
+                              68
                             ]
                           ]
                         },
@@ -1449,16 +1354,8 @@
                           "type": "column",
                           "data": [
                             [
-                              "Melody Tan",
-                              63
-                            ],
-                            [
-                              "Eng Ting Xuan",
-                              62
-                            ],
-                            [
-                              "Chan Yan Wees",
-                              60
+                              "Cybele Hu",
+                              56
                             ]
                           ]
                         },
@@ -1470,94 +1367,46 @@
                           "type": "column",
                           "data": [
                             [
-                              "Norman Leow Teck",
-                              79
+                              "Pet Min Xi",
+                              57
                             ],
                             [
-                              "Sherie Oo",
-                              78
-                            ],
-                            [
-                              "Elizabeth Joy Nooh",
-                              77
+                              "Jia Xin",
+                              54.5
                             ]
                           ]
                         },
                         {
                           "id": "3|CA2",
                           "name": [
-                            "Grade B Students For CA2"
+                            "Grade C Students For CA2"
                           ],
                           "type": "column",
                           "data": [
                             [
-                              "Elizabeth Joy Nooh",
-                              79
+                              "Elton Lee",
+                              50
                             ],
                             [
-                              "Linette Evelyn Natalrary",
-                              77
-                            ],
-                            [
-                              "Carrene Tan",
-                              75
-                            ],
-                            [
-                              "RU",
-                              67276
+                              "Jia Xin",
+                              54.5
                             ]
                           ]
                         },
                         {
                           "id": "3|SA2",
                           "name": [
-                            "Grade B Students For SA2"
+                            "Grade C Students For SA2"
                           ],
                           "type": "column",
                           "data": [
                             [
-                              "James Tan",
-                              77
+                              "Jia Xin",
+                              58.5
                             ],
                             [
-                              "Elizabeth Joy Nooh",
-                              75
-                            ],
-                            [
-                              "SK",
-                              291
-                            ],
-                            [
-                              "PDC",
-                              278
-                            ],
-                            [
-                              "BG",
-                              254
-                            ],
-                            [
-                              "RO",
-                              212
-                            ],
-                            [
-                              "AR",
-                              176
-                            ],
-                            [
-                              "CY",
-                              112
-                            ],
-                            [
-                              "IN",
-                              24
-                            ],
-                            [
-                              "Jannel koh",
-                              14
-                            ],
-                            [
-                              "MT",
-                              14
+                              "Pek Min Xi",
+                              54
                             ]
                           ]
                         },
@@ -1571,111 +1420,79 @@
                           "type": "column",
                           "data": [
                             [
-                              "Ko Hui Ning",
-                              59
+                              "Ellie Oon",
+                              44
                             ],
                             [
-                              "Clarence Lim",
-                              59
+                              "Pek Min Xi",
+                              40
+                            ],
+                            [
+                              "Sajitha Banu",
+                              37
                             ]
                           ]
                         },
                         {
                           "id": "4|SA1",
                           "name": [
-                            "Grade C Students For SA1"
+                            "Grade D Students For SA1"
                           ],
                           "type": "column",
                           "data": [
                             [
-                              "Norman Leow Teck",
-                              79
+                              "Joshua Ng",
+                              39
                             ],
                             [
-                              "Sherie Oo",
-                              78
+                              "Sajitha Banu",
+                              38
                             ],
                             [
-                              "Elizabeth Joy Nooh",
-                              77
+                              "Rui Zhe",
+                              32.5
                             ]
                           ]
                         },
                         {
                           "id": "4|CA2",
                           "name": [
-                            "Grade B Students For CA2"
+                            "Grade D Students For CA2"
                           ],
                           "type": "column",
                           "data": [
                             [
-                              "Elizabeth Joy Nooh",
-                              79
+                              "Joshua Ng",
+                              48
                             ],
                             [
-                              "Linette Evelyn Natalrary",
-                              77
-                            ],
-                            [
-                              "Carrene Tan",
-                              75
-                            ],
-                            [
-                              "RU",
-                              67276
+                              "Sajitha Banu",
+                              46
                             ]
                           ]
                         },
                         {
                           "id": "4|SA2",
                           "name": [
-                            "Grade B Students For SA2"
+                            "Grade D Students For SA2"
                           ],
                           "type": "column",
                           "data": [
                             [
-                              "James Tan",
-                              77
+                              "Ellie Oon",
+                              48
                             ],
                             [
-                              "Elizabeth Joy Nooh",
-                              75
+                              "Sajitha Banu",
+                              47
                             ],
                             [
-                              "SK",
-                              291
+                              "Joshua Ng",
+                              47
                             ],
                             [
-                              "PDC",
-                              278
-                            ],
-                            [
-                              "BG",
-                              254
-                            ],
-                            [
-                              "RO",
-                              212
-                            ],
-                            [
-                              "AR",
-                              176
-                            ],
-                            [
-                              "CY",
-                              112
-                            ],
-                            [
-                              "IN",
-                              24
-                            ],
-                            [
-                              "Jannel koh",
-                              14
-                            ],
-                            [
-                              "MT",
-                              14
+                              "Rui Zhe",
+                              46
                             ]
                           ]
                         },
@@ -1688,124 +1505,37 @@
                           ],
                           "type": "column",
                           "data": [
-                            [
-                              "Lee Han Xun",
-                              55
-                            ],
-                            [
-                              "Aden Goh Ye Da",
-                              53
-                            ],
-                            [
-                              "Alton Lim Kai Jie",
-                              51
-                            ],
-                            [
-                              "Soh Pi Hoon",
-                              50
-                            ],
-                            [
-                              "Anne Clare",
-                              50
-                            ]
+                           
                           ]
                         },
                         {
                           "id": "5|SA1",
                           "name": [
-                            "Grade C Students For SA1"
+                            "Grade E Students For SA1"
                           ],
                           "type": "column",
                           "data": [
-                            [
-                              "Norman Leow Teck",
-                              79
-                            ],
-                            [
-                              "Sherie Oo",
-                              78
-                            ],
-                            [
-                              "Elizabeth Joy Nooh",
-                              77
-                            ]
                           ]
                         },
                         {
                           "id": "5|CA2",
                           "name": [
-                            "Grade B Students For CA2"
+                            "Grade E Students For CA2"
                           ],
                           "type": "column",
                           "data": [
-                            [
-                              "Elizabeth Joy Nooh",
-                              79
-                            ],
-                            [
-                              "Linette Evelyn Natalrary",
-                              77
-                            ],
-                            [
-                              "Carrene Tan",
-                              75
-                            ],
-                            [
-                              "RU",
-                              67276
-                            ]
                           ]
                         },
                         {
                           "id": "5|SA2",
                           "name": [
-                            "Grade B Students For SA2"
+                            "Grade E Students For SA2"
                           ],
                           "type": "column",
                           "data": [
                             [
-                              "James Tan",
-                              77
-                            ],
-                            [
-                              "Elizabeth Joy Nooh",
-                              75
-                            ],
-                            [
-                              "SK",
-                              291
-                            ],
-                            [
-                              "PDC",
-                              278
-                            ],
-                            [
-                              "BG",
-                              254
-                            ],
-                            [
-                              "RO",
-                              212
-                            ],
-                            [
-                              "AR",
-                              176
-                            ],
-                            [
-                              "CY",
-                              112
-                            ],
-                            [
-                              "IN",
-                              24
-                            ],
-                            [
-                              "Jannel koh",
-                              14
-                            ],
-                            [
-                              "MT",
-                              14
+                              "Brayden",
+                              21
                             ]
                           ]
                         },
@@ -1819,118 +1549,50 @@
                           "type": "column",
                           "data": [
                             [
-                              "Pek Min Xi",
-                              28
-                            ],
-                            [
-                              "Sajith Banhu",
-                              21
+                              "Lim Qiu Yun",
+                              16
                             ]
                           ]
                         },
                         {
                           "id": "6|SA1",
                           "name": [
-                            "Grade C Students For SA1"
+                            "Grade F Students For SA1"
                           ],
                           "type": "column",
                           "data": [
                             [
-                              "Norman Leow Teck",
-                              79
-                            ],
-                            [
-                              "Sherie Oo",
-                              78
-                            ],
-                            [
-                              "Elizabeth Joy Nooh",
-                              77
+                              "Aliah Natrisha",
+                              13
                             ]
                           ]
                         },
                         {
                           "id": "6|CA2",
                           "name": [
-                            "Grade B Students For CA2"
+                            "Grade F Students For CA2"
                           ],
                           "type": "column",
                           "data": [
-                            [
-                              "Elizabeth Joy Nooh",
-                              79
-                            ],
-                            [
-                              "Linette Evelyn Natalrary",
-                              77
-                            ],
-                            [
-                              "Carrene Tan",
-                              75
-                            ],
-                            [
-                              "RU",
-                              67276
-                            ]
+                           
                           ]
                         },
                         {
                           "id": "6|SA2",
                           "name": [
-                            "Grade B Students For SA2"
+                            "Grade F Students For SA2"
                           ],
                           "type": "column",
                           "data": [
-                            [
-                              "James Tan",
-                              77
-                            ],
-                            [
-                              "Elizabeth Joy Nooh",
-                              75
-                            ],
-                            [
-                              "SK",
-                              291
-                            ],
-                            [
-                              "PDC",
-                              278
-                            ],
-                            [
-                              "BG",
-                              254
-                            ],
-                            [
-                              "RO",
-                              212
-                            ],
-                            [
-                              "AR",
-                              176
-                            ],
-                            [
-                              "CY",
-                              112
-                            ],
-                            [
-                              "IN",
-                              24
-                            ],
-                            [
-                              "Jannel koh",
-                              14
-                            ],
-                            [
-                              "MT",
-                              14
-                            ]
+                            
                           ]
                         }
 
                       ]
                     }
                 });
+                
+                
             });
             
    

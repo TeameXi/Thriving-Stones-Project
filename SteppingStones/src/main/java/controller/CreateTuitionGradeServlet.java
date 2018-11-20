@@ -39,6 +39,7 @@ public class CreateTuitionGradeServlet extends HttpServlet {
         
         try (PrintWriter out = response.getWriter()) {
             String dataArr = request.getParameter("grade_arr");
+//            System.out.println(dataArr);
             if(!dataArr.equals("")){
                 JSONArray studentArr = new JSONArray(dataArr);
                 ArrayList<String>gradeValues = new ArrayList<>();
@@ -50,28 +51,28 @@ public class CreateTuitionGradeServlet extends HttpServlet {
                     int studentId = currObj.getInt("student_id");
                     int classId = currObj.getInt("class_id");
                     
-                    int CA1_0_top = currObj.getInt("CA1_0_top");
+                    double CA1_0_top = currObj.getDouble("CA1_0_top");
                     int CA1_0_base = currObj.getInt("CA1_0_base");
                     double CA1_0_grade = 0;
                     if(CA1_0_base > 0){
                         CA1_0_grade = (double)CA1_0_top/CA1_0_base;
                     }
                     
-                    int SA1_0_top = currObj.getInt("SA1_0_top");
+                    double SA1_0_top = currObj.getDouble("SA1_0_top");
                     int SA1_0_base = currObj.getInt("SA1_0_base");
                     double SA1_0_grade = 0;
                     if(SA1_0_base > 0){
                         SA1_0_grade = (double)SA1_0_top/SA1_0_base;
                     }
                     
-                    int CA2_0_top = currObj.getInt("CA2_0_top");
+                    double CA2_0_top = currObj.getDouble("CA2_0_top");
                     int CA2_0_base = currObj.getInt("CA2_0_base");
                     double CA2_0_grade = 0;
                     if(CA2_0_base > 0){
                         CA2_0_grade = (double)CA2_0_top/CA2_0_base;
                     }
                     
-                    int SA2_0_top = currObj.getInt("SA2_0_top");
+                    double SA2_0_top = currObj.getDouble("SA2_0_top");
                     int SA2_0_base = currObj.getInt("SA2_0_base");
                     double SA2_0_grade = 0;
                     if(SA2_0_base > 0){
@@ -79,33 +80,35 @@ public class CreateTuitionGradeServlet extends HttpServlet {
                     }
                     
                     // For school
-                    int CA1_1_top = currObj.getInt("CA1_1_top");
+                    double CA1_1_top = currObj.getDouble("CA1_1_top");
                     int CA1_1_base = currObj.getInt("CA1_1_base");
                     double CA1_1_grade = 0;
                     if(CA1_1_base > 0){
                         CA1_1_grade = (double)CA1_1_top/CA1_1_base;
                     }
                     
-                    int SA1_1_top = currObj.getInt("SA1_1_top");
+                    double SA1_1_top = currObj.getDouble("SA1_1_top");
                     int SA1_1_base = currObj.getInt("SA1_1_base");
                     double SA1_1_grade = 0;
                     if(SA1_1_base > 0){
                         SA1_1_grade = (double)SA1_1_top/SA1_1_base;
                     }
 
-                    int CA2_1_top = currObj.getInt("CA2_1_top");
+                    double CA2_1_top = currObj.getDouble("CA2_1_top");
                     int CA2_1_base = currObj.getInt("CA2_1_base");
                     double CA2_1_grade = 0;
                     if(CA2_1_base > 0){
                         CA2_1_grade = (double)CA2_1_top/CA2_1_base;
                     }
                     
-                    int SA2_1_top = currObj.getInt("SA2_1_top");
+                    double SA2_1_top = currObj.getDouble("SA2_1_top");
                     int SA2_1_base = currObj.getInt("SA2_1_base");
                     double SA2_1_grade = 0;
                     if(SA2_1_base > 0){
                         SA2_1_grade = (double)SA2_1_top/SA2_1_base;
                     }
+                    
+                    int level = currObj.getInt("level");
                     
                     sqlOneRecord +="("+studentId+","+classId+","
                             +CA1_0_top+","+CA1_0_base+","+CA1_0_grade+","
@@ -115,9 +118,9 @@ public class CreateTuitionGradeServlet extends HttpServlet {
                             +CA1_1_top+","+CA1_1_base+","+CA1_1_grade+","
                             +SA1_1_top+","+SA1_1_base+","+SA1_1_grade+","
                             +CA2_1_top+","+CA2_1_base+","+CA2_1_grade+","
-                            +SA2_1_top+","+SA2_1_base+","+SA2_1_grade+")";
+                            +SA2_1_top+","+SA2_1_base+","+SA2_1_grade+","+level+")";
                     gradeValues.add(sqlOneRecord);
-                    //System.out.println(sqlOneRecord);
+//                    System.out.println(sqlOneRecord);
                 }
                 
                 if(gradeValues.size() > 0){

@@ -3,6 +3,7 @@ package entity;
 public class Class {
 
     private int classID;
+    private int levelID;
     private String level;
     private String subject;
     private int term;
@@ -79,6 +80,23 @@ public class Class {
         this.endDate = endDate;
         this.tutorID = tutorID;
         this.type = type;  
+    }
+    
+    // Grade Object
+    public Class(int classID,int levelID, String level, String subject, int term, String startTime, String endTime, String classDay, 
+            double mthlyFees, String startDate, String endDate, String type) {
+        this.classID = classID;
+        this.levelID = levelID;
+        this.level = level;
+        this.subject = subject;
+        this.term = term;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.classDay = classDay;
+        this.mthlyFees = mthlyFees;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.type = type;
     }
     
     
@@ -277,6 +295,20 @@ public class Class {
      */
     public String getClassName() {
         return className;
+    }
+
+    /**
+     * @return the levelID
+     */
+    public int getLevelID() {
+        return levelID;
+    }
+
+    /**
+     * @param levelID the levelID to set
+     */
+    public void setLevelID(int levelID) {
+        this.levelID = levelID;
     }
 
 }

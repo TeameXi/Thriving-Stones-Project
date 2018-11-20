@@ -8,6 +8,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class StudentGradeDAO {
     
@@ -15,7 +17,7 @@ public class StudentGradeDAO {
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
             String gradeSQL = String.join(",", gradeLists);
-            String sql = "INSERT INTO grade(student_id,class_id,CA1_tuition_top,CA1_tuition_base,CA1_tuition_grade,SA1_tuition_top,SA1_tuition_base,SA1_tuition_grade,CA2_tuition_top,CA2_tuition_base,CA2_tuition_grade,SA2_tuition_top,SA2_tuition_base,SA2_tuition_grade,CA1_school_top,CA1_school_base,CA1_school_grade,SA1_school_top,SA1_school_base,SA1_school_grade,CA2_school_top,CA2_school_base,CA2_school_grade,SA2_school_top,SA2_school_base,SA2_school_grade)"
+            String sql = "INSERT INTO grade(student_id,class_id,CA1_tuition_top,CA1_tuition_base,CA1_tuition_grade,SA1_tuition_top,SA1_tuition_base,SA1_tuition_grade,CA2_tuition_top,CA2_tuition_base,CA2_tuition_grade,SA2_tuition_top,SA2_tuition_base,SA2_tuition_grade,CA1_school_top,CA1_school_base,CA1_school_grade,SA1_school_top,SA1_school_base,SA1_school_grade,CA2_school_top,CA2_school_base,CA2_school_grade,SA2_school_top,SA2_school_base,SA2_school_grade,level)"
                     + " VALUES "+gradeSQL +" ON DUPLICATE KEY UPDATE "
                     + " CA1_tuition_top=VALUES(CA1_tuition_top), CA1_tuition_base=VALUES(CA1_tuition_base), CA1_tuition_grade=VALUES(CA1_tuition_grade),"
                     + " SA1_tuition_top=VALUES(SA1_tuition_top), SA1_tuition_base=VALUES(SA1_tuition_base), SA1_tuition_grade=VALUES(SA1_tuition_grade),"
@@ -24,7 +26,8 @@ public class StudentGradeDAO {
                     + " CA1_school_top=VALUES(CA1_school_top), CA1_school_base=VALUES(CA1_school_base), CA1_school_grade=VALUES(CA1_school_grade),"
                     + " SA1_school_top=VALUES(SA1_school_top), SA1_school_base=VALUES(SA1_school_base), SA1_school_grade=VALUES(SA1_school_grade),"
                     + " CA2_school_top=VALUES(CA2_school_top), CA2_school_base=VALUES(CA2_school_base), CA2_school_grade=VALUES(CA2_school_grade),"
-                    + " SA2_school_top=VALUES(SA2_school_top), SA2_school_base=VALUES(SA2_school_base), SA2_school_grade=VALUES(SA2_school_grade)";
+                    + " SA2_school_top=VALUES(SA2_school_top), SA2_school_base=VALUES(SA2_school_base), SA2_school_grade=VALUES(SA2_school_grade),"
+                    + " level=VALUES(level);";
 
             PreparedStatement stmt = conn.prepareStatement(sql);
 
@@ -140,25 +143,25 @@ public class StudentGradeDAO {
                 stmt2.setInt(1, studentId);
                 stmt2.setInt(2,classID);
                 
-                int CA1_tuition_top = 0;int CA1_tuition_base = 100;
-                int SA1_tuition_top = 0;int SA1_tuition_base = 100;
-                int CA2_tuition_top = 0;int CA2_tuition_base = 100;
-                int SA2_tuition_top = 0;int SA2_tuition_base = 100;
-                int CA1_school_top = 0;int CA1_school_base = 100;
-                int SA1_school_top = 0;int SA1_school_base = 100;
-                int CA2_school_top = 0;int CA2_school_base = 100;
-                int SA2_school_top = 0;int SA2_school_base = 100;
+                double CA1_tuition_top = 0;int CA1_tuition_base = 100;
+                double SA1_tuition_top = 0;int SA1_tuition_base = 100;
+                double CA2_tuition_top = 0;int CA2_tuition_base = 100;
+                double SA2_tuition_top = 0;int SA2_tuition_base = 100;
+                double CA1_school_top = 0;int CA1_school_base = 100;
+                double SA1_school_top = 0;int SA1_school_base = 100;
+                double CA2_school_top = 0;int CA2_school_base = 100;
+                double SA2_school_top = 0;int SA2_school_base = 100;
                 ResultSet rs2 = stmt2.executeQuery();
 
                 if(rs2.next()){
-                    CA1_tuition_top = rs2.getInt("CA1_tuition_top");CA1_tuition_base=rs2.getInt("CA1_tuition_base");
-                    SA1_tuition_top = rs2.getInt("SA1_tuition_top");SA1_tuition_base=rs2.getInt("SA1_tuition_base");
-                    CA2_tuition_top = rs2.getInt("CA2_tuition_top");CA2_tuition_base=rs2.getInt("CA2_tuition_base");
-                    SA2_tuition_top = rs2.getInt("SA2_tuition_top");SA2_tuition_base=rs2.getInt("SA2_tuition_base");
-                    CA1_school_top =  rs2.getInt("CA1_school_top");CA1_school_base = rs2.getInt("CA1_school_base");
-                    SA1_school_top =  rs2.getInt("SA1_school_top");SA1_school_base = rs2.getInt("SA1_school_base");
-                    CA2_school_top =  rs2.getInt("CA2_school_top");CA2_school_base = rs2.getInt("CA2_school_base");
-                    SA2_school_top =  rs2.getInt("SA2_school_top");SA2_school_base = rs2.getInt("SA2_school_base"); 
+                    CA1_tuition_top = rs2.getDouble("CA1_tuition_top");CA1_tuition_base=rs2.getInt("CA1_tuition_base");
+                    SA1_tuition_top = rs2.getDouble("SA1_tuition_top");SA1_tuition_base=rs2.getInt("SA1_tuition_base");
+                    CA2_tuition_top = rs2.getDouble("CA2_tuition_top");CA2_tuition_base=rs2.getInt("CA2_tuition_base");
+                    SA2_tuition_top = rs2.getDouble("SA2_tuition_top");SA2_tuition_base=rs2.getInt("SA2_tuition_base");
+                    CA1_school_top =  rs2.getDouble("CA1_school_top");CA1_school_base = rs2.getInt("CA1_school_base");
+                    SA1_school_top =  rs2.getDouble("SA1_school_top");SA1_school_base = rs2.getInt("SA1_school_base");
+                    CA2_school_top =  rs2.getDouble("CA2_school_top");CA2_school_base = rs2.getInt("CA2_school_base");
+                    SA2_school_top =  rs2.getDouble("SA2_school_top");SA2_school_base = rs2.getInt("SA2_school_base"); 
                 }
                 
                 Grade g = new Grade(studentName,studentId,classID,CA1_tuition_top,CA1_tuition_base,SA1_tuition_top,SA1_tuition_base,CA2_tuition_top,CA2_tuition_base,SA2_tuition_top,SA2_tuition_base,CA1_school_top,CA1_school_base,SA1_school_top,SA1_school_base,CA2_school_top,CA2_school_base,SA2_school_top,SA2_school_base);
@@ -261,5 +264,47 @@ public class StudentGradeDAO {
             e.printStackTrace();
         }
         return studentList;
+    }
+    
+    // List all the grade of individual student across all level
+    public static TreeMap<Integer,ArrayList<Grade>> listAllGradesOfIndiviudalStudent(int studentID){
+        TreeMap<Integer,ArrayList<Grade>> subjectGradesGroupByLevel = new TreeMap<>();
+        try (Connection conn = ConnectionManager.getConnection();) {
+            String sql = "SELECT  s.student_name,g.subject,sub.subject_name,g.level,"
+                    + "g.CA1_tuition_grade,g.CA1_school_grade,g.SA1_tuition_grade,g.SA1_school_grade,g.CA2_tuition_grade,g.CA2_school_grade,g.SA2_tuition_grade,g.SA2_school_grade "
+                    + "FROM grade as g,student as s,subject as sub WHERE g.student_id=s.student_id "
+                    + "AND s.student_id = ? AND sub.subject_id = g.subject ORDER BY g.level DESC;";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, studentID);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){
+                
+                String studentName = rs.getString("student_name");
+                int subjectID = rs.getInt("subject");
+                String subjectName = rs.getString("subject_name");
+                int levelID = rs.getInt("level");
+                double CA1_tuition_grade = rs.getDouble("CA1_tuition_grade");
+                double SA1_tuition_grade = rs.getDouble("SA1_tuition_grade");
+                double CA2_tuition_grade = rs.getDouble("CA2_tuition_grade");
+                double SA2_tuition_grade = rs.getDouble("SA2_tuition_grade");
+                double CA1_school_grade =  rs.getDouble("CA1_school_grade");
+                double SA1_school_grade = rs.getDouble("SA1_school_grade");
+                double CA2_school_grade = rs.getDouble("CA2_school_grade");
+                double SA2_school_grade =  rs.getDouble("SA2_school_grade");
+                
+                ArrayList<Grade>subjectGradesForEachLvl = subjectGradesGroupByLevel.get(levelID);
+                if(subjectGradesForEachLvl == null){
+                    subjectGradesForEachLvl = new ArrayList<>();
+                    subjectGradesGroupByLevel.put(levelID, subjectGradesForEachLvl);
+                }
+                
+                Grade g = new Grade(studentName,subjectID,subjectName,levelID,CA1_tuition_grade,SA1_tuition_grade,CA2_tuition_grade,SA2_tuition_grade,CA1_school_grade,SA1_school_grade,CA2_school_grade,SA2_school_grade);
+                subjectGradesForEachLvl.add(g);
+                
+            } 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return subjectGradesGroupByLevel;
     }
 }

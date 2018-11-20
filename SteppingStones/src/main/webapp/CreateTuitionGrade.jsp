@@ -65,7 +65,7 @@
                     ArrayList<Class> classes = ClassDAO.listAllClassesByTutorID(user_id, branch_id);
                     for (Class cls : classes) {
 
-                        out.println("<tr><td class='details-control'></td><td>" + cls.getClassID() + "</td><td>" + cls.getLevel() + "</td><td>" + cls.getSubject() + "</td><td>" + cls.getStartTime() + "-" + cls.getEndTime() + " ( " + cls.getClassDay() + " )");
+                        out.println("<tr><td class='details-control'></td><td>" + cls.getClassID()+"_"+cls.getLevelID() + "</td><td>" + cls.getLevel() + "</td><td>" + cls.getSubject() + "</td><td>" + cls.getStartTime() + "-" + cls.getEndTime() + " ( " + cls.getClassDay() + " )");
                         request.setAttribute("ClassID", cls.getClassID());
                     }
                 %>
@@ -156,44 +156,44 @@
                 CA2_0_arr = d.CA2_0.split("/");
                 SA2_0_arr = d.SA2_0.split("/");
 
-                CA1_0_top = parseInt(CA1_0_arr[0]);
-                CA1_0_base = parseInt(CA1_0_arr[1]);
+                CA1_0_top = parseFloat(CA1_0_arr[0]);
+                CA1_0_base = parseFloat(CA1_0_arr[1]);
 
-                SA1_0_top = parseInt(SA1_0_arr[0]);
-                SA1_0_base = parseInt(SA1_0_arr[1]);
+                SA1_0_top = parseFloat(SA1_0_arr[0]);
+                SA1_0_base = parseFloat(SA1_0_arr[1]);
 
-                CA2_0_top = parseInt(CA2_0_arr[0]);
-                CA2_0_base = parseInt(CA2_0_arr[1]);
+                CA2_0_top = parseFloat(CA2_0_arr[0]);
+                CA2_0_base = parseFloat(CA2_0_arr[1]);
 
-                SA2_0_top = parseInt(SA2_0_arr[0]);
-                SA2_0_base = parseInt(SA2_0_arr[1]);
+                SA2_0_top = parseFloat(SA2_0_arr[0]);
+                SA2_0_base = parseFloat(SA2_0_arr[1]);
 
                 CA1_1_arr = d.CA1_1.split("/");
                 SA1_1_arr = d.SA1_1.split("/");
                 CA2_1_arr = d.CA2_1.split("/");
                 SA2_1_arr = d.SA2_1.split("/");
 
-                CA1_1_top = parseInt(CA1_1_arr[0]);
-                CA1_1_base = parseInt(CA1_1_arr[1]);
+                CA1_1_top = parseFloat(CA1_1_arr[0]);
+                CA1_1_base = parseFloat(CA1_1_arr[1]);
 
-                SA1_1_top = parseInt(SA1_1_arr[0]);
-                SA1_1_base = parseInt(SA1_1_arr[1]);
+                SA1_1_top = parseFloat(SA1_1_arr[0]);
+                SA1_1_base = parseFloat(SA1_1_arr[1]);
 
-                CA2_1_top = parseInt(CA2_1_arr[0]);
-                CA2_1_base = parseInt(CA2_1_arr[1]);
+                CA2_1_top = parseFloat(CA2_1_arr[0]);
+                CA2_1_base = parseFloat(CA2_1_arr[1]);
 
-                SA2_1_top = parseInt(SA2_1_arr[0]);
-                SA2_1_base = parseInt(SA2_1_arr[1]);
+                SA2_1_top = parseFloat(SA2_1_arr[0]);
+                SA2_1_base = parseFloat(SA2_1_arr[1]);
 
                 tbody += '<tr><th scope="row"><input type="hidden" name="studentId[]" value="' + d.studentId + '" />' + d.studentName + '</th>' +
-                        '<td><input class="form-control numberField" type="number" name="CA1_1_top[]" value="' + CA1_1_top + '"></input><hr/><input class="form-control numberField" type="number" name="CA1_1_base[]" value="' + CA1_1_base + '" min="1"></input></td>' +
-                        '<td><input class="form-control numberField" type="number" name="CA1_0_top[]" value="' + CA1_0_top + '"></input><hr/><input class="form-control numberField" type="number" name="CA1_0_base[]" value="' + CA1_0_base + '" min="1"></input></td>' +
-                        '<td><input class="form-control numberField" type="number" name="SA1_1_top[]" value="' + SA1_1_top + '"></input><hr/><input class="form-control numberField" type="number" name="SA1_1_base[]" value="' + SA1_1_base + '" min="1"></input></td>' +
-                        '<td><input class="form-control numberField" type="number" name="SA1_0_top[]" value="' + SA1_0_top + '"></input><hr/><input class="form-control numberField" type="number" name="SA1_0_base[]" value="' + SA1_0_base + '" min="1"></input></td>' +
-                        '<td><input class="form-control numberField" type="number" name="CA2_1_top[]" value="' + CA2_1_top + '"></input><hr/><input class="form-control numberField" type="number" name="CA2_1_base[]" value="' + CA2_1_base + '" min="1"></input></td>' +
-                        '<td><input class="form-control numberField" type="number" name="CA2_0_top[]" value="' + CA2_0_top + '"></input><hr/><input class="form-control numberField" type="number" name="CA2_0_base[]" value="' + CA2_0_base + '" min="1"></input></td>' +
-                        '<td><input class="form-control numberField" type="number" name="SA2_1_top[]" value="' + SA2_1_top + '"></input><hr/><input class="form-control numberField" type="number" name="SA2_1_base[]" value="' + SA2_1_base + '" min="1"></input></td>' +
-                        '<td><input class="form-control numberField" type="number" name="SA2_0_top[]" value="' + SA2_0_top + '"></input><hr/><input class="form-control numberField" type="number" name="SA2_0_base[]" value="' + SA2_0_base + '" min="1"></input></td>';
+                        '<td><input class="form-control numberField" type="text" name="CA1_1_top[]" value="' + CA1_1_top + '"></input><hr/><input class="form-control numberField" type="number" name="CA1_1_base[]" value="' + CA1_1_base + '" min="1"></input></td>' +
+                        '<td><input class="form-control numberField" type="text" name="CA1_0_top[]" value="' + CA1_0_top + '"></input><hr/><input class="form-control numberField" type="number" name="CA1_0_base[]" value="' + CA1_0_base + '" min="1"></input></td>' +
+                        '<td><input class="form-control numberField" type="text" name="SA1_1_top[]" value="' + SA1_1_top + '"></input><hr/><input class="form-control numberField" type="number" name="SA1_1_base[]" value="' + SA1_1_base + '" min="1"></input></td>' +
+                        '<td><input class="form-control numberField" type="text" name="SA1_0_top[]" value="' + SA1_0_top + '"></input><hr/><input class="form-control numberField" type="number" name="SA1_0_base[]" value="' + SA1_0_base + '" min="1"></input></td>' +
+                        '<td><input class="form-control numberField" type="text" name="CA2_1_top[]" value="' + CA2_1_top + '"></input><hr/><input class="form-control numberField" type="number" name="CA2_1_base[]" value="' + CA2_1_base + '" min="1"></input></td>' +
+                        '<td><input class="form-control numberField" type="text" name="CA2_0_top[]" value="' + CA2_0_top + '"></input><hr/><input class="form-control numberField" type="number" name="CA2_0_base[]" value="' + CA2_0_base + '" min="1"></input></td>' +
+                        '<td><input class="form-control numberField" type="text" name="SA2_1_top[]" value="' + SA2_1_top + '"></input><hr/><input class="form-control numberField" type="number" name="SA2_1_base[]" value="' + SA2_1_base + '" min="1"></input></td>' +
+                        '<td><input class="form-control numberField" type="text" name="SA2_0_top[]" value="' + SA2_0_top + '"></input><hr/><input class="form-control numberField" type="number" name="SA2_0_base[]" value="' + SA2_0_base + '" min="1"></input></td>';
 
             });
 
@@ -206,10 +206,12 @@
 
 
         function format(callback, data) {
+            class_id = data["ID"].split("_")[0];
+            level_id = data["ID"].split("_")[1];
 
             $.ajax({
                 url: 'RetrieveStudentsWithGradesForSpecificClass',
-                data: {class_id: data["ID"]},
+                data: {class_id: class_id},
                 dataType: "json",
                 complete: function (response) {
 
@@ -303,7 +305,7 @@
                             var studArr = [];
                             for (i = 0; i < student_id.length; i++) {
                                 var stdObj = {"student_id": student_id[i],
-                                    "class_id": data["ID"],
+                                    "class_id": class_id,
                                     "CA1_0_top": ca1_tuition_top[i],
                                     "CA1_0_base": ca1_tuition_base[i],
                                     "SA1_0_top": sa1_tuition_top[i],
@@ -319,10 +321,14 @@
                                     "CA2_1_top": ca2_school_top[i],
                                     "CA2_1_base": ca2_school_base[i],
                                     "SA2_1_top": sa2_school_top[i],
-                                    "SA2_1_base": sa2_school_base[i]};
+                                    "SA2_1_base": sa2_school_base[i],
+                                    "level":level_id
+                                };
                                 studArr[i] = stdObj;
                             }
+                            console.log(studArr);
                             $.ajax({
+                                method: 'POST',
                                 url: 'CreateTuitionGradeServlet',
                                 data: {grade_arr: JSON.stringify(studArr)},
                                 dataType: "json",
