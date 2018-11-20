@@ -35,7 +35,7 @@
             width: 45px;
             height: 20px;
         }
-        .dhx_scale_bar, .dhx_month_body, .dhx_scale_holder, .dhx_body, .dhx_title {
+        .dhx_scale_bar, .dhx_month_body, .dhx_scale_holder, .dhx_body, .dhx_title, .dhx_cal_event_clear {
             font-size: 7px;
         }
         .dhx_month_head, .dhx_scale_hour{

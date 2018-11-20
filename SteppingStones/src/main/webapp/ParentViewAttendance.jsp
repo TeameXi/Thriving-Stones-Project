@@ -90,7 +90,7 @@
     }
 </style>
 <div class="col-md-10">
-    <div id="tab" style="text-align: center;margin: 10px;"><span class="tab_active" style="font-size: 14px">Attendance Taking</span></div>
+    <div id="tab" style="text-align: center;margin: 10px;"><span class="tab_active">Attendance Taking</span></div>
     <table id="children" class="table display dt-responsive nowrap" style="width:100%;">
         <thead class="thead-light">
             <tr>
