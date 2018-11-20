@@ -3,6 +3,12 @@
     Created on : 16 Nov, 2018, 5:45:34 PM
     Author     : Zang Yu
 --%>
+<%@page import="model.RewardDAO"%>
+<%@page import="entity.Lesson"%>
+<%@page import="model.LessonDAO"%>
+<%@page import="entity.Student"%>
+<%@page import="model.ParentChildRelDAO"%>
+<%@page import="entity.Reward"%>
 <%@page import="java.text.DateFormat"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="java.util.Date"%>
@@ -226,7 +232,247 @@
                                         </li>
 
                                         
-                    <% } %>
+                    <% } else if (role != null && role == "student"){
+                        ArrayList<Class> classes = ClassDAO.getStudentEnrolledClass(user.getRespectiveID(), user.getBranchId());
+                            if (classes.isEmpty()){
+                                    %> 
+                                    <li data-row="1" data-col="3" data-sizex="2" data-sizey="2" class="item5">
+                                        <h3 class="title">Upcoming Classes</h3>
+                                        <div class="box2">
+                                                <table class="table table-data2">
+                                                <thead>
+                                                    <tr>                                                                
+                                                        <th>Subject</th>
+                                                        <th>Date</th>                                                            
+                                                        <th>Time</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr class="tr-shadow">                                                            
+                                                        <td class="desc">No</td>
+                                                        <td>Upcoming</td>
+                                                        <td>Class</td>
+                                                    </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </div>          
+                                    </li>
+                    <%  } else {
+                    %>
+                                <li data-row="1" data-col="2" data-sizex="2" data-sizey="2" class="item5">
+                                    <h3 class="title">Upcoming Classes</h3>
+                                    <div class="box2">
+                                            <table class="table table-data2">
+                                            <thead>
+                                                <tr>                                                                
+                                                    <th>Subject</th>
+                                                    <th>Date</th>                                                            
+                                                    <th>Time</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                <%      
+                        for (Class c: classes){
+                            System.out.println(classes.size());
+                            Lesson l = LessonDAO.retrieveSingleLessonAfterCurr(c.getClassID());
+                            if (l != null){
+                                String startTime = l.getStartDate();
+                                String endTime = l.getEndDate();
+                %>
+                                                <tr class="tr-shadow">                                                            
+                                                    <td class="desc"><%=c.getSubject()%></td>
+                                                    <td><%=l.getLessonDate()%></td>
+                                                    <td><%=startTime.substring(startTime.indexOf(" "),startTime.indexOf(" ") + 6) + "-" + endTime.substring(endTime.indexOf(" "),endTime.indexOf(" ") + 6)%></td>
+                                                </tr>                                                        
+                <%
+                            } else {
+                %>                    <tr class="tr-shadow">                                                            
+                                                    <td class="desc">No</td>
+                                                    <td>Upcoming</td>
+                                                    <td>Class</td>
+                                                </tr>
+                <%          }
+                        }
+                %>
+                                             </tbody>
+                                        </table>
+                                    </div>          
+                                </li>
+                <%
+                    }
+                        int points = RewardDAO.countStudentPoint(user.getRespectiveID());
+                %>
+                                    <li data-row="1" data-col="1" data-sizex="1" data-sizey="1" class="item3">                                            
+                                            <div class="overview-box clearfix">
+                                                <div class="icon">
+                                                    <i class="zmdi zmdi-book"></i>
+                                                </div>
+                                                <div class="text">
+                                                    <h2><%=points%></h2>
+                                                    <span>Available Points</span>
+                                                </div>
+                                            </div>
+                                    </li>
+                <%
+                        ArrayList<Reward> rewards = RewardDAO.listAllRewardsByStudent(user.getRespectiveID());
+                        if (rewards.isEmpty()){
+                        %>
+                                <li data-row="1" data-col="3" data-sizex="2" data-sizey="2" class="item6">
+                                    <h3 class="title-3 m-b-30">Reward Redemption</h3>
+                                    <div class="box2">
+                                        <table class="table table-data2">
+                                            <thead>
+                                                <tr>                                                                
+                                                    <th>Reward</th>
+                                                    <th>Point Used</th>                                                            
+                                                    <th>Date</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="tr-shadow">                                                            
+                                                    <td class="desc">No</td>
+                                                    <td>Redemption</td>
+                                                    <td>Made</td>
+                                                </tr>                                                        
+                                            </tbody>
+                                        </table>
+                                    </div>          
+                                </li>
+                        <%
+                        } else {
+                            for (int i = 0; i<1; i++){
+                                Reward r1 = rewards.get(i);
+                            %>
+                                <li data-row="1" data-col="3" data-sizex="2" data-sizey="2" class="item6">
+                                    <h3 class="title-3 m-b-30">Reward Redemption</h3>
+                                    <div class="box2">
+                                        <table class="table table-data2">
+                                            <thead>
+                                                <tr>                                                                
+                                                    <th>Reward</th>
+                                                    <th>Points Used</th>                                                            
+                                                    <th>Date</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="tr-shadow">                                                            
+                                                    <td class="desc"><%=r1.getDescription()%></td>
+                                                    <td><%=Math.abs(r1.getAmount())%></td>
+                                                    <td><%=r1.getDate()%></td>
+                                                </tr>
+                                <%  
+                                                if (rewards.size() >= 2){
+                                                Reward r2 = rewards.get(i+1);
+                                %>
+                                                    <tr class="tr-shadow">                                                            
+                                                    <td class="desc"><%=r2.getDescription()%></td>
+                                                    <td><%=Math.abs(r2.getAmount())%></td>
+                                                    <td><%=r2.getDate()%></td>
+                                                </tr>
+                                <%
+                                                }
+
+                                                if (rewards.size() >= 3){
+                                                    Reward r3 = rewards.get(i+2);
+                                %>
+                                                    <tr class="tr-shadow">                                                            
+                                                    <td class="desc"><%=r3.getDescription()%></td>
+                                                    <td><%=Math.abs(r3.getAmount())%></td>
+                                                    <td><%=r3.getDate()%></td>
+                                                </tr>
+                                            <%
+                                                }
+                                            }
+                                            %>
+                                            </tbody>
+                                        </table>
+                                    </div>          
+                                </li>
+                                            
+                                        </div>
+                                    <!-- /.info-box-content -->
+                                    </div>  
+                                </div>
+                            </div>
+                            <%
+                           } 
+                        } else if (role != null && role == "parent"){
+                            ArrayList<Integer> childrenIDs = ParentChildRelDAO.retrieveChildren(user.getRespectiveID());
+                            ArrayList<Student> children = new ArrayList<>();
+                            for (int i: childrenIDs){
+                                children.add(StudentDAO.retrieveStudentbyID(i,user.getBranchId()));
+                            }
+                            for (Student s: children){
+                                ArrayList<Class> classes = ClassDAO.getStudentEnrolledClass(s.getStudentID(), user.getBranchId());
+                                if (classes.isEmpty()){
+                                %> 
+                                <li data-row="1" data-col="1" data-sizex="2" data-sizey="2" class="item5">
+                                    <h3 class="title"><%=s.getName()%>'s Upcoming Classes</h3>
+                                    <div class="box2">
+                                            <table class="table table-data2">
+                                            <thead>
+                                                <tr>                                                                
+                                                    <th>Subject</th>
+                                                    <th>Date</th>                                                            
+                                                    <th>Time</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="tr-shadow">                                                            
+                                                    <td class="desc">No</td>
+                                                    <td>Upcoming</td>
+                                                    <td>Class</td>
+                                                </tr>
+                                                
+                                            </tbody>
+                                        </table>
+                                    </div>          
+                                </li>
+                                <% } else {
+                    %>
+                                    <li data-row="1" data-col="2" data-sizex="2" data-sizey="2" class="item5">
+                                        <h3 class="title"><%=s.getName()%>'s Upcoming Classes</h3>
+                                        <div class="box2">
+                                                <table class="table table-data2">
+                                                <thead>
+                                                    <tr>                                                                
+                                                        <th>Subject</th>
+                                                        <th>Date</th>                                                            
+                                                        <th>Time</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                    <%      
+                                for (Class c: classes){
+                                    Lesson l = LessonDAO.retrieveSingleLessonAfterCurr(c.getClassID());
+                                    if (l != null){
+                                        String startTime = l.getStartDate();
+                                        String endTime = l.getEndDate();
+                    %>
+                                                <tr class="tr-shadow">                                                            
+                                                    <td class="desc"><%=c.getSubject()%></td>
+                                                    <td><%=l.getLessonDate()%></td>
+                                                    <td><%=startTime.substring(startTime.indexOf(" "),startTime.indexOf(" ") + 6) + "-" + endTime.substring(endTime.indexOf(" "),endTime.indexOf(" ") + 6)%></td>
+                                                </tr>                                                        
+                <%
+                                    }   else {
+                %>                               <tr class="tr-shadow">                                                            
+                                                    <td class="desc">No</td>
+                                                    <td>Upcoming</td>
+                                                    <td>Class</td>
+                                                </tr>
+                <%                  }
+                                }   
+                %>  
+                                                </tbody>
+                                            </table>
+                                        </div>          
+                                    </li>
+                <%
+                    }
+                            }
+                        }%>
                                     </ul>
                             </div>
                     </div>     
