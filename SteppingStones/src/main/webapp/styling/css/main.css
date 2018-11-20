@@ -799,9 +799,10 @@ footer .copy{
     border-top-color: #fff !important;
     border-bottom-color: #fff !important;
 }
-.header .navbar .withIcon{
+.header .navbar .withIcon, .header .navbar .withSmallIcon{
     display: none;
 }
+
 /* Sidebar navigation */
 
 .content-box{
@@ -987,6 +988,7 @@ footer .copy{
 
 /* Mobile phones */
 @media screen and (max-width: 480px){
+    
     .menu-toggle{
         display: block;
     }
@@ -996,17 +998,22 @@ footer .copy{
     #NotHamburgerMenu{
         display:none;
     }
-    .header .navbar .withIcon{
-        display: block;
+    .header .navbar .withSmallIcon{
+        display: block !important;
+        margin-left: 50%;
+        padding-top: 19px !important;
     }
-    .header .navbar .withWord{
-        display: none;
+    .header .navbar .withWord, .header .navbar .withIcon {
+        display: none !important;
     }
     .logoWord{
         font-size: 30px !important;  
     }
     .header .logo{
         margin-top: 20px;
+    }
+    .sidebar .nav > li > a{
+        font-size: 11px;
     }
 }
 
@@ -1038,7 +1045,7 @@ footer .copy{
         display: block;
         margin-left: 50% !important;
     }
-    .header .navbar .withWord{
+    .header .navbar .withWord, .header .navbar .withSmallIcon{
         display: none;
     }
     .header .dropdown-menu{
@@ -1058,6 +1065,9 @@ footer .copy{
     }
     .logoWord{
         font-size: 35px;  
+    }
+    .sidebar .nav > li > a{
+        font-size: 13px;
     }
 }
 /* Other Screen Size */

@@ -49,6 +49,7 @@
                           <li class="dropdown">
                             <a href="#" class="dropdown-toggle withWord" data-toggle="dropdown"><span><%=role.toUpperCase()%> - </span> <%=account %><b class="caret"></b></a>
                             <a href="#" class="dropdown-toggle withIcon" data-toggle="dropdown"><span><i class="fa fa-user-circle fa-3x"></i></span></a>
+                            <a href="#" class="dropdown-toggle withSmallIcon" data-toggle="dropdown"><span><i class="fa fa-user-circle fa-2x"></i></span></a>
                             <ul class="dropdown-menu animated fadeInUp">
                                 <%
                                     if(role != null && role == "admin" && branch_id != 0){
