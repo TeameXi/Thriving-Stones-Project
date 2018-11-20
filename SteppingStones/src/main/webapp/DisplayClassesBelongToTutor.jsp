@@ -35,7 +35,7 @@
             width: 45px;
             height: 20px;
         }
-        .dhx_scale_bar, .dhx_month_body, .dhx_scale_holder, .dhx_body, .dhx_title {
+        .dhx_scale_bar, .dhx_month_body, .dhx_scale_holder, .dhx_body, .dhx_title, .dhx_cal_event_clear {
             font-size: 7px !important;
         }
         .dhx_month_head, .dhx_scale_hour{
@@ -69,6 +69,13 @@
             left: 76% !important;
             top: 8px !important;
         }
+        #studentAttendanceTable, .form-control, .btn, .paginate_button>a{
+            font-size: 9px !important;
+        }
+        .pc_title {
+            font-size: 11px !important;
+        }
+        
     }
     @media screen and (max-width: 767px) and (min-width: 481px){
         body{
@@ -239,7 +246,7 @@
                 </div><br/>
 
                 <div class="table-responsive">
-                    <table id="studentAttendanceTable" class="table table-bordered table-striped" style="width:100%; font-size: 14px">
+                    <table id="studentAttendanceTable" class="table table-bordered table-striped" style="width:100%;">
                         <thead>
                             <tr>
                                 <th style="text-align: center">Student Name</th>

@@ -39,9 +39,57 @@
     }
 
     .form-control.numberField{
-        width:77%;
+        width:65px;
         margin-left:10px;
         height:28px;
+    }
+    @media screen and (max-width: 480px){
+        body{
+            font-size: 10px;
+        } 
+        .form-control{
+            font-size: 10px;
+        }
+        a {
+            font-size: 10px;
+        }
+        #tab{
+            margin-bottom: 20px !important;
+        }
+        .form-control.numberField{
+            width: 60px !important;
+            margin-left:10px;
+            height:28px;
+        }
+    }
+    @media screen and (min-width:481px) and (max-width: 767px) {
+        body{
+            font-size: 12px !important;
+        } 
+        .form-control{
+            font-size: 12px !important;
+        }
+        a {
+            font-size: 12px ;
+        }
+        #tab{
+            margin-bottom: 20px !important;
+        }
+        .form-control.numberField{
+            width: 70px !important;
+            margin-left:10px;
+            height:28px;
+        }
+    }
+    @media screen and (min-width:768px) and (max-width: 991px) {
+        #gradeTable_filter{
+            float: right;
+        }
+        .form-control.numberField{
+            width: 65px !important;
+            margin-left:10px;
+            height:28px;
+        }
     }
 
 

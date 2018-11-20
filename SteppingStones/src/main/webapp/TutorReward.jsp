@@ -33,9 +33,52 @@
         background-color: DodgerBlue !important; 
         color: #ffffff; 
     }
+    @media screen and (max-width: 480px){
+        body{
+            font-size: 10px;
+        } 
+        .form-control, .btn{
+            font-size: 10px;
+        }
+        a {
+            font-size: 10px;
+        }
+        #tab{
+            margin-bottom: 20px !important;
+        }
+        .submitReward{
+            float: right;
+        }
+    }
+    @media screen and (min-width:481px) and (max-width: 767px) {
+        body{
+            font-size: 12px !important;
+        } 
+        .form-control, .btn{
+            font-size: 12px !important;
+        }
+        a {
+            font-size: 12px ;
+        }
+        #tab{
+            margin-bottom: 20px !important;
+        }
+        .submitReward{
+            float: right;
+        }
+        
+    }
+    @media screen and (min-width:768px) and (max-width: 991px) {
+        #studentAttendanceTable_filter{
+            float: right;
+        }
+        .submitReward{
+            float: right;
+        }
+    }
 </style>
 <div class="col-md-10">
-    <div style="text-align: center;margin: 10px;"><span class="tab_active" style="font-size: 14px">Reward Student</span></div>
+    <div style="text-align: center;margin: 10px;"><span class="tab_active">Reward Student</span></div>
     <div class="row" id="statusMsg"></div>
     <div class="col-md-1"></div>
         <div class="col-md-9">
@@ -119,9 +162,9 @@
                 
             %>
             <div class="form-group">
-                <div class="col-lg-10"></div>
-                <div class="col-lg-2">
-                    <button type="submit" class="btn btn2 " name="select" value="select">Submit Rewards</button>
+                <div class="col-md-10"></div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn2 submitReward" name="select" value="select">Submit Rewards</button>
                 </div>
             </div>    
             </form>
