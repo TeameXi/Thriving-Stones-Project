@@ -516,7 +516,7 @@ public class PaymentDAO {
         return updatedStatus;
     }
     
-    public static boolean updateDepositOutstandingAmount(int studentID, int classID, double outstandingFees, double depositAmt) {
+    public static boolean updateDepositAmount(int studentID, int classID, double outstandingFees, double depositAmt) {
         boolean updatedStatus = false;
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
@@ -526,6 +526,24 @@ public class PaymentDAO {
             stmt.setDouble(2, outstandingFees);
             stmt.setInt(3, studentID);
             stmt.setInt(4, classID);
+            stmt.executeUpdate();
+            conn.commit();
+            updatedStatus = true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return updatedStatus;
+    }
+    
+    public static boolean updateDepositOutstandingAmount(int studentID, int classID, double outstandingFees) {
+        boolean updatedStatus = false;
+        try (Connection conn = ConnectionManager.getConnection();) {
+            conn.setAutoCommit(false);
+            String sql = "update class_student_rel set outstanding_deposit = ?, deposit_payment_date = curdate() where student_id = ? and class_id = ?;";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setDouble(1, outstandingFees);
+            stmt.setInt(2, studentID);
+            stmt.setInt(3, classID);
             stmt.executeUpdate();
             conn.commit();
             updatedStatus = true;

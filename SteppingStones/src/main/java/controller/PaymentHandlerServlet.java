@@ -91,32 +91,45 @@ public class PaymentHandlerServlet extends HttpServlet {
 
             if (type.equals("Deposit")) {
                 
-                String depositAmtStr = request.getParameter("" + classID);
-                double depositAmt = outstandingAmount;
-                if (depositAmtStr != null && !depositAmtStr.isEmpty()) {
-                    depositAmt = Double.parseDouble(depositAmtStr);  
+                if(request.getParameter("update").equals("updatePayment")){
+                    if (paymentAmount != 0) {
+                        PaymentDAO.insertPaymentToRevenue(studentID, studentName, noOfLesson, "Deposit", lvlSubject, paymentAmount, paymentDate);
+                        PaymentDAO.updateDepositOutstandingAmount(studentID, classID, calculatedOutstandingAmount);
+                        //StudentClassDAO.updateDepositPaymentDate(studentID, classID);
+                    }
+
+                    Student stu = StudentDAO.retrieveStudentbyID(studentID);
+                    double totalOutstandingAmt = stu.getOutstandingAmt() - paymentAmount;
+                    StudentDAO.updateStudentTotalOutstandingFees(studentID, totalOutstandingAmt);
+//                System.out.println("After Deposit Payment" + totalOutstandingAmt + "  " + stu.getOutstandingAmt() + "  " + paymentAmount);
                 }
-                calculatedOutstandingAmount = depositAmt - paymentAmount;
                 
-                int noOfLess = PaymentDAO.retrieveNoOfLessonPaymentReminder(studentID, classID);
-                double monthlyFees = depositAmt;
-                if(noOfLess >= 11){
-                    monthlyFees = 3 * depositAmt;
-                }
-                if(depositAmt != outstandingAmount){
-                    PaymentDAO.updateTuitionFees(studentID, classID, monthlyFees);
-                }
+                if(request.getParameter("update").equals("updateStudentFees")){
+                
+                    String depositAmtStr = request.getParameter("" + classID);
+                    double depositAmt = outstandingAmount;
+                    System.out.println("Deposit Str" + depositAmtStr + "outstanding" + depositAmt);
+                    if (depositAmtStr != null && !depositAmtStr.isEmpty()) {
+                        depositAmt = Double.parseDouble(depositAmtStr);  
+                    }
+                    calculatedOutstandingAmount = depositAmt - paymentAmount;
 
-                PaymentDAO.updateDepositOutstandingAmount(studentID, classID, calculatedOutstandingAmount, depositAmt);
-                if (paymentAmount != 0) {
-                    PaymentDAO.insertPaymentToRevenue(studentID, studentName, noOfLesson, "Deposit", lvlSubject, paymentAmount, paymentDate);
-                    StudentClassDAO.updateDepositPaymentDate(studentID, classID);
-                }
+                    int noOfLess = PaymentDAO.retrieveNoOfLessonPaymentReminder(studentID, classID);
+                    double monthlyFees = depositAmt;
+                    if(noOfLess >= 11){
+                        monthlyFees = 3 * depositAmt;
+                    }
+                    if(depositAmt != outstandingAmount){
+                        PaymentDAO.updateTuitionFees(studentID, classID, monthlyFees);
+                    }
 
-                Student stu = StudentDAO.retrieveStudentbyID(studentID);
-                double totalOutstandingAmt = stu.getOutstandingAmt() - paymentAmount - (outstandingAmount - depositAmt);
-                StudentDAO.updateStudentTotalOutstandingFees(studentID, totalOutstandingAmt);
-                System.out.println("After Deposit Payment" + totalOutstandingAmt + "  " + stu.getOutstandingAmt() + "  " + paymentAmount);
+                    PaymentDAO.updateDepositAmount(studentID, classID, calculatedOutstandingAmount, depositAmt);
+
+                    Student stu = StudentDAO.retrieveStudentbyID(studentID);
+                    double totalOutstandingAmt = stu.getOutstandingAmt() - paymentAmount - (outstandingAmount - depositAmt);
+                    StudentDAO.updateStudentTotalOutstandingFees(studentID, totalOutstandingAmt);
+                    System.out.println("After Deposit Payment" + totalOutstandingAmt + "  " + stu.getOutstandingAmt() + "  " + paymentAmount);
+                }
 
             } else if (type.equals("First Installment")) {
                 
