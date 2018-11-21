@@ -5,6 +5,7 @@
  */
 package model;
 
+import com.mysql.jdbc.Statement;
 import connection.ConnectionManager;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -57,7 +58,7 @@ public class ReceiptDAO {
     }
     public int addReceipt(String receipt_date, String payment_mode, String no, String description, String amount_paid, String total_amount_paid, String outstanding_amount, int student_id) {
         try (Connection conn = ConnectionManager.getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO receipt(receipt_date,payment_mode,no,description,amount_paid,total_amount_paid,outstanding_amount,student_id) VALUES(?,?,?,?,?,?,?,?)")) {
+            PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO receipt(receipt_date,payment_mode,no,description,amount_paid,total_amount_paid,outstanding_amount,student_id) VALUES(?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS)) {
             
             preparedStatement.setString(1, receipt_date);
             preparedStatement.setString(2, payment_mode);
@@ -75,6 +76,7 @@ public class ReceiptDAO {
             if (rs.next()) {
                 generatedKey = rs.getInt(1);
             }
+            System.out.println(generatedKey + " YAYYYY");
             return generatedKey;
             
 

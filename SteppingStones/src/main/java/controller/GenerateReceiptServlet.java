@@ -129,8 +129,8 @@ public class GenerateReceiptServlet extends HttpServlet {
         g2d.setFont(new Font ("Calibri", Font.BOLD, 11));
         g2d.drawString("No.", 110, 260);
         g2d.drawString("Description", 160, 260);
-        g2d.drawString("Amount Paid", 380, 260);
-        g2d.drawString("Outstanding Amount", 445, 260);
+        g2d.drawString("Amt Paid", 380, 260);
+        g2d.drawString("Outstanding Amt", 445, 260);
         
         int lengthCount = 300;
         for (int i = 0; i < nos.length; i++) {
