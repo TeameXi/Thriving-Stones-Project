@@ -64,7 +64,8 @@
 <script src="https://code.highcharts.com/highcharts.js"></script>
 <script src="https://code.highcharts.com/modules/exporting.js"></script>
 <script src="https://code.highcharts.com/modules/export-data.js"></script>
-<script src="http://github.highcharts.com/master/modules/drilldown.js"></script>
+<script src="https://code.highcharts.com/modules/data.js"></script>
+<script src="https://code.highcharts.com/modules/drilldown.js"></script>
 
 <script>
     $(".levelSelect").change(function () {
@@ -127,20 +128,22 @@
                         "text": ""
                       }
                     },
-                    "plotOptions": {
-                      "series": {
-                        "animation": false,
-                        "showInLegend": true,
-                        "dataLabels": {
-                          "enabled": false,
-                          "color": "grey",
-                          "style": {
-                            "text-shadow": "0 0 2px black"
-                          }
-                        },
-                        "stacking": null
-                      }
-                    },
+//                    "plotOptions": {
+//                      "series": {
+//                          
+//                        "animation": false,
+//                        "showInLegend": true,
+//                        "dataLabels": {
+//                          "enabled": false,
+//                          "color": "grey",
+//                          "style": {
+//                            "text-shadow": "0 0 2px black"
+//                          }
+//                        },
+//                        "stacking": null
+//                      }
+//                    },
+                  
                     "series": [
                       {
                         "name": "Grade A",
@@ -317,6 +320,19 @@
 //                       }
                     ],
                     "drilldown": {
+                           "plotOptions": {
+        series: {
+            cursor: 'pointer',
+            point: {
+                events: {
+                    click: function () {
+                        location.href = 'https://en.wikipedia.org/wiki/' +
+                            this.options.key;
+                    }
+                }
+            }
+        }
+    },
                       "series": [
                         // Grade A
                         {
@@ -324,14 +340,6 @@
                           "name": [
                             "Grade A students for CA1"
                           ],
-                           "tooltip:":{
-                            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                              '<td style="padding:0"><b>{point.y:.1f} students</b></td></tr>',
-                            footerFormat: '</table>',
-                            shared: true,
-                            useHTML: true
-                          },
                           "type": "column",
                           "data": [
                           
@@ -375,7 +383,7 @@
                           "type": "column",
                           "data": [
                             [
-                              "Elton Lee",
+                              "<a href='IndividualGradeTracking.jsp?studentID=24'>Elton Lee</a>",
                               63
                             ]
                           ]
@@ -676,532 +684,532 @@
                 });
                 
                 
-                $('#tuitionChart').highcharts({
-                    "title": null,
-                    "chart": {
-                      "type": "column"
-                    },
-                    "credits": false,
-                    "legend": {
-                      "enabled": true,
-                      "layout": "vertical",
-                      "align": "right",
-                      "verticalAlign": "middle",
-                      "borderWidth": 0
-                    },
-                    "xAxis": {
-                      "labels": {
-                        "rotation": -90
-                      },
-                      "type": "category"
-                    },
-                    "yAxis": {
-                      "min": 0,
-                      "title": {
-                        "text": ""
-                      }
-                    },
-                    "plotOptions": {
-                          "series": {
-                            "animation": false,
-                            "showInLegend": true,
-                            "dataLabels": {
-                              "enabled": false,
-                              "color": "grey",
-                              "style": {
-                                "text-shadow": "0 0 2px black"
-                              }
-                            },
-                            "stacking": null
-                          }
-                        },
-                    "series": [
-                        {
-                          "name": "Grade A",
-                          "cropThreshold": 500,
-                          "type": "column",
-                          "data": [
-                            {
-                              "name": "CA1",
-                              "y": 0,
-                              "drilldown": "0|CA1"
-                            },
-                            {
-                              "name": "SA1",
-                              "y": 0,
-                              "drilldown": "0|SA1"
-                            },
-                            {
-                              "name": "CA2",
-                              "y": 0,
-                              "drilldown": "0|CA2"
-                            },
-                            {
-                              "name": "SA2",
-                              "y": 0,
-                              "drilldown": "0|SA2"
-                            }
-                          ]
-                        },
-                        {
-                          "name": "Grade B",
-                          "cropThreshold": 500,
-                          "type": "column",
-                          "data": [
-                            {
-                              "name": "CA1",
-                              "y": 0,
-                              "drilldown": "1|CA1"
-                            },
-                            {
-                              "name": "SA1",
-                              "y": 1,
-                              "drilldown": "1|SA1"
-                            },
-                            {
-                              "name": "CA2",
-                              "y": 0,
-                              "drilldown": "1|CA2"
-                            },
-                            {
-                              "name": "SA2",
-                              "y": 0,
-                              "drilldown": "1|SA2"
-                            }
-                          ]
-                        },
-                        {
-                          "name": "Grade C",
-                          "cropThreshold": 500,
-                          "type": "column",
-                          "data": [
-                            {
-                              "name": "CA1",
-                              "y": 0,
-                              "drilldown": "2|CA1"
-                            },
-                            {
-                              "name": "SA1",
-                              "y": 0,
-                              "drilldown": "2|SA1"
-                            },
-                            {
-                              "name": "CA2",
-                              "y": 0,
-                              "drilldown": "2|CA2"
-                            },
-                            {
-                              "name": "SA2",
-                              "y": 0,
-                              "drilldown": "2|SA2"
-                            }
-                          ]
-                        },
-                        {
-                          "name": "Grade D",
-                          "cropThreshold": 500,
-                          "type": "column",
-                          "data": [
-                            {
-                              "name": "CA1",
-                              "y": 0,
-                              "drilldown": "3|CA1"
-                            },
-                            {
-                              "name": "SA1",
-                              "y": 3,
-                              "drilldown": "3|SA1"
-                            },
-                            {
-                              "name": "CA2",
-                              "y": 0,
-                              "drilldown": "3|CA2"
-                            },
-                            {
-                              "name": "SA2",
-                              "y": 2,
-                              "drilldown": "3|SA2"
-                            }
-                          ]
-                        },
-                        {
-                          "name": "Grade E",
-                          "cropThreshold": 500,
-                          "type": "column",
-                          "data": [
-                            {
-                              "name": "CA1",
-                              "y": 0,
-                              "drilldown": "4|CA1"
-                            },
-                            {
-                              "name": "SA1",
-                              "y": 1,
-                              "drilldown": "4|SA1"
-                            },
-                            {
-                              "name": "CA2",
-                              "y": 0,
-                              "drilldown": "4|CA2"
-                            },
-                            {
-                              "name": "SA2",
-                              "y": 3,
-                              "drilldown": "4|SA2"
-                            }
-                          ]
-                        },
-                        {
-                          "name": "Grade F",
-                          "cropThreshold": 500,
-                          "type": "column",
-                          "data": [
-                            {
-                              "name": "CA1",
-                              "y": 0,
-                              "drilldown": "5|CA1"
-                            },
-                            {
-                              "name": "SA1",
-                              "y": 3,
-                              "drilldown": "5|SA1"
-                            },
-                            {
-                              "name": "CA2",
-                              "y": 6,
-                              "drilldown": "2|CA2"
-                            },
-                            {
-                              "name": "SA2",
-                              "y": 4,
-                              "drilldown": "5|SA2"
-                            }
-                          ]
-                        }
-                    ],
-                    "drilldown": {
-                          "series": [
-                            {
-                              "id": "0|CA1",
-                              "name": [
-                                "Grade A CA1"
-                              ],
-                              "type": "column",
-                              "data": [
-
-                              ]
-                            },
-                            {
-                              "id": "0|SA1",
-                              "name": [
-                                "Grade A SA1"
-                              ],
-                              "type": "column",
-                              "data": [
-
-                              ]
-                            },
-                            {
-                              "id": "0|CA2",
-                              "name": [
-                                "Grade A CA2"
-                              ],
-                              "type": "column",
-                              "data": [
-
-                              ]
-                            },
-                            {
-                              "id": "0|SA2",
-                              "name": [
-                                "Grade A SA2"
-                              ],
-                              "type": "column",
-                              "data": [
-                              ]
-                            },
-
-                            // B grade
-                            {
-                              "id": "1|CA1",
-                              "name": [
-                                "Grade B CA1"
-                              ],
-                              "type": "column",
-                              "data": [
-                              ]
-                            },
-                            {
-                              "id": "1|SA1",
-                              "name": [
-                                "Grade B SA1"
-                              ],
-                              "type": "column",
-                              "data": [
-                                [
-                                  "Cybele Hu",
-                                  63
-                                ]
-                              ]
-                            },
-                            {
-                              "id": "1|CA2",
-                              "name": [
-                                "Grade B CA2"
-                              ],
-                              "type": "column",
-                              "data": [
-                              ]
-                            },
-                            {
-                              "id": "1|SA2",
-                              "name": [
-                                "Grade B SA2"
-                              ],
-                              "type": "column",
-                              "data": [
-                              ]
-                            },
-
-                            //C grade
-                            {
-                              "id": "2|CA1",
-                              "name": [
-                                "Grade C CA1"
-                              ],
-                              "type": "column",
-                              "data": [
-                              ]
-                            },
-                            {
-                              "id": "2|SA1",
-                              "name": [
-                                "Grade C SA1"
-                              ],
-                              "type": "column",
-                              "data": [
-                              ]
-                            },
-                            {
-                              "id": "2|CA2",
-                              "name": [
-                                "Grade C CA2"
-                              ],
-                              "type": "column",
-                              "data": [
-                              ]
-                            },
-                            {
-                              "id": "2|SA2",
-                              "name": [
-                                "Grade C SA2"
-                              ],
-                              "type": "column",
-                              "data": [
-                              ]
-                            },
-
-                            //D grade
-                            {
-                              "id": "3|CA1",
-                              "name": [
-                                "Grade D CA1"
-                              ],
-                              "type": "column",
-                              "data": [
-                              ]
-                            },
-                            {
-                              "id": "3|SA1",
-                              "name": [
-                                "Grade D SA1"
-                              ],
-                              "type": "column",
-                              "data": [
-                                [
-                                  "Pek Min Xi",
-                                  40
-                                ],
-                                [
-                                  "Elton Lee",
-                                  35
-                                ],
-                                [
-                                    "Ellie Oon",
-                                    35
-                                ]
-                              ]
-                            },
-                            {
-                              "id": "3|CA2",
-                              "name": [
-                                "Grade D CA2"
-                              ],
-                              "type": "column",
-                              "data": [
-                              ]
-                            },
-                            {
-                              "id": "3|SA2",
-                              "name": [
-                                "Grade D SA2"
-                              ],
-                              "type": "column",
-                              "data": [
-                                [
-                                  "Elton Lee",
-                                  41
-                                ],
-                                [
-                                  "Wan IK",
-                                  35
-                                ]
-                              ]
-                            },
-                            
-                            //E grade
-                            {
-                              "id": "4|CA1",
-                              "name": [
-                                "Grade E CA1"
-                              ],
-                              "type": "column",
-                              "data": [
-                              ]
-                            },
-                            {
-                              "id": "4|SA1",
-                              "name": [
-                                "Grade E SA1"
-                              ],
-                              "type": "column",
-                              "data": [
-                                [
-                                  "Sajitha Banu",
-                                  30
-                                ]
-                              ]
-                            },
-                            {
-                              "id": "4|CA2",
-                              "name": [
-                                "Grade E CA2"
-                              ],
-                              "type": "column",
-                              "data": [
-                              ]
-                            },
-                            {
-                              "id": "4|SA2",
-                              "name": [
-                                "Grade E SA2"
-                              ],
-                              "type": "column",
-                              "data": [
-                                [
-                                  "Wan IK",
-                                  35
-                                ],
-                                [
-                                  "Brayden Ng",
-                                  24
-                                ],
-                                [
-                                  "Ellie Oon",
-                                  22
-                                ]
-                              ]
-                            },
-
-                            // F grade
-                            {
-                              "id": "5|CA1",
-                              "name": [
-                                "Grade F CA1"
-                              ],
-                              "type": "column",
-                              "data": [
-                              ]
-                            },
-                            {
-                              "id": "5|SA1",
-                              "name": [
-                                "Grade F SA1"
-                              ],
-                              "type": "column",
-                              "data": [
-                                [
-                                  "Liow Rui Zhe",
-                                  15
-                                ],
-                                [
-                                  "Lim Qiu Yun",
-                                  13
-                                ],
-                                [
-                                  "Joshua Ng",
-                                  12
-                                ]
-                              ]
-                            },
-                            {
-                              "id": "5|CA2",
-                              "name": [
-                                "Grade F CA2"
-                              ],
-                              "type": "column",
-                              "data": [
-                                [
-                                  "Elton Lee",
-                                  16
-                                ],
-                                [
-                                  "Brayden Ng",
-                                  4
-                                ],
-                                [
-                                  "Jia Xin",
-                                  2
-                                ],
-                                [
-                                  "Sajitha Banu",
-                                  2
-                                ],
-                                [
-                                  "Joshua Ng",
-                                  2
-                                ]
-                              ]
-                            },
-                            {
-                              "id": "5|SA2",
-                              "name": [
-                                "Grade F SA2"
-                              ],
-                              "type": "column",
-                              "data": [
-                                [
-                                  "Jia Xin",
-                                  18
-                                ],
-                                [
-                                  "Sajitha Banu",
-                                  15
-                                ],
-                                [
-                                  "Joshua Ng",
-                                  10
-                                ],
-                                [
-                                  "Liow Rui Zhe",
-                                  5
-                                ]
-                              ]
-                            }
-
-                          ]
-                        }
-                });
+//                $('#tuitionChart').highcharts({
+//                    "title": null,
+//                    "chart": {
+//                      "type": "column"
+//                    },
+//                    "credits": false,
+//                    "legend": {
+//                      "enabled": true,
+//                      "layout": "vertical",
+//                      "align": "right",
+//                      "verticalAlign": "middle",
+//                      "borderWidth": 0
+//                    },
+//                    "xAxis": {
+//                      "labels": {
+//                        "rotation": -90
+//                      },
+//                      "type": "category"
+//                    },
+//                    "yAxis": {
+//                      "min": 0,
+//                      "title": {
+//                        "text": ""
+//                      }
+//                    },
+//                    "plotOptions": {
+//                          "series": {
+//                            "animation": false,
+//                            "showInLegend": true,
+//                            "dataLabels": {
+//                              "enabled": false,
+//                              "color": "grey",
+//                              "style": {
+//                                "text-shadow": "0 0 2px black"
+//                              }
+//                            },
+//                            "stacking": null
+//                          }
+//                        },
+//                    "series": [
+//                        {
+//                          "name": "Grade A",
+//                          "cropThreshold": 500,
+//                          "type": "column",
+//                          "data": [
+//                            {
+//                              "name": "CA1",
+//                              "y": 0,
+//                              "drilldown": "0|CA1"
+//                            },
+//                            {
+//                              "name": "SA1",
+//                              "y": 0,
+//                              "drilldown": "0|SA1"
+//                            },
+//                            {
+//                              "name": "CA2",
+//                              "y": 0,
+//                              "drilldown": "0|CA2"
+//                            },
+//                            {
+//                              "name": "SA2",
+//                              "y": 0,
+//                              "drilldown": "0|SA2"
+//                            }
+//                          ]
+//                        },
+//                        {
+//                          "name": "Grade B",
+//                          "cropThreshold": 500,
+//                          "type": "column",
+//                          "data": [
+//                            {
+//                              "name": "CA1",
+//                              "y": 0,
+//                              "drilldown": "1|CA1"
+//                            },
+//                            {
+//                              "name": "SA1",
+//                              "y": 1,
+//                              "drilldown": "1|SA1"
+//                            },
+//                            {
+//                              "name": "CA2",
+//                              "y": 0,
+//                              "drilldown": "1|CA2"
+//                            },
+//                            {
+//                              "name": "SA2",
+//                              "y": 0,
+//                              "drilldown": "1|SA2"
+//                            }
+//                          ]
+//                        },
+//                        {
+//                          "name": "Grade C",
+//                          "cropThreshold": 500,
+//                          "type": "column",
+//                          "data": [
+//                            {
+//                              "name": "CA1",
+//                              "y": 0,
+//                              "drilldown": "2|CA1"
+//                            },
+//                            {
+//                              "name": "SA1",
+//                              "y": 0,
+//                              "drilldown": "2|SA1"
+//                            },
+//                            {
+//                              "name": "CA2",
+//                              "y": 0,
+//                              "drilldown": "2|CA2"
+//                            },
+//                            {
+//                              "name": "SA2",
+//                              "y": 0,
+//                              "drilldown": "2|SA2"
+//                            }
+//                          ]
+//                        },
+//                        {
+//                          "name": "Grade D",
+//                          "cropThreshold": 500,
+//                          "type": "column",
+//                          "data": [
+//                            {
+//                              "name": "CA1",
+//                              "y": 0,
+//                              "drilldown": "3|CA1"
+//                            },
+//                            {
+//                              "name": "SA1",
+//                              "y": 3,
+//                              "drilldown": "3|SA1"
+//                            },
+//                            {
+//                              "name": "CA2",
+//                              "y": 0,
+//                              "drilldown": "3|CA2"
+//                            },
+//                            {
+//                              "name": "SA2",
+//                              "y": 2,
+//                              "drilldown": "3|SA2"
+//                            }
+//                          ]
+//                        },
+//                        {
+//                          "name": "Grade E",
+//                          "cropThreshold": 500,
+//                          "type": "column",
+//                          "data": [
+//                            {
+//                              "name": "CA1",
+//                              "y": 0,
+//                              "drilldown": "4|CA1"
+//                            },
+//                            {
+//                              "name": "SA1",
+//                              "y": 1,
+//                              "drilldown": "4|SA1"
+//                            },
+//                            {
+//                              "name": "CA2",
+//                              "y": 0,
+//                              "drilldown": "4|CA2"
+//                            },
+//                            {
+//                              "name": "SA2",
+//                              "y": 3,
+//                              "drilldown": "4|SA2"
+//                            }
+//                          ]
+//                        },
+//                        {
+//                          "name": "Grade F",
+//                          "cropThreshold": 500,
+//                          "type": "column",
+//                          "data": [
+//                            {
+//                              "name": "CA1",
+//                              "y": 0,
+//                              "drilldown": "5|CA1"
+//                            },
+//                            {
+//                              "name": "SA1",
+//                              "y": 3,
+//                              "drilldown": "5|SA1"
+//                            },
+//                            {
+//                              "name": "CA2",
+//                              "y": 6,
+//                              "drilldown": "2|CA2"
+//                            },
+//                            {
+//                              "name": "SA2",
+//                              "y": 4,
+//                              "drilldown": "5|SA2"
+//                            }
+//                          ]
+//                        }
+//                    ],
+//                    "drilldown": {
+//                          "series": [
+//                            {
+//                              "id": "0|CA1",
+//                              "name": [
+//                                "Grade A CA1"
+//                              ],
+//                              "type": "column",
+//                              "data": [
+//
+//                              ]
+//                            },
+//                            {
+//                              "id": "0|SA1",
+//                              "name": [
+//                                "Grade A SA1"
+//                              ],
+//                              "type": "column",
+//                              "data": [
+//
+//                              ]
+//                            },
+//                            {
+//                              "id": "0|CA2",
+//                              "name": [
+//                                "Grade A CA2"
+//                              ],
+//                              "type": "column",
+//                              "data": [
+//
+//                              ]
+//                            },
+//                            {
+//                              "id": "0|SA2",
+//                              "name": [
+//                                "Grade A SA2"
+//                              ],
+//                              "type": "column",
+//                              "data": [
+//                              ]
+//                            },
+//
+//                            // B grade
+//                            {
+//                              "id": "1|CA1",
+//                              "name": [
+//                                "Grade B CA1"
+//                              ],
+//                              "type": "column",
+//                              "data": [
+//                              ]
+//                            },
+//                            {
+//                              "id": "1|SA1",
+//                              "name": [
+//                                "Grade B SA1"
+//                              ],
+//                              "type": "column",
+//                              "data": [
+//                                [
+//                                  "Cybele Hu",
+//                                  63
+//                                ]
+//                              ]
+//                            },
+//                            {
+//                              "id": "1|CA2",
+//                              "name": [
+//                                "Grade B CA2"
+//                              ],
+//                              "type": "column",
+//                              "data": [
+//                              ]
+//                            },
+//                            {
+//                              "id": "1|SA2",
+//                              "name": [
+//                                "Grade B SA2"
+//                              ],
+//                              "type": "column",
+//                              "data": [
+//                              ]
+//                            },
+//
+//                            //C grade
+//                            {
+//                              "id": "2|CA1",
+//                              "name": [
+//                                "Grade C CA1"
+//                              ],
+//                              "type": "column",
+//                              "data": [
+//                              ]
+//                            },
+//                            {
+//                              "id": "2|SA1",
+//                              "name": [
+//                                "Grade C SA1"
+//                              ],
+//                              "type": "column",
+//                              "data": [
+//                              ]
+//                            },
+//                            {
+//                              "id": "2|CA2",
+//                              "name": [
+//                                "Grade C CA2"
+//                              ],
+//                              "type": "column",
+//                              "data": [
+//                              ]
+//                            },
+//                            {
+//                              "id": "2|SA2",
+//                              "name": [
+//                                "Grade C SA2"
+//                              ],
+//                              "type": "column",
+//                              "data": [
+//                              ]
+//                            },
+//
+//                            //D grade
+//                            {
+//                              "id": "3|CA1",
+//                              "name": [
+//                                "Grade D CA1"
+//                              ],
+//                              "type": "column",
+//                              "data": [
+//                              ]
+//                            },
+//                            {
+//                              "id": "3|SA1",
+//                              "name": [
+//                                "Grade D SA1"
+//                              ],
+//                              "type": "column",
+//                              "data": [
+//                                [
+//                                  "Pek Min Xi",
+//                                  40
+//                                ],
+//                                [
+//                                  "Elton Lee",
+//                                  35
+//                                ],
+//                                [
+//                                    "Ellie Oon",
+//                                    35
+//                                ]
+//                              ]
+//                            },
+//                            {
+//                              "id": "3|CA2",
+//                              "name": [
+//                                "Grade D CA2"
+//                              ],
+//                              "type": "column",
+//                              "data": [
+//                              ]
+//                            },
+//                            {
+//                              "id": "3|SA2",
+//                              "name": [
+//                                "Grade D SA2"
+//                              ],
+//                              "type": "column",
+//                              "data": [
+//                                [
+//                                  "Elton Lee",
+//                                  41
+//                                ],
+//                                [
+//                                  "Wan IK",
+//                                  35
+//                                ]
+//                              ]
+//                            },
+//                            
+//                            //E grade
+//                            {
+//                              "id": "4|CA1",
+//                              "name": [
+//                                "Grade E CA1"
+//                              ],
+//                              "type": "column",
+//                              "data": [
+//                              ]
+//                            },
+//                            {
+//                              "id": "4|SA1",
+//                              "name": [
+//                                "Grade E SA1"
+//                              ],
+//                              "type": "column",
+//                              "data": [
+//                                [
+//                                  "Sajitha Banu",
+//                                  30
+//                                ]
+//                              ]
+//                            },
+//                            {
+//                              "id": "4|CA2",
+//                              "name": [
+//                                "Grade E CA2"
+//                              ],
+//                              "type": "column",
+//                              "data": [
+//                              ]
+//                            },
+//                            {
+//                              "id": "4|SA2",
+//                              "name": [
+//                                "Grade E SA2"
+//                              ],
+//                              "type": "column",
+//                              "data": [
+//                                [
+//                                  "Wan IK",
+//                                  35
+//                                ],
+//                                [
+//                                  "Brayden Ng",
+//                                  24
+//                                ],
+//                                [
+//                                  "Ellie Oon",
+//                                  22
+//                                ]
+//                              ]
+//                            },
+//
+//                            // F grade
+//                            {
+//                              "id": "5|CA1",
+//                              "name": [
+//                                "Grade F CA1"
+//                              ],
+//                              "type": "column",
+//                              "data": [
+//                              ]
+//                            },
+//                            {
+//                              "id": "5|SA1",
+//                              "name": [
+//                                "Grade F SA1"
+//                              ],
+//                              "type": "column",
+//                              "data": [
+//                                [
+//                                  "Liow Rui Zhe",
+//                                  15
+//                                ],
+//                                [
+//                                  "Lim Qiu Yun",
+//                                  13
+//                                ],
+//                                [
+//                                  "Joshua Ng",
+//                                  12
+//                                ]
+//                              ]
+//                            },
+//                            {
+//                              "id": "5|CA2",
+//                              "name": [
+//                                "Grade F CA2"
+//                              ],
+//                              "type": "column",
+//                              "data": [
+//                                [
+//                                  "Elton Lee",
+//                                  16
+//                                ],
+//                                [
+//                                  "Brayden Ng",
+//                                  4
+//                                ],
+//                                [
+//                                  "Jia Xin",
+//                                  2
+//                                ],
+//                                [
+//                                  "Sajitha Banu",
+//                                  2
+//                                ],
+//                                [
+//                                  "Joshua Ng",
+//                                  2
+//                                ]
+//                              ]
+//                            },
+//                            {
+//                              "id": "5|SA2",
+//                              "name": [
+//                                "Grade F SA2"
+//                              ],
+//                              "type": "column",
+//                              "data": [
+//                                [
+//                                  "Jia Xin",
+//                                  18
+//                                ],
+//                                [
+//                                  "Sajitha Banu",
+//                                  15
+//                                ],
+//                                [
+//                                  "Joshua Ng",
+//                                  10
+//                                ],
+//                                [
+//                                  "Liow Rui Zhe",
+//                                  5
+//                                ]
+//                              ]
+//                            }
+//
+//                          ]
+//                        }
+//                });
             
                  
                 
