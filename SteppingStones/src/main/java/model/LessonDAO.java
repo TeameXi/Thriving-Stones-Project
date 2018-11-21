@@ -663,7 +663,7 @@ public class LessonDAO {
         return null;
     }
 
-    public ArrayList<String> retrieveReplacementDates(int lessonID) {
+    public static ArrayList<String> retrieveReplacementDates(int lessonID) {
         ArrayList<String> replacementDates = new ArrayList<>();
         String sql = "select changed_start_date, changed_end_date from lesson where lesson_id = ?";
 

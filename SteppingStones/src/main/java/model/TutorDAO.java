@@ -62,7 +62,7 @@ public class TutorDAO {
         return tutorLists;
     }
 
-    public Tutor retrieveSpecificTutorById(int tutorId) {
+    public static Tutor retrieveSpecificTutorById(int tutorId) {
         String select_tutor = "SELECT tutor_id, tutor_nric, tutor_fullname, phone, address,highest_qualification, "
                 + "birth_date, gender, email, branch_id FROM tutor WHERE tutor_id = ?";
         try (Connection conn = ConnectionManager.getConnection();
