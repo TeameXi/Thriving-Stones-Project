@@ -1,8 +1,3 @@
-<%-- 
-    Document   : Dashboard
-    Created on : 16 Nov, 2018, 5:45:34 PM
-    Author     : Zang Yu
---%>
 <%@page import="model.SubjectDAO"%>
 <%@page import="model.RewardDAO"%>
 <%@page import="entity.Lesson"%>
@@ -39,11 +34,8 @@
 %>
 <%@include file="header.jsp"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html>
-    
-    <head>
-        <title>gridster test</title>
+
+
         <meta name="author" content="gyurisc">		
         <link href="styling/css/jquery.gridster.css" rel="stylesheet" type="text/css"/>
         <link href="styling/css/styles.css" rel="stylesheet" type="text/css"/>
@@ -55,7 +47,7 @@
             .box3 { height: 85px; width:400px; overflow: auto;}
             .box4 { height: 225px; width:400px; overflow: auto;}
         </style>
-    </head>
+
     <body>
         <div class="col-md-10">
             <div style="margin: 10px;"><h3>Dashboard</h3></div>
@@ -595,11 +587,12 @@
                         <%}%>
                                     </ul>
                             </div>
-                    </div>     
+                    </div>    
+                    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
                     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
                     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.13/jquery.mousewheel.min.js"></script>
                     <script src="styling/js/jquery.scrollable.js" type="text/javascript"></script>                    
-                    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+               
                     <script src="styling/js/jquery.gridster.js" type="text/javascript"></script>
                     <script src="styling/js/jquery.gridster.min.js" type="text/javascript"></script>
                     <script type="text/javascript">
@@ -621,7 +614,5 @@
 </div>
 </div>
 
-</body> 
-
-</html>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <script src="${pageContext.request.contextPath}/styling/js/main.js"></script>
