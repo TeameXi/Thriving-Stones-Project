@@ -178,7 +178,7 @@ public class ClassDAO {
     public static ArrayList<Class> listAllClasses(int branchID) {
         ArrayList<Class> classList = new ArrayList();
         try (Connection conn = ConnectionManager.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement("select * from class where branch_id = ? and year(end_date) = year(curdate())");
+            PreparedStatement stmt = conn.prepareStatement("select * from class where branch_id = ? and year(end_date) >= year(curdate())");
             stmt.setInt(1, branchID);
             ResultSet rs = stmt.executeQuery();
 

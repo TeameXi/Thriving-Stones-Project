@@ -199,7 +199,6 @@ function processCSVStudentData(csv_data, append_container, error_el, branch_id) 
                 "<input type='text' name='con_acadlevel[]' id='con_acadlevel_" + i + "' class='form-control' value='" + Academic_level + "' readonly='readonly'>" +
                 "</div>" +
                 "<div class='col-sm-2'>" +
-                "<input type='hidden'' name='con_pwd[]' id='con_pwd_num_" + i + "' class='form-control' value='" + generatePassword(16) + "'>" +
                 "<input type='text' name='con_parentName[]' id='con_parentName_" + i + "' class='form-control' value='" + Parent_name + "' readonly='readonly'>" +
                 "</div>" +
                 "<div class='col-sm-2'>" +
