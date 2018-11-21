@@ -251,7 +251,7 @@
                             <li><a href="ParentViewSchedule.jsp"><i class="zmdi zmdi-calendar"></i>Schedule</a></li>
                             <li><a href="ParentViewGrade.jsp"><i class="zmdi zmdi-money-box"></i>View Child's Grades</a></li>
                             <li><a href="ParentViewAttendance.jsp"><i class="zmdi zmdi-money-box"></i>View Child's Attendance</a></li>
-                            <li><a href=""><i class="zmdi zmdi-money-box"></i>Rewards</a></li>
+                            <li><a href="ParentViewReward.jsp"><i class="zmdi zmdi-money-box"></i>Rewards</a></li>
                             
                     <%
                         }else if(role != null && user != null && role == "student" ){

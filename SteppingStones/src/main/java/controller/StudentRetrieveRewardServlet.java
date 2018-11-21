@@ -7,6 +7,7 @@ package controller;
 
 import com.google.gson.Gson;
 import entity.RewardItem;
+import entity.Student;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
@@ -18,8 +19,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.ParentChildRelDAO;
 import model.RewardDAO;
 import model.RewardItemDAO;
+import model.StudentDAO;
 import org.apache.xmlbeans.impl.util.Base64;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -76,7 +79,27 @@ public class StudentRetrieveRewardServlet extends HttpServlet {
                 JSONObject toReturn = new JSONObject().put("data", array);
                 String json = toReturn.toString();
                 out.println(json);
-            }
+            } else if (action.equals("retrieveParent")) {
+                int parentID = Integer.parseInt(request.getParameter("parentID"));
+
+                ArrayList<Integer> children = ParentChildRelDAO.retrieveChildren(parentID);
+
+                JSONArray array = new JSONArray();
+
+                for (int studentID : children) {
+                    Student student = StudentDAO.retrieveStudentbyID(studentID);
+                    int point =  RewardDAO.countStudentPoint(studentID);
+                    JSONObject obj = new JSONObject();
+                    obj.put("id", studentID);
+                    obj.put("name", student.getName());
+                    obj.put("point", point);
+                    array.put(obj);
+                }
+                JSONObject toReturn = new JSONObject().put("data", array);
+                String json = toReturn.toString();
+                out.println(json);
+
+            } 
         }
     }
 
