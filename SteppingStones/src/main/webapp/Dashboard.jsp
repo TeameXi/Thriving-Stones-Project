@@ -184,13 +184,23 @@
                                                     for (Class c : classes) {
                                                         ArrayList<Lesson> lessons = LessonDAO.retrieveAllLessonLists(c.getClassID());
 
-                                                        for (Lesson l : lessons) {
-                                                            ArrayList<String> replacement = LessonDAO.retrieveReplacementDates(l.getLessonid());
-                                                            if (replacement != null) { 
-                                                                int tutorID = c.getTutorID();
-                                                                Tutor t = TutorDAO.retrieveSpecificTutorById(tutorID);
-                                                                out.println("<tr><td>"+l.getStartDate().substring(0, 10)+"</td><td>"+c.getClassDay()+" "+c.getStartTime()+"-"+c.getEndTime()+" "+c.getLevel()+" "+c.getSubject()+"</td><td>"+t.getName()+"</td></tr>");
+//                                                        for (Lesson l : lessons) {
+//                                                            ArrayList<String> replacement = LessonDAO.retrieveReplacementDates(l.getLessonid());
+//                                                            if (replacement != null) { 
+//                                                                int tutorID = c.getTutorID();
+//                                                                Tutor t = TutorDAO.retrieveSpecificTutorById(tutorID);
+//                                                                out.println("<tr><td>"+l.getStartDate().substring(0, 10)+"</td><td>"+c.getClassDay()+" "+c.getStartTime()+"-"+c.getEndTime()+" "+c.getLevel()+" "+c.getSubject()+"</td><td>"+t.getName()+"</td></tr>");
+//                                                            }
+//                                                        }
+                                                        for(Lesson l: lessons){
+                                                            ArrayList<String> replacement = LessonDAO.retrieveReplacementDetails(l.getLessonid());
+                                                            int tutorID = 0;
+                                                            if(replacement.get(3) != null){
+                                                                tutorID = Integer.parseInt(replacement.get(3));
                                                             }
+                                                            Tutor t = TutorDAO.retrieveSpecificTutorById(tutorID);
+                                                            out.println("<tr><td>"+replacement.get(0)+"</td><td>"+c.getLevel()+" "+c.getSubject()+"<br>"+replacement.get(1)+"-"+replacement.get(2)+"</td><td>"+t.getName()+"</td></tr>");
+                                                            
                                                         }
                                                     }
                                                 %>                                                                                                     
@@ -613,4 +623,4 @@
 </body> 
 
 </html>
-
+<script src="${pageContext.request.contextPath}/styling/js/main.js"></script>
