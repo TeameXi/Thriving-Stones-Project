@@ -59,10 +59,10 @@ public class PromoteStudentServlet extends HttpServlet {
                 int levelID = LevelDAO.retrieveLevelID(level);
                 if(levelID<11){
                     double totalDeposit = 0;                
-                    totalDeposit = StudentClassDAO.retrieveStudentTotalDepositAmt(studentID,0);
+                    totalDeposit = StudentClassDAO.retrieveStudentTotalDepositAmt(studentID);
                     if (totalDeposit>0){
                         boolean updateClassStudentRelStatus=updateClassStudentRelStatus =StudentClassDAO.updateStatus(studentID,0);
-                        boolean updateReqAmt = StudentDAO.updateStudentFees(studentID,totalDeposit,student.getOutstandingAmt());
+                        boolean updateReqAmt = StudentDAO.updateStudentFees(studentID,totalDeposit);
                     }
 
                         boolean update = StudentDAO.promoteStudentLevel(studentID, levelID+1);

@@ -132,7 +132,7 @@ public class LessonDAO {
 
     public static ArrayList<Lesson> retrieveAllLessonLists(int classid) {
         ArrayList<Lesson> lessons = new ArrayList<>();
-        String sql = "select lesson_id, class_id, tutor_id, tutor_attended, start_date, end_date from lesson where class_id = ?";
+        String sql = "select lesson_id, class_id, tutor_id, tutor_attended, start_date, end_date from lesson where class_id = ? and replacement_tutor_id != 0";
         System.out.println(sql);
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
@@ -663,7 +663,7 @@ public class LessonDAO {
         return null;
     }
 
-    public ArrayList<String> retrieveReplacementDates(int lessonID) {
+    public static ArrayList<String> retrieveReplacementDates(int lessonID) {
         ArrayList<String> replacementDates = new ArrayList<>();
         String sql = "select changed_start_date, changed_end_date from lesson where lesson_id = ?";
 
@@ -685,6 +685,32 @@ public class LessonDAO {
             Logger.getLogger(ClassDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return replacementDates;
+    }
+    
+    public static ArrayList<String> retrieveReplacementDetails(int lessonID) {
+        ArrayList<String> replacementDetails = new ArrayList<>();
+        String sql = "select date(changed_start_date), time(changed_start_date), time(changed_end_date), replacement_tutor_id from lesson where lesson_id = ?";
+
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, lessonID);
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                if (rs.getString(1) != null && rs.getString(2) != null) {
+                    replacementDetails.add(rs.getString(1));
+                    replacementDetails.add(rs.getString(2));
+                    replacementDetails.add(rs.getString(3));
+                    replacementDetails.add(rs.getString(4));
+                } else {
+                    return null;
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ClassDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return replacementDetails;
     }
 
     public ArrayList<Lesson> retrieveLessonsAfterDateAndBeforeCurr(String date, int classID) {

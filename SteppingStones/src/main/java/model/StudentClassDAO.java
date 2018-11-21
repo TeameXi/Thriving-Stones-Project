@@ -119,22 +119,22 @@ public class StudentClassDAO {
         return status;
     }
     
-    public static boolean updateDepositPaymentDate(int studentID, int classID){
-        boolean updatedStatus = false;
-        try (Connection conn = ConnectionManager.getConnection();) {
-            conn.setAutoCommit(false);
-            String sql = "update class_student_rel set deposit_payment_date = curdate() where student_id = ? and class_id = ?;";
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setInt(1, studentID);
-            stmt.setInt(2, classID);
-            stmt.executeUpdate();
-            conn.commit();
-            updatedStatus = true;
-        } catch (Exception e) {
-            System.out.println("Error in updateDepositpaymentDate method" + e.getMessage());
-        }
-        return updatedStatus;
-    }
+//    public static boolean updateDepositPaymentDate(int studentID, int classID){
+//        boolean updatedStatus = false;
+//        try (Connection conn = ConnectionManager.getConnection();) {
+//            conn.setAutoCommit(false);
+//            String sql = "update class_student_rel set deposit_payment_date = curdate() where student_id = ? and class_id = ?;";
+//            PreparedStatement stmt = conn.prepareStatement(sql);
+//            stmt.setInt(1, studentID);
+//            stmt.setInt(2, classID);
+//            stmt.executeUpdate();
+//            conn.commit();
+//            updatedStatus = true;
+//        } catch (Exception e) {
+//            System.out.println("Error in updateDepositpaymentDate method" + e.getMessage());
+//        }
+//        return updatedStatus;
+//    }
 
     public static ArrayList<String> listStudentsinSpecificClass(int classID) {
         ArrayList<String> studentList = new ArrayList<>();
@@ -235,7 +235,7 @@ public class StudentClassDAO {
         boolean updatedStatus = false;
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            String sql = "update class_student_rel set status = 1 where student_id = ? and status = ?;";                    
+            String sql = "update class_student_rel set status = 1, outstanding_deposit = 0 where student_id = ? and status = ?;";                    
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setDouble(1, studentID);
             stmt.setInt(2, status);           
@@ -250,13 +250,12 @@ public class StudentClassDAO {
         return updatedStatus;
     }
     
-    public static double retrieveStudentTotalDepositAmt(int studentID, int status) {
+    public static double retrieveStudentTotalDepositAmt(int studentID) {
         double totalDeposit = 0;
         try (Connection conn = ConnectionManager.getConnection();) {
-            String sql = "SELECT SUM(deposit_fees) AS 'totalDeposit' FROM class_student_rel WHERE status=? AND student_id=? ";
+            String sql = "SELECT SUM(deposit_fees  - outstanding_deposit) AS 'totalDeposit' FROM class_student_rel WHERE status=0 AND student_id=? ";
             PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setInt(1, status);
-            stmt.setInt(2, studentID);
+            stmt.setInt(1, studentID);
             
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
