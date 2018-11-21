@@ -449,11 +449,11 @@ public class PaymentDAO {
         double amtToBeAdded = 0;
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement("select * from payment_reminder where student_id = ? and outstanding_charge = amount_charged "
-                    + "and (SELECT DATE_ADD(payment_due_date, INTERVAL -7 DAY) as payment_start_date) <= curdate() order by payment_due_date limit 1;"); 
+                    + "and (SELECT DATE_ADD(payment_due_date, INTERVAL -7 DAY) as payment_start_date) <= curdate() order by payment_due_date;"); 
             stmt.setInt(1, studentID);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                amtToBeAdded = rs.getDouble("outstanding_charge");
+                amtToBeAdded = amtToBeAdded + rs.getDouble("outstanding_charge");
             }
         } catch (SQLException e) {
             System.out.print("Error in getStudentTutionFeeToAdd method" + e.getMessage());
