@@ -48,6 +48,7 @@ public class GenerateReceiptServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
         String receiptidstr = request.getParameter("i");
         
         ReceiptDAO receiptDAO = new ReceiptDAO();
@@ -72,7 +73,7 @@ public class GenerateReceiptServlet extends HttpServlet {
         String[] payment_amounts = payment_amountstr.split("#");
         String[] outstanding_amount = outstanding_amountstr.split("#");
         
-        response.setContentType("application/pdf");
+        response.setContentType("application/octet-stream");
         response.setHeader("Content-disposition", "attachment; filename=" + formattedReceiptNo + ".pdf" );
 
         // Create pageformat for the document
@@ -167,6 +168,16 @@ public class GenerateReceiptServlet extends HttpServlet {
         // Save the document to the servlet output stream.  This goes directly to the browser
         pdfDoc.saveDocument(sOut);
 
+        sOut.println("<HTML>");
+        sOut.println("<head>");
+        sOut.println("<script>") ;
+        sOut.println("function closeWindow(){");
+        sOut.println("window.close()");
+        sOut.println("</script>") ;
+        sOut.println("</head>");
+        sOut.println("<body onLoad=\"closeWindow()\">");
+        sOut.println("</body>");
+        sOut.println("</HTML>");
         // Close the server output stream
         sOut.close();
     }

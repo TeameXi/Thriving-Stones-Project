@@ -132,7 +132,27 @@ public class LessonDAO {
 
     public static ArrayList<Lesson> retrieveAllLessonLists(int classid) {
         ArrayList<Lesson> lessons = new ArrayList<>();
-        String sql = "select lesson_id, class_id, tutor_id, tutor_attended, start_date, end_date from lesson where class_id = ? and replacement_tutor_id != 0";
+        String sql = "select lesson_id, class_id, tutor_id, tutor_attended, start_date, end_date from lesson where class_id = ?";
+        System.out.println(sql);
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, classid);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Lesson lesson = new Lesson(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getString(5), rs.getString(6));
+                lessons.add(lesson);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+        return lessons;
+    }
+    
+    public static ArrayList<Lesson> retrieveAllReplacementLessonLists(int classid) {
+        ArrayList<Lesson> lessons = new ArrayList<>();
+        String sql = "select lesson_id, class_id, tutor_id, tutor_attended, start_date, end_date from lesson where class_id = ? and replacement_tutor_id != 0 and date(start_date) > curdate()";
         System.out.println(sql);
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
@@ -689,7 +709,7 @@ public class LessonDAO {
     
     public static ArrayList<String> retrieveReplacementDetails(int lessonID) {
         ArrayList<String> replacementDetails = new ArrayList<>();
-        String sql = "select date(changed_start_date), time(changed_start_date), time(changed_end_date), replacement_tutor_id from lesson where lesson_id = ?";
+        String sql = "select date(start_date), time(start_date), time(end_date), replacement_tutor_id from lesson where lesson_id = ?";
 
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);

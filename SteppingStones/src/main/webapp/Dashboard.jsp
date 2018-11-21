@@ -182,7 +182,7 @@
                                                     <tbody>                                            
                                                 <%                                                    
                                                     for (Class c : classes) {
-                                                        ArrayList<Lesson> lessons = LessonDAO.retrieveAllLessonLists(c.getClassID());
+                                                        ArrayList<Lesson> lessons = LessonDAO.retrieveAllReplacementLessonLists(c.getClassID());
 
 //                                                        for (Lesson l : lessons) {
 //                                                            ArrayList<String> replacement = LessonDAO.retrieveReplacementDates(l.getLessonid());
