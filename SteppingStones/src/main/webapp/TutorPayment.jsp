@@ -104,7 +104,6 @@
                 
                 for(Tutor t : tutors){
                     double totalOwed = 0.0;
-                    System.out.println(t.getName());
                     ArrayList<entity.Class> classes = ClassDAO.listAllClassesBelongToTutors(t.getTutorId(), branch_id);   
                     for (entity.Class c : classes) {
                         double classDuration = ClassDAO.getClassTime(c.getClassID());
@@ -113,10 +112,9 @@
                     }
                     ArrayList<TutorPay> replacementClasses = ClassDAO.totalReplacementClasses(t.getTutorId(), branch_id);
                     for(TutorPay replacementClass:replacementClasses){
-                        System.out.println("Replacement");
                         totalOwed += replacementClass.getMonthlySalary();
                     }
-                    System.out.println(totalOwed);
+
                     out.println("<tr id='"+t.getTutorId()+"'><td></td><td class='text-center'>"+t.getName()+"</td><td class='text-center'>"+t.getTotalClasses()+"</td><td class='text-center' id='totalOwed_"+t.getTutorId()+"'> $ "+totalOwed+"</td></tr>");
                 }
             %>
@@ -282,7 +280,7 @@
                         var replacementPayList = result.replacementPay;
                         
                         if(monthlyPayList.length <= 0){
-                            html = "<div class='alert alert-warning col-md-12'>Currently No Pay for this tutor</div>";
+                            html = "<div class='row container'><div class='alert alert-warning col-md-10'>Currently No Pay for this tutor</div></div><br/>";
                         }else{
                             html = '<div class="innerTable"><h4>Monthly Salary With Lesson BreakDown</h4>'
                                 +'<div style="text-align: right; margin-bottom: 10px; margin-right: 50px;">'

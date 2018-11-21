@@ -77,6 +77,11 @@ public class CreateTutorHourlyRate extends HttpServlet {
                     JSONObject currObj = tutorPayArr.getJSONObject(i);
                     int tutorId = Integer.parseInt(currObj.getString("id"));
                     String levelIds = currObj.getString("level_id");
+                    if (levelIds.endsWith(",")) {
+                        levelIds = levelIds.substring(0, levelIds.length() - 1);
+                    }
+
+                    
                     int levelId = Integer.parseInt(levelIds.split(",")[0]);
                     int subjectId = currObj.getInt("subject_id");
                     int branchId = currObj.getInt("branch_id");

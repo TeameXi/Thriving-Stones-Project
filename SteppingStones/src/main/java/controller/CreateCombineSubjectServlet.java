@@ -56,6 +56,10 @@ public class CreateCombineSubjectServlet extends HttpServlet {
             for(int i=0;i<lvl_id_lists.length;i++){
                 addtional_level_ids += lvl_id_lists[i]+",";
             }
+            
+            if (addtional_level_ids.endsWith(",")) {
+                addtional_level_ids = addtional_level_ids.substring(0, addtional_level_ids.length() - 1);
+            }
            
             combineClassLists.add("("+primary_level_id+","+subjectId+","+branchId+","+courseFees+",'"+addtional_level_ids+"'"+","+1+ ")");
             counter++;

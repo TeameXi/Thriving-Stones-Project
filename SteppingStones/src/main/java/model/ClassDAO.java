@@ -859,7 +859,7 @@ public class ClassDAO {
                 String additionalLvl = "";
                 int combine = rs.getInt("combined");
                 if(combine == 1){
-                    String [] lvlIds = rs.getString("additional_lesson_id").split(":");
+                    String [] lvlIds = rs.getString("additional_lesson_id").split(",");
                     for(String lvlId:lvlIds){
                         int lvlIdInt = Integer.parseInt(lvlId);
                         if(lvlIdInt < 7){

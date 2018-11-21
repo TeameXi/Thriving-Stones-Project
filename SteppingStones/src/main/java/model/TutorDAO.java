@@ -532,7 +532,7 @@ public class TutorDAO {
         try (Connection conn = ConnectionManager.getConnection();
                 PreparedStatement stmt = conn.prepareStatement("select count(*) from lesson where tutor_id = ? and class_id = ? "
                         + "and tutor_payment_status = 0 "
-                        + "and tutor_attended=1 and replacement_tutor_id=0 and start_date < CURDATE()")) {
+                        + "and tutor_attended=1 and replacement_tutor_id=0")) {
             stmt.setInt(1, tutorID);
             stmt.setInt(2, classID);
 

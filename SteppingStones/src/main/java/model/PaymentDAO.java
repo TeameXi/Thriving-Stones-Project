@@ -289,9 +289,15 @@ public class PaymentDAO {
                 int studentID = rs.getInt("student_id");
                 int classID = rs.getInt("class_id");
                 Class cls = ClassDAO.getClassByID(classID);
-                String subject = cls.getLevel() + " (" + cls.getSubject();
-                if(cls.getType().equals("P")){
-                    subject = cls.getLevel() + " (" + cls.getSubject() + " Premium";
+                String subject = "";
+                if(cls != null){
+                    subject = cls.getLevel() + " (" + cls.getSubject();
+                    if(!cls.getCombinedLevel().equals("")){
+                        subject = cls.getCombinedLevel() + " (" + cls.getSubject();
+                    }
+                    if(cls.getType().equals("P")){
+                        subject = subject + " Premium";
+                    }
                 }
                 double depositAmount = rs.getDouble("deposit_fees");
                 double outstandingDeposit = rs.getDouble("outstanding_deposit");
@@ -323,12 +329,14 @@ public class PaymentDAO {
                 int studentID = rs.getInt("student_id");
                 int classID = rs.getInt("class_id");
                 Class cls = ClassDAO.getClassByID(classID);
-                String subject ="";
+                String subject = "";
                 if(cls != null){
+                    subject = cls.getLevel() + " (" + cls.getSubject();
+                    if(!cls.getCombinedLevel().equals("")){
+                        subject = cls.getCombinedLevel() + " (" + cls.getSubject();
+                    }
                     if(cls.getType().equals("P")){
-                        subject = cls.getLevel() + " (" + cls.getSubject() + " Premium";
-                    }else{
-                        subject= cls.getLevel() + " (" + cls.getSubject();
+                        subject = subject + " Premium";
                     }
                 }
                 double chargeAmount = rs.getDouble("amount_charged");
@@ -374,9 +382,15 @@ public class PaymentDAO {
                 System.out.println("machine learning" +studentID);
                 int classID = rs.getInt("class_id");
                 Class cls = ClassDAO.getClassByID(classID);
-                String subject = cls.getLevel() + " (" + cls.getSubject();
-                if(cls.getType().equals("P")){
-                    subject = cls.getLevel() + " (" + cls.getSubject() + " Premium";
+                String subject = "";
+                if(cls != null){
+                    subject = cls.getLevel() + " (" + cls.getSubject();
+                    if(!cls.getCombinedLevel().equals("")){
+                        subject = cls.getCombinedLevel() + " (" + cls.getSubject();
+                    }
+                    if(cls.getType().equals("P")){
+                        subject = subject + " Premium";
+                    }
                 }
                 double depositAmount = rs.getDouble("deposit_fees");
                 double outstandingDeposit = rs.getDouble("outstanding_deposit");
@@ -409,12 +423,14 @@ public class PaymentDAO {
                 int studentID = rs.getInt("student_id");
                 int classID = rs.getInt("class_id");
                 Class cls = ClassDAO.getClassByID(classID);
-                String subject ="";
+                String subject = "";
                 if(cls != null){
+                    subject = cls.getLevel() + " (" + cls.getSubject();
+                    if(!cls.getCombinedLevel().equals("")){
+                        subject = cls.getCombinedLevel() + " (" + cls.getSubject();
+                    }
                     if(cls.getType().equals("P")){
-                        subject = cls.getLevel() + " (" + cls.getSubject() + " Premium";
-                    }else{
-                        subject= cls.getLevel() + " (" + cls.getSubject();
+                        subject = subject + " Premium";
                     }
                 }
                 double chargeAmount = rs.getDouble("amount_charged");

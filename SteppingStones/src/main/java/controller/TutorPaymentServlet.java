@@ -20,8 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 import model.ClassDAO;
 import model.ExpenseDAO;
 import model.LessonDAO;
-import model.LevelDAO;
-import model.SubjectDAO;
 import model.TutorDAO;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -57,6 +55,7 @@ public class TutorPaymentServlet extends HttpServlet {
                 
                 // FOR NORMAL CLASS PAY MONTHLY
                 ArrayList<Class> classes = ClassDAO.listAllClassesBelongToTutors(tutorID, branchID);
+                System.out.println(classes.size());
                 JSONArray tutorPayListJSON = new JSONArray();
                 for (Class c : classes) {
                     double tutorRate = c.getTutorRate();
@@ -67,6 +66,7 @@ public class TutorPaymentServlet extends HttpServlet {
                     double duration =  ClassDAO.getClassTime(classId);
 
                     ArrayList<TutorPay> tutorPayListByMonths = LessonDAO.totalLessonTutorAttendForClass(tutorID, classId, tutorRate, duration);
+                    System.out.println(tutorPayListByMonths);
                     
                     // FOR MONTHLY PAY
                     JSONObject classObj = new JSONObject();
