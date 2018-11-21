@@ -161,12 +161,13 @@
 
     function retrieveStudents(selectObject) {
         classID = $("#classID").val();
+        levelID = $("#levelID").val();
 
         $.ajax({
             type: 'POST',
             url: 'RetrieveStudentByLevelServlet',
             dataType: 'JSON',
-            data: {classID: classID},
+            data: {classID: classID, levelID: levelID},
             success: function (data) {
                 var studentTable = document.getElementById('studentTable');
                 console.log(data);

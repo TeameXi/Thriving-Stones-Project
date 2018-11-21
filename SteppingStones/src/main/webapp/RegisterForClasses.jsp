@@ -294,7 +294,7 @@
                     </div>
             <%     
                 }
-                if(premiumClasses.size() == 0 && normalClasses.size() == 0){
+                if(premiumClasses.size() == 0 && normalClasses.size() == 0 && combinedClasses.size() == 0){
                     out.println("<label>No class available to register.</label><br><br>");
                 }else{
             %>  

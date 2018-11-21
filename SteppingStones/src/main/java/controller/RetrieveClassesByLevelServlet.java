@@ -44,7 +44,8 @@ public class RetrieveClassesByLevelServlet extends HttpServlet {
             int levelID = Integer.parseInt(request.getParameter("levelID"));
             int branchID = Integer.parseInt(request.getParameter("branchID"));
 
-            ArrayList<Class> classList = ClassDAO.getClassesByLevel(levelID, branchID);
+            ArrayList<Class> classList = ClassDAO.getCombinedClassesByLevel(branchID, levelID);
+            ClassDAO.getClassesByLevel(levelID, branchID, classList);
             
             if(classList != null || !classList.isEmpty()){
                 for(Class c: classList){

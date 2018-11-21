@@ -46,7 +46,8 @@ public class RetrieveStudentByLevelServlet extends HttpServlet {
             
             int classID = Integer.parseInt(request.getParameter("classID"));
             Class cls = ClassDAO.getClassByID(classID);
-            int levelID = LevelDAO.retrieveLevelID(cls.getLevel());
+//            int levelID = LevelDAO.retrieveLevelID(cls.getLevel());
+            int levelID = Integer.parseInt(request.getParameter("levelID"));
             ArrayList<Student> studentList = StudentDAO.listStudentsByLevelNotEnrolledInSpecificClassYet(levelID, classID);
             
             if(studentList != null || !studentList.isEmpty()){
