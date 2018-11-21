@@ -73,7 +73,7 @@ public class TutorAttendanceServlet extends HttpServlet {
                     break;
                 }
                 case "retrieveClasses": {
-                    
+                    JSONObject toReturn = new JSONObject();
                     System.out.println("retrieveClasses");
                     int tutorID = Integer.parseInt(request.getParameter("tutorID"));
                     int branchID = Integer.parseInt(request.getParameter("branchID"));
@@ -100,9 +100,39 @@ public class TutorAttendanceServlet extends HttpServlet {
                             }
                             obj.put("lessons", lessons);
                             array.put(obj);
+                            
                         }
                     }
-                    String json = array.toString();
+                    toReturn.put("tutorLesson", array);
+                    JSONArray array1 = new JSONArray();
+                    ArrayList<Class> replacementClasses = LessonDAO.listAllReplacementClassesByTutorID(tutorID, branchID);
+                    for(Class c: replacementClasses){
+                        LinkedList<Lesson> lessonList = lessonDAO.retrieveAllReplacementLessonListsBeforeCurr(c.getClassID(), tutorID);
+
+                        if (lessonList.size() > 0) {
+                            JSONObject obj = new JSONObject();
+                            obj.put("id", c.getClassID());
+                            obj.put("name", c.getClassDay() + " " + c.getStartTime() + "-"
+                                    + c.getEndTime() + "<br/>" + c.getLevel() + " " + c.getSubject());
+
+                            JSONArray lessons = new JSONArray();
+
+                            for (Lesson l : lessonList) {
+                                JSONObject lesson = new JSONObject();
+                                lesson.put("id", l.getLessonid());
+                                lesson.put("date", l.getLessonDate());
+                                lesson.put("attended", lessonDAO.retrieveAttendanceForLesson(l.getLessonid()));
+                                lessons.put(lesson);
+                            }
+                            obj.put("replacementLessons", lessons);
+                            array1.put(obj);
+                            
+                        }
+                    }
+                    toReturn.put("replacementLesson", array1);
+                    String json = toReturn.toString();
+                    //out.println(json);
+                    //String json = array.toString();
                     System.out.println(json);
                     out.println(json);
                     break;

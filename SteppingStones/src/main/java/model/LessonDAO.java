@@ -609,7 +609,7 @@ public class LessonDAO {
 
     public static LinkedList<Lesson> retrieveAllLessonListsBeforeCurr(int classid) {
         LinkedList<Lesson> lessons = new LinkedList<>();
-        String sql = "select lesson_id, class_id, tutor_id, tutor_attended, start_date, end_date from lesson where class_id = ? and date(start_date) <= CURDATE() order by start_date asc";
+        String sql = "select lesson_id, class_id, tutor_id, tutor_attended, start_date, end_date from lesson where class_id = ? and replacement_tutor_id = 0 and date(start_date) <= CURDATE() order by start_date asc";
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, classid);
@@ -625,7 +625,55 @@ public class LessonDAO {
 
         return lessons;
     }
-    
+    public static LinkedList<Lesson> retrieveAllReplacementLessonListsBeforeCurr(int classid, int tutorid) {
+        LinkedList<Lesson> lessons = new LinkedList<>();
+        String sql = "select lesson_id, class_id, tutor_id, tutor_attended, start_date, end_date from lesson where class_id = ? and replacement_tutor_id = ? and date(start_date) <= CURDATE() order by start_date asc";
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, classid);
+            stmt.setInt(2, tutorid);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Lesson lesson = new Lesson(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getString(5), rs.getString(6));
+                lessons.add(lesson);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+        return lessons;
+    }
+    public static ArrayList<entity.Class> listAllReplacementClassesByTutorID(int tutorID, int branchID) {
+        ArrayList<entity.Class> classList = new ArrayList();
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("select * from class where branch_id = ? and DATE_ADD(end_date, INTERVAL 3 MONTH) >= curdate() and class_id in (select distinct(class_id) from lesson where replacement_tutor_id = ?)");
+            stmt.setInt(1, branchID);
+            stmt.setInt(2, tutorID);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                int classID = rs.getInt("class_id");
+                int subjectID = rs.getInt("subject_id");
+                int levelID = rs.getInt("level_id");
+                int term = rs.getInt("term");
+                String startTime = rs.getString("start_time");
+                String endTime = rs.getString("end_time");
+                String classDay = rs.getString("class_day");
+                String startDate = rs.getString("start_date");
+                String endDate = rs.getString("end_date");
+                int mthlyFees = rs.getInt("fees");
+                String subject = SubjectDAO.retrieveSubject(subjectID);
+                String level = LevelDAO.retrieveLevel(levelID);
+                String type = rs.getString("class_type");
+                entity.Class cls = new entity.Class(classID,levelID,level, subject, term, startTime, endTime, classDay, mthlyFees, startDate, endDate, type);
+                classList.add(cls);
+            }
+        } catch (SQLException e) {
+            System.out.print(e.getMessage());
+        }
+        return classList;
+    }
     public ArrayList<Lesson> retrieveAllLessonListsAfterCurr(int classid) {
         ArrayList<Lesson> lessons = new ArrayList<>();
         String sql = "select lesson_id, class_id, tutor_id, tutor_attended, start_date, end_date from lesson where class_id = ? and start_date > CURDATE()";

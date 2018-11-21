@@ -132,16 +132,21 @@
                                 + 'width="15"></div><div id="table-wrapper"><table id=' + tutorID
                                 + ' class="table table-striped table-bordered nowrap nested" style="width:100%">'
                                 + '<thead><tr><th style="text-align: center;">Class</th>';
-                        for (var i = 0; i < data[0].lessons.length; i++) {
+                        for (var i = 0; i < data.tutorLesson[0].lessons.length; i++) {
                             lessonNum = i + 1;
                             html += '<th style="text-align: center;">Lesson ' + lessonNum + '</th>';
                         }
 
                         html += '</tr></thead><tbody>';
-                        for (var i = 0; i < data.length; i++) {
-                            lessons = data[i].lessons;
-                            html += '<tr><td style="text-align:center;">' + data[i].name + '</td>';
+                        
+                        for (var i = 0; i < data.tutorLesson.length; i++) {
+                            lessonData = data.tutorLesson[i];
+                            lessons = lessonData.lessons;
+                            
+                            html += '<tr><td style="text-align:center;">' + lessonData.name + '</td>';
+                            console.log(lessons.length);
                             for (var j = 0; j < lessons.length; j++) {
+                                console.log(lessons.length);
                                 if (lessons[j].attended) {
                                     html += '<td style="text-align: center;">' + lessons[j].date + '<br/><input type="checkbox" id='
                                             + lessons[j].id + ' class="checkSingle" checked></td>';
@@ -152,6 +157,27 @@
                             }
                             html += '</tr>';
                         }
+                        for (var i = 0; i < data.replacementLesson.length; i++) {
+                        //console.log('for loop' + data[1].length);
+                        lessonsData = data.replacementLesson[i];
+                        lessons = lessonsData.replacementLessons;
+                        html += '<tr><td style="text-align:center;">Replacement for</td></tr>';
+                        html += '<tr><td style="text-align:center;">' + lessonsData.name + '</td>';
+
+                        for (var j = 0; j < lessons.length; j++) {
+                            if (lessons[j].attended) {
+                                html += '<td style="text-align: center;" rowspan="2">' + lessons[j].date + '<br/><input type="checkbox" id='
+                                        + lessons[j].id + ' class="checkSingle" checked></td>';
+                            } else {
+                                html += '<td style="text-align: center;" rowspan="2">' + lessons[j].date + '<br/><input type="checkbox" id='
+                                        + lessons[j].id + ' class="checkSingle"></td>';
+                            }
+                        }
+                        html += '</tr>';
+
+                        }
+
+                        
                         html += '</tbody></table></div></div>';
                         //console.log(html);
                         // Open this row
