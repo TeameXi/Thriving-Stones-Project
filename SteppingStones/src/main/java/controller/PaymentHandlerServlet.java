@@ -11,7 +11,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -65,13 +67,14 @@ public class PaymentHandlerServlet extends HttpServlet {
         String[] noOfLessons = request.getParameterValues("noOfLessons[]");
         String[] subjects = request.getParameterValues("subject[]");
         String[] chargeAmounts = request.getParameterValues("chargeAmount[]");
-        
+       
         String paymentDate = "";
         if(paymentMode.equals("Bank Transfer") || paymentMode.equals("Cheque")){
             paymentDate = request.getParameter("payment_date");
             boolean insert = PaymentDAO.insertBankDeposit(paymentMode, paymentDate, studentName, totalAmount);
             System.out.println(insert);
         }
+        List<Double> finalOutstandingAmount = new ArrayList<>();
         
         for (int i = 0; i < paymentType.length; i++) {
             String type = paymentType[i];
@@ -95,6 +98,7 @@ public class PaymentHandlerServlet extends HttpServlet {
                     if (paymentAmount != 0) {
                         PaymentDAO.insertPaymentToRevenue(studentID, studentName, noOfLesson, "Deposit", lvlSubject, paymentAmount, paymentDate);
                         PaymentDAO.updateDepositOutstandingAmount(studentID, classID, calculatedOutstandingAmount);
+                        finalOutstandingAmount.add(calculatedOutstandingAmount);
                         //StudentClassDAO.updateDepositPaymentDate(studentID, classID);
                     }
 
@@ -124,7 +128,8 @@ public class PaymentHandlerServlet extends HttpServlet {
                     }
 
                     PaymentDAO.updateDepositAmount(studentID, classID, calculatedOutstandingAmount, depositAmt);
-
+                    finalOutstandingAmount.add(calculatedOutstandingAmount);
+                    
                     Student stu = StudentDAO.retrieveStudentbyID(studentID);
                     double totalOutstandingAmt = stu.getOutstandingAmt() - paymentAmount - (outstandingAmount - depositAmt);
                     StudentDAO.updateStudentTotalOutstandingFees(studentID, totalOutstandingAmt);
@@ -148,20 +153,26 @@ public class PaymentHandlerServlet extends HttpServlet {
                     System.out.println("Installment Fees" + firstInstallmentStr);
                     if (firstInstallmentStr == null) {
                         PaymentDAO.updateFirstInstallmentOutstandingAmount(studentID, classID, calculatedOutstandingAmount);
+                        finalOutstandingAmount.add(calculatedOutstandingAmount);
+                         
                         double totalOutstandingAmt = stu.getOutstandingAmt() - paymentAmount;
                         StudentDAO.updateStudentTotalOutstandingFees(studentID, totalOutstandingAmt);
+                       
                         System.out.println("After FirstInstallment Pay" + totalOutstandingAmt + "  " + stu.getOutstandingAmt() + "  " + paymentAmount);
                     }
 
                     double firstInstallment = -1;
                     if (firstInstallmentStr != null && firstInstallmentStr.isEmpty()) {
                         PaymentDAO.updateFirstInstallmentAmount(studentID, classID, firstInstallment, calculatedOutstandingAmount);
+                         finalOutstandingAmount.add(calculatedOutstandingAmount);
                     }
 
                     if (firstInstallmentStr != null && !firstInstallmentStr.isEmpty()) {
                         firstInstallment = Double.parseDouble(firstInstallmentStr);
                         calculatedOutstandingAmount = firstInstallment - paymentAmount;
                         PaymentDAO.updateFirstInstallmentAmount(studentID, classID, firstInstallment, calculatedOutstandingAmount);
+                         finalOutstandingAmount.add(calculatedOutstandingAmount);
+                         
                         if (chargeAmount == outstandingAmount) {
                             double totalOutstandingAmt = stu.getOutstandingAmt() + calculatedOutstandingAmount;
                             StudentDAO.updateStudentTotalOutstandingFees(studentID, totalOutstandingAmt);
@@ -181,6 +192,8 @@ public class PaymentHandlerServlet extends HttpServlet {
             } else if (type.equals("Reg Fees")) {
 
                 PaymentDAO.updateRegFeesOutstandingAmount(studentID, calculatedOutstandingAmount);
+                finalOutstandingAmount.add(calculatedOutstandingAmount);
+                 
                 if (paymentAmount != 0) {
                     PaymentDAO.insertPaymentToRevenue(studentID, studentName, noOfLesson, "Reg Fees", lvlSubject, paymentAmount, paymentDate);
                 }
@@ -200,6 +213,7 @@ public class PaymentHandlerServlet extends HttpServlet {
                         }
                     }
                     calculatedOutstandingAmount = outstandingAmount - paymentAmount;
+                     finalOutstandingAmount.add(calculatedOutstandingAmount);
                     System.out.println( depositAmt + "Please " + outstandingAmount);
 
                     Student stu = StudentDAO.retrieveStudentbyID(studentID);
@@ -227,7 +241,7 @@ public class PaymentHandlerServlet extends HttpServlet {
             return;
         }
         
-        
+        boolean isZero = false;
         
         String pattern = "dd/MM/yyyy";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
@@ -237,8 +251,18 @@ public class PaymentHandlerServlet extends HttpServlet {
         String payment_amounts = "";
         String outstanding_amounts = "";
         DecimalFormat df = new DecimalFormat("0.00##");
-        String totalAmountResult = df.format(totalAmount);
+        String totalAmountResult = "";
+        if(totalAmount == 0){
+            isZero = true;
+        }else{
+            totalAmountResult = df.format(totalAmount);
+        }
+        
+        
         for (int i = 0; i < paymentType.length; i++) {
+            if(isZero){
+                break;
+            }
             String type = paymentType[i];
             
             String subject = subjects[i];
@@ -246,11 +270,14 @@ public class PaymentHandlerServlet extends HttpServlet {
             double paymentAmount = 0;
             if (!paymentAmounts[i].isEmpty()) {
                 paymentAmount = Double.parseDouble(paymentAmounts[i]);
+            }else{
+                continue;
             }
             double outstandingAmountdb = 0;
-            if (!outstandingAmounts[i].isEmpty()) {
-                outstandingAmountdb = Double.parseDouble(outstandingAmounts[i]) - paymentAmount;
+            if (finalOutstandingAmount.get(i) != 0) {
+                outstandingAmountdb = finalOutstandingAmount.get(i);
             }
+            
             String result = df.format(paymentAmount);
             String outstandingAmountResult = df.format(outstandingAmountdb);
             
@@ -267,22 +294,27 @@ public class PaymentHandlerServlet extends HttpServlet {
             }
             
         }
-        ReceiptDAO receiptDAO = new ReceiptDAO();
-        int receiptid = receiptDAO.addReceipt(date, paymentMode, nos, descriptions, payment_amounts, outstanding_amounts, "S$" + totalAmountResult, studentID);
-        PrintWriter out = response.getWriter(); 
+        if(!isZero){
+            ReceiptDAO receiptDAO = new ReceiptDAO();
+            int receiptid = receiptDAO.addReceipt(date, paymentMode, nos, descriptions, payment_amounts, outstanding_amounts, "S$" + totalAmountResult, studentID);
+            PrintWriter out = response.getWriter(); 
 
-        out.println("<HTML>");
-        out.println("<head>");
-        out.println("<script>") ;
-        out.println("function callMe(){");
-        out.println("window.open('"+ request.getHeader("origin")+request.getContextPath()+"/GenerateReceiptServlet?i="+receiptid+"','_blank')");
-        out.println("window.open('"+ request.getHeader("origin")+request.getContextPath()+"/StudentPaymentStatus.jsp?status=Payment successful.')}");
+            out.println("<HTML>");
+            out.println("<head>");
+            out.println("<script>") ;
+            out.println("function callMe(){");
+            out.println("window.open('"+ request.getHeader("origin")+request.getContextPath()+"/GenerateReceiptServlet?i="+receiptid+"','_blank');");
+            out.println("window.open('"+ request.getHeader("origin")+request.getContextPath()+"/StudentPaymentStatus.jsp?status=Payment successful.');"
+                    + "window.close()}");
+            out.println("</script>") ;
+            out.println("</head>");
+            out.println("<body onLoad=\"callMe()\">");
+            out.println("</body>");
+            out.println("</HTML>");
+        }else{
+            response.sendRedirect("StudentPaymentStatus.jsp");
+        }
         
-        out.println("</script>") ;
-        out.println("</head>");
-        out.println("<body onLoad=\"callMe()\">");
-        out.println("</body>");
-        out.println("</HTML>");
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
