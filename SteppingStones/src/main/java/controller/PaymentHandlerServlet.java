@@ -304,7 +304,7 @@ public class PaymentHandlerServlet extends HttpServlet {
             out.println("<script>") ;
             out.println("function callMe(){");
             out.println("window.open('"+ request.getHeader("origin")+request.getContextPath()+"/GenerateReceiptServlet?i="+receiptid+"','_blank');");
-            out.println("window.open('"+ request.getHeader("origin")+request.getContextPath()+"/PaymentSummaryPage.jsp');}");
+            out.println("window.open('"+ request.getHeader("origin")+request.getContextPath()+"/PaymentSummaryPage.jsp');window.close()}");
             out.println("</script>") ;
             out.println("</head>");
             out.println("<body onLoad=\"callMe()\">");
