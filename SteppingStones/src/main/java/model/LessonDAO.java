@@ -304,12 +304,56 @@ public class LessonDAO {
         }
         return joinDate;
     }
+    public double retrieveNumberOfReplacementLessons(int classID, int tutorID) {
+        double total = 0;
 
+        String sql = "select distinct lesson_id from lesson where class_id = ? and replacement_tutor_id = ?";
+
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, classID);
+            stmt.setInt(2, tutorID);
+            
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                total += 1;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(LessonDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return total;
+    }
     public String retrieveNumberTutorAttendancePerClass(int classID, int tutorID) {
         double attended = 0;
         double total = retrieveNumberOfLessons(classID);
 
         String sql = "select tutor_attended from lesson where tutor_id = ? and class_id = ?";
+
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, tutorID);
+            stmt.setInt(2, classID);
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                if ((1 == rs.getInt(1))) {
+                    attended += 1;
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(LessonDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        DecimalFormat df = new DecimalFormat("#.##");
+        return df.format((attended / total) * 100);
+    }
+    public String retrieveNumberTutorAttendancePerReplacementClass(int classID, int tutorID) {
+        double attended = 0;
+        double total = retrieveNumberOfReplacementLessons(classID, tutorID);
+
+        String sql = "select tutor_attended from lesson where replacement_tutor_id = ? and class_id = ?";
 
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);

@@ -99,6 +99,14 @@
             </tr>
         </thead>
     </table>
+    <table id="tutorReplacementAttendanceTable" class="table display dt-responsive nowrap" style="width:100%;">
+        <thead class="thead-light">
+            <tr>
+                <th scope="col" style="text-align: center;"></th>
+                <th scope="col" style="text-align: center;">Class</th>
+            </tr>
+        </thead>
+    </table>
 </div>
 </div>
 </div>
@@ -150,6 +158,105 @@
             } else {
                 classID = row.data().id;
                 action = 'displayAttendances';
+                $.ajax({
+                    type: 'POST',
+                    url: 'TutorAttendanceServlet',
+                    dataType: 'JSON',
+                    data: {action: action, classID: classID, branchID: branchID, tutorID: tutorID},
+                    success: function (data) {
+                        console.log(data);
+                        html = '<div class="innerTable"><div style="text-align: right; margin-bottom: 10px; margin-right: 50px;">'
+                                + '<img class="leftArrow" src="${pageContext.request.contextPath}/styling/img/left-arrow.svg" height="15" '
+                                + 'width="15" style="margin-right: 58px;"><img '
+                                + 'class="rightArrow" src="${pageContext.request.contextPath}/styling/img/right-arrow.svg" height="15" '
+                                + 'width="15"></div><div id="table-wrapper"><table id=' + classID
+                                + ' class="table table-striped table-bordered nowrap nested" style="width:100%">'
+                                + '<thead><tr><th style="text-align: center;">Attendance</th>';
+                        for (var i = 0; i < data.lessons.length; i++) {
+                            lessonNum = i + 1;
+                            html += '<th style="text-align: center;">Lesson ' + lessonNum + '</th>';
+                        }
+
+                        html += '</tr></thead><tbody>';
+                        lessons = data.lessons;
+                        html += '<tr><td style="text-align:center;">' + data.attendance + '</td>';
+                        for (var j = 0; j < lessons.length; j++) {
+                            if (lessons[j].attendance) {
+                                html += '<td style="text-align: center;"><label style="margin-right: 10px;">' + lessons[j].name + '</label><input type="checkbox" class="checkSingle" checked disabled="disabled"></td>';
+                            } else {
+                                html += '<td style="text-align: center;"><label style="margin-right: 10px;">' + lessons[j].name + '</label><input type="checkbox" class="checkSingle" disabled="disabled"></td>';
+                            }
+                        }
+                        html += '</tr>';
+                        html += '</tbody></table></div></div>';
+
+                        // Open this row
+                        row.child(html).show();
+
+                        tr.addClass('shown');
+
+                        $(".leftArrow").on("click", function () {
+                            var leftPos = $('#table-wrapper').scrollLeft();
+                            console.log(leftPos);
+                            $("#table-wrapper").animate({
+                                scrollLeft: leftPos - 200
+                            }, 800);
+                        });
+
+                        $(".rightArrow").on("click", function () {
+                            var leftPos = $('#table-wrapper').scrollLeft();
+                            console.log(leftPos);
+                            $("#table-wrapper").animate({
+                                scrollLeft: leftPos + 200
+                            }, 800);
+                        });
+                    }
+                });
+            }
+        });
+        action1 = 'displayReplacement';
+        table1 = $('#tutorReplacementAttendanceTable').DataTable({
+            "iDisplayLength": 5,
+            "aLengthMenu": [[5, 10, 25, -1], [5, 10, 25, "All"]],
+            'ajax': {
+                "type": "POST",
+                "url": "TutorAttendanceServlet",
+                "data": {
+                    "branchID": branchID,
+                    "action": action1,
+                    "tutorID": tutorID
+                }
+            },
+            "columnDefs": [
+                {
+                    "targets": [1],
+                    "data": null,
+                    "defaultContent": '',
+                    "className": 'text'
+                }
+            ],
+            'columns': [
+                {
+                    "className": 'details-control',
+                    "orderable": false,
+                    "data": null,
+                    "defaultContent": ''
+                },
+                {"data": "name"}
+            ],
+            "order": [[1, 'asc']]
+        });
+
+        $('#tutorReplacementAttendanceTable tbody').on('click', 'td.details-control', function () {
+            tr = $(this).parents('tr');
+            row = table1.row(tr);
+            if (row.child.isShown()) {
+                // This row is already open - close it
+                row.child.hide();
+                tr.removeClass('shown');
+            } else {
+                classID = row.data().id;
+                action = 'displayReplacementAttendances';
                 $.ajax({
                     type: 'POST',
                     url: 'TutorAttendanceServlet',

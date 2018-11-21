@@ -185,6 +185,28 @@ public class TutorAttendanceServlet extends HttpServlet {
                     out.println(obj.toString());
                     break;
                 }
+                case "displayReplacement": {
+                    int branchID = Integer.parseInt(request.getParameter("branchID"));
+                    int tutorID = Integer.parseInt(request.getParameter("tutorID"));
+
+                    ArrayList<Class> classes = LessonDAO.listAllReplacementClassesByTutorID(tutorID, branchID);
+
+                    JSONArray array = new JSONArray();
+                    for (Class c : classes) {
+                        JSONObject obj = new JSONObject();
+                        obj.put("id", c.getClassID());
+                        System.out.println(c.getClassID());
+                        obj.put("name", c.getClassDay() + " " + c.getStartTime() + "-" + c.getEndTime()
+                                + "<br/>" + c.getLevel() + " " + c.getSubject());
+
+                        obj.put("tutor", new TutorDAO().retrieveSpecificTutorById(tutorID).getName());
+
+                        array.put(obj);
+                    }
+                    JSONObject obj = new JSONObject().put("data", array);
+                    out.println(obj.toString());
+                    break;
+                }
                 case "displayAttendances": {
                     int classID = Integer.parseInt(request.getParameter("classID"));
                     int branchID = Integer.parseInt(request.getParameter("branchID"));
@@ -198,6 +220,34 @@ public class TutorAttendanceServlet extends HttpServlet {
                     obj.put("attendance", lessonDAO.retrieveNumberTutorAttendancePerClass(classID, tutorID) + "%");
 
                     LinkedList<Lesson> lessons = lessonDAO.retrieveAllLessonListsBeforeCurr(classID);
+
+                    for (Lesson l : lessons) {
+                        JSONObject lesson = new JSONObject();
+                        lesson.put("name", l.getLessonDate());
+                        lesson.put("attendance", lessonDAO.retrieveAttendanceForLesson(l.getLessonid()));
+                        array.put(lesson);
+                    }
+
+                    obj.put("lessons", array);
+
+                    String json = obj.toString();
+                    System.out.println(json);
+                    out.println(json);
+                    break;
+                }
+                case "displayReplacementAttendances": {
+                    int classID = Integer.parseInt(request.getParameter("classID"));
+                    int branchID = Integer.parseInt(request.getParameter("branchID"));
+                    int tutorID = Integer.parseInt(request.getParameter("tutorID"));
+
+                    JSONObject obj = new JSONObject();
+                    JSONArray array = new JSONArray();
+
+                    Class c = classDAO.getClassByID(classID);
+
+                    obj.put("attendance", lessonDAO.retrieveNumberTutorAttendancePerReplacementClass(classID, tutorID) + "%");
+
+                    LinkedList<Lesson> lessons = lessonDAO.retrieveAllReplacementLessonListsBeforeCurr(classID, tutorID);
 
                     for (Lesson l : lessons) {
                         JSONObject lesson = new JSONObject();
