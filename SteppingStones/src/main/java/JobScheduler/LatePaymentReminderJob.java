@@ -113,7 +113,7 @@ public class LatePaymentReminderJob implements Runnable {
                             ParentDAO pDAO = new ParentDAO();
                             Parent currParent = pDAO.retrieveSpecificParentById(parentID);
                             int currPhoneNo = currParent.getPhone();
-                            SendSMS.sendingSMS("+65" + currPhoneNo, "Please be reminded to submit your child's tuition fees to Stepping Stones Learning Centre on the next lesson.");
+                            SendSMS.sendingSMS("+65" + currPhoneNo, "Please be reminded to submit your child's tuition fees to Stepping Stones Learning Centre during the next lesson.");
                             for (Lesson les : notify) {
                                 //set reminded_late to 1
                                 LessonDAO.setRemindedLate(le.getClassid(), le.getLessonid());

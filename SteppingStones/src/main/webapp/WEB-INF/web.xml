@@ -32,4 +32,10 @@
     <listener>
         <listener-class>JobScheduler.PaymentReminderScheduler</listener-class>
     </listener>
+    <listener>
+        <listener-class>JobScheduler.LatePaymentReminderScheduler</listener-class>
+    </listener>
+    <listener>
+        <listener-class>JobScheduler.TestScheduler</listener-class>
+    </listener>
 </web-app>
