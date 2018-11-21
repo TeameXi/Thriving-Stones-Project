@@ -194,13 +194,14 @@
 //                                                        }
                                                         for(Lesson l: lessons){
                                                             ArrayList<String> replacement = LessonDAO.retrieveReplacementDetails(l.getLessonid());
-                                                            int tutorID = 0;
-                                                            if(replacement.get(3) != null){
-                                                                tutorID = Integer.parseInt(replacement.get(3));
+                                                            if(replacement != null){
+                                                                int tutorID = 0;
+                                                                if(replacement.get(3) != null){
+                                                                    tutorID = Integer.parseInt(replacement.get(3));
+                                                                }
+                                                                Tutor t = TutorDAO.retrieveSpecificTutorById(tutorID);
+                                                                out.println("<tr><td>"+replacement.get(0)+"</td><td>"+c.getLevel()+" "+c.getSubject()+"<br>"+replacement.get(1)+"-"+replacement.get(2)+"</td><td>"+t.getName()+"</td></tr>");
                                                             }
-                                                            Tutor t = TutorDAO.retrieveSpecificTutorById(tutorID);
-                                                            out.println("<tr><td>"+replacement.get(0)+"</td><td>"+c.getLevel()+" "+c.getSubject()+"<br>"+replacement.get(1)+"-"+replacement.get(2)+"</td><td>"+t.getName()+"</td></tr>");
-                                                            
                                                         }
                                                     }
                                                 %>                                                                                                     
