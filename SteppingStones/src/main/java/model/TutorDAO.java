@@ -510,7 +510,7 @@ public class TutorDAO {
         ArrayList<Tutor> tutorLists = new ArrayList<>();
         
         String select_tutor = "SELECT count(class_id),c.tutor_id,tutor_fullname FROM class c,tutor "
-                + "WHERE c.tutor_id = tutor.tutor_id and c.branch_id=? GROUP BY tutor_id";
+                + "WHERE c.tutor_id = tutor.tutor_id and c.branch_id=? and DATE_ADD(end_date, INTERVAL 3 MONTH) >= curdate() GROUP BY tutor_id";
         try (Connection conn = ConnectionManager.getConnection();
                 PreparedStatement preparedStatement = conn.prepareStatement(select_tutor)) {
             preparedStatement.setInt(1, branchId);

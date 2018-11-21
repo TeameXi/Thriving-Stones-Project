@@ -45,12 +45,15 @@
 <br/><br/>
 
 <div class="col-md-10">
-    <div id="tutitionChart" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
-</div>
-
-<div class="col-md-10">
     <div id="schoolChart" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 </div>
+
+
+<div class="col-md-10">
+    <div id="tuitionChart" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+</div>
+
+
 
 
     
@@ -93,926 +96,6 @@
             var subName = $("#subject option:selected").html();
             $(function () {
                 // Create the chart
-                $('#tutitionChart').highcharts({
-                    "title": {
-                        text: 'Grade for '+subName+"-"+lvlName +"[School]"
-                    },
-                    "subtitle": {
-                        text: 'Can be further breakdown by clicking on each bar'
-                    },
-                    "chart": {
-                      "type": "column"
-                    },
-                    "credits": false,
-                    "legend": {
-                      "enabled": true,
-                      "layout": "vertical",
-                      "align": "right",
-                      "verticalAlign": "middle",
-                      "borderWidth": 0
-                    },
-                    "xAxis": {
-                      "labels": {
-                        "rotation": -90
-                      },
-                      "type": "category"
-                    },
-                    "yAxis": {
-                      "min": 0,
-                      "title": {
-                        "text": ""
-                      }
-                    },
-                    "plotOptions": {
-                      "series": {
-                        "animation": false,
-                        "showInLegend": true,
-                        "dataLabels": {
-                          "enabled": false,
-                          "color": "grey",
-                          "style": {
-                            "text-shadow": "0 0 2px black"
-                          }
-                        },
-                        "stacking": null
-                      }
-                    },
-                    "series": [
-                      {
-                        "name": "Grade A",
-                        "cropThreshold": 500,
-                        "type": "column",
-                        "data": [
-                          {
-                            "name": "CA1",
-                            "y": 2,
-                            "drilldown": "0|CA1"
-                          },
-                          {
-                            "name": "SA1",
-                            "y": 3,
-                            "drilldown": "0|SA1"
-                          },
-                          {
-                            "name": "CA2",
-                            "y": 4,
-                            "drilldown": "0|CA2"
-                          },
-                          {
-                            "name": "SA2",
-                            "y": 2,
-                            "drilldown": "0|SA2"
-                          }
-                        ]
-                      },
-                      {
-                        "name": "Grade B",
-                        "cropThreshold": 500,
-                        "type": "column",
-                        "data": [
-                          {
-                            "name": "CA1",
-                            "y": 4,
-                            "drilldown": "1|CA1"
-                          },
-                          {
-                            "name": "SA1",
-                            "y": 3,
-                            "drilldown": "1|SA1"
-                          },
-                          {
-                            "name": "CA2",
-                            "y": 5,
-                            "drilldown": "1|CA2"
-                          },
-                          {
-                            "name": "SA2",
-                            "y": 3,
-                            "drilldown": "1|SA2"
-                          }
-                        ]
-                      },
-                      {
-                        "name": "Grade C",
-                        "cropThreshold": 500,
-                        "type": "column",
-                        "data": [
-                          {
-                            "name": "CA1",
-                            "y": 3,
-                            "drilldown": "3|CA1"
-                          },
-                          {
-                            "name": "SA1",
-                            "y": 2,
-                            "drilldown": "3|SA1"
-                          },
-                          {
-                            "name": "CA2",
-                            "y": 1,
-                            "drilldown": "3|CA2"
-                          },
-                          {
-                            "name": "SA2",
-                            "y": 4,
-                            "drilldown": "3|SA2"
-                          }
-                        ]
-                      },
-                      {
-                        "name": "Grade D",
-                        "cropThreshold": 500,
-                        "type": "column",
-                        "data": [
-                          {
-                            "name": "CA1",
-                            "y": 3,
-                            "drilldown": "4|CA1"
-                          },
-                          {
-                            "name": "SA1",
-                            "y": 4,
-                            "drilldown": "4|SA1"
-                          },
-                          {
-                            "name": "CA2",
-                            "y": 3,
-                            "drilldown": "4|CA2"
-                          },
-                          {
-                            "name": "SA2",
-                            "y": 1,
-                            "drilldown": "4|SA2"
-                          }
-                        ]
-                      },
-                      {
-                        "name": "Grade E",
-                        "cropThreshold": 500,
-                        "type": "column",
-                        "data": [
-                          {
-                            "name": "CA1",
-                            "y": 5,
-                            "drilldown": "5|CA1"
-                          },
-                          {
-                            "name": "SA1",
-                            "y": 1,
-                            "drilldown": "5|SA1"
-                          },
-                          {
-                            "name": "CA2",
-                            "y": 4,
-                            "drilldown": "5|CA2"
-                          },
-                          {
-                            "name": "SA2",
-                            "y": 2,
-                            "drilldown": "5|SA2"
-                          }
-                        ]
-                      },
-                      {
-                        "name": "Grade F",
-                        "cropThreshold": 500,
-                        "type": "column",
-                        "data": [
-                          {
-                            "name": "CA1",
-                            "y": 2,
-                            "drilldown": "6|CA1"
-                          },
-                          {
-                            "name": "SA1",
-                            "y": 5,
-                            "drilldown": "6|SA1"
-                          },
-                          {
-                            "name": "CA2",
-                            "y": 0,
-                            "drilldown": "6|CA2"
-                          },
-                          {
-                            "name": "SA2",
-                            "y": 3,
-                            "drilldown": "6|SA2"
-                          }
-                        ]
-                      }
-//                      ,
-//                      {
-//                        type: 'spline',
-//                        name: 'Average',
-//                        data: [3, 2.67, 3, 6.33],
-//                        marker: {
-//                            lineWidth: 2,
-//                            lineColor: Highcharts.getOptions().colors[3],
-//                            fillColor: 'white'
-//                        }
-//                       }
-                    ],
-                    "drilldown": {
-                      "series": [
-                        // Grade A
-                        {
-                          "id": "0|CA1",
-                          "name": [
-                            "Grade A students for CA1"
-                          ],
-                          "type": "column",
-                          "data": [
-                            [
-                              "Norman Leow Teck",
-                              87
-                            ],
-                            [
-                              "Jannel koh",
-                              83
-                            ]
-                          ]
-                        },
-                        {
-                          "id": "0|SA1",
-                          "name": [
-                            "Grade A students for SA1"
-                          ],
-                          "type": "column",
-                          "data": [
-                            [
-                              "James Tan",
-                              91
-                            ],
-                            [
-                              "Jannel koh",
-                              89
-                            ],
-                            [
-                              "Noman Leow Teck",
-                              87
-                            ]
-                          ]
-                        },
-                        {
-                          "id": "0|CA2",
-                          "name": [
-                            "Grade A students for CA2"
-                          ],
-                          "type": "column",
-                          "data": [
-                            [
-                              "Jannel koh",
-                              93
-                            ],
-                            [
-                              "James Tan",
-                              92
-                            ],
-                            [
-                              "Norman Leow Teck",
-                              89
-                            ],
-                            [
-                              "Elizabeth Joy Nooh",
-                              86
-                            ]
-                          ]
-                        },
-                        {
-                          "id": "0|SA2",
-                          "name": [
-                            "Grade A students for SA2"
-                          ],
-                          "type": "column",
-                          "data": [
-                            [
-                              "James Tan",
-                              88
-                            ],
-                            [
-                              "Jannel Koh",
-                              86
-                            ]
-                          ]
-                        },
-
-                        // Grade B
-                        {
-                          "id": "1|CA1",
-                          "name": [
-                            "Grade B Students For CA1"
-                          ],
-                          "type": "column",
-                          "data": [
-                            [
-                              "Syed Shaik Aifa",
-                              78
-                            ],
-                            [
-                              "Tang Jia Heng",
-                              76
-                            ],
-                            [
-                              "Sheerie Oon",
-                              75
-                            ],
-                            [
-                              "Carrene Tan",
-                              75
-                            ]
-                          ]
-                        },
-                        {
-                          "id": "1|SA1",
-                          "name": [
-                            "Grade B Students For SA1"
-                          ],
-                          "type": "column",
-                          "data": [
-                            [
-                              "Norman Leow Teck",
-                              79
-                            ],
-                            [
-                              "Sherie Oo",
-                              78
-                            ],
-                            [
-                              "Elizabeth Joy Nooh",
-                              77
-                            ]
-                          ]
-                        },
-                        {
-                          "id": "1|CA2",
-                          "name": [
-                            "Grade B Students For CA2"
-                          ],
-                          "type": "column",
-                          "data": [
-                            [
-                              "Elizabeth Joy Nooh",
-                              79
-                            ],
-                            [
-                              "Linette Evelyn Natalrary",
-                              77
-                            ],
-                            [
-                              "Carrene Tan",
-                              75
-                            ],
-                            [
-                              "RU",
-                              67276
-                            ]
-                          ]
-                        },
-                        {
-                          "id": "1|SA2",
-                          "name": [
-                            "Grade B Students For SA2"
-                          ],
-                          "type": "column",
-                          "data": [
-                            [
-                              "James Tan",
-                              77
-                            ],
-                            [
-                              "Elizabeth Joy Nooh",
-                              75
-                            ],
-                            [
-                              "SK",
-                              291
-                            ],
-                            [
-                              "PDC",
-                              278
-                            ],
-                            [
-                              "BG",
-                              254
-                            ],
-                            [
-                              "RO",
-                              212
-                            ],
-                            [
-                              "AR",
-                              176
-                            ],
-                            [
-                              "CY",
-                              112
-                            ],
-                            [
-                              "IN",
-                              24
-                            ],
-                            [
-                              "Jannel koh",
-                              14
-                            ],
-                            [
-                              "MT",
-                              14
-                            ]
-                          ]
-                        },
-
-                        // Grade C (across exam)
-                        {
-                          "id": "3|CA1",
-                          "name": [
-                            "Grade C Students For CA1"
-                          ],
-                          "type": "column",
-                          "data": [
-                            [
-                              "Melody Tan",
-                              63
-                            ],
-                            [
-                              "Eng Ting Xuan",
-                              62
-                            ],
-                            [
-                              "Chan Yan Wees",
-                              60
-                            ]
-                          ]
-                        },
-                        {
-                          "id": "3|SA1",
-                          "name": [
-                            "Grade C Students For SA1"
-                          ],
-                          "type": "column",
-                          "data": [
-                            [
-                              "Norman Leow Teck",
-                              79
-                            ],
-                            [
-                              "Sherie Oo",
-                              78
-                            ],
-                            [
-                              "Elizabeth Joy Nooh",
-                              77
-                            ]
-                          ]
-                        },
-                        {
-                          "id": "3|CA2",
-                          "name": [
-                            "Grade B Students For CA2"
-                          ],
-                          "type": "column",
-                          "data": [
-                            [
-                              "Elizabeth Joy Nooh",
-                              79
-                            ],
-                            [
-                              "Linette Evelyn Natalrary",
-                              77
-                            ],
-                            [
-                              "Carrene Tan",
-                              75
-                            ],
-                            [
-                              "RU",
-                              67276
-                            ]
-                          ]
-                        },
-                        {
-                          "id": "3|SA2",
-                          "name": [
-                            "Grade B Students For SA2"
-                          ],
-                          "type": "column",
-                          "data": [
-                            [
-                              "James Tan",
-                              77
-                            ],
-                            [
-                              "Elizabeth Joy Nooh",
-                              75
-                            ],
-                            [
-                              "SK",
-                              291
-                            ],
-                            [
-                              "PDC",
-                              278
-                            ],
-                            [
-                              "BG",
-                              254
-                            ],
-                            [
-                              "RO",
-                              212
-                            ],
-                            [
-                              "AR",
-                              176
-                            ],
-                            [
-                              "CY",
-                              112
-                            ],
-                            [
-                              "IN",
-                              24
-                            ],
-                            [
-                              "Jannel koh",
-                              14
-                            ],
-                            [
-                              "MT",
-                              14
-                            ]
-                          ]
-                        },
-
-                        // Grade D (across exam)
-                        {
-                          "id": "4|CA1",
-                          "name": [
-                            "Grade D Students For CA1"
-                          ],
-                          "type": "column",
-                          "data": [
-                            [
-                              "Ko Hui Ning",
-                              59
-                            ],
-                            [
-                              "Clarence Lim",
-                              59
-                            ]
-                          ]
-                        },
-                        {
-                          "id": "4|SA1",
-                          "name": [
-                            "Grade C Students For SA1"
-                          ],
-                          "type": "column",
-                          "data": [
-                            [
-                              "Norman Leow Teck",
-                              79
-                            ],
-                            [
-                              "Sherie Oo",
-                              78
-                            ],
-                            [
-                              "Elizabeth Joy Nooh",
-                              77
-                            ]
-                          ]
-                        },
-                        {
-                          "id": "4|CA2",
-                          "name": [
-                            "Grade B Students For CA2"
-                          ],
-                          "type": "column",
-                          "data": [
-                            [
-                              "Elizabeth Joy Nooh",
-                              79
-                            ],
-                            [
-                              "Linette Evelyn Natalrary",
-                              77
-                            ],
-                            [
-                              "Carrene Tan",
-                              75
-                            ],
-                            [
-                              "RU",
-                              67276
-                            ]
-                          ]
-                        },
-                        {
-                          "id": "4|SA2",
-                          "name": [
-                            "Grade B Students For SA2"
-                          ],
-                          "type": "column",
-                          "data": [
-                            [
-                              "James Tan",
-                              77
-                            ],
-                            [
-                              "Elizabeth Joy Nooh",
-                              75
-                            ],
-                            [
-                              "SK",
-                              291
-                            ],
-                            [
-                              "PDC",
-                              278
-                            ],
-                            [
-                              "BG",
-                              254
-                            ],
-                            [
-                              "RO",
-                              212
-                            ],
-                            [
-                              "AR",
-                              176
-                            ],
-                            [
-                              "CY",
-                              112
-                            ],
-                            [
-                              "IN",
-                              24
-                            ],
-                            [
-                              "Jannel koh",
-                              14
-                            ],
-                            [
-                              "MT",
-                              14
-                            ]
-                          ]
-                        },
-
-                        //Grade E (across exam)
-                        {
-                          "id": "5|CA1",
-                          "name": [
-                            "Grade E Students For CA1"
-                          ],
-                          "type": "column",
-                          "data": [
-                            [
-                              "Lee Han Xun",
-                              55
-                            ],
-                            [
-                              "Aden Goh Ye Da",
-                              53
-                            ],
-                            [
-                              "Alton Lim Kai Jie",
-                              51
-                            ],
-                            [
-                              "Soh Pi Hoon",
-                              50
-                            ],
-                            [
-                              "Anne Clare",
-                              50
-                            ]
-                          ]
-                        },
-                        {
-                          "id": "5|SA1",
-                          "name": [
-                            "Grade C Students For SA1"
-                          ],
-                          "type": "column",
-                          "data": [
-                            [
-                              "Norman Leow Teck",
-                              79
-                            ],
-                            [
-                              "Sherie Oo",
-                              78
-                            ],
-                            [
-                              "Elizabeth Joy Nooh",
-                              77
-                            ]
-                          ]
-                        },
-                        {
-                          "id": "5|CA2",
-                          "name": [
-                            "Grade B Students For CA2"
-                          ],
-                          "type": "column",
-                          "data": [
-                            [
-                              "Elizabeth Joy Nooh",
-                              79
-                            ],
-                            [
-                              "Linette Evelyn Natalrary",
-                              77
-                            ],
-                            [
-                              "Carrene Tan",
-                              75
-                            ],
-                            [
-                              "RU",
-                              67276
-                            ]
-                          ]
-                        },
-                        {
-                          "id": "5|SA2",
-                          "name": [
-                            "Grade B Students For SA2"
-                          ],
-                          "type": "column",
-                          "data": [
-                            [
-                              "James Tan",
-                              77
-                            ],
-                            [
-                              "Elizabeth Joy Nooh",
-                              75
-                            ],
-                            [
-                              "SK",
-                              291
-                            ],
-                            [
-                              "PDC",
-                              278
-                            ],
-                            [
-                              "BG",
-                              254
-                            ],
-                            [
-                              "RO",
-                              212
-                            ],
-                            [
-                              "AR",
-                              176
-                            ],
-                            [
-                              "CY",
-                              112
-                            ],
-                            [
-                              "IN",
-                              24
-                            ],
-                            [
-                              "Jannel koh",
-                              14
-                            ],
-                            [
-                              "MT",
-                              14
-                            ]
-                          ]
-                        },
-
-                        // Grade F (across exam)
-                        {
-                          "id": "6|CA1",
-                          "name": [
-                            "Grade F Students For CA1"
-                          ],
-                          "type": "column",
-                          "data": [
-                            [
-                              "Pek Min Xi",
-                              28
-                            ],
-                            [
-                              "Sajith Banhu",
-                              21
-                            ]
-                          ]
-                        },
-                        {
-                          "id": "6|SA1",
-                          "name": [
-                            "Grade C Students For SA1"
-                          ],
-                          "type": "column",
-                          "data": [
-                            [
-                              "Norman Leow Teck",
-                              79
-                            ],
-                            [
-                              "Sherie Oo",
-                              78
-                            ],
-                            [
-                              "Elizabeth Joy Nooh",
-                              77
-                            ]
-                          ]
-                        },
-                        {
-                          "id": "6|CA2",
-                          "name": [
-                            "Grade B Students For CA2"
-                          ],
-                          "type": "column",
-                          "data": [
-                            [
-                              "Elizabeth Joy Nooh",
-                              79
-                            ],
-                            [
-                              "Linette Evelyn Natalrary",
-                              77
-                            ],
-                            [
-                              "Carrene Tan",
-                              75
-                            ],
-                            [
-                              "RU",
-                              67276
-                            ]
-                          ]
-                        },
-                        {
-                          "id": "6|SA2",
-                          "name": [
-                            "Grade B Students For SA2"
-                          ],
-                          "type": "column",
-                          "data": [
-                            [
-                              "James Tan",
-                              77
-                            ],
-                            [
-                              "Elizabeth Joy Nooh",
-                              75
-                            ],
-                            [
-                              "SK",
-                              291
-                            ],
-                            [
-                              "PDC",
-                              278
-                            ],
-                            [
-                              "BG",
-                              254
-                            ],
-                            [
-                              "RO",
-                              212
-                            ],
-                            [
-                              "AR",
-                              176
-                            ],
-                            [
-                              "CY",
-                              112
-                            ],
-                            [
-                              "IN",
-                              24
-                            ],
-                            [
-                              "Jannel koh",
-                              14
-                            ],
-                            [
-                              "MT",
-                              14
-                            ]
-                          ]
-                        }
-
-                      ]
-                    }
-                });
                 
                 $('#schoolChart').highcharts({
                     "title": {
@@ -1121,22 +204,22 @@
                           {
                             "name": "CA1",
                             "y": 1,
-                            "drilldown": "3|CA1"
+                            "drilldown": "2|CA1"
                           },
                           {
                             "name": "SA1",
                             "y": 2,
-                            "drilldown": "3|SA1"
+                            "drilldown": "2|SA1"
                           },
                           {
                             "name": "CA2",
                             "y": 2,
-                            "drilldown": "3|CA2"
+                            "drilldown": "2|CA2"
                           },
                           {
                             "name": "SA2",
                             "y": 2,
-                            "drilldown": "3|SA2"
+                            "drilldown": "2|SA2"
                           }
                         ]
                       },
@@ -1148,22 +231,22 @@
                           {
                             "name": "CA1",
                             "y": 3,
-                            "drilldown": "4|CA1"
+                            "drilldown": "3|CA1"
                           },
                           {
                             "name": "SA1",
                             "y": 3,
-                            "drilldown": "4|SA1"
+                            "drilldown": "3|SA1"
                           },
                           {
                             "name": "CA2",
                             "y": 2,
-                            "drilldown": "4|CA2"
+                            "drilldown": "3|CA2"
                           },
                           {
                             "name": "SA2",
                             "y": 4,
-                            "drilldown": "4|SA2"
+                            "drilldown": "3|SA2"
                           }
                         ]
                       },
@@ -1175,22 +258,22 @@
                           {
                             "name": "CA1",
                             "y": 0,
-                            "drilldown": "5|CA1"
+                            "drilldown": "4|CA1"
                           },
                           {
                             "name": "SA1",
                             "y": 0,
-                            "drilldown": "5|SA1"
+                            "drilldown": "4|SA1"
                           },
                           {
                             "name": "CA2",
                             "y": 1,
-                            "drilldown": "5|CA2"
+                            "drilldown": "4|CA2"
                           },
                           {
                             "name": "SA2",
                             "y": 1,
-                            "drilldown": "5|SA2"
+                            "drilldown": "4|SA2"
                           }
                         ]
                       },
@@ -1202,22 +285,22 @@
                           {
                             "name": "CA1",
                             "y": 1,
-                            "drilldown": "6|CA1"
+                            "drilldown": "5|CA1"
                           },
                           {
                             "name": "SA1",
                             "y": 1,
-                            "drilldown": "6|SA1"
+                            "drilldown": "5|SA1"
                           },
                           {
                             "name": "CA2",
                             "y": 0,
-                            "drilldown": "6|CA2"
+                            "drilldown": "5|CA2"
                           },
                           {
                             "name": "SA2",
                             "y": 0,
-                            "drilldown": "6|SA2"
+                            "drilldown": "5|SA2"
                           }
                         ]
                       }
@@ -1347,20 +430,20 @@
 
                         // Grade C (across exam)
                         {
-                          "id": "3|CA1",
+                          "id": "2|CA1",
                           "name": [
                             "Grade C Students For CA1"
                           ],
                           "type": "column",
                           "data": [
-                            [
+                            [   
                               "Cybele Hu",
                               56
                             ]
                           ]
                         },
                         {
-                          "id": "3|SA1",
+                          "id": "2|SA1",
                           "name": [
                             "Grade C Students For SA1"
                           ],
@@ -1377,7 +460,7 @@
                           ]
                         },
                         {
-                          "id": "3|CA2",
+                          "id": "2|CA2",
                           "name": [
                             "Grade C Students For CA2"
                           ],
@@ -1394,7 +477,7 @@
                           ]
                         },
                         {
-                          "id": "3|SA2",
+                          "id": "2|SA2",
                           "name": [
                             "Grade C Students For SA2"
                           ],
@@ -1413,7 +496,7 @@
 
                         // Grade D (across exam)
                         {
-                          "id": "4|CA1",
+                          "id": "3|CA1",
                           "name": [
                             "Grade D Students For CA1"
                           ],
@@ -1434,7 +517,7 @@
                           ]
                         },
                         {
-                          "id": "4|SA1",
+                          "id": "3|SA1",
                           "name": [
                             "Grade D Students For SA1"
                           ],
@@ -1455,7 +538,7 @@
                           ]
                         },
                         {
-                          "id": "4|CA2",
+                          "id": "3|CA2",
                           "name": [
                             "Grade D Students For CA2"
                           ],
@@ -1472,7 +555,7 @@
                           ]
                         },
                         {
-                          "id": "4|SA2",
+                          "id": "3|SA2",
                           "name": [
                             "Grade D Students For SA2"
                           ],
@@ -1499,7 +582,7 @@
 
                         //Grade E (across exam)
                         {
-                          "id": "5|CA1",
+                          "id": "4|CA1",
                           "name": [
                             "Grade E Students For CA1"
                           ],
@@ -1509,7 +592,7 @@
                           ]
                         },
                         {
-                          "id": "5|SA1",
+                          "id": "4|SA1",
                           "name": [
                             "Grade E Students For SA1"
                           ],
@@ -1518,7 +601,7 @@
                           ]
                         },
                         {
-                          "id": "5|CA2",
+                          "id": "4|CA2",
                           "name": [
                             "Grade E Students For CA2"
                           ],
@@ -1527,7 +610,7 @@
                           ]
                         },
                         {
-                          "id": "5|SA2",
+                          "id": "4|SA2",
                           "name": [
                             "Grade E Students For SA2"
                           ],
@@ -1542,7 +625,7 @@
 
                         // Grade F (across exam)
                         {
-                          "id": "6|CA1",
+                          "id": "5|CA1",
                           "name": [
                             "Grade F Students For CA1"
                           ],
@@ -1555,7 +638,7 @@
                           ]
                         },
                         {
-                          "id": "6|SA1",
+                          "id": "5|SA1",
                           "name": [
                             "Grade F Students For SA1"
                           ],
@@ -1568,7 +651,7 @@
                           ]
                         },
                         {
-                          "id": "6|CA2",
+                          "id": "5|CA2",
                           "name": [
                             "Grade F Students For CA2"
                           ],
@@ -1578,7 +661,7 @@
                           ]
                         },
                         {
-                          "id": "6|SA2",
+                          "id": "5|SA2",
                           "name": [
                             "Grade F Students For SA2"
                           ],
@@ -1591,6 +674,536 @@
                       ]
                     }
                 });
+                
+                
+                $('#tuitionChart').highcharts({
+                    "title": null,
+                    "chart": {
+                      "type": "column"
+                    },
+                    "credits": false,
+                    "legend": {
+                      "enabled": true,
+                      "layout": "vertical",
+                      "align": "right",
+                      "verticalAlign": "middle",
+                      "borderWidth": 0
+                    },
+                    "xAxis": {
+                      "labels": {
+                        "rotation": -90
+                      },
+                      "type": "category"
+                    },
+                    "yAxis": {
+                      "min": 0,
+                      "title": {
+                        "text": ""
+                      }
+                    },
+                    "plotOptions": {
+                          "series": {
+                            "animation": false,
+                            "showInLegend": true,
+                            "dataLabels": {
+                              "enabled": false,
+                              "color": "grey",
+                              "style": {
+                                "text-shadow": "0 0 2px black"
+                              }
+                            },
+                            "stacking": null
+                          }
+                        },
+                    "series": [
+                        {
+                          "name": "Grade A",
+                          "cropThreshold": 500,
+                          "type": "column",
+                          "data": [
+                            {
+                              "name": "CA1",
+                              "y": 0,
+                              "drilldown": "0|CA1"
+                            },
+                            {
+                              "name": "SA1",
+                              "y": 0,
+                              "drilldown": "0|SA1"
+                            },
+                            {
+                              "name": "CA2",
+                              "y": 0,
+                              "drilldown": "0|CA2"
+                            },
+                            {
+                              "name": "SA2",
+                              "y": 0,
+                              "drilldown": "0|SA2"
+                            }
+                          ]
+                        },
+                        {
+                          "name": "Grade B",
+                          "cropThreshold": 500,
+                          "type": "column",
+                          "data": [
+                            {
+                              "name": "CA1",
+                              "y": 0,
+                              "drilldown": "1|CA1"
+                            },
+                            {
+                              "name": "SA1",
+                              "y": 1,
+                              "drilldown": "1|SA1"
+                            },
+                            {
+                              "name": "CA2",
+                              "y": 0,
+                              "drilldown": "1|CA2"
+                            },
+                            {
+                              "name": "SA2",
+                              "y": 0,
+                              "drilldown": "1|SA2"
+                            }
+                          ]
+                        },
+                        {
+                          "name": "Grade C",
+                          "cropThreshold": 500,
+                          "type": "column",
+                          "data": [
+                            {
+                              "name": "CA1",
+                              "y": 0,
+                              "drilldown": "2|CA1"
+                            },
+                            {
+                              "name": "SA1",
+                              "y": 0,
+                              "drilldown": "2|SA1"
+                            },
+                            {
+                              "name": "CA2",
+                              "y": 0,
+                              "drilldown": "2|CA2"
+                            },
+                            {
+                              "name": "SA2",
+                              "y": 0,
+                              "drilldown": "2|SA2"
+                            }
+                          ]
+                        },
+                        {
+                          "name": "Grade D",
+                          "cropThreshold": 500,
+                          "type": "column",
+                          "data": [
+                            {
+                              "name": "CA1",
+                              "y": 0,
+                              "drilldown": "3|CA1"
+                            },
+                            {
+                              "name": "SA1",
+                              "y": 3,
+                              "drilldown": "3|SA1"
+                            },
+                            {
+                              "name": "CA2",
+                              "y": 0,
+                              "drilldown": "3|CA2"
+                            },
+                            {
+                              "name": "SA2",
+                              "y": 2,
+                              "drilldown": "3|SA2"
+                            }
+                          ]
+                        },
+                        {
+                          "name": "Grade E",
+                          "cropThreshold": 500,
+                          "type": "column",
+                          "data": [
+                            {
+                              "name": "CA1",
+                              "y": 0,
+                              "drilldown": "4|CA1"
+                            },
+                            {
+                              "name": "SA1",
+                              "y": 1,
+                              "drilldown": "4|SA1"
+                            },
+                            {
+                              "name": "CA2",
+                              "y": 0,
+                              "drilldown": "4|CA2"
+                            },
+                            {
+                              "name": "SA2",
+                              "y": 3,
+                              "drilldown": "4|SA2"
+                            }
+                          ]
+                        },
+                        {
+                          "name": "Grade F",
+                          "cropThreshold": 500,
+                          "type": "column",
+                          "data": [
+                            {
+                              "name": "CA1",
+                              "y": 0,
+                              "drilldown": "5|CA1"
+                            },
+                            {
+                              "name": "SA1",
+                              "y": 3,
+                              "drilldown": "5|SA1"
+                            },
+                            {
+                              "name": "CA2",
+                              "y": 6,
+                              "drilldown": "2|CA2"
+                            },
+                            {
+                              "name": "SA2",
+                              "y": 4,
+                              "drilldown": "5|SA2"
+                            }
+                          ]
+                        }
+                    ],
+                    "drilldown": {
+                          "series": [
+                            {
+                              "id": "0|CA1",
+                              "name": [
+                                "Grade A CA1"
+                              ],
+                              "type": "column",
+                              "data": [
+
+                              ]
+                            },
+                            {
+                              "id": "0|SA1",
+                              "name": [
+                                "Grade A SA1"
+                              ],
+                              "type": "column",
+                              "data": [
+
+                              ]
+                            },
+                            {
+                              "id": "0|CA2",
+                              "name": [
+                                "Grade A CA2"
+                              ],
+                              "type": "column",
+                              "data": [
+
+                              ]
+                            },
+                            {
+                              "id": "0|SA2",
+                              "name": [
+                                "Grade A SA2"
+                              ],
+                              "type": "column",
+                              "data": [
+                              ]
+                            },
+
+                            // B grade
+                            {
+                              "id": "1|CA1",
+                              "name": [
+                                "Grade B CA1"
+                              ],
+                              "type": "column",
+                              "data": [
+                              ]
+                            },
+                            {
+                              "id": "1|SA1",
+                              "name": [
+                                "Grade B SA1"
+                              ],
+                              "type": "column",
+                              "data": [
+                                [
+                                  "Cybele Hu",
+                                  63
+                                ]
+                              ]
+                            },
+                            {
+                              "id": "1|CA2",
+                              "name": [
+                                "Grade B CA2"
+                              ],
+                              "type": "column",
+                              "data": [
+                              ]
+                            },
+                            {
+                              "id": "1|SA2",
+                              "name": [
+                                "Grade B SA2"
+                              ],
+                              "type": "column",
+                              "data": [
+                              ]
+                            },
+
+                            //C grade
+                            {
+                              "id": "2|CA1",
+                              "name": [
+                                "Grade C CA1"
+                              ],
+                              "type": "column",
+                              "data": [
+                              ]
+                            },
+                            {
+                              "id": "2|SA1",
+                              "name": [
+                                "Grade C SA1"
+                              ],
+                              "type": "column",
+                              "data": [
+                              ]
+                            },
+                            {
+                              "id": "2|CA2",
+                              "name": [
+                                "Grade C CA2"
+                              ],
+                              "type": "column",
+                              "data": [
+                              ]
+                            },
+                            {
+                              "id": "2|SA2",
+                              "name": [
+                                "Grade C SA2"
+                              ],
+                              "type": "column",
+                              "data": [
+                              ]
+                            },
+
+                            //D grade
+                            {
+                              "id": "3|CA1",
+                              "name": [
+                                "Grade D CA1"
+                              ],
+                              "type": "column",
+                              "data": [
+                              ]
+                            },
+                            {
+                              "id": "3|SA1",
+                              "name": [
+                                "Grade D SA1"
+                              ],
+                              "type": "column",
+                              "data": [
+                                [
+                                  "Pek Min Xi",
+                                  40
+                                ],
+                                [
+                                  "Elton Lee",
+                                  35
+                                ],
+                                [
+                                    "Ellie Oon",
+                                    35
+                                ]
+                              ]
+                            },
+                            {
+                              "id": "3|CA2",
+                              "name": [
+                                "Grade D CA2"
+                              ],
+                              "type": "column",
+                              "data": [
+                              ]
+                            },
+                            {
+                              "id": "3|SA2",
+                              "name": [
+                                "Grade D SA2"
+                              ],
+                              "type": "column",
+                              "data": [
+                                [
+                                  "Elton Lee",
+                                  41
+                                ],
+                                [
+                                  "Wan IK",
+                                  35
+                                ]
+                              ]
+                            },
+                            
+                            //E grade
+                            {
+                              "id": "4|CA1",
+                              "name": [
+                                "Grade E CA1"
+                              ],
+                              "type": "column",
+                              "data": [
+                              ]
+                            },
+                            {
+                              "id": "4|SA1",
+                              "name": [
+                                "Grade E SA1"
+                              ],
+                              "type": "column",
+                              "data": [
+                                [
+                                  "Sajitha Banu",
+                                  30
+                                ]
+                              ]
+                            },
+                            {
+                              "id": "4|CA2",
+                              "name": [
+                                "Grade E CA2"
+                              ],
+                              "type": "column",
+                              "data": [
+                              ]
+                            },
+                            {
+                              "id": "4|SA2",
+                              "name": [
+                                "Grade E SA2"
+                              ],
+                              "type": "column",
+                              "data": [
+                                [
+                                  "Wan IK",
+                                  35
+                                ],
+                                [
+                                  "Brayden Ng",
+                                  24
+                                ],
+                                [
+                                  "Ellie Oon",
+                                  22
+                                ]
+                              ]
+                            },
+
+                            // F grade
+                            {
+                              "id": "5|CA1",
+                              "name": [
+                                "Grade F CA1"
+                              ],
+                              "type": "column",
+                              "data": [
+                              ]
+                            },
+                            {
+                              "id": "5|SA1",
+                              "name": [
+                                "Grade F SA1"
+                              ],
+                              "type": "column",
+                              "data": [
+                                [
+                                  "Liow Rui Zhe",
+                                  15
+                                ],
+                                [
+                                  "Lim Qiu Yun",
+                                  13
+                                ],
+                                [
+                                  "Joshua Ng",
+                                  12
+                                ]
+                              ]
+                            },
+                            {
+                              "id": "5|CA2",
+                              "name": [
+                                "Grade F CA2"
+                              ],
+                              "type": "column",
+                              "data": [
+                                [
+                                  "Elton Lee",
+                                  16
+                                ],
+                                [
+                                  "Brayden Ng",
+                                  4
+                                ],
+                                [
+                                  "Jia Xin",
+                                  2
+                                ],
+                                [
+                                  "Sajitha Banu",
+                                  2
+                                ],
+                                [
+                                  "Joshua Ng",
+                                  2
+                                ]
+                              ]
+                            },
+                            {
+                              "id": "5|SA2",
+                              "name": [
+                                "Grade F SA2"
+                              ],
+                              "type": "column",
+                              "data": [
+                                [
+                                  "Jia Xin",
+                                  18
+                                ],
+                                [
+                                  "Sajitha Banu",
+                                  15
+                                ],
+                                [
+                                  "Joshua Ng",
+                                  10
+                                ],
+                                [
+                                  "Liow Rui Zhe",
+                                  5
+                                ]
+                              ]
+                            }
+
+                          ]
+                        }
+                });
+            
+                 
                 
                 
             });
