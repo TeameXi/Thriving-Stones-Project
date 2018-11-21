@@ -3,6 +3,7 @@
     Created on : 16 Nov, 2018, 5:45:34 PM
     Author     : Zang Yu
 --%>
+<%@page import="model.SubjectDAO"%>
 <%@page import="model.RewardDAO"%>
 <%@page import="entity.Lesson"%>
 <%@page import="model.LessonDAO"%>
@@ -52,6 +53,7 @@
             .box { height: 200px; width:260px; overflow: auto; font-size: 18px;}
             .box2 { height: 225px; width:260px; overflow: auto;}
             .box3 { height: 85px; width:400px; overflow: auto;}
+            .box4 { height: 225px; width:400px; overflow: auto;}
         </style>
     </head>
     <body>
@@ -172,28 +174,24 @@
                                                 <table class="table table-data2">
                                                     <thead>
                                                         <tr>                                                                
-                                                            <th>date</th>
-                                                            <th>replaced class</th>
+                                                            <th>replaced date</th>
+                                                            <th>class</th>
                                                             <th>name</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>                                            
-                                                <%
-                                                    ArrayList<Tutor> tutorss = TutorDAO.tutorWithTotalClasses(branch_id);
+                                                <%                                                    
+                                                    for (Class c : classes) {
+                                                        ArrayList<Lesson> lessons = LessonDAO.retrieveAllLessonLists(c.getClassID());
 
-                                                    for(Tutor t : tutorss){
-                                                        double totalOwed = 0.0;
-                                                        ArrayList<entity.Class> classList = ClassDAO.listAllClassesBelongToTutors(t.getTutorId(), user.getBranchId());   
-                                                        for (entity.Class c : classList) {
-                                                            double classDuration = ClassDAO.getClassTime(c.getClassID());
-                                                            int totalAttendLessons = TutorDAO.calculateTutorAttendLessonCount(t.getTutorId(), c.getClassID());                        
-                                                            totalOwed += totalAttendLessons*classDuration* c.getTutorRate();
+                                                        for (Lesson l : lessons) {
+                                                            ArrayList<String> replacement = LessonDAO.retrieveReplacementDates(l.getLessonid());
+                                                            if (replacement != null) { 
+                                                                int tutorID = c.getTutorID();
+                                                                Tutor t = TutorDAO.retrieveSpecificTutorById(tutorID);
+                                                                out.println("<tr><td>"+l.getStartDate().substring(0, 10)+"</td><td>"+c.getClassDay()+" "+c.getStartTime()+"-"+c.getEndTime()+" "+c.getLevel()+" "+c.getSubject()+"</td><td>"+t.getName()+"</td></tr>");
+                                                            }
                                                         }
-                                                        ArrayList<TutorPay> replacementClasses = ClassDAO.totalReplacementClasses(t.getTutorId(), user.getBranchId());
-                                                        for(TutorPay replacementClass:replacementClasses){
-                                                            totalOwed += replacementClass.getMonthlySalary();
-                                                        }
-                                                        out.println("<tr><td>"+t.getName()+"</td><td class='denied'>Pending</td><td class='text-center'> $ "+totalOwed+"</td></tr>");
                                                     }
                                                 %>                                                                                                     
                                                 </tbody>
@@ -470,9 +468,120 @@
                                         </div>          
                                     </li>
                 <%
+                        }
                     }
-                            }
-                        }%>
+                }else if (role != null && role == "admin" && user.getBranchId() == 0) {
+                    int numberOfBranch = branchDAO.retrieveNumberOfBranch();
+                    int numberOfTutor = tutorDAO.retrieveNumberOfTutor();
+                    int numberOfStudent = studentDAO.retrieveNumberOfStudent();
+                    Map<String, Integer> studentPerLevel = levelDAO.retrieveStudentPerLevel();
+                %>
+                                    <li data-row="1" data-col="1" data-sizex="1" data-sizey="1" class="item1">                                            
+                                            <div class="overview-box clearfix">
+                                                <div class="icon">
+                                                    <i class="zmdi zmdi-accounts-outline"></i>
+                                                </div>
+                                                <div class="text">
+                                                    <h2><%=numberOfBranch%></h2>
+                                                    <span>number of branch</span>
+                                                </div>
+                                            </div>
+                                    </li>
+                                    <li data-row="1" data-col="2" data-sizex="1" data-sizey="1" class="item2">                                            
+                                            <div class="overview-box clearfix">
+                                                <div class="icon">
+                                                    <i class="zmdi zmdi-accounts"></i>
+                                                </div>
+                                                <div class="text">
+                                                    <h2><%=numberOfTutor%></h2>
+                                                    <span>number of tutor</span>
+                                                </div>
+                                            </div>
+                                    </li>
+                                    <li data-row="1" data-col="3" data-sizex="1" data-sizey="1" class="item3">                                            
+                                            <div class="overview-box clearfix">
+                                                <div class="icon">
+                                                    <i class="zmdi zmdi-book"></i>
+                                                </div>
+                                                <div class="text">
+                                                    <h2><%=numberOfStudent%></h2>
+                                                    <span>number of student</span>
+                                                </div>
+                                            </div>
+                                    </li>
+                                    <li data-row="2" data-col="1" data-sizex="2" data-sizey="2" class="item4">
+                                        <h3 class="title-3 m-b-30">number of student per level </h3>
+                                        <div class="box">
+                                            <%                                                
+                                            Set<String> levels = studentPerLevel.keySet();
+                                            String[] arrayLevels = levels.toArray(new String[0]);
+                                            if (levels.size() != 0) {                                              
+                                            %>
+                                            <table class="table table-top-campaign">
+                                                <tbody>
+                                                    <%
+                                                    for (int j=0; j<levels.size(); j++){
+                                                    %>
+                                                    <tr>
+                                                        <td><%=levels.toArray()[j]%></td>
+                                                        <td><%=studentPerLevel.get(levels.toArray()[j])%></td>
+                                                    </tr>
+                                                    <% } %>
+                                                </tbody>
+                                            </table>
+                                            <%}%>
+                                        </div>
+                                    </li>
+                <%} else if (role != null && role == "tutor") {
+                        ArrayList<Class> classes = ClassDAO.listAllClassesByTutorID(user.getRespectiveID(), user.getBranchId());
+                        int numberOfStudents = 0;
+                        %>
+                                    <li data-row="1" data-col="1" data-sizex="1" data-sizey="1" class="item1">                                            
+                                            <div class="overview-box clearfix">
+                                                <div class="icon">
+                                                    <i class="zmdi zmdi-accounts-outline"></i>
+                                                </div>
+                                                <div class="text">
+                                                    <h2><%=classes.size()%></h2>
+                                                    <span>number of class</span>
+                                                </div>
+                                            </div>
+                                    </li>
+                                    <li data-row="1" data-col="2" data-sizex="1" data-sizey="1" class="item2">                                            
+                                            <div class="overview-box clearfix">
+                                                <div class="icon">
+                                                    <i class="zmdi zmdi-accounts"></i>
+                                                </div>
+                                                <div class="text">
+                                                    <h2><%=numberOfStudents%></h2>
+                                                    <span>number of student</span>
+                                                </div>
+                                            </div>
+                                    </li>                        
+                                    <li data-row="2" data-col="1" data-sizex="3" data-sizey="2" class="item5">
+                                        <h3 class="title-3 m-b-30">upcoming classes </h3>
+                                        <div class="box4">                                            
+                                            <table class="table table-data2">
+                                                <thead>
+                                                    <tr>                                                                
+                                                        <th>class</th>
+                                                        <th>level</th>
+                                                        <th>subject</th>
+                                                        <th>number of student</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <% for (Class cls : classes) {
+                                                            numberOfStudents += studentClassDAO.retrieveNumberOfStudentByClass(cls.getClassID());
+                                                            String subject = cls.getSubject();
+                                                            out.println("<tr><td class='desc'>"+cls.getClassDay()+" "+cls.getStartTime()+"-"+cls.getEndTime()+" "+"</td><td>"+cls.getLevel()+"</td><td>"+subject+"</td><td class='text-center'>"+numberOfStudents+"</td></tr>");
+                                                    }%>
+                                                    
+                                                </tbody>
+                                            </table>                                           
+                                        </div>
+                                    </li>
+                        <%}%>
                                     </ul>
                             </div>
                     </div>     
