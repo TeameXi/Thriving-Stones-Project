@@ -541,6 +541,23 @@ public class StudentDAO {
         return updatedStatus;
     }
     
+    public static boolean updateStudentFees(int studentID, double reqAmt) {
+        boolean updatedStatus = false;
+        try (Connection conn = ConnectionManager.getConnection();) {
+            conn.setAutoCommit(false);
+            String sql = "update student set required_amount = ? where student_id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setDouble(1, reqAmt);
+            stmt.setInt(2, studentID);
+            stmt.executeUpdate();
+            conn.commit();
+            updatedStatus = true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return updatedStatus;
+    }
+    
     public static boolean updateStudentTotalOutstandingFees(int studentID, double outstandingAmt) {
         boolean updatedStatus = false;
         try (Connection conn = ConnectionManager.getConnection();) {

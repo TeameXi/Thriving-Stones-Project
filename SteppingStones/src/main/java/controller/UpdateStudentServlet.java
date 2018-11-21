@@ -35,7 +35,7 @@ public class UpdateStudentServlet extends HttpServlet {
             throws ServletException, IOException {
 
         try (PrintWriter out = response.getWriter()) {
-
+            
             int studentID = Integer.parseInt(request.getParameter("studentID"));
             Student stud = StudentDAO.retrieveStudentbyID(studentID);
             String name = request.getParameter("name");
