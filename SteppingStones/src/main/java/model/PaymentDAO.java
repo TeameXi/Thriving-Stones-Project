@@ -17,6 +17,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -870,4 +871,18 @@ public class PaymentDAO {
         return updatedStatus;
     }
     
+    public static Date getLatestPaymentDate(int student_id){
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("select payment_date from revenue where student_id = ? order by payment_id desc limit 1");
+            stmt.setInt(1, student_id);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                return rs.getDate(1);
+            }
+        } catch (SQLException e) {
+            System.out.print(e.getMessage());
+        }
+        return null;
+    }
 }

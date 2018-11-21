@@ -886,7 +886,7 @@ public class LessonDAO {
     public static ArrayList<Lesson> retrieveAllLessonListsAfterCurrTS(int classid) {
         ArrayList<Lesson> lessons = new ArrayList<>();
         try (Connection conn = ConnectionManager.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement("select lesson_id, class_id, reminder_status, start_date, end_date from lesson where class_id = ? and start_date > CURDATE() and reminder_status <> 0 and reminded <> 1");
+            PreparedStatement stmt = conn.prepareStatement("select lesson_id, class_id, reminder_status, start_date, end_date from lesson where class_id = ? and start_date > CURDATE() and reminder_status <> 0 and reminded <> 1 order by start_date asc limit 1");
             stmt.setInt(1, classid);
             ResultSet rs = stmt.executeQuery();
 
@@ -1101,4 +1101,34 @@ public class LessonDAO {
 
         return null;
     }
+    
+    public static ArrayList<Lesson> checkForLatePayment(int classid) {
+        ArrayList<Lesson> lessons = new ArrayList<>();
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("select lesson_id, class_id, reminder_status, start_date, end_date from lesson where class_id = ? and start_date < CURDATE() and reminder_status <> 0 and reminded_late <> 1 order by start_date desc limit 1");
+            stmt.setInt(1, classid);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Lesson lesson = new Lesson(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getTimestamp(4), rs.getTimestamp(5));
+                lessons.add(lesson);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return lessons;
+    }
+     
+    public static void setRemindedLate(int classid, int lesssonid) {
+       int paymentDue = -1;
+       try (Connection conn = ConnectionManager.getConnection()) {
+           PreparedStatement stmt = conn.prepareStatement("update lesson set reminded_late = 1 where class_id = ? and lesson_id = ? and payment_due_date = ?");
+           stmt.setInt(1, classid);
+           stmt.setInt(2, lesssonid);
+           stmt.execute();
+       } catch (Exception e) {
+           e.printStackTrace();
+       }
+   }
 }

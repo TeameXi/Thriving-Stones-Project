@@ -15,7 +15,7 @@ import javax.servlet.ServletContextListener;
  *
  * @author Shawn
  */
-public class PaymentReminderScheduler implements ServletContextListener {
+public class LatePaymentReminderScheduler implements ServletContextListener {
 
     private ScheduledExecutorService scheduler;
 
@@ -28,6 +28,6 @@ public class PaymentReminderScheduler implements ServletContextListener {
     public void contextInitialized(ServletContextEvent event) {
         
         scheduler = Executors.newSingleThreadScheduledExecutor();
-        //scheduler.scheduleAtFixedRate(new PaymentReminderJob(event.getServletContext().getRealPath("/temp")), 0, 1, TimeUnit.DAYS);
+        //scheduler.scheduleAtFixedRate(new LatePaymentReminderJob(event.getServletContext().getRealPath("/temp")), 0, 1, TimeUnit.DAYS);
     }
 }

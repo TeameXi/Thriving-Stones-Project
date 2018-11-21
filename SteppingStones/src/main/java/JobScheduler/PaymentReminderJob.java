@@ -14,13 +14,13 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.ArrayList;
+import java.util.HashMap;
 import model.BranchDAO;
 import model.ClassDAO;
 import model.LessonDAO;
 import model.ParentChildRelDAO;
 import model.ParentDAO;
 import model.SendSMS;
-import model.StudentClassDAO;
 import model.StudentDAO;
 
 /**
@@ -49,28 +49,42 @@ public class PaymentReminderJob implements Runnable {
                 int studentID = s.getStudentID();
                 ArrayList<Class> classes = ClassDAO.getStudentEnrolledClass(studentID);
                 ArrayList<Lesson> notify = new ArrayList<>();
+                HashMap<Integer, Lesson> checkAgainstFirst = new HashMap<>();
+                int count = 1;
 
                 for (Class c : classes) {
                     int classID = c.getClassID();
 
-                    //check if lesson needs reminder
+                    //get the next lesson that require reminding
                     ArrayList<Lesson> lessons = LessonDAO.retrieveAllLessonListsAfterCurrTS(classID);
 
                     for (Lesson l : lessons) {
-                        //get check if is the day to send sms
-                        LocalDateTime currTime = LocalDateTime.now();
-                        Timestamp lessonTimestamp = l.getStartDateTS();
-                        LocalDateTime lessonLDT = lessonTimestamp.toLocalDateTime().minusDays(7);
-                        Period p = Period.between(currTime.toLocalDate(), lessonLDT.toLocalDate());
+                        //add every lesson to hashmap
+                        checkAgainstFirst.put(count, l);
+                        count++;
+                    }
+                }
 
-                        int yearDiff = p.getYears();
-                        int monthDiff = p.getMonths();
-                        int dayDiff = p.getDays();
+                LocalDateTime firstIndex = checkAgainstFirst.get(1).getStartDateTS().toLocalDateTime();
+                
+                for (int i : checkAgainstFirst.keySet()) {
+                    //get the earliest class amongst those that need to remind and not reminded yet
+                    if (firstIndex.isAfter(checkAgainstFirst.get(i).getStartDateTS().toLocalDateTime())){
+                        firstIndex = checkAgainstFirst.get(i).getStartDateTS().toLocalDateTime();
+                    }
+                }
+                
+                for (int i : checkAgainstFirst.keySet()) {
+                    //check whether the remaining classes are within 7 days of the earliest class
+                    LocalDateTime iteratedLDT = checkAgainstFirst.get(i).getStartDateTS().toLocalDateTime();
+                    Period p1 = Period.between(firstIndex.toLocalDate(), iteratedLDT.toLocalDate());
 
-                        // send sms
-                        if (yearDiff <= 7 & monthDiff <= 7 & dayDiff <= 7) {
-                            notify.add(l);
-                        }
+                    int yearDiff = p1.getYears();
+                    int monthDiff = p1.getMonths();
+                    int dayDiff = p1.getDays();
+                    //if within a week, add to notify arraylist
+                    if (yearDiff == 0 & monthDiff == 0 & dayDiff <= 7) {
+                        notify.add(checkAgainstFirst.get(i));
                     }
                 }
 
