@@ -61,6 +61,8 @@ public class DeleteStudentServlet extends HttpServlet {
         boolean deletePaymentReminder = PaymentDAO.deletePaymentReminderbyStudentID(studentID);
         boolean deleteRevenue = PaymentDAO.deleteRevenuebyStudentID(studentID);
         boolean deleteAttendance = LessonDAO.deleteAttendancebyID(studentID);
+        System.out.println("deleStu" + deleteStudent + "deleParentC" + deleteParentChildRel + "deleP" + deleteParent + "deleteTG" + deleteTuitionGrade + 
+                "deleStudentCl" + deleteStudentClassRel + "deleUser" + deleteUser + "delePaymet" + deletePaymentReminder + "deleRevenue" + deleteRevenue + "deleAtten" + deleteAttendance);
         
         if(deleteStudent && deleteParentChildRel && deleteParent && deleteTuitionGrade && deleteStudentClassRel && 
                 deleteUser && deletePaymentReminder && deleteRevenue && deleteAttendance){

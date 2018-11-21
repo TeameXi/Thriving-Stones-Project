@@ -100,7 +100,7 @@
                 
                 $('#schoolChart').highcharts({
                     "title": {
-                        text: 'Center Grade for '+subName+"-"+lvlName +"[School]"
+                        text: 'Center Grade for '+subName+"-"+lvlName 
                     },
                     "subtitle": {
                         text: 'Can be further breakdown by clicking on each bar'

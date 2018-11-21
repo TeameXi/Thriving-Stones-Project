@@ -162,9 +162,9 @@ public class StudentClassDAO {
             stmt.setInt(1, studentID);
             int delete = stmt.executeUpdate();
             conn.commit();
-            if(delete > 0){
+            //if(delete > 0){
                 deletedStatus = true;
-            }
+            //}
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

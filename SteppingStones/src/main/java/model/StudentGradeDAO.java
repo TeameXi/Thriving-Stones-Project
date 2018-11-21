@@ -47,7 +47,7 @@ public class StudentGradeDAO {
         boolean deletedStatus = false;
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            String sql = "delete from tuition_grade where student_id = ?";
+            String sql = "delete from grade where student_id = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, studentID);
             stmt.executeUpdate(); 
