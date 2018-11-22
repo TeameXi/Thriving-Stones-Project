@@ -1089,7 +1089,7 @@ public class LessonDAO {
     public ArrayList<Integer> checkForExistingLessons(int tutorID) {
         ArrayList<Integer> classes = new ArrayList<>();
 
-        String sql = "select class_id, count(distinct lesson_id) from lesson where tutor_id = ? and start_date <= curdate() group by class_id";
+        String sql = "select class_id, count(distinct lesson_id) from lesson where tutor_id = ? and date(start_date) <= curdate() group by class_id";
 
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
