@@ -972,7 +972,9 @@ public class AdminScheduleServlet extends HttpServlet {
 
                     JSONObject obj = new JSONObject();
                     obj.put("timing", lessonStart.substring(0, lessonStart.length() - 2) + "-" + lessonEnd.substring(0, lessonEnd.length() - 2));
-                    if(cls.getCombinedLevel() == null){    
+                    
+                    System.out.println(cls.getCombinedLevel() + " YAYYY " + cls.getLevel());
+                    if(cls.getCombinedLevel() == null || cls.getCombinedLevel().equals("")){    
                         obj.put("level", cls.getLevel());
                     }else{
                         obj.put("level", cls.getCombinedLevel());

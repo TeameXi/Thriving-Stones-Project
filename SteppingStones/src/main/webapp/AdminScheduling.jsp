@@ -589,7 +589,11 @@
                                 $("#assign_tutor").show();
                                 $("#no_tutor").hide();
                                 for (var i = 0; i < data.tutor.length; i++) {
-                                    $("#assign_tutor").append('<option value="' + data.tutor[i].id + '">' + data.tutor[i].name + '</option>');
+                                    exists = $('#assign_tutor option[value=' + data.tutor[i].id + ']').length > 0;
+                                    console.log(exists);
+                                    if(!exists){
+                                        $("#assign_tutor").append('<option value="' + data.tutor[i].id + '">' + data.tutor[i].name + '</option>');
+                                    }
                                 }
                             }
                         }
@@ -621,7 +625,11 @@
                                 $("#assign_tutor").show();
                                 $("#no_tutor").hide();
                                 for (var i = 0; i < data.tutor.length; i++) {
-                                    $("#assign_tutor").append('<option value="' + data.tutor[i].id + '">' + data.tutor[i].name + '</option>');
+                                    exists = $('#assign_tutor option[value=' + data.tutor[i].id + ']').length > 0;
+                                    console.log(exists);
+                                    if(!exists){
+                                        $("#assign_tutor").append('<option value="' + data.tutor[i].id + '">' + data.tutor[i].name + '</option>');
+                                    }
                                 }
                             }
                         }
