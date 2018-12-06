@@ -29,6 +29,6 @@ public class LatePaymentReminderScheduler implements ServletContextListener {
     public void contextInitialized(ServletContextEvent event) {
         
         scheduler = Executors.newSingleThreadScheduledExecutor();
-//        scheduler.scheduleAtFixedRate(new LatePaymentReminderJob(event.getServletContext().getRealPath("/temp")), 0, 1, TimeUnit.DAYS);
+        scheduler.scheduleAtFixedRate(new LatePaymentReminderJob(event.getServletContext().getRealPath("/temp")), 0, 1, TimeUnit.DAYS);
     }
 }
