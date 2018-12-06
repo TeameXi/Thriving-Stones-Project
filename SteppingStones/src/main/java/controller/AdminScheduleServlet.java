@@ -194,12 +194,13 @@ public class AdminScheduleServlet extends HttpServlet {
                     if (end == null || end.isEmpty()) {
                         obj.put("end", "Please select an end time!");
                     }
-
+                    
+                    DateTimeFormatter pattern = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+                    DateTime startFormat = null;
+                    DateTime endFormat = null;
                     if (start != null && !start.isEmpty() && end != null && !end.isEmpty()) {
-                        DateTimeFormatter pattern = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
-                        DateTime startFormat = pattern.parseDateTime(start);
-                        DateTime endFormat = pattern.parseDateTime(end);
-
+                        startFormat = pattern.parseDateTime(start);
+                        endFormat = pattern.parseDateTime(end);
                         if (startFormat.isAfter(endFormat)) {
                             obj.put("invalid_timing", "Please select an end timing that occurs after the start timing!");
                         }
@@ -212,7 +213,7 @@ public class AdminScheduleServlet extends HttpServlet {
                     } else {
                         Lesson lesson = lessonDAO.getLessonByID(lessonID);
 
-                        boolean overlap = lessonDAO.retrieveOverlappingLessonsForTutor(tutorID, start, end, lesson.getClassid());
+                        boolean overlap = lessonDAO.retrieveOverlappingLessonsForTutor(tutorID, start, pattern.print(endFormat.minusMinutes(1)), lesson.getClassid());
 
                         boolean status = false;
 
@@ -339,7 +340,7 @@ public class AdminScheduleServlet extends HttpServlet {
 
                             if (cls.getStartDate().equals(date.print(start_date)) && cls.getEndDate().equals(date.print(end_date))) {
                                 if (sameTutor) {
-                                    boolean overlapLessons = lessonDAO.retrieveOverlappingLessonsForTutor(tutorID, startDate, endDate, cls.getClassID());
+                                    boolean overlapLessons = lessonDAO.retrieveOverlappingLessonsForTutor(tutorID, startDate, pattern.print(end_time.minusMinutes(1)), cls.getClassID());
 
                                     if (overlapLessons) {
                                         obj.put("invalid_tutor", "The tutor is unavailable at this timing!");
@@ -762,15 +763,15 @@ public class AdminScheduleServlet extends HttpServlet {
                             }
 
                             double fees = subjectDAO.retrieveSubjectFees(subjectID, levelID, branchID);
-                            boolean overlap = classDAO.retrieveOverlappingClassesForTutor(tutorID, pattern.print(start_time), pattern.print(end_time), 0, dayInserted);
+                            boolean overlap = classDAO.retrieveOverlappingClassesForTutor(tutorID, pattern.print(start_time), pattern.print(end_time.minusMinutes(1)), 0, dayInserted);
 
                             if (!overlap) {
                                 int classID = 0;
 
                                 if (levelList.size() > 1) {
-                                    classID = classDAO.createClass(type, levelID, subjectID, fees, payment, pattern.print(start_time), pattern.print(end_time), dayOfWeek, date.print(start_date), date.print(end_date), branchID, tutorID, holidays, levels, true);
+                                    classID = classDAO.createClass(type, levelID, subjectID, fees, payment, pattern.print(start_time), pattern.print(end_time.minusMinutes(1)), dayOfWeek, date.print(start_date), date.print(end_date), branchID, tutorID, holidays, levels, true);
                                 } else {
-                                    classID = classDAO.createClass(type, levelID, subjectID, fees, payment, pattern.print(start_time), pattern.print(end_time), dayOfWeek, date.print(start_date), date.print(end_date), branchID, tutorID, holidays,"-1", false);
+                                    classID = classDAO.createClass(type, levelID, subjectID, fees, payment, pattern.print(start_time), pattern.print(end_time.minusMinutes(1)), dayOfWeek, date.print(start_date), date.print(end_date), branchID, tutorID, holidays,"-1", false);
                                 }
                                 
                                 HashMap<Integer, Integer> reminders = new HashMap<>();
