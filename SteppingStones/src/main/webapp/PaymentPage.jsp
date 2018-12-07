@@ -70,6 +70,7 @@
                                 <option value="Cash">Cash </option>
                                 <option value="Cheque">Cheque</option>
                                 <option value="Bank Transfer">Bank Transfer</option>
+                                <option value="Credit Card">Credit Card</option>
                             </select>
                         </div>
                     </div>
@@ -216,7 +217,7 @@
         payment_mode = $("#payment_mode").val();
         var dynamicField = document.getElementById('dynamicField');
         var html = '';
-        if(payment_mode === "Cheque" || payment_mode === "Bank Transfer"){
+        if(payment_mode === "Cheque" || payment_mode === "Bank Transfer" || payment_mode === "Credit Card"){
             console.log("Payment Mode " + payment_mode);
             html = '<div class="form-group"><label class="col-lg-3 control-label">Payment Date</label>  <div class="col-lg-4 inputGroupContainer">\n\
                         <div class="input-group"><span class="input-group-addon"><i class="zmdi zmdi-badge-check"></i></span>\n\

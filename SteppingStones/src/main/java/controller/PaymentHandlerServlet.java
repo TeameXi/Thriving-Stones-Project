@@ -69,7 +69,7 @@ public class PaymentHandlerServlet extends HttpServlet {
         String[] chargeAmounts = request.getParameterValues("chargeAmount[]");
        
         String paymentDate = "";
-        if(paymentMode.equals("Bank Transfer") || paymentMode.equals("Cheque")){
+        if(paymentMode.equals("Bank Transfer") || paymentMode.equals("Cheque") || paymentMode.equals("Credit Card")){
             paymentDate = request.getParameter("payment_date");
             boolean insert = PaymentDAO.insertBankDeposit(paymentMode, paymentDate, studentName, totalAmount);
             System.out.println(insert);
