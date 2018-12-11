@@ -244,7 +244,8 @@
                     html = '<div class="alert alert-danger col-md-5"><strong>Sorry!</strong> Something went wrong</div>';
                 }
                 $("#errorMessage").html(html);
-                $('#errorMessage').fadeIn().delay(2500).fadeOut();                
+                $('#errorMessage').fadeIn().delay(2000).fadeOut(); 
+                location.reload();
             }
         });
        
@@ -252,33 +253,6 @@
 
 </script>
 
-<script>
-    function updateStudentAccount() {
-        
-        branchID = $("#branch").val();
-        multipleValues = $("#lvlSelect").val() || [];
-        alert (multipleValues);
-
-        $.ajax({
-            type: 'POST',
-            url: 'UpdateStudentServlet',
-            dataType: 'JSON',
-            data: {studentID: id, name: name, address: address, phone: phone, email: email},
-            success: function (data) {
-                if (data === 1) {
-                    html = '<div class="alert alert-success col-md-12"><strong>Success!</strong> Updated successfully</div>';
-                } else {
-                    html = '<div class="alert alert-danger col-md-12"><strong>Sorry!</strong> Something went wrong</div>';
-                }
-
-                $("#update_status").html(html);
-                $('#update_status').fadeIn().delay(2000).fadeOut();
-            }
-        });
-        return false;
-    }
-
-</script>
 
 
 
