@@ -1,3 +1,4 @@
+<%@page import="model.LessonDAO"%>
 <%@page import="entity.TutorPay"%>
 <%@page import="org.json.JSONArray"%>
 <%@page import="model.SubjectDAO"%>
@@ -106,9 +107,17 @@
                     double totalOwed = 0.0;
                     ArrayList<entity.Class> classes = ClassDAO.listAllClassesBelongToTutors(t.getTutorId(), branch_id);   
                     for (entity.Class c : classes) {
-                        double classDuration = ClassDAO.getClassTime(c.getClassID());
-                        int totalAttendLessons = TutorDAO.calculateTutorAttendLessonCount(t.getTutorId(), c.getClassID());                        
-                        totalOwed += totalAttendLessons*classDuration* c.getTutorRate();
+                        if(c.getPayType() == 1){
+                            int totalMonthlyLessons = LessonDAO.totalLessonTutorAttendedForClassMonthlyCount(t.getTutorId(), c.getClassID());
+                            System.out.println("====");
+                            System.out.println(totalMonthlyLessons);
+                            totalOwed += c.getTutorRate()*totalMonthlyLessons;
+                            
+                        }else{
+                            double classDuration = ClassDAO.getClassTime(c.getClassID());
+                            int totalAttendLessons = TutorDAO.calculateTutorAttendLessonCount(t.getTutorId(), c.getClassID());                        
+                            totalOwed += totalAttendLessons*classDuration* c.getTutorRate();
+                        }
                     }
                     ArrayList<TutorPay> replacementClasses = ClassDAO.totalReplacementClasses(t.getTutorId(), branch_id);
                     for(TutorPay replacementClass:replacementClasses){

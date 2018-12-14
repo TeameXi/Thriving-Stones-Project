@@ -111,20 +111,27 @@
     
    
     function newTutorFormat(dropdownList){
-        html   = '<div class="newTutorContainer"><h4>New Tutor Hourly Pay Rate</h4><form id="payrateForm"><br/>'+
+        html   = '<div class="newTutorContainer"><h4>New Tutor Pay Rate</h4><form id="payrateForm"><br/>'+
                         '<div class="row">'+
                             '<div class="col-md-1"></div>'+
                             '<label class="col-sm-4 control-label">Tutor Name</label>'+
-                            '<label class="col-sm-4 control-label">Hourly Pay Rate</label>'+
+                            '<label class="col-sm-2 control-label">Pay Rate</label>'+
+                            '<label class="col-sm-3 control-label">Pay By</label>'+
                         '</div>'+
                         '<div class="row">'+  
                             '<div class="col-md-1"></div>'+
                             '<div class="col-sm-4">'+
                                 dropdownList+
                             '</div>'+
-                            '<div class="col-sm-4">'+
+                            '<div class="col-sm-2">'+
                                 '<div class="col-md-1"></div>'+
                                 '<input type="number" id="inputHourlyRateNum" class="form-control" name="payRate[]"  step=0.001/>'+
+                            '</div>'+
+                            '<div class="col-sm-3">'+
+                                '<select name="payTypeDropdown[]" class="form-control">'+
+                                '<option value="0">Hourly</option>'+
+                                '<option value="1">Monthly</option>'+
+                                '</select>'+
                             '</div>'+
                             '<div class="col-sm-2">'+
                                 '<button type="button" class="btn btn-default addButton"><i class="zmdi zmdi-plus"></i></button>'+
@@ -135,9 +142,15 @@
                             '<div class="col-sm-4">'+
                                 dropdownList+
                             '</div>'+
-                            '<div class="col-sm-4">'+
+                            '<div class="col-sm-2">'+
                                 '<div class="col-md-1"></div>'+
                                 '<input type="text" class="form-control" name="payRate[]" />'+
+                            '</div>'+
+                            '<div class="col-sm-3">'+
+                                '<select name="payTypeDropdown[]" class="form-control">'+
+                                '<option value="0">Hourly</option>'+
+                                '<option value="1">Monthly</option>'+
+                                '</select>'+
                             '</div>'+
                             '<div class="col-sm-2">'+
                                 '<button type="button" class="btn btn-default removeButton"><i class="zmdi zmdi-minus"></i></button>'+
@@ -155,18 +168,21 @@
     
     function existingTutorFormat(existingTutorData,levelID,subjectID,branchID){
         var existingContainerHtml = "";
-        existingContainerHtml = '<h4>Existing Tutor Hourly Pay Rate</h4><div class="row"><div class="col-md-1"></div><div class="col-md-10"><br/><div class="statusMsg"></div>';
-           
-        existingContainerHtml += "<table class='table' id='existingTutorTable'><thead><th>Existing Tutor</th><th>PayRate</th><th>Action</th></thead><tbody>";
+        existingContainerHtml = '<h4>Existing Tutor Pay Rate</h4><div class="row"><div class="col-md-1"></div><div class="col-md-10"><br/><div class="statusMsg"></div>';
+        existingContainerHtml += "<table class='table' id='existingTutorTable'><thead><th>Existing Tutor</th><th>Pay By</th><th>PayRate</th><th>Action</th></thead><tbody>";
         for(i = 0 ; i < existingTutorData.length;i++){
             ids = existingTutorData[i].id+':'+levelID+':'+subjectID+':'+branchID;
-            //console.log(ids);
+            payTypeVal = existingTutorData[i].pay_type+"";
+            payTypeName = "Hourly";
+            if(payTypeVal === '1'){
+                payTypeName = "Monthly";
+            }
             existingContainerHtml +=
                 '<tr id="'+ids+'">'+ 
-                    '<td class="input-disabled">'+existingTutorData[i].name+
-                    '</td>'+
-                '<td><a href="#" class="edit_payrate" data-name="payrate"  data-pk="'+ids+'" data-title="Enter Tutor Cost">'+ existingTutorData[i].hourly_pay+'</a></td>'+
-                '<td><a data-toggle="modal" class="btn btn-danger btn-sm" href="#small" onclick="deleteTutorRate('+"'"+ids+"'"+')" ><i class="zmdi zmdi-delete"></i> Delete</a></td>'+
+                    '<td class="input-disabled">'+existingTutorData[i].name+'</td>'+
+                    '<td>'+payTypeName+'</td>'+
+                    '<td><a href="#" class="edit_payrate" data-name="payrate"  data-pk="'+ids+'" data-title="Enter Tutor Cost">'+ existingTutorData[i].pay_amount+'</a></td>'+
+                    '<td><a data-toggle="modal" class="btn btn-danger btn-sm" href="#small" onclick="deleteTutorRate('+"'"+ids+"'"+')" ><i class="zmdi zmdi-delete"></i> Delete</a></td>'+
                 '</tr>';
         }
         existingContainerHtml += '</tbody></table></div></div>';
@@ -176,13 +192,19 @@
     function appendingRowToExistingTutorFormat(existingTutorData,levelID,subjectID,branchID){
         for(i = 0 ; i < existingTutorData.length;i++){
             ids = existingTutorData[i].id+':'+levelID+':'+subjectID+':'+branchID;
-            //console.log(ids);
+         
+            payTypeVal = existingTutorData[i].pay_type+"";
+            payTypeName = "Hourly";
+            if(payTypeVal === "1"){
+                payTypeName = "Monthly";
+            }
+            
             existingContainerHtml =
                 '<tr id="'+ids+'">'+ 
-                    '<td class="input-disabled">'+existingTutorData[i].name+
-                    '</td>'+
-                '<td><a href="#" class="edit_payrate" data-name="payrate"  data-pk="'+ids+'" data-title="Enter Tutor Cost">'+ existingTutorData[i].hourly_pay+'</a></td>'+
-                '<td><a data-toggle="modal" class="btn btn-danger btn-sm" href="#small" onclick="deleteTutorRate('+"'"+ids+"'"+')" ><i class="zmdi zmdi-delete"></i> Delete</a></td>'+
+                    '<td class="input-disabled">'+existingTutorData[i].name+'</td>'+
+                    '<td>'+payTypeName+'</td>'+
+                    '<td><a href="#" class="edit_payrate" data-name="payrate"  data-pk="'+ids+'" data-title="Enter Tutor Cost">'+ existingTutorData[i].pay_amount+'</a></td>'+
+                    '<td><a data-toggle="modal" class="btn btn-danger btn-sm" href="#small" onclick="deleteTutorRate('+"'"+ids+"'"+')" ><i class="zmdi zmdi-delete"></i> Delete</a></td>'+
                 '</tr>';
             $('#existingTutorTable').append(existingContainerHtml);
         }
@@ -332,7 +354,7 @@
 
 
             tutor_name = $('select[name="tutorDropdown[]"]').map(function () {
-                return  $(this).find('option:selected').text();
+                return $(this).find('option:selected').text();
             }).get();
 
 
@@ -340,22 +362,27 @@
             pay_rate = $('input[name="payRate[]"]').map(function () {
                 return $(this).val();
             }).get();
+            
+            pay_type = $('select[name="payTypeDropdown[]"]').map(function () {
+                return $(this).find('option:selected').val();
+            }).get();
 
 
             var tutorPayArr = [];
             for(i = 0; i < tutor_id.length-1;i++){
                 var tutorPayObj = {
-                            "id": tutor_id[i],
-                            "level_id": levelID,
-                            "subject_id": subjectID,
-                            "branch_id": branchID,
-                            "name":tutor_name[i],
-                            "hourly_pay": pay_rate[i]};
+                    "id": tutor_id[i],
+                    "level_id": levelID,
+                    "subject_id": subjectID,
+                    "branch_id": branchID,
+                    "name":tutor_name[i],
+                    "pay_amount": pay_rate[i],
+                    "pay_type":pay_type[i]
+                };
                 tutorPayArr[i] = tutorPayObj;
             }
 
-
-               $.ajax({
+            $.ajax({
                 type:'POST',
                 url: 'CreateTutorHourlyRate',
                 data: {pay_rate_arr: JSON.stringify(tutorPayArr),action:"individual"},
@@ -367,9 +394,6 @@
                     }else{
                         html = '<div class="alert alert-danger col-md-12"><strong>This tutor is existed.Try another tutor!</strong></div>';   
                     }
-
-                    //
-
                     $(".statusMsg").html(html);
                     $('.statusMsg').fadeIn().delay(1000).fadeOut(); 
                 }
@@ -382,7 +406,6 @@ function UIUpadateUponSuccessfulCreation(tutorPayArr,levelID,subjectID,branchID)
     if($("#existingTutorTable").length){
         // Appending to table
         appendingRowToExistingTutorFormat(tutorPayArr,levelID,subjectID,branchID);
-
         // allow to edit
         editHourlyRate();
 
@@ -402,15 +425,15 @@ function UIUpadateUponSuccessfulCreation(tutorPayArr,levelID,subjectID,branchID)
         $("#inputHourlyRateNum").val('');
 
 
-//                            new_select_dropdown = "<select name='tutorDropdown[]' class='form-control tutorAssignmentDropdown'>";
-//                            for(i=0;i<newTutorLists.length;i++){
-//                                select_dropdown += "<option id='tutorDropdown' value='"+newTutorLists[i].id+"'>"+newTutorLists[i].name+"</option>";
-//                            }
+//            new_select_dropdown = "<select name='tutorDropdown[]' class='form-control tutorAssignmentDropdown'>";
+//            for(i=0;i<newTutorLists.length;i++){
+//                select_dropdown += "<option id='tutorDropdown' value='"+newTutorLists[i].id+"'>"+newTutorLists[i].name+"</option>";
+//            }
 //
-//                            select_dropdown += "</select>";
-//                                            html = newTutorFormat(select_dropdown);
-//                                            $(".externalWrapper").html(html);
-//                                            createNewTutorPayRate(select_dropdown,levelID,subjectID,branchID);
+//            select_dropdown += "</select>";
+//                            html = newTutorFormat(select_dropdown);
+//                            $(".externalWrapper").html(html);
+//                            createNewTutorPayRate(select_dropdown,levelID,subjectID,branchID);
 
         }
     }
@@ -438,7 +461,7 @@ function UIUpadateUponSuccessfulCreation(tutorPayArr,levelID,subjectID,branchID)
                 }
             ],
         });
-          // Add event listener for opening and closing details
+        // Add event listener for opening and closing details
         $('#tutorHourlyRateTable').on('click', 'td.details-control', function () {
             var tr = $(this).closest('tr');
             var row = table.row( tr );

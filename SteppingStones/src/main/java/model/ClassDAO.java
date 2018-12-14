@@ -77,7 +77,7 @@ public class ClassDAO {
                 String classDay = rs.getString(6);
                 String startDate = rs.getString(8);
                 String endDate = rs.getString(9);
-                System.out.println(startDate);
+                //System.out.println(startDate);
                 int mthlyFees = rs.getInt(7);
                 String subject = SubjectDAO.retrieveSubject(subjectID);
                 String level = LevelDAO.retrieveLevel(levelID);
@@ -162,7 +162,7 @@ public class ClassDAO {
                 String type = rs.getString("class_type");
                 String levelStr = String.valueOf(levelID);
                 List<String> levelIDs = Arrays.asList(level.split(","));
-                System.out.println("Combined" + level);
+                //System.out.println("Combined" + level);
                 for(String level_id: levelIDs){
                     if(level_id.equals(levelStr)){
                         Class cls = new Class(classID, level, subject, term, startTime, endTime, classDay, mthlyFees, startDate, endDate, type);
@@ -199,7 +199,7 @@ public class ClassDAO {
                 String type = rs.getString("class_type");
                 String levelStr = String.valueOf(levelID);
                 List<String> levelIDs = Arrays.asList(level.split(","));
-                System.out.println("Combined" + level);
+                // System.out.println("Combined" + level);
                 for(String level_id: levelIDs){
                     if(level_id.equals(levelStr)){
                         Class cls = new Class(classID, level, subject, term, startTime, endTime, classDay, mthlyFees, startDate, endDate, type);
@@ -469,7 +469,7 @@ public class ClassDAO {
                     + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
 
-            System.out.println(sql);
+            //System.out.println(sql);
             stmt.setInt(1, level);
             stmt.setInt(2, subject);
             stmt.setDouble(3, mthlyFees);
@@ -505,7 +505,7 @@ public class ClassDAO {
 
     public boolean updateClass(int tutorID, String startTime, String endTime, String startDate, String endDate, int classID) {
         String sql = "update class set start_time = ?, end_time = ?, start_date = ?, end_date = ?, tutor_id = ? where class_id = ?";
-        System.out.println(sql);
+        //System.out.println(sql);
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, startTime);
@@ -514,7 +514,7 @@ public class ClassDAO {
             stmt.setString(4, endDate);
             stmt.setInt(5, tutorID);
             stmt.setInt(6, classID);
-            System.out.println(stmt);
+            //System.out.println(stmt);
 
             stmt.executeUpdate();
         } catch (Exception e) {
@@ -680,7 +680,7 @@ public class ClassDAO {
 
             while (rs.next()) {
                 String level = LevelDAO.retrieveLevel(rs.getInt(4));
-                System.out.println(rs.getString(3));
+                //System.out.println(rs.getString(3));
                 result.add(new Student(rs.getInt(1), rs.getString(2), rs.getInt(3), level));
             }
         } catch (SQLException ex) {
@@ -740,7 +740,7 @@ public class ClassDAO {
     
     public boolean retrieveOverlappingClassesForTutor(int tutorID, String start, String end, int classID, int day){
         String sql = "select * from class where tutor_id = ? and dayofweek(start_date) = ? and (start_time between ? and ? or ? between start_time and end_time) and class_id <> ?";
-        System.out.println(sql);
+        //System.out.println(sql);
         try(Connection conn = ConnectionManager.getConnection()){
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, tutorID);
@@ -749,7 +749,7 @@ public class ClassDAO {
             stmt.setString(4, end);
             stmt.setString(5, start);
             stmt.setInt(6, classID);
-            System.out.println(stmt);
+            //System.out.println(stmt);
             ResultSet rs = stmt.executeQuery();
             if(rs.next()){
                 return true;
@@ -838,7 +838,7 @@ public class ClassDAO {
     public static ArrayList<Class> listAllClassesBelongToTutors(int tutorID, int branchID) {
         ArrayList<Class> classList = new ArrayList();
         String sql = "select r.hourly_pay,c.class_day,c.class_id,c.level_id,c.class_type,c.subject_id,c.end_time,c.start_time,"
-                + "c.additional_lesson_id,c.combined FROM class as c,tutor_hourly_rate as r"
+                + "c.additional_lesson_id,c.combined,r.pay_type FROM class as c,tutor_hourly_rate as r"
                 + " WHERE c.tutor_id = ? AND c.branch_id=? AND r.subject_id=c.subject_id AND"
                 + " r.tutor_id = c.tutor_id AND r.level_id=c.level_id AND r.additonal_level_id=c.additional_lesson_id AND"
                 + " r.combined_class=c.combined AND"
@@ -858,6 +858,7 @@ public class ClassDAO {
                 String start_time = rs.getString("start_time");
                 String additionalLvl = "";
                 int combine = rs.getInt("combined");
+                int pay_type = rs.getInt("pay_type");
                 if(combine == 1){
                     String [] lvlIds = rs.getString("additional_lesson_id").split(",");
                     for(String lvlId:lvlIds){
@@ -880,7 +881,7 @@ public class ClassDAO {
                 additionalLvl = additionalLvl.substring(0, additionalLvl.length() - 1);
                 String subjectName = SubjectDAO.retrieveSubject(subject_id);
                 String className = start_time+"-"+end_time+"("+day+")"+"<br/>"+additionalLvl+"["+subjectName+"]";
-                Class c = new Class(classId,className,pay,additionalLvl,subjectName);
+                Class c = new Class(classId,className,pay,additionalLvl,subjectName,pay_type);
                 classList.add(c);
             }
         } catch (SQLException e) {
@@ -998,7 +999,7 @@ public class ClassDAO {
             stmt.setInt(1, classID);
             
             ResultSet rs = stmt.executeQuery();
-            System.out.println(rs);
+            //System.out.println(rs);
             if(rs.next()){
                 return true;
             }

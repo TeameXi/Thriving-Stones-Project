@@ -20,12 +20,9 @@ import java.awt.print.Paper;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -36,8 +33,6 @@ import javax.servlet.http.HttpServletResponse;
 import model.ClassDAO;
 import model.LevelDAO;
 import model.TutorDAO;
-import org.joda.time.Duration;
-import org.joda.time.Interval;
 
 @WebServlet(name = "GeneratePayslipServlet", urlPatterns = {"/GeneratePayslipServlet"})
 public class GeneratePayslipServlet extends HttpServlet {

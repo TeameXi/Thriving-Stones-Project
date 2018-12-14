@@ -137,7 +137,7 @@
                                 <ul>
                                     <li><a href="CreateTutor.jsp">Create Tutor</a></li>
                                     <li><a href="DisplayTutors.jsp">View Tutors</a></li>
-                                    <li><a href="MassUpdateTutorPay.jsp">Tutor Hourly Rate</a></li>
+                                    <li><a href="MassUpdateTutorPay.jsp">Tutor Pay Rate</a></li>
                                     <li><a href="MarkTutorAttendance.jsp">Tutor Attendance</a></li>
                                 </ul>
                             </li>
@@ -208,7 +208,7 @@
                                     <li><a href="GenerateFinancialReport.jsp">Generate Financial Report</a></li>
                                 </ul>
                             </li>
-                            <li><a href="StudentAnalytic.jsp"><i class="zmdi zmdi-chart"></i>Analytic</a></li>
+                            <!--<li><a href="StudentAnalytic.jsp"><i class="zmdi zmdi-chart"></i>Analytic</a></li>-->
                             
                       
                             <!-- <li><a href="RegisterForClasses.jsp"><i class="zmdi zmdi-library"></i>Register For Classes</a></li> -->

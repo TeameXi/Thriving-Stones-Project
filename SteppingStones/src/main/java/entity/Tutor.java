@@ -18,6 +18,7 @@ public class Tutor {
     private int branch_id;
     private double pay;
     private int totalClasses;
+    private int payType;
 
     public Tutor() {
     }
@@ -28,10 +29,11 @@ public class Tutor {
         this.name = name;
     }
     
-    public Tutor(int tutorId,String name,double pay){
+    public Tutor(int tutorId,String name,double pay,int payType){
         this.tutorId = tutorId;
         this.name = name;
         this.pay = pay;
+        this.payType = payType;
     }
     
     //Tutor Object With Class
@@ -228,6 +230,20 @@ public class Tutor {
      */
     public void setTotalClasses(int totalClasses) {
         this.totalClasses = totalClasses;
+    }
+
+    /**
+     * @return the payType
+     */
+    public int getPayType() {
+        return payType;
+    }
+
+    /**
+     * @param payType the payType to set
+     */
+    public void setPayType(int payType) {
+        this.payType = payType;
     }
 
 

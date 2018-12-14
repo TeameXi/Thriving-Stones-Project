@@ -53,9 +53,10 @@ public class CreateTutorHourlyRate extends HttpServlet {
                     int levelId = currObj.getInt("level_id");
                     int subjectId = currObj.getInt("subject_id");
                     int branchId = currObj.getInt("branch_id");
-                    double payRate = currObj.getDouble("hourly_pay");
+                    double payRate = currObj.getDouble("pay_amount");
+                    int payType = currObj.getInt("pay_type");
                     sqlOneRecord +="("+tutorId+","+levelId+","
-                            +subjectId+","+branchId+","+payRate+")";
+                            +subjectId+","+branchId+","+payRate+","+payType+")";
                     payRateRecord.add(sqlOneRecord);
                 }
 
@@ -85,9 +86,11 @@ public class CreateTutorHourlyRate extends HttpServlet {
                     int levelId = Integer.parseInt(levelIds.split(",")[0]);
                     int subjectId = currObj.getInt("subject_id");
                     int branchId = currObj.getInt("branch_id");
-                    double payRate = currObj.getDouble("hourly_pay");
+                    double payRate = currObj.getDouble("pay_amount");
+                    int payType = currObj.getInt("pay_type");
+
                     sqlOneRecord +="("+tutorId+","+levelId+","
-                            +subjectId+","+branchId+","+payRate+",'"+levelIds+"',1)";
+                            +subjectId+","+branchId+","+payRate+",'"+levelIds+"',1,"+payType+")";
                     payRateRecord.add(sqlOneRecord);
                 }
 

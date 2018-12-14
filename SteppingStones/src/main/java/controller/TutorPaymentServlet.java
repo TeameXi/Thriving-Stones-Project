@@ -65,7 +65,7 @@ public class TutorPaymentServlet extends HttpServlet {
                     String subjectName = c.getSubject();
                     double duration =  ClassDAO.getClassTime(classId);
 
-                    ArrayList<TutorPay> tutorPayListByMonths = LessonDAO.totalLessonTutorAttendForClass(tutorID, classId, tutorRate, duration);
+                    ArrayList<TutorPay> tutorPayListByMonths = LessonDAO.totalLessonTutorAttendForClass(tutorID, classId, tutorRate, duration,c.getPayType());
                     System.out.println(tutorPayListByMonths);
                     
                     // FOR MONTHLY PAY

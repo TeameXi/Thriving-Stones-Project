@@ -24,6 +24,7 @@ public class Class {
     
     private double tutorRate;
     private String className;
+    private int payType;
     
     public Class(int classID,String level, int subjectID, String startTime, String endTime, String classDay, double mthlyFees, String startDate, String endDate,String holidayDate,int tutorID) {
         this.classID = classID;
@@ -101,12 +102,13 @@ public class Class {
     
     
     // Payment Object
-    public Class(int classID,String className,double tutorRate,String level,String subjet){
+    public Class(int classID,String className,double tutorRate,String level,String subjet,int payType){
         this.classID = classID;
         this.className = className;
         this.tutorRate = tutorRate;
         this.level = level;
         this.subject = subjet;
+        this.payType = payType;
     }
     
     public String getCombinedLevel() {
@@ -309,6 +311,20 @@ public class Class {
      */
     public void setLevelID(int levelID) {
         this.levelID = levelID;
+    }
+
+    /**
+     * @return the payType
+     */
+    public int getPayType() {
+        return payType;
+    }
+
+    /**
+     * @param payType the payType to set
+     */
+    public void setPayType(int payType) {
+        this.payType = payType;
     }
 
 }

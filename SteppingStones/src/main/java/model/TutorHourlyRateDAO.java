@@ -21,7 +21,7 @@ public class TutorHourlyRateDAO {
     public static Boolean massUpdateTutorsHourlyRate(ArrayList<String> tutorHourlyRateLists) {
 
             String tutorRate =String.join(",", tutorHourlyRateLists);
-            String insertData = "INSERT INTO tutor_hourly_rate(tutor_id,level_id,subject_id,branch_id,hourly_pay) VALUES "+tutorRate;
+            String insertData = "INSERT INTO tutor_hourly_rate(tutor_id,level_id,subject_id,branch_id,hourly_pay,pay_type) VALUES "+tutorRate;
 
             try (Connection conn = ConnectionManager.getConnection();
                 PreparedStatement preparedStatement = conn.prepareStatement(insertData)) {
@@ -105,7 +105,7 @@ public class TutorHourlyRateDAO {
     
     public static ArrayList<Tutor> tutorListInPayTable(int branch_id,int subject_id,int level_id){
         ArrayList<Tutor> tutorListsWithoutHourlyPay = new ArrayList<>();
-        String mysql = "SELECT t.tutor_id,t.tutor_fullname,r.hourly_pay FROM tutor as t, tutor_hourly_rate as r "
+        String mysql = "SELECT t.tutor_id,t.tutor_fullname,r.hourly_pay,r.pay_type FROM tutor as t, tutor_hourly_rate as r "
                 + "WHERE t.tutor_id = r.tutor_id "
                 + "AND t.branch_id = ? AND r.subject_id = ? AND r.level_id = ? AND combined_class=0 ORDER BY t.tutor_fullname;";
         try (Connection conn = ConnectionManager.getConnection();
@@ -120,7 +120,8 @@ public class TutorHourlyRateDAO {
                 int id = rs.getInt(1);
                 String fullname = rs.getString(2);
                 double pay = rs.getDouble(3);
-                Tutor t = new Tutor(id,fullname,pay);
+                int payType = rs.getInt(4);
+                Tutor t = new Tutor(id,fullname,pay,payType);
                 tutorListsWithoutHourlyPay.add(t);
             }
         } catch (Exception e) {
@@ -157,7 +158,7 @@ public class TutorHourlyRateDAO {
     
     public static ArrayList<Tutor> tutorListInPayTableForCombine(int branch_id,int subject_id,String level_ids){
         ArrayList<Tutor> tutorListsWithoutHourlyPay = new ArrayList<>();
-        String mysql = "SELECT t.tutor_id,t.tutor_fullname,r.hourly_pay FROM tutor as t, tutor_hourly_rate as r "
+        String mysql = "SELECT t.tutor_id,t.tutor_fullname,r.hourly_pay,r.pay_type FROM tutor as t, tutor_hourly_rate as r "
                 + "WHERE t.tutor_id = r.tutor_id "
                 + "AND t.branch_id = ? AND r.subject_id = ? AND r.additonal_level_id = ? AND combined_class = 1 ORDER BY t.tutor_fullname;";
         try (Connection conn = ConnectionManager.getConnection();
@@ -172,7 +173,8 @@ public class TutorHourlyRateDAO {
                 int id = rs.getInt(1);
                 String fullname = rs.getString(2);
                 double pay = rs.getDouble(3);
-                Tutor t = new Tutor(id,fullname,pay);
+                int payType = rs.getInt(4);
+                Tutor t = new Tutor(id,fullname,pay,payType);
                 tutorListsWithoutHourlyPay.add(t);
             }
         } catch (Exception e) {
@@ -186,7 +188,7 @@ public class TutorHourlyRateDAO {
     // Combined LEVEL
     public static Boolean massUpdateTutorsHourlyRateForCombine(ArrayList<String> tutorHourlyRateLists) {
         String tutorRate =String.join(",", tutorHourlyRateLists);
-        String insertData = "INSERT ignore INTO tutor_hourly_rate(tutor_id,level_id,subject_id,branch_id,hourly_pay,additonal_level_id,combined_class) VALUES "+tutorRate;
+        String insertData = "INSERT ignore INTO tutor_hourly_rate(tutor_id,level_id,subject_id,branch_id,hourly_pay,additonal_level_id,combined_class,pay_type) VALUES "+tutorRate;
 
         try (Connection conn = ConnectionManager.getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(insertData)) {

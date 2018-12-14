@@ -984,38 +984,57 @@ public class LessonDAO {
     }
 
     // For Tutor Payment lesson listing
-    public static ArrayList<TutorPay> totalLessonTutorAttendAndPaidForClass(int tutorID, int classID, double payRate, double duration) {
-        ArrayList<TutorPay> payListByMonthlyLessons = new ArrayList<>();
+//    public static ArrayList<TutorPay> totalLessonTutorAttendAndPaidForClass(int tutorID, int classID, double payRate, double duration) {
+//        ArrayList<TutorPay> payListByMonthlyLessons = new ArrayList<>();
+//
+//        String sql = "SELECT count(lesson_id),MONTHNAME(start_date),MONTH(start_date),YEAR(end_date) FROM lesson WHERE"
+//                + " tutor_id = ? AND class_id = ? AND tutor_attended = 1 "
+//                + "AND tutor_payment_status = 1 AND replacement_tutor_id = 0 GROUP BY YEAR(end_date),MONTH(start_date)";
+//
+//        try (Connection conn = ConnectionManager.getConnection()) {
+//            PreparedStatement stmt = conn.prepareStatement(sql);
+//            stmt.setInt(1, tutorID);
+//            stmt.setInt(2, classID);
+//
+//            ResultSet rs = stmt.executeQuery();
+//
+//            int inititalLesson = 1;
+//            int endLesson = 0;
+//            while (rs.next()) {
+//                int totalLessons = rs.getInt(1);
+//                endLesson = inititalLesson + totalLessons - 1;
+//                String lessonName = "L" + inititalLesson + " - " + "L" + endLesson + "(" + rs.getString(2) + ")";
+//                inititalLesson = endLesson + 1;
+//                double amount = payRate * duration * totalLessons;
+//                TutorPay tutorpayList = new TutorPay(tutorID, classID, lessonName, amount, "paid", rs.getInt(3), rs.getInt(4), totalLessons);
+//                payListByMonthlyLessons.add(tutorpayList);
+//            }
+//        } catch (SQLException ex) {
+//            Logger.getLogger(LessonDAO.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return payListByMonthlyLessons;
+//    }
 
-        String sql = "SELECT count(lesson_id),MONTHNAME(start_date),MONTH(start_date),YEAR(end_date) FROM lesson WHERE"
-                + " tutor_id = ? AND class_id = ? AND tutor_attended = 1 "
-                + "AND tutor_payment_status = 1 AND replacement_tutor_id = 0 GROUP BY YEAR(end_date),MONTH(start_date)";
-
+    public static int totalLessonTutorAttendedForClassMonthlyCount(int tutorID, int classID){
+        String sql = "SELECT month(start_date)  FROM lesson WHERE class_id = ? AND tutor_id = ? AND tutor_attended = 1 AND tutor_payment_status = 0 GROUP BY month(start_date)";
+        int rowCount = 0;
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setInt(1, tutorID);
-            stmt.setInt(2, classID);
-
+            stmt.setInt(1, classID);
+            stmt.setInt(2, tutorID);
+            
             ResultSet rs = stmt.executeQuery();
-
-            int inititalLesson = 1;
-            int endLesson = 0;
-            while (rs.next()) {
-                int totalLessons = rs.getInt(1);
-                endLesson = inititalLesson + totalLessons - 1;
-                String lessonName = "L" + inititalLesson + " - " + "L" + endLesson + "(" + rs.getString(2) + ")";
-                inititalLesson = endLesson + 1;
-                double amount = payRate * duration * totalLessons;
-                TutorPay tutorpayList = new TutorPay(tutorID, classID, lessonName, amount, "paid", rs.getInt(3), rs.getInt(4), totalLessons);
-                payListByMonthlyLessons.add(tutorpayList);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(LessonDAO.class.getName()).log(Level.SEVERE, null, ex);
+           
+            rs.last();
+            rowCount = rs.getRow();
+            rs.beforeFirst();
+        }catch (SQLException ex) {
+            System.out.println(ex.getMessage());
         }
-        return payListByMonthlyLessons;
+        return rowCount;
     }
-
-    public static ArrayList<TutorPay> totalLessonTutorAttendForClass(int tutorID, int classID, double payRate, double duration) {
+    
+    public static ArrayList<TutorPay> totalLessonTutorAttendForClass(int tutorID, int classID, double payRate, double duration,int payType) {
         ArrayList<TutorPay> payListByMonthlyLessons = new ArrayList<>();
 
         String sql = "SELECT month(start_date) FROM lesson WHERE tutor_id = ? AND class_id = ? AND tutor_attended=0 limit 1";
@@ -1046,7 +1065,11 @@ public class LessonDAO {
                 endLesson = inititalLesson + totalLessons - 1;
                 String lessonName = "L" + inititalLesson + " - " + "L" + endLesson;
                 inititalLesson = endLesson + 1;
-                double amount = payRate * duration * totalLessons;
+                double amount = payRate;
+                if(payType == 0){
+                    amount = payRate * duration * totalLessons;
+                }
+                
                 TutorPay tutorpayList = new TutorPay(tutorID, classID, lessonName, amount, "paid", rs2.getInt(3), rs2.getInt(4), totalLessons);
                 payListByMonthlyLessons.add(tutorpayList);
             }
@@ -1066,7 +1089,10 @@ public class LessonDAO {
                 endLesson = inititalLesson + totalLessons - 1;
                 String lessonName = "L" + inititalLesson + " - " + "L" + endLesson;
                 inititalLesson = endLesson + 1;
-                double amount = payRate * duration * totalLessons;
+                double amount = payRate;
+                if(payType == 0){
+                    amount = payRate * duration * totalLessons;
+                }
                 TutorPay tutorpayList = new TutorPay(tutorID, classID, lessonName, amount, "should pay", rs3.getInt(3), rs3.getInt(4), totalLessons);
                 payListByMonthlyLessons.add(tutorpayList);
             }

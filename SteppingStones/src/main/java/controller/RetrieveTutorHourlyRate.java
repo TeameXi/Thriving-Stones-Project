@@ -73,7 +73,8 @@ public class RetrieveTutorHourlyRate extends HttpServlet {
                         JSONObject tObj = new JSONObject();
                         tObj.put("id", t.getTutorId());
                         tObj.put("name", t.getName());
-                        tObj.put("hourly_pay", t.getPay());
+                        tObj.put("pay_amount", t.getPay());
+                        tObj.put("pay_type",t.getPayType());
 
                         existingtutorJSONPayLists.put(tObj);
                     }
@@ -115,7 +116,8 @@ public class RetrieveTutorHourlyRate extends HttpServlet {
                         JSONObject tObj = new JSONObject();
                         tObj.put("id", t.getTutorId());
                         tObj.put("name", t.getName());
-                        tObj.put("hourly_pay", t.getPay());
+                        tObj.put("pay_amount", t.getPay());
+                        tObj.put("pay_type",t.getPayType());
 
                         existingtutorJSONPayLists.put(tObj);
                     }
