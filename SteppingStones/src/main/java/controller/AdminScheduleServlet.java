@@ -659,13 +659,13 @@ public class AdminScheduleServlet extends HttpServlet {
                     List<String> levelList = Arrays.asList(levels.split(","));
 
                     String holidays = request.getParameter("holidays");
-
+                    System.out.println(holidays + " YAYYYYY");
                     if (holidays == null) {
                         holidays = "";
                     }
 
                     List<String> holidayDates = Arrays.asList(holidays.split(","));
-
+                    System.out.println(holidayDates.size() + " FINALLY");
                     int branchID = Integer.parseInt(request.getParameter("branchID"));
                     int tutorID = Integer.parseInt(request.getParameter("tutorID"));
                     int subjectID = Integer.parseInt(request.getParameter("subjectID"));
@@ -722,7 +722,7 @@ public class AdminScheduleServlet extends HttpServlet {
                             int payment = 0;
 
                             int day = start_date.getDayOfWeek();
-
+                            System.out.println(day + " DAY OF WEEK");
                             String dayOfWeek = "";
                             switch (day) {
                                 case 1:
@@ -822,6 +822,7 @@ public class AdminScheduleServlet extends HttpServlet {
 //                                }
 
                                 if (classID != 0) {
+                                    System.out.println(classID + " CLASS INSERTED");
                                     insertClass = true;
                                     int numLesson = 0;
                                     LinkedList<DateTime> weeklyLessons = new LinkedList<>();
@@ -831,10 +832,10 @@ public class AdminScheduleServlet extends HttpServlet {
                                         if (start_date.getDayOfWeek() == day) {
                                             if (!holidayDates.contains(date.print(start_date))) {
                                                 weeklyLessons.add(start_date);
-                                                reachedDay = true;
                                             }
+                                            reachedDay = true;
                                         }
-
+                                        
                                         if (reachedDay) {
                                             start_date = start_date.plusWeeks(1);
                                         }
