@@ -37,15 +37,28 @@ public class DeleteLevelServlet extends HttpServlet {
         try(PrintWriter out = response.getWriter()){
             if(!"".equals(request.getParameter("subjectID"))){
                 int subjectID = Integer.parseInt(request.getParameter("subjectID"));
-                int levelID = Integer.parseInt(request.getParameter("levelID"));
                 int branchID = Integer.parseInt(request.getParameter("branchID"));
-                System.out.println("levelID " + levelID + " subjectID" + subjectID + "branchID" + branchID);
-                SubjectDAO subjectDAO = new SubjectDAO();
-                boolean status =  subjectDAO.deleteSubjectLevelRel(subjectID, levelID, branchID);
-                if (status == true) {
-                    out.println(1);
-                } else {
-                    out.println(0);
+                String level_id = request.getParameter("levelID");
+                if(level_id.contains(",")){
+                    //Combined class
+                    //System.out.println("levelID " + level_id + " subjectID" + subjectID + "branchID" + branchID);
+                    boolean status = SubjectDAO.deleteSubjectLevelRelForCombined(level_id,subjectID,branchID);
+                    if (status == true) {
+                        out.println(1);
+                    } else {
+                        out.println(0);
+                    }
+                }else{
+                    // Normal class
+                    int levelID = Integer.parseInt(level_id);
+                    //System.out.println("levelID " + levelID + " subjectID" + subjectID + "branchID" + branchID);
+                    SubjectDAO subjectDAO = new SubjectDAO();
+                    boolean status =  subjectDAO.deleteSubjectLevelRel(subjectID, levelID, branchID);
+                    if (status == true) {
+                        out.println(1);
+                    } else {
+                        out.println(0);
+                    }
                 }
             }else{
                 out.println(0);

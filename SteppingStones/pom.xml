@@ -58,9 +58,11 @@
             <version>3.17</version>
         </dependency>
         <dependency>
-            <groupId>com.qoppa.pdfwriter</groupId>
-            <artifactId>pdfwriter</artifactId>
+            <groupId>com.qoppa.pdfWriter</groupId>
+            <artifactId>pdfWriter</artifactId>
             <version>v2016R1.04</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/jPDFWriter.v2016R1.04.jar</systemPath>
         </dependency>
     </dependencies>
 

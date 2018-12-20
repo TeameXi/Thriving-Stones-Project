@@ -1,3 +1,4 @@
+<%@page import="java.util.HashMap"%>
 <%@page import="model.LevelDAO"%>
 <%@page import="entity.Subject"%>
 <%@page import="model.SubjectDAO"%>
@@ -14,9 +15,10 @@
         position: relative;
         display: inline-block;
         vertical-align: top;
-        height: 150px;
+        min-height: 150px;
         width: 200px;
         margin: 10px;
+        height: auto;
     }
     
     .lvl_styling{
@@ -91,7 +93,14 @@
                     if(!secondary.equals("")){
                         out.println("<span class='survey-country'><i class='zmdi zmdi-bookmark'>&nbsp;&nbsp;</i><span id='lvl_"+id+"'>");
                         out.println(secondary + "</span></span><br>");
-                    }     
+                    }  
+                    
+                    //For Combined Case
+                    HashMap<String,String> combined_level = LevelDAO.retrieveCombinedLevelBySubject(id, branch_id); 
+                    for(String key : combined_level.keySet()){
+                        out.println("<span id='"+key+"' class='survey-country'><i class='zmdi zmdi-plus-circle'>&nbsp;&nbsp;</i>");
+                        out.println(combined_level.get(key)+"</span>");
+                    }
                 }
         %>
         <div class="pull-right">
@@ -197,12 +206,13 @@
                 dataType: 'JSON',
                 data: {subjectID: subject_id, branchID: branchId},
                 success: function (data) {
-
                     $("#subject_id").val(data["id"]);
                     $("#subject_name").val(data["name"]);
                     html = "";
                     for(var i=0; i < data["lvl_names"].length; i++){
-                        html += "<div id='lvl_wrapper_"+data["lvl_ids"][i]+"' class='lvl_styling col-sm-3'>"+data["lvl_names"][i] + "<a href='#level_delete_confirmation' data-toggle='modal' onclick='deleteLevel("+data["id"]+","+data["branch_id"] +","+data["lvl_ids"][i]+")' class='lvl_delete_styling'><i class='zmdi zmdi-close-circle zmdi-hc-2x'></i></a></div>";
+                        wrapper_replaced_id = data["lvl_ids"][i].replace(/,/g, "_");
+                        replaced_id = '"'+wrapper_replaced_id+'"';
+                        html += "<div id='lvl_wrapper_"+wrapper_replaced_id+"' class='lvl_styling col-sm-3'>"+data["lvl_names"][i] + "<a href='#level_delete_confirmation' data-toggle='modal' onclick='deleteLevel("+data["id"]+","+data["branch_id"] +","+replaced_id+")' class='lvl_delete_styling'><i class='zmdi zmdi-close-circle zmdi-hc-2x'></i></a></div>";
                     }
                     html += "<br/>";
                     $("#lvlContainer").html(html);
@@ -223,6 +233,9 @@
     function deleteLevelQueryAjax(subject_id,level_id, branch_id){
         $("#level_delete_confirmation").modal('hide');
         $("#lvl_wrapper_"+level_id).remove();
+        original_dash_level_id = level_id;
+        level_id = level_id.replace(/_/g, ",");
+        
         $.ajax({
             type: 'POST',
             url: 'DeleteLevelServlet',
@@ -230,30 +243,39 @@
             data: {subjectID: subject_id, levelID: level_id, branchID: branch_id},
             success: function (data) {
                 if (data === 1) {
-                    $("#subid_" + subject_id).remove();
-                    $("#lvl_wrapper_"+level_id).remove();
-                    
                     html = '<div class="alert alert-success col-md-12"><strong>Success!</strong> Deleted Level from Subject successfully</div>';
-                    if(level_id > 6){
-                        span_lvl_name = "S_"+subject_id+"_"+(level_id-6);
-                        if(level_id === 10){
-                            prev_span = $('#'+span_lvl_name).prev();
-                            prev_span.remove(); 
-                        }else{
-                            span_comma_name ="CS_"+subject_id+"_"+(level_id-5);
-                            $("#"+span_comma_name).remove();
-                        }
-                        $('#'+span_lvl_name).remove();
+                    
+                    // Combined class case
+                    if(level_id.indexOf(",") > -1){
+                        combined_wrapper_ele = document.getElementById(level_id);
+                        combined_wrapper_ele.remove();
+                        
+                        $("#lvl_wrapper_"+original_dash_level_id).remove();
                     }else{
-                        span_lvl_name = "P_"+subject_id+"_"+(level_id);
-                        if(level_id === 6){
-                            prev_span = $('#'+span_lvl_name).prev();
-                            prev_span.remove();
+                        $("#subid_" + subject_id).remove();
+                        $("#lvl_wrapper_"+level_id).remove();
+
+                        if(level_id > 6){
+                            span_lvl_name = "S_"+subject_id+"_"+(level_id-6);
+                            if(level_id === 10){
+                                prev_span = $('#'+span_lvl_name).prev();
+                                prev_span.remove(); 
+                            }else{
+                                span_comma_name ="CS_"+subject_id+"_"+(level_id-5);
+                                $("#"+span_comma_name).remove();
+                            }
+                            $('#'+span_lvl_name).remove();
                         }else{
-                            span_comma_name ="CP_"+subject_id+"_"+(level_id+1);
-                            $("#"+span_comma_name).remove();
+                            span_lvl_name = "P_"+subject_id+"_"+(level_id);
+                            if(level_id === 6){
+                                prev_span = $('#'+span_lvl_name).prev();
+                                prev_span.remove();
+                            }else{
+                                span_comma_name ="CP_"+subject_id+"_"+(level_id+1);
+                                $("#"+span_comma_name).remove();
+                            }
+                            $('#'+span_lvl_name).remove();
                         }
-                        $('#'+span_lvl_name).remove();
                     }
                 } else {
                     html = '<div class="alert alert-danger col-md-12"><strong>Sorry!</strong> Something went wrong</div>';

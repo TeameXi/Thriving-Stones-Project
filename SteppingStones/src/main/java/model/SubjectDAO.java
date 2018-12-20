@@ -184,9 +184,28 @@ public class SubjectDAO {
         boolean deletedStatus = false;
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            String sql = "delete from lvl_sub_rel where level_id = ? and subject_id = ? and branch_id = ?";
+            String sql = "delete from lvl_sub_rel where level_id = ? and subject_id = ? and branch_id = ? and combined_class=0";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, levelID);
+            stmt.setInt(2, subjectID);
+            stmt.setInt(3, branchID);
+            stmt.executeUpdate(); 
+            conn.commit();
+            deletedStatus = true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return deletedStatus;
+    }
+    
+    //For combined level
+    public static boolean deleteSubjectLevelRelForCombined(String levelIDs, int subjectID, int branchID){
+        boolean deletedStatus = false;
+        try (Connection conn = ConnectionManager.getConnection();) {
+            conn.setAutoCommit(false);
+            String sql = "delete from lvl_sub_rel where additonal_level_id = ? and subject_id = ? and branch_id = ? and combined_class=1";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, levelIDs);
             stmt.setInt(2, subjectID);
             stmt.setInt(3, branchID);
             stmt.executeUpdate(); 

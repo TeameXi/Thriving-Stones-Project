@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Logger;
@@ -87,7 +88,7 @@ public class LevelDAO {
     public static ArrayList<String> retrieveLevelBySubject(int subjectID, int branchID){
         ArrayList<String> level = new ArrayList<>();
         try(Connection conn = ConnectionManager.getConnection()){
-            String sql = "select level_name from lvl_sub_rel, level where subject_id = ? and level.level_id = lvl_sub_rel.level_id and branch_id = ? order by level_name;";
+            String sql = "select level_name from lvl_sub_rel, level where additonal_level_id=0 and subject_id = ? and level.level_id = lvl_sub_rel.level_id and branch_id = ? order by level_name;";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, subjectID);
             stmt.setInt(2, branchID);
@@ -101,23 +102,83 @@ public class LevelDAO {
         return level;
     }
     
-    public static ArrayList<Level> retrieveLevelBySubject1(int subjectID, int branchID){
-        ArrayList<Level> levelLists = new ArrayList<>();
+    // AJax Retrieve all subject
+    public static HashMap<String,String> retrieveLevelBySubject1(int subjectID, int branchID){
+        HashMap<String,String> levelLists = new HashMap<>();
         try(Connection conn = ConnectionManager.getConnection()){
-            String sql = "select level.level_id,level_name from lvl_sub_rel, level where subject_id = ? and level.level_id = lvl_sub_rel.level_id and branch_id = ? order by level_name;";
+            String sql = "select level.level_id,level_name from lvl_sub_rel, level where additonal_level_id=0 and subject_id = ? and level.level_id = lvl_sub_rel.level_id and branch_id = ? order by level_name;";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, subjectID);
             stmt.setInt(2, branchID);
             ResultSet rs = stmt.executeQuery();
             while(rs.next()){
-                Level lvl = new Level(rs.getInt("level_id"),rs.getString("level_name"));
-                levelLists.add(lvl);
+                levelLists.put(rs.getInt("level_id")+"",rs.getString("level_name"));  
             } 
+            
+            //Combined level
+            sql = "select additonal_level_id from lvl_sub_rel where combined_class=1 and subject_id=? and branch_id=? order by level_id;";
+            stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, subjectID);
+            stmt.setInt(2, branchID);
+            ResultSet rs2 = stmt.executeQuery();
+            while(rs2.next()){
+                String str_lvlIds = rs2.getString(1);
+                String [] str_lvl_ids = str_lvlIds.split(",");
+                String result = "";
+                for(String id : str_lvl_ids){
+                    int parse_id = Integer.parseInt(id);
+                    if(parse_id < 7){
+                        result += "P"+id+",";
+                    }else{
+                        result += "S"+(parse_id-6)+",";
+                    }
+                }
+                if(result.length() > 0){
+                    result = result.substring(0, result.length() - 1);
+                }
+                
+                levelLists.put(str_lvlIds,result);
+                
+            }
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }  
         return levelLists;
     }
+   
+    // Combined Class Case
+    public static HashMap<String,String> retrieveCombinedLevelBySubject(int subjectID, int branchID){
+        HashMap<String,String> level = new HashMap<>();
+        try(Connection conn = ConnectionManager.getConnection()){
+            String sql = "select additonal_level_id from lvl_sub_rel where combined_class=1 and subject_id=? and branch_id=? order by level_id;";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, subjectID);
+            stmt.setInt(2, branchID);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){
+                String str_lvlIds = rs.getString(1);
+                String [] str_lvl_ids = str_lvlIds.split(",");
+                String result = "";
+                for(String id : str_lvl_ids){
+                    int parse_id = Integer.parseInt(id);
+                    if(parse_id < 7){
+                        result += "P"+id+",";
+                    }else{
+                        result += "S"+(parse_id-6)+",";
+                    }
+                }
+                if(result.length() > 0){
+                    result = result.substring(0, result.length() - 1);
+                }
+                level.put(str_lvlIds,result);
+                
+            } 
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }  
+        return level;
+    }
+    
     public Map<String, Integer> retrieveStudentPerLevel(){
         Map<String, Integer> returnList = new TreeMap<String, Integer>();
         String sql = "SELECT level_name, count(student_id) FROM level inner join student on student.level_id = level.level_id group by level.level_id";
