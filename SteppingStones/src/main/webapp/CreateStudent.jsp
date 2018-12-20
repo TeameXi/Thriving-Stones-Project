@@ -303,14 +303,14 @@
                 },
                 phone: {
                     validators: {
-                        callback: {
-                            message: 'Enter phone or email',
-                            callback: function (value, validator) {
-                                if (validator.getFieldElements('studentEmail').val().length > 0 || value.length > 0) {
-                                    return true;
-                                }
-                            }
-                        },
+//                        callback: {
+//                            message: 'Enter phone or email',
+//                            callback: function (value, validator) {
+//                                if (validator.getFieldElements('studentEmail').val().length > 0 || value.length > 0) {
+//                                    return true;
+//                                }
+//                            }
+//                        },
                         integer: {
                             message: 'Integer Only'
                         },
@@ -323,14 +323,14 @@
                 },
                 studentEmail: {
                     validators: {
-                        callback: {
-                            message: 'Enter phone or email',
-                            callback: function (value, validator) {
-                                if (validator.getFieldElements('phone').val().length > 0 || value.length > 0) {
-                                    return true;
-                                }
-                            }
-                        },
+//                        callback: {
+//                            message: 'Enter phone or email',
+//                            callback: function (value, validator) {
+//                                if (validator.getFieldElements('phone').val().length > 0 || value.length > 0) {
+//                                    return true;
+//                                }
+//                            }
+//                        },
                         emailAddress: {
                             message: 'Please enter valid email address'
                         }

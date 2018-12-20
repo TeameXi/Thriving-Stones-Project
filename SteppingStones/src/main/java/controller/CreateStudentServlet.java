@@ -123,6 +123,9 @@ public class CreateStudentServlet extends HttpServlet {
                     }
                 }
             }
+            if(phone == 0 && stuEmail == null){
+                stuPassword = "password";
+            }
             Users tempUser = new Users(username, stuPassword, "student", insertStudent, branchID);
             boolean userStatus = userDAO.addUser(tempUser);
             
