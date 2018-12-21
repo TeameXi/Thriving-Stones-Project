@@ -41,7 +41,7 @@
                                 <th scope="col">Details</th>
                                 <th scope="col">Due Date</th>
                                 <th scope="col">Outstanding Fees</th>
-                                <th scope="col"></th>
+                                <th scope="col">.</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -63,9 +63,9 @@
                                     out.println("<td>" + payment.getOutstandingCharges() + "</td>");
                                     out.println("<td>");
                                     %>
-                    <div class="col-md-3">
+                    
                         <button type="submit" class="btn btn-danger" name="details" value="<%=studentID%>" onClick="m(this.value)">Details</button>
-                    </div>
+                    
                                     <%
                                     out.println("</td></tr>");
                                     
@@ -87,9 +87,7 @@
                                     out.println("<td>" + payment.getOutstandingCharges() + "</td>");
                                     out.println("<td>");
                                     %>
-                    <div class="col-md-3">
                         <button type="submit" class="btn btn1" name="details" value="<%=studentID%>" onClick="m(this.value)">Details</button>
-                    </div>
                                     <%
                                     out.println("</td></tr>");
                                     
