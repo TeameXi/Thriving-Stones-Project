@@ -19,8 +19,8 @@
 
     <div id="header" style="text-align: center;margin: 10px;">Student Payment - <span class="tab_active" style="font-size: 14px">View 1</span>/<a href="StudentPaymentStatus.jsp">View 2</a></div>
     <div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-9">
+     
+        <div class="col-md-10">
                 <%                    
                     ArrayList<Payment> duePaymentData = new ArrayList<>();
                     PaymentDAO.getAllDueRegFees(duePaymentData);
@@ -34,7 +34,7 @@
                 %>
                 
                 <div class="table-responsive-sm">
-                    <table id="paymentTable" class="table display responsive nowrap" style="width:100%">
+                    <table id="paymentTable" class="table display nowrap" style="width:100%">
                         <thead class="thead-light">
                             <tr>
                                 <th scope="col">Student Name</th>

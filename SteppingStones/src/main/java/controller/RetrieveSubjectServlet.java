@@ -9,6 +9,7 @@ import entity.Level;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -41,16 +42,16 @@ public class RetrieveSubjectServlet extends HttpServlet {
             JSONObject obj = new JSONObject();
             int subjectID = Integer.parseInt(request.getParameter("subjectID"));
             int branchID = Integer.parseInt(request.getParameter("branchID"));
-            SubjectDAO subjects = new SubjectDAO();
-            String subjectName = subjects.retrieveSubject(subjectID);
+            String subjectName = SubjectDAO.retrieveSubject(subjectID);
 
-            ArrayList<Level> levelLists = LevelDAO.retrieveLevelBySubject1(subjectID, branchID);
+            HashMap<String,String> levelLists = LevelDAO.retrieveLevelBySubject1(subjectID, branchID);
             
             ArrayList<String> lvlNames = new ArrayList<>();
-            ArrayList<Integer> lvlIds = new ArrayList<>();
-            for(Level l : levelLists){
-                lvlNames.add(l.getLevelName());
-                lvlIds.add(l.getLevel_id());
+            ArrayList<String> lvlIds = new ArrayList<>();
+            
+            for(String key: levelLists.keySet()){
+                lvlIds.add(key);
+                lvlNames.add(levelLists.get(key));
             }
             if(subjectName != null){
                 obj.put("branch_id", branchID);
@@ -58,9 +59,7 @@ public class RetrieveSubjectServlet extends HttpServlet {
                 obj.put("name",subjectName);
                 obj.put("lvl_names",lvlNames);
                 obj.put("lvl_ids",lvlIds);
-
             }
-            
             out.println(obj);
        
         }
