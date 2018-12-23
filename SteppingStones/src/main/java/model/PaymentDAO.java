@@ -87,14 +87,14 @@ public class PaymentDAO {
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
             String sql = "insert into payment_reminder(class_id, student_id, payment_due_date, no_of_lessons, amount_charged, "
-                    + "outstanding_charge) value(?, ?, ?, ?, ?, ?)";
+                    + "outstanding_charge) value(?, ?, curdate(), ?, ?, ?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, classID);
             stmt.setInt(2, studentID);
-            stmt.setString(3, paymentDueDate);
-            stmt.setInt(4, noOfLessons);
-            stmt.setDouble(5, amountCharge);
-            stmt.setDouble(6, outstandingCharge);
+            //stmt.setString(3, paymentDueDate);
+            stmt.setInt(3, noOfLessons);
+            stmt.setDouble(4, amountCharge);
+            stmt.setDouble(5, outstandingCharge);
             stmt.executeUpdate();
             conn.commit();
             status = true;

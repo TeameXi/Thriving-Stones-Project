@@ -316,7 +316,7 @@ public class StudentDAO {
         ArrayList<Student> studentList = new ArrayList<Student>();
         try (Connection conn = ConnectionManager.getConnection();) {
             String sql = "select * from student where student_id not in"
-                    + "(select distinct s.student_id from student s, class_student_rel cs where s.student_id = cs.student_id and class_id = ?) and level_id = ?;";
+                    + "(select distinct s.student_id from student s, class_student_rel cs where s.student_id = cs.student_id and class_id = ? and status = 0) and level_id = ?;";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, classID);
             stmt.setInt(2, levelID);

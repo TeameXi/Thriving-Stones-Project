@@ -132,16 +132,18 @@ public class BulkClassRegistrationServlet extends HttpServlet {
                 }
                                
                 boolean dataMigration = ClassDAO.checkForBulkRegistrationType(classID);
+                insertOutFeesStatus = PaymentDAO.insertOutstandingTuitionFees(classID, studentID, joinDate, lessonNum, fees, fees);
                 //System.out.println("dataMigration" + dataMigration);
-                if(dataMigration){
-                    insertOutFeesStatus = PaymentDAO.insertOutstandingTuitionFees(classID, studentID, joinDate, lessonNum, fees, outstandingTuitionFees);
-                    
-                }else{
-                    insertOutFeesStatus = PaymentDAO.updateOutstandingChargeForNextYear(studentID, outstandingTuitionFees, classID);
-                    String studentName = StudentDAO.retrieveStudentName(studentID);
-                    String lvlSub = StudentDAO.retrieveStudentLevelbyIDD(studentID) + cls.getSubject();
-                    PaymentDAO.insertPaymentToRevenue(studentID, studentName, lessonNum, "First Installment", lvlSub, monthlyFees - outstandingTuitionFees, "");
-                }
+                System.out.println("outstandingTuitionFees" + outstandingTuitionFees);
+//                if(dataMigration){
+//                    insertOutFeesStatus = PaymentDAO.insertOutstandingTuitionFees(classID, studentID, joinDate, lessonNum, fees, outstandingTuitionFees);
+//                    
+//                }else{
+//                    insertOutFeesStatus = PaymentDAO.updateOutstandingChargeForNextYear(studentID, outstandingTuitionFees, classID);
+//                    String studentName = StudentDAO.retrieveStudentName(studentID);
+//                    String lvlSub = StudentDAO.retrieveStudentLevelbyIDD(studentID) + cls.getSubject();
+//                    PaymentDAO.insertPaymentToRevenue(studentID, studentName, lessonNum, "First Installment", lvlSub, monthlyFees - outstandingTuitionFees, "");
+//                }
                 
                 double totalOutstandingAmt = stu.getOutstandingAmt() + outstandingTuitionFees + outstandingDeposit;
                 //System.out.println("total out" + outstandingTuitionFees + " L " + outstandingDeposit);
