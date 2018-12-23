@@ -158,16 +158,20 @@ public class RegisterForClassesServlet extends HttpServlet {
                     if(joinDate == null || joinDate.isEmpty()){
                         joinDate = LessonDAO.getNearestLessonDate(classID);
                     }
-
+                    
+                    double totalOutstandingFees = StudentClassDAO.getTotalOutstandingAmt(classID, studentID);
+                    StudentClassDAO.deleteStudentClassRel(studentID, classID);
+                    
                     if(paymentType.equals("term")){
                         fees = monthlyFees * 3;
-                        status = StudentClassDAO.saveStudentToRegisterClass(classID, studentID, 0, 0, joinDate);
+                        status = StudentClassDAO.saveStudentToRegisterClass(classID, studentID, 0, totalOutstandingFees, joinDate);
                         reminders = PaymentDAO.getRemindersForPremiumStudent(classID, joinDate);
                         updateOutstandingFees = true;
 
                     }else{
                         fees = monthlyFees;
-                        status = StudentClassDAO.saveStudentToRegisterClass(classID, studentID, monthlyFees, monthlyFees, joinDate);
+                        totalOutstandingFees += monthlyFees;
+                        status = StudentClassDAO.saveStudentToRegisterClass(classID, studentID, monthlyFees, totalOutstandingFees, joinDate);
                         reminders = PaymentDAO.getReminders(classID, joinDate);
                         if(status){
                             Student stu = StudentDAO.retrieveStudentbyID(studentID,branchID);

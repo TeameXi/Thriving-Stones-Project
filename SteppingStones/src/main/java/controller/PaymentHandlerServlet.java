@@ -110,13 +110,15 @@ public class PaymentHandlerServlet extends HttpServlet {
                 
                 if(request.getParameter("update").equals("updateStudentFees")){
                 
-                    String depositAmtStr = request.getParameter("" + classID);
+                    String depositAmtStr = request.getParameter("Deposit" + classID);
                     double depositAmt = outstandingAmount;
-                    System.out.println("Deposit Str" + depositAmtStr + "outstanding" + depositAmt);
+                    System.out.println("Deposit Str" + depositAmtStr + "outstanding" + outstandingAmount);
                     if (depositAmtStr != null && !depositAmtStr.isEmpty()) {
                         depositAmt = Double.parseDouble(depositAmtStr);  
                     }
-                    calculatedOutstandingAmount = depositAmt - paymentAmount;
+                    double oldDepositAmt = PaymentDAO.getOldDepositAmt(studentID, classID);
+                    double extraDepositBringForward = outstandingAmount - oldDepositAmt;
+                    calculatedOutstandingAmount = depositAmt - paymentAmount + extraDepositBringForward;
 
                     int noOfLess = PaymentDAO.retrieveNoOfLessonPaymentReminder(studentID, classID);
                     double monthlyFees = depositAmt;
@@ -131,7 +133,9 @@ public class PaymentHandlerServlet extends HttpServlet {
                     finalOutstandingAmount.add(calculatedOutstandingAmount);
                     
                     Student stu = StudentDAO.retrieveStudentbyID(studentID);
-                    double totalOutstandingAmt = stu.getOutstandingAmt() - paymentAmount - (outstandingAmount - depositAmt);
+                    //double totalOutstandingAmt = stu.getOutstandingAmt() - paymentAmount - (outstandingAmount - depositAmt);
+                    double totalOutstandingAmt = stu.getOutstandingAmt() - paymentAmount - (oldDepositAmt - depositAmt);
+                    System.out.println("oldDeposit" + oldDepositAmt + "totalOut" + totalOutstandingAmt);
                     StudentDAO.updateStudentTotalOutstandingFees(studentID, totalOutstandingAmt);
                     System.out.println("After Deposit Payment" + totalOutstandingAmt + "  " + stu.getOutstandingAmt() + "  " + paymentAmount);
                 }
@@ -311,7 +315,7 @@ public class PaymentHandlerServlet extends HttpServlet {
             out.println("</body>");
             out.println("</HTML>");
         }else{
-            response.sendRedirect("StudentPaymentStatus.jsp");
+            response.sendRedirect("PaymentSummaryPage.jsp");
         }
         
     }

@@ -117,8 +117,9 @@
                                     } else if(payment.getPaymentType().equals("Deposit")){
                                         if(redirectFrom.equals("registration")){
                                             out.println("<td>");
+                                            String Deposit = "Deposit" + payment.getClassID();
                             %>
-                        <input name="<%=payment.getClassID()%>" class="form-control" type="text" step="0.01" value="<%=payment.getChargeAmount()%>">
+                        <input name="<%=Deposit%>" class="form-control" type="text" step="0.01" value="<%=payment.getChargeAmount()%>">
                         <%
                                         }else{
                                             out.println("<td>" + payment.getChargeAmount() + "</td>");

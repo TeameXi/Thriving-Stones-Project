@@ -37,7 +37,26 @@ public class StudentClassDAO {
 //        return status;
 //    }
     
-        public static boolean saveStudentToRegisterClass(int classID, int studentID, double deposit, double outstandingDeposit, String joinDate) {
+    
+    public static int retrieveStudentClassStatus(int classID, int studentID){ //check if student have register in the particular class before
+        int status = 0;
+        try (Connection conn = ConnectionManager.getConnection();) {
+            String sql = "SELECT count(*) FROM class_student_rel WHERE class_id = ? and student_id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, classID);
+            stmt.setInt(2, studentID);
+            
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                status = rs.getInt(1);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return status;
+    }
+    
+    public static boolean saveStudentToRegisterClass(int classID, int studentID, double deposit, double outstandingDeposit, String joinDate) {
         boolean status = false;
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
@@ -76,6 +95,30 @@ public class StudentClassDAO {
             System.out.println(e.getMessage());
         }
         return status;
+    }
+    
+    public static double getTotalOutstandingAmt(int classID, int studentID) { //get the totalOutstandingFees if student have register in the particular class before
+        double totalOutstandingAmt = 0;
+        double outstandingDeposit = 0;
+        double outstandingFirstInstallment = 0;
+        try (Connection conn = ConnectionManager.getConnection();) {
+            conn.setAutoCommit(false);
+            String sql  = "select outstanding_deposit, outstanding_first_installment from class_student_rel where student_id = ? and class_id = ?;";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, studentID);
+            stmt.setInt(2, classID);
+            
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                outstandingDeposit = rs.getDouble(1);
+                outstandingFirstInstallment = rs.getDouble(2);
+                totalOutstandingAmt = outstandingDeposit + outstandingFirstInstallment;
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error in getTotalOutstandingAmt method" + e.getMessage());
+        }
+        return totalOutstandingAmt;
     }
     
     public static boolean updateFirstInsatllment(int classID, int studentID) {
