@@ -450,15 +450,14 @@ public class AdminScheduleServlet extends HttpServlet {
                                 reminders.put(3, 3);
                                 reminders.put(7, 4);
                                 reminders.put(10, 3);
-                                reminders.put(13, 3);
-                                reminders.put(17, 4);
-                                reminders.put(20, 3);
-                                reminders.put(23, 3);
-                                reminders.put(27, 4);
-                                reminders.put(30, 3);
-                                reminders.put(33, 3);
-                                reminders.put(37, 4);
-                                reminders.put(40, 3);
+                                reminders.put(14, 4);
+                                reminders.put(18, 4);
+                                reminders.put(21, 3);
+                                reminders.put(25, 4);
+                                reminders.put(29, 4);
+                                reminders.put(32, 3);
+                                reminders.put(36, 4);
+                                reminders.put(40, 4);
                                 reminders.put(43, 3);
 
                                 if (type.equals("P")) {
@@ -779,15 +778,14 @@ public class AdminScheduleServlet extends HttpServlet {
                                 reminders.put(3, 3);
                                 reminders.put(7, 4);
                                 reminders.put(10, 3);
-                                reminders.put(13, 3);
-                                reminders.put(17, 4);
-                                reminders.put(20, 3);
-                                reminders.put(23, 3);
-                                reminders.put(27, 4);
-                                reminders.put(30, 3);
-                                reminders.put(33, 3);
-                                reminders.put(37, 4);
-                                reminders.put(40, 3);
+                                reminders.put(14, 4);
+                                reminders.put(18, 4);
+                                reminders.put(21, 3);
+                                reminders.put(25, 4);
+                                reminders.put(29, 4);
+                                reminders.put(32, 3);
+                                reminders.put(36, 4);
+                                reminders.put(40, 4);
                                 reminders.put(43, 3);
 
                                 if (type.equals("P")) {
