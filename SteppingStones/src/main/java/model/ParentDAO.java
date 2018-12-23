@@ -79,7 +79,7 @@ public class ParentDAO {
             stmt.setInt(1, studentID);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                parentInfo = parentInfo + "Guadiance<br>" + rs.getString("name") + " " + rs.getString("phone");
+                parentInfo = parentInfo + "Guardian<br>" + rs.getString("name") + " " + rs.getString("phone");
             }
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());

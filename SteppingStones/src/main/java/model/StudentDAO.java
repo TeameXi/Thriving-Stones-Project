@@ -453,10 +453,21 @@ public class StudentDAO {
             JSONObject student_obj = new JSONObject();
             JSONObject parent_obj = new JSONObject();
             if(rs.next()){
-                student_obj.put("student_name", rs.getString("student_name"));
-                student_obj.put("student_phone",rs.getString("student_phone"));
-                student_obj.put("address",rs.getString("address"));
-                student_obj.put("gender",rs.getString("gender"));
+                String student_name = rs.getString("student_name");
+                student_name = student_name.replace("\u0000","");
+                student_obj.put("student_name",student_name );
+                
+                String student_phone = rs.getString("student_phone");
+                student_phone =student_phone.replace("\u0000",""); 
+                student_obj.put("student_phone",student_phone);
+                
+                String address = rs.getString("address");
+                address = address.replace("\u0000","");
+                student_obj.put("address",address);
+                
+                String gender = rs.getString("gender");
+                gender = gender.replace("\u0000","");
+                student_obj.put("gender",gender);
                 
                 String temp_student_email = rs.getString("student_email");
                 if(temp_student_email != null && !temp_student_email.equals("")){
@@ -473,12 +484,15 @@ public class StudentDAO {
                 
                 parent_obj.put("parent_name",rs.getString("name"));
                 parent_obj.put("parent_phone",rs.getString("phone"));
-                parent_obj.put("parent_email",rs.getString("email"));
+                
+                String parent_email = rs.getString("email");
+                parent_email = parent_email.replace("\u0000", "");
+                parent_obj.put("parent_email",parent_email);
                 
                 String rel = rs.getString("relationship").trim();
                 rel = rel.replace("\u0000","");
-                
                 parent_obj.put("relationship",rel);
+                
                 parent_data = parent_obj.toString();
                 
 //                System.out.println(parent_data);
