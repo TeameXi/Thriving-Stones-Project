@@ -457,7 +457,15 @@ public class StudentDAO {
                 student_obj.put("student_phone",rs.getString("student_phone"));
                 student_obj.put("address",rs.getString("address"));
                 student_obj.put("gender",rs.getString("gender"));
-                student_obj.put("student_email", rs.getString("student_email"));
+                
+                String temp_student_email = rs.getString("student_email");
+                if(temp_student_email != null && !temp_student_email.equals("")){
+                    student_obj.put("student_email", rs.getString("student_email"));
+                }else{
+                    student_obj.put("student_email","");
+                }
+               
+                
                 String school =  rs.getString("school").trim();
                 school = school.replace("\u0000","");
                 student_obj.put("school",school);
@@ -794,18 +802,44 @@ public class StudentDAO {
             String studentData = stuObj.getStudent_data();
             JSONObject studentInfoObj = new JSONObject(studentData);
             
+            //System.out.println(studentInfoObj);
+            
             String parentData = stuObj.getParent_data();
             JSONObject parentInfoObj = new JSONObject(parentData);
             
-            System.out.println(parentInfoObj);
+            //System.out.println(parentInfoObj);
             
             // Data Value
-            String name = studentInfoObj.getString("student_name");
-            String phone = studentInfoObj.getString("student_phone");
-            String address = studentInfoObj.getString("address");
-            String gender = studentInfoObj.getString("gender");
-            String email = studentInfoObj.getString("student_email");
-            String school = studentInfoObj.getString("school");
+            String name = "";
+            if(studentInfoObj.has("student_name")){
+                name = studentInfoObj.getString("student_name");
+            }
+            
+            String phone = "";
+            if(studentInfoObj.has("student_phone")){
+                phone = studentInfoObj.getString("student_phone");
+            }
+            
+            String address = "";
+            if(studentInfoObj.has("student_phone")){
+                address = studentInfoObj.getString("address");
+            }
+            
+            String gender = "";
+            if(studentInfoObj.has("gender")){
+                gender = studentInfoObj.getString("gender");
+            }
+            
+            String email = "";
+            if(studentInfoObj.has("student_email")){
+                email = studentInfoObj.getString("student_email");
+            }
+            
+            String school = "";
+            if(studentInfoObj.has("school")){
+                school = studentInfoObj.getString("school");
+            }
+            
             
             int lvl_id = stuObj.getLevel_id();
             String level  = "";
@@ -814,11 +848,28 @@ public class StudentDAO {
             }else{
                 level = "Secondary "+(10-lvl_id);
             }
-
-            String parent_name = parentInfoObj.getString("parent_name");
-            String parent_phone = parentInfoObj.getString("parent_phone");
-            String parent_email = parentInfoObj.getString("parent_email");
-            String relationship = parentInfoObj.getString("relationship");
+            
+            
+            //parent data
+            String parent_name = "";
+            if(parentInfoObj.has("parent_name")){
+                parent_name = parentInfoObj.getString("parent_name");
+            }
+            
+            String parent_phone = "";
+            if(parentInfoObj.has("parent_phone")){
+                parent_phone = parentInfoObj.getString("parent_phone");
+            }
+            
+            String parent_email = "";
+            if(parentInfoObj.has("parent_phone")){
+                parent_email = parentInfoObj.getString("parent_email");
+            }
+              
+            String relationship = "";
+            if(parentInfoObj.has("relationship")){
+                relationship = parentInfoObj.getString("relationship");
+            }
             
             int column = 0;
             XSSFCell cell = row.createCell(column);
@@ -859,7 +910,7 @@ public class StudentDAO {
     }
     
         public static ArrayList<Student> listStudentsByLevel(int levelID, int branchID){
-        ArrayList<Student> studentList = new ArrayList<Student>();
+        ArrayList<Student> studentList = new ArrayList<>();
         try (Connection conn = ConnectionManager.getConnection();) {
             String sql = "select * from student where level_id = ? and branch_id = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
