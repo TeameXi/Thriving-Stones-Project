@@ -210,23 +210,28 @@ public class PaymentHandlerServlet extends HttpServlet {
             } else if (type.equals("Tuition Fees")) {
                 if(request.getParameter("update").equals("updatePayment")){
                     double depositAmt = PaymentDAO.retrieveDepositAmt(studentID, classID);
-                    if(depositAmt != chargeAmount){
-                        chargeAmount = depositAmt;
-                        if(outstandingAmount > chargeAmount){
-                            outstandingAmount = depositAmt;
-                        }
-                    }
+                    
+//                    if(depositAmt != chargeAmount){
+//                        chargeAmount = depositAmt;
+//                        if(outstandingAmount > chargeAmount){
+//                            outstandingAmount = depositAmt;
+//                        }
+//                    }
                     calculatedOutstandingAmount = outstandingAmount - paymentAmount;
-                     finalOutstandingAmount.add(calculatedOutstandingAmount);
-                    System.out.println( depositAmt + "Please " + outstandingAmount);
+                    finalOutstandingAmount.add(calculatedOutstandingAmount);
+//                    System.out.println( depositAmt + "Please " + outstandingAmount);
 
                     Student stu = StudentDAO.retrieveStudentbyID(studentID);
                     PaymentDAO.updateTuitionFeesOutstandingAmount(studentID, classID, dueDate, calculatedOutstandingAmount);
+//                    if(calculatedOutstandingAmount != 0){
+//                        double totalOutstandingAmt = stu.getOutstandingAmt() + calculatedOutstandingAmount;
+//                        StudentDAO.updateStudentTotalOutstandingFees(studentID, totalOutstandingAmt);
+//                    }
                     if (paymentAmount != 0) {
                         PaymentDAO.insertPaymentToRevenue(studentID, studentName, noOfLesson, "Tuition Fees", lvlSubject, paymentAmount, paymentDate);
                     }
 
-                    if (chargeAmount == outstandingAmount && paymentAmount != 0) {
+                    if (chargeAmount == outstandingAmount && paymentAmount != 0) { //if tuition fees are not fully paid by students
                         double totalOutstandingAmt = stu.getOutstandingAmt() + calculatedOutstandingAmount;
                         StudentDAO.updateStudentTotalOutstandingFees(studentID, totalOutstandingAmt);
                         System.out.println("After Tuition Fees Out" + totalOutstandingAmt + "  " + stu.getOutstandingAmt() + "  " + paymentAmount);

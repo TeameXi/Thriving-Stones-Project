@@ -144,8 +144,12 @@ public class BulkClassRegistrationServlet extends HttpServlet {
 //                    String lvlSub = StudentDAO.retrieveStudentLevelbyIDD(studentID) + cls.getSubject();
 //                    PaymentDAO.insertPaymentToRevenue(studentID, studentName, lessonNum, "First Installment", lvlSub, monthlyFees - outstandingTuitionFees, "");
 //                }
-                
-                double totalOutstandingAmt = stu.getOutstandingAmt() + outstandingTuitionFees + outstandingDeposit;
+                double totalOutstandingAmt = 0;
+                if(paymentType.equals("term")){
+                    totalOutstandingAmt = stu.getOutstandingAmt() + outstandingTuitionFees;
+                }else{
+                    totalOutstandingAmt = stu.getOutstandingAmt() + outstandingTuitionFees + outstandingDeposit;
+                }
                 //System.out.println("total out" + outstandingTuitionFees + " L " + outstandingDeposit);
                 updateOutstandingFees = StudentDAO.updateStudentTotalOutstandingFees(studentID, totalOutstandingAmt);
                 firstInstallentStatus = StudentClassDAO.updateFirstInsatllment(classID, studentID);
