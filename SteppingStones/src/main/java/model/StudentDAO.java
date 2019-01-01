@@ -342,6 +342,24 @@ public class StudentDAO {
         }
         return studentList;
     }
+    
+    public static ArrayList<Student> listStudentsEnrolledInSpecificClass(int classID){
+        ArrayList<Student> studentList = new ArrayList<>();
+        try (Connection conn = ConnectionManager.getConnection();) {
+            String sql = "select distinct student_id from class_student_rel where class_id = ?;";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, classID);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){               
+                int studentID = rs.getInt("student_id");
+                Student student = StudentDAO.retrieveStudentbyID(studentID);
+                studentList.add(student);
+            } 
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return studentList;
+    }
 
     public static Student retrieveStudentbyID(int studentID, int branch_id) {
         Student stu = null;

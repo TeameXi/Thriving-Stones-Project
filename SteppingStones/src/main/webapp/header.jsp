@@ -167,6 +167,7 @@
                                 </a>
                                 <!-- Sub menu -->
                                 <ul>
+                                    <li><a href="AvailableClasses.jsp">Classes Info</a></li>
                                     <li><a href="RegisterForClasses.jsp">Individual Class Registration / Deletion</a></li>
                                     <li><a href="BulkClassRegistration.jsp">Bulk Class Registration</a></li>
                                 </ul>

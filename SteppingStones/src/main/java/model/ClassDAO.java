@@ -179,7 +179,8 @@ public class ClassDAO {
     public static ArrayList<Class> getCombinedClassesByLevel(int branchID, int levelID) {
         ArrayList<Class> classList = new ArrayList();
         try (Connection conn = ConnectionManager.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement("select * from class where branch_id = ? and combined = 1;");
+            PreparedStatement stmt = conn.prepareStatement("select * from class where branch_id = ? and combined = 1 "
+                    + "and (year(start_date) = year(curdate()) or start_date > curdate());");
             stmt.setInt(1, branchID);
             ResultSet rs = stmt.executeQuery();
 
@@ -215,7 +216,8 @@ public class ClassDAO {
     
     public static void getClassesByLevel(int levelID, int branchID, ArrayList<Class> combinedCls) {
         try (Connection conn = ConnectionManager.getConnection()) {
-            String select_class_sql = "select * from class where branch_id = ? and level_id = ? and combined = 0;";
+            String select_class_sql = "select * from class where branch_id = ? and level_id = ? and combined = 0 "
+                    + "and (year(start_date) = year(curdate()) or start_date > curdate());";
             PreparedStatement stmt = conn.prepareStatement(select_class_sql);
             stmt.setInt(1, branchID);
             stmt.setInt(2, levelID);
@@ -240,6 +242,23 @@ public class ClassDAO {
         } catch (SQLException e) {
             System.out.print(e.getMessage());
         }
+    }
+    
+    public static double retrieveStudentFees(int studentID, int classID) {
+        double studentFees = 0;
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("select amount_charged from payment_reminder where student_id = ? and class_id = ? "
+                    + "and amount_charged = outstanding_charge order by payment_due_date limit 1;");
+            stmt.setInt(1, studentID);
+            stmt.setInt(2, classID);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                studentFees = rs.getDouble("amount_charged");
+            }
+        } catch (SQLException e) {
+            System.out.print("Error in retrieveStudentFees method?" + e.getMessage());
+        }
+        return studentFees;
     }
 
     public static ArrayList<Class> listAllClasses(int branchID) {

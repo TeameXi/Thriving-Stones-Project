@@ -502,7 +502,7 @@ public class PaymentDAO {
         boolean updatedStatus = false;
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            String sql = "update payment_reminder set amount_charged = ?, outstanding_charge = ? where student_id = ? and class_id = ?;";
+            String sql = "update payment_reminder set amount_charged = ?, outstanding_charge = ? where student_id = ? and class_id = ? and outstanding_charge = amount_charged;";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setDouble(1, monthlyFees);
             stmt.setDouble(2, monthlyFees);
