@@ -66,14 +66,14 @@ public class PaymentReminderJob implements Runnable {
                 }
 
                 LocalDateTime firstIndex = checkAgainstFirst.get(1).getStartDateTS().toLocalDateTime();
-                
+
                 for (int i : checkAgainstFirst.keySet()) {
                     //get the earliest class amongst those that need to remind and not reminded yet
-                    if (firstIndex.isAfter(checkAgainstFirst.get(i).getStartDateTS().toLocalDateTime())){
+                    if (firstIndex.isAfter(checkAgainstFirst.get(i).getStartDateTS().toLocalDateTime())) {
                         firstIndex = checkAgainstFirst.get(i).getStartDateTS().toLocalDateTime();
                     }
                 }
-                
+
                 for (int i : checkAgainstFirst.keySet()) {
                     //check whether the remaining classes are within 7 days of the earliest class
                     LocalDateTime iteratedLDT = checkAgainstFirst.get(i).getStartDateTS().toLocalDateTime();
@@ -104,7 +104,10 @@ public class PaymentReminderJob implements Runnable {
                         ParentDAO pDAO = new ParentDAO();
                         Parent currParent = pDAO.retrieveSpecificParentById(parentID);
                         int currPhoneNo = currParent.getPhone();
-                        SendSMS.sendingSMS("+65" + currPhoneNo, "Please be reminded to submit your child's tuition fees to Stepping Stones Learning Centre on " + currTime.toLocalDate() + ".");
+                        SendSMS.sendingSMS("+65" + currPhoneNo, "Dear Parent,\n"
+                                + "A gentle reminder that your child’s tuition fee is due on " + currTime.toLocalDate() + ". Thank you for the prompt payment.\n"
+                                + "\n"
+                                + "From Stepping Stones Learning Centre LLP");
                         for (Lesson les : notify) {
                             //set reminded to 1
                             LessonDAO.setReminded(le.getClassid(), le.getLessonid());
