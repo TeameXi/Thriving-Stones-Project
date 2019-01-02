@@ -53,7 +53,7 @@ public class RegisterForClassesServlet extends HttpServlet {
         int branchID = Integer.parseInt(request.getParameter("branch_id"));
         if(request.getParameter("search") != null){
             String student = (String) request.getParameter("student");
-            String[] parts = student.split("-");
+            String[] parts = student.split("#");
             String studentName = "";
             String studentEmail = "";
             int phone = 0;
@@ -148,8 +148,21 @@ public class RegisterForClassesServlet extends HttpServlet {
                     if(paymentType == null){
                         paymentType = "month";
                     }
-                    Class cls = ClassDAO.getClassByID(classID);
-                    double monthlyFees = cls.getMthlyFees();                     
+                    //Class cls = ClassDAO.getClassByID(classID);
+                    //double monthlyFees = cls.getMthlyFees();
+                    
+                    String monthlyFeesStr = request.getParameter(studentIDStr + classValue + "classFees");
+                    double monthlyFees = 0;
+                    if(monthlyFeesStr != null && !"".equals(monthlyFeesStr)){
+                        monthlyFees = Double.parseDouble(monthlyFeesStr);
+                    }
+                    
+                    String classFeesTermStr = request.getParameter(studentIDStr + classValue + "classFeesTerm");
+                    double termFees = 0;
+                    if(classFeesTermStr != null && !"".equals(classFeesTermStr)){
+                        termFees = Double.parseDouble(classFeesTermStr);
+                    }
+                                         
                     HashMap<String, Integer> reminders = null;
                     double fees = 0;
                     boolean status = false;
@@ -163,7 +176,7 @@ public class RegisterForClassesServlet extends HttpServlet {
                     StudentClassDAO.deleteStudentClassRel(studentID, classID);
                     
                     if(paymentType.equals("term")){
-                        fees = monthlyFees * 3;
+                        fees = termFees;
                         status = StudentClassDAO.saveStudentToRegisterClass(classID, studentID, 0, totalOutstandingFees, joinDate);
                         reminders = PaymentDAO.getRemindersForPremiumStudent(classID, joinDate);
                         updateOutstandingFees = true;

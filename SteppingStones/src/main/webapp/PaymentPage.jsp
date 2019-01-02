@@ -119,7 +119,7 @@
                                             out.println("<td>");
                                             String Deposit = "Deposit" + payment.getClassID();
                             %>
-                        <input name="<%=Deposit%>" class="form-control" type="text" step="0.01" value="<%=payment.getChargeAmount()%>">
+                        <input name="<%=Deposit%>" class="form-control" type="text" step="0.01" value="<%=payment.getChargeAmount()%>" readonly>
                         <%
                                         }else{
                                             out.println("<td>" + payment.getChargeAmount() + "</td>");
@@ -172,9 +172,9 @@
                         }
                         if(redirectFrom.equals("registration")){
                     %>
-                    <div class="col-md-3">
+                    <!--- <div class="col-md-3">
                         <button type="submit" class="btn btn1" name="update" value="updateStudentFees">Update Student Fees</button>
-                    </div>
+                    </div> ---!>
                     <%
                             
                         }

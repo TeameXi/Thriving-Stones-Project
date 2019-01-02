@@ -62,6 +62,7 @@ public class BulkClassRegistrationServlet extends HttpServlet {
                 }
                 String totalDepositUnusedStr = request.getParameter(studentIDStr + "totalDepositUnused");
                 String classFeesStr = request.getParameter(studentIDStr + "classFees");
+                String classFeesTermStr = request.getParameter(studentIDStr + "classFeesTerm");
                 String depositTopupAmtStr = request.getParameter(studentIDStr + "depositTopupAmt");
                 
                 double outstandingTuitionFees = 0;
@@ -77,6 +78,11 @@ public class BulkClassRegistrationServlet extends HttpServlet {
                 double monthlyFees = 0;
                 if (classFeesStr != null && !"".equals(classFeesStr)) {
                     monthlyFees = Double.parseDouble(classFeesStr);
+                }
+                
+                double termFees = 0;
+                if(classFeesTermStr != null && !"".equals(classFeesTermStr)){
+                    termFees = Double.parseDouble(classFeesTermStr);
                 }
                 
                 double depositTopupAmt = 0;
@@ -103,7 +109,8 @@ public class BulkClassRegistrationServlet extends HttpServlet {
                 int lessonNum = 0;
                 
                 if(paymentType.equals("term")){
-                    fees = monthlyFees * 3;
+                    //fees = monthlyFees * 3;
+                    fees = termFees;
                     lessonNum = 11;
                     System.out.println("Per Term" + fees + " " + deposit);
                     reminders = PaymentDAO.getRemindersForPremiumStudent(classID, joinDate);

@@ -204,9 +204,9 @@ public class StudentDAO {
                 String email = rs.getString("email");
                 String stu = "";
                 if(email != null && !email.isEmpty()){
-                    stu = name + "  -  " + email;
+                    stu = name + "  #  " + email;
                 }else{
-                    stu = name + "  -  " + phone;
+                    stu = name + "  #  " + phone;
                 }
                 
                 studentList.add(stu);

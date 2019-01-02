@@ -20,7 +20,7 @@
     <div class="row" id="errorMsg"></div>
     <div style="text-align: center;margin: 20px;"><span class="tab_active">Bulk Class Registration</span></div>
     <div class="row">
-        <div class="col-md-2"></div>
+        <div class="col-sm-2"></div>
         <div class="col-md-8">
             <form id="bulkRegistrationForm" method="POST" class="form-horizontal" action="BulkClassRegistrationServlet">
 
@@ -192,8 +192,8 @@
 //                                    <th scope="col">Deposit Top-up Amt</th><th scope="col">Outstanding Fees</th><th scope="col">Payment Per Term/Month</th></tr></thead><tbody>';
                         html += '<table id="BulkRegistration" class="table display responsive nowrap" style="width:90%"><thead class="thead-light"><tr>\n\
                                     <th scope="col"><button type="button" class="btn btn-danger btn-sm" onclick="myFunction()">All</button></th>\n\
-                                    <th scope="col">Student Name</th><th scope="col">Total Unused Deposit</th><th scope="col">Tuition Fees</th>\n\
-                                    <th scope="col">Payment Per Term/Month</th></tr></thead><tbody>';
+                                    <th scope="col">Student Name</th><th scope="col">Total Unused Deposit</th><th scope="col">Fees Per Month</th>\n\
+                                    <th scope="col">Fees Per Term</th><th scope="col">Payment Per Term/Month</th></tr></thead><tbody>';
                     }
                     var i;
                     for (i = 0; i < data.length; i++) {
@@ -220,9 +220,10 @@
 //                                        <input type="hidden" name =' + data[i].student + "totalDepositUnused" + ' value =' + data[i].totalDepositUnused +'></tr>';
                                 html += '<tr><td><input type="checkbox" name="studentID" value=' + data[i].student + '></td><td>' + data[i].name + '</td><td>' + data[i].totalDepositUnused + '</td>\n\
                                         <td><input type ="text" name =' + data[i].student + "classFees" + ' value =' + data[i].classFees +' class="form-control"></td>\n\
+                                        <td><input type ="text" name =' + data[i].student + "classFeesTerm" + ' value =' + data[i].classFees * 3 +' class="form-control"></td>\n\
                                         <input type ="hidden" name =' + data[i].student + "depositTopupAmt" + ' class="form-control">\n\
                                         <td><select name=' + data[i].student + "paymentType" + ' class="form-control" id="paymentType">\n\
-                                            <option value="term">Pay Per Term</option><option value="month">Pay Per Month</option></td>\n\
+                                            <option value="term">Per Term</option><option value="month">Per Month</option></td>\n\
                                         <input type="hidden" name="studentName" value="${classID}">\n\
                                         <input type="hidden" name =' + data[i].student + "totalDepositUnused" + ' value =' + data[i].totalDepositUnused +'></tr>';
                         }

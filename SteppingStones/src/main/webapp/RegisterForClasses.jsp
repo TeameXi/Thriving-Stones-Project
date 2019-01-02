@@ -1,3 +1,4 @@
+<%@page import="model.ClassDAO"%>
 <%@page import="model.StudentDAO"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="entity.Class"%>
@@ -161,7 +162,8 @@
                         
                         out.println("<td>"+ cls.getStartTime().substring(0, 5) + "-" + cls.getEndTime().substring(0, 5) +" ("+cls.getClassDay()+")"+"</td>");
                         out.println("<td>"+cls.getStartDate()+"</td>");
-                        out.println("<td>"+cls.getMthlyFees()+"</td>");
+                        double classFees = ClassDAO.retrieveStudentFees(student_id, cls.getClassID());
+                        out.println("<td>"+classFees+"</td>");
                         out.println("</tr>");
                     }
             %>
@@ -205,14 +207,14 @@
                             out.println("<td>"+norCls.getSubject()+"</td>");
                             out.println("<td>"+norCls.getStartTime().substring(0, 5)+ "-" + norCls.getEndTime().substring(0, 5) + " ("+norCls.getClassDay()+")"+"</td>");
                             out.println("<td>"+norCls.getStartDate()+"</td>");
-                            out.println("<td>"+norCls.getMthlyFees()+"</td>");
-                            out.println("<td>");
+                            //out.println("<td>"+norCls.getMthlyFees()+"</td>");
+                            String classFees = student_id + "" + norCls.getClassID() + "classFees";
                             %>
-                            <div class="input-group">
+                            <td><input type ="text" name=<%=classFees%> value=<%=norCls.getMthlyFees()%> class="form-control"></td>
+                            <td><div class="input-group">
                                 <input name="<%=norCls.getClassID()%>" type='text' class='form-control n_join_date'  placeholder='YYYY-MM-DD'> 
-                            </div>
+                            </div></td>
                             <%
-                            out.println("</td>");
                             out.println("</tr>");    
                                    
                         }
@@ -229,14 +231,14 @@
                             out.println("<td>"+comCls.getSubject()+" (Combined)</td>");
                             out.println("<td>"+comCls.getStartTime().substring(0, 5)+ "-" + comCls.getEndTime().substring(0, 5) + " ("+comCls.getClassDay()+")"+"</td>");
                             out.println("<td>"+comCls.getStartDate()+"</td>");
-                            out.println("<td>"+comCls.getMthlyFees()+"</td>");
-                            out.println("<td>");
+                            //out.println("<td>"+comCls.getMthlyFees()+"</td>");
+                            String classFees = student_id + "" + comCls.getClassID() + "classFees";
                             %>
-                            <div class="input-group">
+                            <td><input type ="text" name=<%=classFees%> value=<%=comCls.getMthlyFees()%> class="form-control"></td>
+                            <td><div class="input-group">
                                 <input name="<%=comCls.getClassID()%>" type='text' class='form-control n_join_date'  placeholder='YYYY-MM-DD'> 
-                            </div>
+                            </div><td>
                             <%
-                            out.println("</td>");
                             out.println("</tr>");    
                                    
                         }
@@ -256,7 +258,8 @@
                             <th scope="col">Class</th>
                             <th scope="col">Class Timing</th>
                             <th scope="col">Starting Date</th>
-                            <th scope="col">Monthly Fees</th>
+                            <th scope="col">Fees Per Month</th>
+                            <th scope="col">Fees Per Terms</th>
                             <th scope="col">Join Date</th>
                             <th scope="col">Payment Per Term/Month</th>
                         </tr>
@@ -274,9 +277,13 @@
                             out.println("<td>"+preCls.getSubject()+"</td>");
                             out.println("<td>"+preCls.getStartTime().substring(0, 5)+ "-" + preCls.getEndTime().substring(0, 5) + " ("+preCls.getClassDay()+")"+"</td>");
                             out.println("<td>"+preCls.getStartDate()+"</td>");
-                            out.println("<td>"+preCls.getMthlyFees()+"</td>");
+                            //out.println("<td>"+preCls.getMthlyFees()+"</td>");
+                            String classFees = student_id + "" + preCls.getClassID() + "classFees";
+                            String classFeesTerm = student_id + "" + preCls.getClassID() + "classFeesTerm";
                             String paymentType = preCls.getClassID()+"_paymentType";
                             %>
+                                    <td><input type ="text" name=<%=classFees%> value=<%=preCls.getMthlyFees()%> class="form-control"></td>
+                                    <td><input type ="text" name=<%=classFeesTerm%> value=<%=preCls.getMthlyFees()*3%> class="form-control"></td>
                                     <td>
                                         <div class="input-group">
                                         <input name="<%=preCls.getClassID()%>" type='text' class='form-control p_join_date'  placeholder='YYYY-MM-DD'>
