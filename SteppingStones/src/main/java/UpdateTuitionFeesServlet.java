@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 
+import entity.Student;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.PaymentDAO;
+import model.StudentDAO;
 
 /**
  *
@@ -55,7 +57,20 @@ public class UpdateTuitionFeesServlet extends HttpServlet {
             }else{
                 switch(action){
                     case "update":
+                        Student stu = StudentDAO.retrieveStudentbyID(studentID);
                         boolean updateStatus = PaymentDAO.updateTuitionFees(studentID, classID, fees);
+                        double oldDepositAmt = PaymentDAO.getOldDepositAmt(studentID, classID);
+                        double outstandingDepositAmt = PaymentDAO.getOutstandingDepositAmt(studentID, classID);
+                        double diff = oldDepositAmt - fees;
+                        boolean updateDeposit = false;
+                        boolean updateTotalOutstandingFees = false;
+                        if(oldDepositAmt == 0 || outstandingDepositAmt - diff < 0){
+                            updateDeposit = true;
+                            updateTotalOutstandingFees = true;
+                        }else{
+                            updateDeposit = PaymentDAO.updateDepositAmount(studentID, classID, outstandingDepositAmt - diff, oldDepositAmt - diff);
+                            updateTotalOutstandingFees = StudentDAO.updateStudentTotalOutstandingFees(studentID, stu.getOutstandingAmt() - diff);
+                        }
                         if(updateStatus){
                             out.println(1);
                         }else{

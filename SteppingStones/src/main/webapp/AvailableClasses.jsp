@@ -201,7 +201,7 @@
             dataType: "json",
             success: function(response) {
                 if(response === 1){
-                    html = '<br/><div class="alert alert-success col-md-12"><strong>Success!</strong> Delete successfully</div>';
+                    html = '<br/><div class="alert alert-success col-md-12"><strong>Success!</strong> Update successfully</div>';
                 }else{
                     html = '<br/><div class="alert alert-danger col-md-12"><strong>Sorry!</strong> Something went wrong</div>';   
                 }

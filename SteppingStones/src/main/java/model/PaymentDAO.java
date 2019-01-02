@@ -533,6 +533,22 @@ public class PaymentDAO {
         return oldDepositAmt;
     }
     
+    public static double getOutstandingDepositAmt(int studentID, int classID){
+        double outstandingDepositAmt = 0;
+        try (Connection conn = ConnectionManager.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("select outstanding_deposit from class_student_rel where student_id = ? and class_id = ?");
+            stmt.setInt(1, studentID);
+            stmt.setInt(2, classID);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                outstandingDepositAmt = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.out.print(e.getMessage());
+        }
+        return outstandingDepositAmt;
+    }
+    
     public static boolean updateDepositAmount(int studentID, int classID, double outstandingFees, double depositAmt) {
         boolean updatedStatus = false;
         try (Connection conn = ConnectionManager.getConnection();) {
