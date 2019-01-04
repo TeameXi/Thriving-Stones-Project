@@ -611,6 +611,57 @@ public class LessonDAO {
         }
         return deletedStatus;
     }
+    
+    public boolean retrieveOverlapLessons(int tutorID, String start, String end, int classID, int dayOfWeek){
+        String sql = "select * from lesson, class where lesson.class_id = class.class_id and lesson.tutor_id = ? and class_day = ? and (start_time between ? and ? or ? between start_time and end_time) and lesson.class_id <> ?";
+        
+        String day = "";
+        
+        switch(dayOfWeek){
+            case 1:
+                day = "Mon";
+                break;
+            case 2:
+                day = "Tue";
+                break;
+            case 3:
+                day = "Wed";
+                break;
+            case 4:
+                day = "Thur";
+                break;
+            case 5:
+                day = "Fri";
+                break;
+            case 6:
+                day = "Sat";
+                break;
+            case 7:
+                day = "Sun";
+                break;
+        }
+        
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            
+            stmt.setInt(1, tutorID);
+            stmt.setString(2, day);
+            stmt.setString(3, start);
+            stmt.setString(4, end);
+            stmt.setString(5, start);
+            stmt.setInt(6, classID);
+            
+            ResultSet rs = stmt.executeQuery();
+            
+            if(rs.next()){
+                return true;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(LessonDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return false;
+    }
 
     public boolean retrieveOverlappingLessonsForTutor(int tutorID, String start, String end, int classID) {
         String sql = "select * from lesson where (tutor_id = ? or replacement_tutor_id = ?) and (start_date between ? and ? or ? between start_date and end_date) and class_id <> ?";
@@ -632,6 +683,19 @@ public class LessonDAO {
             Logger.getLogger(LessonDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
+    }
+    
+    public void deleteLessonsAfterCurr(int classID){
+        String sql = "delete from lesson where class_id = ? and start_date > now()";
+        
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, classID);
+            
+            stmt.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(LessonDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public boolean deleteLessons(int classID) {
