@@ -55,7 +55,10 @@ public class UpdateStudentServlet extends HttpServlet {
                 out_amount = Double.parseDouble(request.getParameter("o_amount"));
             }
             
-            boolean status = StudentDAO.updateStudent(studentID, name, lvl, address, phone, email, req_amount, out_amount);
+            String school = request.getParameter("school");
+            String stream = request.getParameter("stream");
+            System.out.println(stream + " YAYYY");
+            boolean status = StudentDAO.updateStudent(studentID, name, lvl, address, phone, email, req_amount, out_amount, school, stream);
             if (status) {
                 out.println(1);
             } else {

@@ -379,10 +379,20 @@ public class StudentDAO {
                 int phone = rs.getInt("phone");
                 String address = rs.getString("address");
                 String email = rs.getString("email");
+                String school = rs.getString("school");
+                String stream = rs.getString("stream");
                 double reqAmt = rs.getDouble("required_amount");
                 double outstandingAmt = rs.getDouble("outstanding_amount");
                 String level = LevelDAO.retrieveLevel(levelID);
                 stu = new Student(studentID, studentNRIC, name, BOD, gender, level, branchID, phone, address, email, reqAmt, outstandingAmt);
+                
+                if(school != null && !school.equals("")){
+                    stu.setSchool(school);
+                }
+                
+                if(stream != null && !stream.equals("")){
+                    stu.setStream(stream);
+                }
             }
         } catch (SQLException e) {
             System.out.print(e.getMessage());
@@ -540,11 +550,11 @@ public class StudentDAO {
         return deletedStatus;
     }
 
-    public static boolean updateStudent(int studentID, String name, String lvl, String address, int phone, String email, double req_amount, double out_amount) {
+    public static boolean updateStudent(int studentID, String name, String lvl, String address, int phone, String email, double req_amount, double out_amount, String school, String stream) {
         boolean updatedStatus = false;
         try (Connection conn = ConnectionManager.getConnection();) {
             conn.setAutoCommit(false);
-            String sql = "update student set student_name = ?, level_id = ?, address = ?, phone = ?, email = ?, required_amount = ?, outstanding_amount = ? where student_id = ?";
+            String sql = "update student set student_name = ?, level_id = ?, address = ?, phone = ?, email = ?, required_amount = ?, outstanding_amount = ?, school = ?, stream = ? where student_id = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, name);
             stmt.setInt(2, LevelDAO.retrieveLevelID(lvl));
@@ -553,7 +563,9 @@ public class StudentDAO {
             stmt.setString(5, email);
             stmt.setDouble(6, req_amount);
             stmt.setDouble(7, out_amount);
-            stmt.setDouble(8 , studentID);
+            stmt.setDouble(10 , studentID);
+            stmt.setString(8, school);
+            stmt.setString(9, stream);
             stmt.executeUpdate();
             conn.commit();
             updatedStatus = true;

@@ -52,12 +52,23 @@ public class Retrieve_Update_StudentServlet extends HttpServlet {
             int phone = currStu.getPhone();
             double required_amount = currStu.getReqAmt();
             double outstanding_amount = currStu.getOutstandingAmt();
+            String school = currStu.getSchool();
+            String stream = currStu.getStream();
+            
             obj.put("name",name);
             obj.put("lvl", lvl);
             obj.put("address", address);
             obj.put("phone", phone);
             obj.put("r_amount", required_amount);
             obj.put("o_amount",outstanding_amount);
+            
+            if(school != null && !school.equals("")){
+                obj.put("school", school);
+            }
+            
+            if(stream != null && !stream.equals("")){
+                obj.put("stream", stream);
+            }
     
             out.println(obj);
         }finally{

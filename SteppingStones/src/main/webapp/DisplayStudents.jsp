@@ -20,7 +20,7 @@
         width: 250px;
         margin: 10px;
     }
-    
+
     .btn-default{
         background-color: #9ccbce;
         color:white;
@@ -94,13 +94,13 @@
                     <br style="clear:both">
                 </div>
             </div>
-             <div class="col-sm-3">
-                 <form action="ExportArchievedStudents" method="POST">
+            <div class="col-sm-3">
+                <form action="ExportArchievedStudents" method="POST">
                     <button type="submit" class="btn btn-default"><i class="zmdi zmdi-download"> </i> Archived Students</button>
                 </form>
             </div>
 
-        
+
         </div>
         <span class="toggler active" data-toggle="grid"><span class="zmdi zmdi-view-dashboard"></span></span>
         <span class="toggler" data-toggle="list"><span class="zmdi zmdi-view-list"></span></span>
@@ -258,6 +258,24 @@
 
                 <div class="row">
                     <div class = "col-sm-4">
+                        <p class = "form-control-label">School :</p>
+                    </div>
+                    <div class = "col-sm-8">
+                        <p><label id="view_school"></label></p>
+                    </div>
+                </div><br/>
+
+                <div class="row">
+                    <div class = "col-sm-4">
+                        <p class = "form-control-label">Stream :</p>
+                    </div>
+                    <div class = "col-sm-8">
+                        <p><label id="view_stream"></label></p>
+                    </div>
+                </div><br/>
+
+                <div class="row">
+                    <div class = "col-sm-4">
                         <p class = "form-control-label">Contact No :</p>
                     </div>
                     <div class = "col-sm-8">
@@ -321,13 +339,13 @@
                 </div><br/>
 
                 <div class="col-sm-4">
-<!--                    <form method="POST" action="">
-                        <input type="hidden" id="performanceId" />
-                        <button class="btn btn1">View Student Performance</button>
-                    </form>-->
+                    <!--                    <form method="POST" action="">
+                                            <input type="hidden" id="performanceId" />
+                                            <button class="btn btn1">View Student Performance</button>
+                                        </form>-->
                     <a href="IndividualGradeTracking.jsp" id="performanceLink" class="btn btn1">View Student Performance</a>
                 </div><br/><br/>
-                
+
 
             </div>  
 
@@ -367,6 +385,24 @@
                     </div>
                     <div class = "col-sm-8">
                         <p><input type ="text" class = "form-control" id="lvl" value =""/></p>
+                    </div>
+                </div><br/>
+                
+                <div class="row">
+                    <div class = "col-sm-4">
+                        <p class = "form-control-label">School :</p>
+                    </div>
+                    <div class = "col-sm-8">
+                        <p><input type ="text" class = "form-control" id="school" value =""/></p>
+                    </div>
+                </div><br/>
+                
+                <div class="row">
+                    <div class = "col-sm-4">
+                        <p class = "form-control-label">Stream :</p>
+                    </div>
+                    <div class = "col-sm-8">
+                        <p><input type ="text" class = "form-control" id="stream" value =""/></p>
                     </div>
                 </div><br/>
 
@@ -435,6 +471,8 @@
                     $("#address").val(data["address"]);
                     $("#r_amount").val(data["r_amount"]);
                     $("#o_amount").val(data["o_amount"]);
+                    $("#school").val(data["school"]);
+                    $("#stream").val(data["stream"]);
                 }
             });
 
@@ -453,6 +491,12 @@
                     $("#view_student_name").text(data["fullname"]);
                     if (data["birth_date"] !== "") {
                         $("#view_birthDate").text(data["birth_date"]);
+                    }
+                    if (data["school"] !== "") {
+                        $("#view_school").text(data["school"]);
+                    }
+                    if (data["stream"] !== "") {
+                        $("#view_stream").text(data["stream"]);
                     }
                     if (data["gender"] === "F") {
                         $("#view_gender").text("Female");
@@ -476,24 +520,24 @@
                     if (data["outstandingAmt"] !== "") {
                         $("#view_outstandingAmt").text(data["outstandingAmt"]);
                     }
-                    
+
                     var href = $("#performanceLink").attr("href");
-                    href += "?studentID="+student_id;
-                    $("#performanceLink").attr('href',href);
-                    
-                    
+                    href += "?studentID=" + student_id;
+                    $("#performanceLink").attr('href', href);
+
+
                 }
             });
         });
     });
 
-    
+
     (function () {
         $(function () {
             return $('[data-toggle]').on('click', function () {
                 var toggleView;
                 toggleView = $(this).addClass('active').attr('data-toggle');
-                if(toggleView !== "dropdown"){
+                if (toggleView !== "dropdown") {
                     $(this).siblings('[data-toggle]').removeClass('active');
                     if (toggleView !== "modal") {
                         return $('.surveys').removeClass('grid list').addClass(toggleView);
@@ -542,14 +586,16 @@
         phone = $("#phone").val();
         r_amount = $("#r_amount").val();
         o_amount = $("#o_amount").val();
-
+        school = $("#school").val();
+        stream = $("#stream").val();
+        
 
         $('#editStudent').modal('hide');
         $.ajax({
             type: 'POST',
             url: 'UpdateStudentServlet',
             dataType: 'JSON',
-            data: {studentID: id, name: name, lvl: lvl, address: address, phone: phone, r_amount: r_amount, o_amount: o_amount},
+            data: {studentID: id, name: name, lvl: lvl, address: address, phone: phone, r_amount: r_amount, o_amount: o_amount, school: school, stream: stream},
             success: function (data) {
                 if (data === 1) {
                     $("#name_" + id).text(name);

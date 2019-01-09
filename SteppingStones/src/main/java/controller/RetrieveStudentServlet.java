@@ -55,6 +55,8 @@ public class RetrieveStudentServlet extends HttpServlet {
                 String email = student.getEmail();
                 double reqAmt = student.getReqAmt();
                 double outstandingAmt = student.getOutstandingAmt();
+                String school = student.getSchool();
+                String stream = student.getStream();
                    
                 obj.put("id",id);
                 obj.put("nric",nric);
@@ -68,7 +70,14 @@ public class RetrieveStudentServlet extends HttpServlet {
                 obj.put("email",email);
                 obj.put("reqAmt",reqAmt);
                 obj.put("outstandingAmt",outstandingAmt);
-                                                
+                
+                if(school != null && !school.equals("")){
+                    obj.put("school", school);
+                }
+                
+                if(stream != null && !stream.equals("")){
+                    obj.put("stream", stream);
+                }                            
             }
             
             out.println(obj);
