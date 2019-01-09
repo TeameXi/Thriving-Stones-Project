@@ -689,7 +689,7 @@ public class ClassDAO {
 
     public ArrayList<Student> retrieveStudentsByClass(int classID) {
         ArrayList<Student> result = new ArrayList<>();
-        String sql = "select student_id, student_name, phone, level_id from student where student_id in (select student_id from class_student_rel where class_id = ?)";
+        String sql = "select student_id, student_name, phone, level_id from student where student_id in (select student_id from class_student_rel where class_id = ? and status = 0)";
 
         try (Connection conn = ConnectionManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
