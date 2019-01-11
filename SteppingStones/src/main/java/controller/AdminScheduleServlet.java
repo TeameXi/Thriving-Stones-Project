@@ -138,10 +138,14 @@ public class AdminScheduleServlet extends HttpServlet {
                     }
 
                     for (Tutor t : tutors) {
-                        String start = lesson.getStartDate();
-                        String end = lesson.getEndDate();
+                        String start = cls.getStartTime();
+                        String end = cls.getEndTime();
+                        
+                        DateTimeFormatter format = DateTimeFormat.forPattern("HH:mm:ss");
+               
+                        
                         if (lessonTutor != t.getTutorId()) {
-                            boolean overlap = lessonDAO.retrieveOverlappingLessonsForTutor(t.getTutorId(), start, end, cls.getClassID());
+                            boolean overlap = lessonDAO.retrieveOverlappingLessonsForTutor(t.getTutorId(), format.print(format.parseDateTime(start).plusMinutes(1)), format.print(format.parseDateTime(end).minusMinutes(1)), cls.getClassID());
 
                             if (!overlap) {
                                 JSONObject obj = new JSONObject();
