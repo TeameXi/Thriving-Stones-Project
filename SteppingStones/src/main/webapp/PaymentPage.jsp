@@ -86,6 +86,7 @@
                                 <th scope="col">Due Date</th>
                                 <th scope="col">Student Fees</th>
                                 <th scope="col">Outstanding Fees</th>
+                                <th scope="col">Additional Details</th>
                                 <th scope="col">Payment Amount</th>
                             </tr>
                         </thead>
@@ -144,17 +145,24 @@
                         <input type="hidden" value="<%=payment.getNoOfLessons()%>" name="noOfLessons[]">
                         <input type="hidden" value="<%=payment.getDetails()%>" name="subject[]">
                         <input type="hidden" value="<%=payment.getChargeAmount()%>" name="chargeAmount[]">
-                        <div class="col-md-6"><input name="paymentAmount[]" id="paymentAmount" class="form-control calculate" type="number" step="0.01"></div>
+                        <div class="col-md-8"><input name="additionalDetail[]" id="additionalDetail" class="form-control" type="text" ></div>
+                        
+                        <%        
+                                    out.println("</td><td>");
+                                
+                        %>
+                        <div class="col-md-8"><input name="paymentAmount[]" id="paymentAmount" class="form-control calculate" type="number" step="0.01"></div>
                         <%        
                                     out.println("</td></tr>");
                                 }
 
-                                out.println("<tr><td> </td><td> </td><td> </td><td><label>Total</label></td><td>");
+                                out.println("<tr><td> </td><td> </td><td> </td><td> </td><td><label>Total</label></td><td>");
                         %>
-                        <div class="col-md-6"><input name="totalAmount" id="totalAmount" class="form-control calculate" type="number" readonly></div>
+                        <div class="col-md-8"><input name="totalAmount" id="totalAmount" class="form-control calculate" type="number" readonly></div>
                         <%        
                                 out.println("</td></tr>");
                         %>
+                        
 
                         </tbody> 
                     </table>

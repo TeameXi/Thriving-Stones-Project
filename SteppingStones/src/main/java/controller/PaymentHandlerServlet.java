@@ -67,7 +67,8 @@ public class PaymentHandlerServlet extends HttpServlet {
         String[] noOfLessons = request.getParameterValues("noOfLessons[]");
         String[] subjects = request.getParameterValues("subject[]");
         String[] chargeAmounts = request.getParameterValues("chargeAmount[]");
-       
+        String[] additionalDetails = request.getParameterValues("additionalDetail[]");
+                
         String paymentDate = "";
         if(paymentMode.equals("Bank Transfer") || paymentMode.equals("Cheque") || paymentMode.equals("Credit Card")){
             paymentDate = request.getParameter("payment_date");
@@ -276,6 +277,7 @@ public class PaymentHandlerServlet extends HttpServlet {
             
             String subject = subjects[i];
             String lvlSubject = level + " " + subject;
+            String details = additionalDetails[i];
             double paymentAmount = 0;
             if (!paymentAmounts[i].isEmpty()) {
                 paymentAmount = Double.parseDouble(paymentAmounts[i]);
@@ -292,12 +294,12 @@ public class PaymentHandlerServlet extends HttpServlet {
             
             if(i==0){
                 nos = "" + (i+1);
-                descriptions = type + " for " + lvlSubject;
+                descriptions = type + " for " + lvlSubject + (details!=null && details.length() >0? " (" + details + ")" : "");
                 payment_amounts = "" + result;
                 outstanding_amounts = "" + outstandingAmountResult;
             }else{
                 nos = nos + "#" + (i+1);
-                descriptions = descriptions + "#" + type + " for " + lvlSubject;
+                descriptions = descriptions + "#" + type + " for " + lvlSubject + (details!=null && details.length() >0? " (" + details + ")" : "");
                 payment_amounts = payment_amounts + "#" + result; 
                 outstanding_amounts = outstanding_amounts + "#" + outstandingAmountResult;
             }

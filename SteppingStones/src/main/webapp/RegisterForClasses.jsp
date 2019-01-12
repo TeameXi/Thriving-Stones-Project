@@ -58,7 +58,7 @@
                                     ArrayList<String> stu = StudentDAO.listAllStudents(branch_id);
                                     String redirectStudentName = "";
                                     if (request.getParameter("studentName") != null) {
-                                        redirectStudentName = request.getParameter("studentName").trim();
+                                        redirectStudentName = request.getParameter("studentName").trim().replace("-", "#");
                                     } 
 
                                 %>

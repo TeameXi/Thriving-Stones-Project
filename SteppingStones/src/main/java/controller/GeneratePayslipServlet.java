@@ -104,11 +104,11 @@ public class GeneratePayslipServlet extends HttpServlet {
         // Draw to the page
         //Graphics2D g2d = newPage.createGraphics();
         g2d.setFont(new Font ("Calibri", Font.BOLD, 14));
-        g2d.drawString("Stepping Stones Learning Center", 260, 90);
+        g2d.drawString("Stepping Stones Learning Center", 259, 90);
 
         g2d.setFont(new Font ("Calibri", Font.PLAIN, 11));
-        g2d.drawString("Blk 145 Teck Whye Ave #01-159 Singapore 680145", 260, 110);
-        g2d.drawString("Phone No.:1231231 Email: contact@steppingstoneslc.com.sg ", 260, 130);
+        g2d.drawString("Blk 258 Bukit Panjang Ring Road #01-52 Singapore 670258", 259, 110);
+        g2d.drawString("Phone No.:6763 2660 Email: contact@steppingstoneslc.com.sg ", 259, 130);
         g2d.drawString("UEN No.: T16LL1821J", 260, 150);
         
         g2d.setFont(new Font ("Calibri", Font.BOLD, 16));
