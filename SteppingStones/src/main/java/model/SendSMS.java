@@ -3,11 +3,7 @@ package model;
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
-import connection.ConnectionManager;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.HashMap;
 
 public class SendSMS {
 
@@ -17,17 +13,10 @@ public class SendSMS {
 
     public static void sendingSMS(String phoneNum, String msg) {
 
-        try (Connection conn = ConnectionManager.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement("select account_sid, auth_token from twillio where branch_id = 1");
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                ACCOUNT_SID = rs.getString(1);
-                AUTH_TOKEN = rs.getString(2);
-            }
-        } catch (SQLException ex) {
-            System.out.println("error in retrieveStudentIDWithPhone sql");
-        }
-
+        HashMap<String, String> cred = TwilioDAO.getCredentials();
+        ACCOUNT_SID = cred.get("account_sid");
+        AUTH_TOKEN = cred.get("auth_token");
+        
         Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
 
         Message message = Message

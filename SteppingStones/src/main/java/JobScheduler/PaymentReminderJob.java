@@ -105,7 +105,7 @@ public class PaymentReminderJob implements Runnable {
                         Parent currParent = pDAO.retrieveSpecificParentById(parentID);
                         int currPhoneNo = currParent.getPhone();
                         SendSMS.sendingSMS("+65" + currPhoneNo, "Dear Parent,\n"
-                                + "A gentle reminder that your child’s tuition fee is due on " + currTime.toLocalDate() + ". Thank you for the prompt payment.\n"
+                                + "A gentle reminder that your child’s tuition fee is due on " + lessonLDT.toLocalDate() + ". Thank you for the prompt payment.\n"
                                 + "\n"
                                 + "From Stepping Stones Learning Centre LLP");
                         for (Lesson les : notify) {
