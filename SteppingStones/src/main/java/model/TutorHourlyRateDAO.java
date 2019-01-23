@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 /**
  *
@@ -105,15 +106,14 @@ public class TutorHourlyRateDAO {
     
     public static ArrayList<Tutor> tutorListInPayTable(int branch_id,int subject_id,int level_id){
         ArrayList<Tutor> tutorListsWithoutHourlyPay = new ArrayList<>();
-        String mysql = "SELECT t.tutor_id,t.tutor_fullname,r.hourly_pay,r.pay_type FROM tutor as t, tutor_hourly_rate as r "
+        String mysql = "SELECT t.tutor_id,t.tutor_fullname,r.hourly_pay,r.pay_type, r.additonal_level_id, r.level_id FROM tutor as t, tutor_hourly_rate as r "
                 + "WHERE t.tutor_id = r.tutor_id "
-                + "AND t.branch_id = ? AND r.subject_id = ? AND r.level_id = ? AND combined_class=0 ORDER BY t.tutor_fullname;";
+                + "AND t.branch_id = ? AND r.subject_id = ? ORDER BY t.tutor_fullname;";
         try (Connection conn = ConnectionManager.getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(mysql)) {
          
             preparedStatement.setInt(1, branch_id);
             preparedStatement.setInt(2, subject_id);
-            preparedStatement.setInt(3, level_id);
            
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
@@ -121,13 +121,27 @@ public class TutorHourlyRateDAO {
                 String fullname = rs.getString(2);
                 double pay = rs.getDouble(3);
                 int payType = rs.getInt(4);
-                Tutor t = new Tutor(id,fullname,pay,payType);
-                tutorListsWithoutHourlyPay.add(t);
+                ArrayList<String> additional = new ArrayList<>(Arrays.asList(rs.getString("additonal_level_id").split(",")));
+                
+                if(additional.size() > 1){
+                    if(additional.contains(level_id + "")){
+                        Tutor t = new Tutor(id,fullname,pay,payType);
+                        tutorListsWithoutHourlyPay.add(t);
+                    }
+                }else{
+                    int levelID = rs.getInt("level_id");
+                    if(levelID == level_id){
+                        Tutor t = new Tutor(id,fullname,pay,payType);
+                        tutorListsWithoutHourlyPay.add(t);
+                    }
+                }
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-
+        for(Tutor t: tutorListsWithoutHourlyPay){
+            System.out.println(t.getName() + " CORRECT");
+        }
         return tutorListsWithoutHourlyPay;
     }
     
