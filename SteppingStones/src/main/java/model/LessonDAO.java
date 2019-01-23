@@ -1265,4 +1265,22 @@ public class LessonDAO {
            e.printStackTrace();
        }
    }
+    
+    public static int getReplacementTutorIDForLesson(int lesson_id){
+        String sql = "select replacement_tutor_id from lesson where lesson_id = ?";
+        
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            
+            stmt.setInt(1, lesson_id);
+            
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){
+                return rs.getInt(1);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(LessonDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
 }

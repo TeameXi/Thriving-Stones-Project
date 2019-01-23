@@ -74,6 +74,8 @@ public class PaymentHandlerServlet extends HttpServlet {
             paymentDate = request.getParameter("payment_date");
             boolean insert = PaymentDAO.insertBankDeposit(paymentMode, paymentDate, studentName, totalAmount);
             System.out.println(insert);
+        }else{
+            paymentDate = request.getParameter("payment_date");
         }
         List<Double> finalOutstandingAmount = new ArrayList<>();
         
@@ -253,9 +255,6 @@ public class PaymentHandlerServlet extends HttpServlet {
         
         boolean isZero = false;
         
-        String pattern = "dd/MM/yyyy";
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-        String date = simpleDateFormat.format(new Date());
         String nos = "";
         String descriptions = "";
         String payment_amounts = "";
@@ -307,7 +306,7 @@ public class PaymentHandlerServlet extends HttpServlet {
         }
         if(!isZero){
             ReceiptDAO receiptDAO = new ReceiptDAO();
-            int receiptid = receiptDAO.addReceipt(date, paymentMode, nos, descriptions, payment_amounts, outstanding_amounts, "S$" + totalAmountResult, studentID);
+            int receiptid = receiptDAO.addReceipt(paymentDate, paymentMode, nos, descriptions, payment_amounts, outstanding_amounts, "S$" + totalAmountResult, studentID);
             PrintWriter out = response.getWriter(); 
 
             out.println("<HTML>");

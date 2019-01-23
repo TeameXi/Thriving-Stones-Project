@@ -95,6 +95,18 @@
                     </div>
                 </div><br/>
                 <div class="row">
+                    <div class="form-inline">
+                        <label class = "form-control-label" style="margin-left: 10px;">Tutor :</label>
+                        <input type="text" class="form-control" id="tutor_details" style="text-align: center; width: 30%; margin-left: 10px;" readOnly="true">
+                    </div>
+                </div><br/>
+                <div class="row" id = "replacement">
+                    <div class="form-inline">
+                        <label class = "form-control-label" style="margin-left: 10px;">Replacement Tutor :</label>
+                        <input type="text" class="form-control" id="replacement_details" style="text-align: center; width: 30%; margin-left: 10px;" readOnly="true">
+                    </div>
+                </div><br/>
+                <div class="row">
                     <div style="text-align: center;">
                         <label>Do you want to edit the details of a single lesson or the entire class?</label>
                     </div>
@@ -483,6 +495,7 @@
 
         scheduler.attachEvent("onClick", function (id, e) {
             lessonID = id;
+            $("#replacement").hide();
             $("#editOptions").on('shown.bs.modal', function () {
                 action = 'editOptions';
 
@@ -495,6 +508,12 @@
                         $("#timing_details").val(data.timing);
                         $("#level_details").val(data.level);
                         $("#subject_details").val(data.subject);
+                        $("#tutor_details").val(data.tutor);
+                        
+                        if(data.hasOwnProperty("replacement")){
+                            $("#replacement_details").show();
+                            $("#replacement_details").val(data.replacement);
+                        }
                     }
                 });
             });

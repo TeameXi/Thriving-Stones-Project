@@ -140,10 +140,9 @@ public class AdminScheduleServlet extends HttpServlet {
                     for (Tutor t : tutors) {
                         String start = cls.getStartTime();
                         String end = cls.getEndTime();
-                        
+
                         DateTimeFormatter format = DateTimeFormat.forPattern("HH:mm:ss");
-               
-                        
+
                         if (lessonTutor != t.getTutorId()) {
                             boolean overlap = lessonDAO.retrieveOverlappingLessonsForTutor(t.getTutorId(), format.print(format.parseDateTime(start).plusMinutes(1)), format.print(format.parseDateTime(end).minusMinutes(1)), cls.getClassID());
 
@@ -202,6 +201,7 @@ public class AdminScheduleServlet extends HttpServlet {
                     DateTime startFormat = null;
                     DateTime endFormat = null;
                     if (start != null && !start.isEmpty() && end != null && !end.isEmpty()) {
+
                         startFormat = pattern.parseDateTime(start);
                         endFormat = pattern.parseDateTime(end);
                         if (startFormat.isAfter(endFormat)) {
@@ -301,6 +301,9 @@ public class AdminScheduleServlet extends HttpServlet {
                     String startDate = request.getParameter("startDate");
                     String endDate = request.getParameter("endDate");
 
+                    Lesson lesson = lessonDAO.getLessonByID(lessonID);
+                    Class cls = classDAO.getClassByID(lesson.getClassid());
+
                     JSONObject obj = new JSONObject();
 
                     if (startTime == null || startTime.isEmpty()) {
@@ -331,8 +334,10 @@ public class AdminScheduleServlet extends HttpServlet {
                         DateTimeFormatter datetime = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
                         DateTime start_datetime = datetime.parseDateTime(startDate + " " + startTime);
 
-                        if (start_datetime.isBeforeNow()) {
-                            obj.put("invalid_timing", "Date inputted has to be after the current time.");
+                        if(!cls.getStartDate().equals(date.print(start_date))){
+                            if (start_datetime.isBeforeNow()) {
+                                obj.put("invalid_timing", "Date inputted has to be after the current time.");
+                            }
                         }
 
                         if (start_time.isEqual(end_time) || start_time.isAfter(end_time)) {
@@ -344,8 +349,6 @@ public class AdminScheduleServlet extends HttpServlet {
                         }
 
                         if (obj.length() == 0) {
-                            Lesson lesson = lessonDAO.getLessonByID(lessonID);
-                            Class cls = classDAO.getClassByID(lesson.getClassid());
 
                             boolean overlappingLessons = false;
 
@@ -355,26 +358,26 @@ public class AdminScheduleServlet extends HttpServlet {
                                 obj.put("overlap", "The tutor is not available at this timing!");
                             } else {
                                 lessonDAO.deleteLessonsAfterCurr(cls.getClassID());
-                                
+
                                 LinkedList<DateTime> weeklyLessons = new LinkedList<>();
                                 int day = start_date.getDayOfWeek();
-                                
+
                                 String holidays = cls.getHolidayDate();
                                 ArrayList<String> holidayDates = new ArrayList<>();
-                                
-                                if(holidays != null){
+
+                                if (holidays != null) {
                                     holidayDates = (ArrayList<String>) Arrays.asList(holidays.split(","));
                                 }
-                                
-                                while(start_date.isBefore(end_date) || start_date.isEqual(end_date)){
-                                   if(!holidayDates.contains(date.print(start_date))){
-                                       weeklyLessons.add(start_date);
-                                   }
-                                   start_date = start_date.plusWeeks(1);
+
+                                while (start_date.isBefore(end_date) || start_date.isEqual(end_date)) {
+                                    if (!holidayDates.contains(date.print(start_date))) {
+                                        weeklyLessons.add(start_date);
+                                    }
+                                    start_date = start_date.plusWeeks(1);
                                 }
-                                
-                                for(DateTime t: weeklyLessons){
-                                    lessonDAO.createLesson(cls.getClassID(), tutorID, date.print(t) + " " + startTime , date.print(t) + " " + endTime, 0, 0, cls.getType());
+
+                                for (DateTime t : weeklyLessons) {
+                                    lessonDAO.createLesson(cls.getClassID(), tutorID, date.print(t) + " " + startTime, date.print(t) + " " + endTime, 0, 0, cls.getType());
                                 }
                             }
 
@@ -913,6 +916,14 @@ public class AdminScheduleServlet extends HttpServlet {
                         obj.put("level", cls.getCombinedLevel());
                     }
                     obj.put("subject", cls.getSubject());
+                    Tutor clsTutor = TutorDAO.retrieveSpecificTutorById(cls.getTutorID());
+                    obj.put("tutor", clsTutor.getName());
+                    
+                    if(LessonDAO.getReplacementTutorIDForLesson(lessonID) != 0){
+                        Tutor rTutor = TutorDAO.retrieveSpecificTutorById(LessonDAO.getReplacementTutorIDForLesson(lessonID));
+                        obj.put("replacement", rTutor.getName());
+                    }
+                    
                     String json = obj.toString();
                     out.println(json);
                     break;

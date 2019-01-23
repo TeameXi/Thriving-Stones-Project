@@ -54,6 +54,7 @@ public class Retrieve_Update_StudentServlet extends HttpServlet {
             double outstanding_amount = currStu.getOutstandingAmt();
             String school = currStu.getSchool();
             String stream = currStu.getStream();
+            String email = currStu.getEmail();
             
             obj.put("name",name);
             obj.put("lvl", lvl);
@@ -68,6 +69,10 @@ public class Retrieve_Update_StudentServlet extends HttpServlet {
             
             if(stream != null && !stream.equals("")){
                 obj.put("stream", stream);
+            }
+            
+            if(email != null && !email.isEmpty()){
+                obj.put("email", email);
             }
     
             out.println(obj);

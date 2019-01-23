@@ -64,28 +64,31 @@ public class ClassDAO {
     public static Class getClassByID(int classID) {
         Class cls = null;
         try (Connection conn = ConnectionManager.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement("select level_id, subject_id, term, start_time, end_time, class_day, fees, start_date, end_date, class_type, has_reminder_for_fees, additional_lesson_id from class where class_id = ?");
+            PreparedStatement stmt = conn.prepareStatement("select level_id, subject_id, term, start_time, end_time, class_day, fees, start_date, end_date, class_type, has_reminder_for_fees, additional_lesson_id, tutor_id from class where class_id = ?");
             stmt.setInt(1, classID);
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
                 int levelID = rs.getInt(1);
                 int subjectID = rs.getInt(2);
+                System.out.println("SUBJECT " + subjectID);
                 int term = rs.getInt(3);
                 String startTime = rs.getString(4);
                 String endTime = rs.getString(5);
                 String classDay = rs.getString(6);
                 String startDate = rs.getString(8);
                 String endDate = rs.getString(9);
-                //System.out.println(startDate);
                 int mthlyFees = rs.getInt(7);
                 String subject = SubjectDAO.retrieveSubject(subjectID);
                 String level = LevelDAO.retrieveLevel(levelID);
                 String type = rs.getString(10);
                 String combined = rs.getString("additional_lesson_id");
+                int tutorID = rs.getInt("tutor_id");
                 cls = new Class(classID, level, subject, term, startTime, endTime, classDay, mthlyFees, startDate, endDate, type);
                 cls.setHasReminderForFees(rs.getInt(11));
                 cls.setSubjectID(subjectID);
+                cls.setTutorID(tutorID);
+                System.out.println(cls.getSubject());
                 
                 if(combined != null){
                     String[] combinedLevels = combined.split(",");

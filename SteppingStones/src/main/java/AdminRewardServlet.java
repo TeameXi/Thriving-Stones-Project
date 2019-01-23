@@ -44,13 +44,14 @@ public class AdminRewardServlet extends HttpServlet {
         int branchID = Integer.parseInt(request.getParameter("branch_id"));
        if(request.getParameter("search") != null){
             String student = (String) request.getParameter("student");
-            String[] parts = student.split("-");
+            String[] parts = student.split("#");
             String studentName = "";
             String studentEmail = "";
             int phone = 0;
             
             if(parts.length == 2){
                 studentName = parts[0].trim();
+                System.out.println(studentName + " WHY");
                 if(parts[1].contains("@")){
                     studentEmail = parts[1].trim();
                 }else{
@@ -59,11 +60,17 @@ public class AdminRewardServlet extends HttpServlet {
             }
 //            System.out.println(phone + "& " + studentEmail);
             int studentID = 0;
-            if(studentEmail.isEmpty()){
+            
+            if(phone != 0){
                 studentID = StudentDAO.retrieveStudentIDWithPhone(studentName, phone);
-            }else{
+            }else if(!studentEmail.isEmpty()){
                 studentID = StudentDAO.retrieveStudentIDWithEmail(studentName, studentEmail);
+            }else{
+                studentID = StudentDAO.retrieveStudentIDByName(studentName);
+                System.out.println(" FINALLY MAN ");
             }
+            
+            System.out.println(studentID + " HERE WEW");
 //            System.out.println(studentID);
             int levelID = StudentDAO.retrieveStudentLevelbyID(studentID,branchID);
             if(levelID == 0){

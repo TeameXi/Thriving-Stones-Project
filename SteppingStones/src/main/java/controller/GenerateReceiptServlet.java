@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import javax.imageio.ImageIO;
@@ -74,12 +75,13 @@ public class GenerateReceiptServlet extends HttpServlet {
         String[] outstanding_amount = outstanding_amountstr.split("#");
         
         response.setContentType("application/octet-stream");
-        response.setHeader("Content-disposition", "attachment; filename=" + formattedReceiptNo + ".pdf" );
+        response.setHeader("Content-disposition", "attachment; filename=" + studentName + " " + date + ".pdf" );
 
         // Create pageformat for the document
         PageFormat pf = new PageFormat();
         Paper paper = new Paper();
         paper.setSize(72 * 8.5, 72 * 11.0);
+        paper.setImageableArea(0, 0, 8.5 * 72, 11 * 72);
         pf.setOrientation(PageFormat.PORTRAIT);
         pf.setPaper(paper);
 
@@ -96,56 +98,57 @@ public class GenerateReceiptServlet extends HttpServlet {
         g2d.drawImage(logo, 100, 75, 150, 75, null);
         // Draw to the page
         g2d.setFont(new Font ("Calibri", Font.BOLD, 14));
-        g2d.drawString("Stepping Stones Learning Center", 259, 90);
+        g2d.drawString("Stepping Stones Learning Centre", 259, 90);
 
         g2d.setFont(new Font ("Calibri", Font.PLAIN, 11));
         g2d.drawString("Blk 258 Bukit Panjang Ring Road #01-52 Singapore 670258", 259, 110);
-        g2d.drawString("Phone No.:6763 2660 Email: contact@steppingstoneslc.com.sg ", 259, 130);
-        g2d.drawString("UEN No.: T16LL1821J", 259, 150);
+        g2d.drawString("Phone No.:6763 2660 ", 259, 130);
+        g2d.drawString("Email: contact@steppingstoneslc.com.sg ", 259, 150);
+        g2d.drawString("UEN No.: T16LL1821J", 259, 170);
         
         g2d.setFont(new Font ("Calibri", Font.BOLD, 16));
-        g2d.drawString("Official Receipt", 259, 180);
+        g2d.drawString("Official Receipt", 259, 200);
         
         g2d.setFont(new Font ("Calibri", Font.BOLD, 11));
-        g2d.drawString("Received From: ", 100, 200);
+        g2d.drawString("Received From: ", 100, 220);
         
-        g2d.drawString("Receipt No.: ", 380, 200);
-        g2d.drawString("Receipt Date: ", 380, 215);
-        g2d.drawString("Payment Mode: ", 380, 230);
+        g2d.drawString("Receipt No.: ", 380, 220);
+        g2d.drawString("Receipt Date: ", 380, 235);
+        g2d.drawString("Payment Mode: ", 380, 250);
         
         g2d.setFont(new Font ("Calibri", Font.PLAIN, 11));
-        g2d.drawString(studentName, 100, 215);
-        g2d.drawString(formattedReceiptNo, 450, 200);
+        g2d.drawString(studentName, 100, 235);
+        g2d.drawString(formattedReceiptNo, 450, 220);
         
-        g2d.drawString(date, 450, 215);
-        g2d.drawString(paymentMode, 460, 230);
+        g2d.drawString(date, 450, 235);
+        g2d.drawString(" " + paymentMode, 460, 250);
         
         g2d.setStroke(new BasicStroke(1));
         g2d.setColor(Color.RED);
-        g2d.drawLine(100, 240, 650, 240);
-        g2d.drawLine(100, 280, 650, 280);
+        g2d.drawLine(40, 260, 570, 260);
+        g2d.drawLine(40, 320, 570, 320);
         
         g2d.setColor(Color.BLACK);
         g2d.setFont(new Font ("Calibri", Font.BOLD, 11));
-        g2d.drawString("No.", 110, 260);
-        g2d.drawString("Description", 160, 260);
-        g2d.drawString("Amt Paid", 380, 260);
-        g2d.drawString("Outstanding Amt", 445, 260);
+        g2d.drawString("No.", 60, 280);
+        g2d.drawString("Description", 80, 280);
+        g2d.drawString("Amt Paid", 390, 280);
+        g2d.drawString("Outstanding Amt", 460, 280);
         
         int lengthCount = 300;
         for (int i = 0; i < nos.length; i++) {
             
             g2d.setFont(new Font ("Calibri", Font.PLAIN, 11));
-            g2d.drawString(nos[i], 110, lengthCount);
-            g2d.drawString(descriptions[i], 160, lengthCount);
-            g2d.drawString(payment_amounts[i], 380, lengthCount);
-            g2d.drawString(outstanding_amount[i], 445, lengthCount);
+            g2d.drawString(nos[i], 60, lengthCount);
+            g2d.drawString(descriptions[i], 80, lengthCount);
+            g2d.drawString(payment_amounts[i], 390, lengthCount);
+            g2d.drawString(outstanding_amount[i], 460, lengthCount);
             lengthCount += 20;
         }
         
         
         g2d.setColor(Color.RED);
-        g2d.drawLine(100, 650, 650, 650);
+        g2d.drawLine(100, 650, 570, 650);
         
         g2d.setColor(Color.BLACK);
         g2d.setFont(new Font ("Calibri", Font.BOLD, 11));
@@ -155,7 +158,7 @@ public class GenerateReceiptServlet extends HttpServlet {
         g2d.drawString("" + total_amount_paid, 400, 670);
         
         g2d.setColor(Color.RED);
-        g2d.drawLine(100, 680, 650, 680);
+        g2d.drawLine(100, 680, 570, 680);
         
         g2d.setFont(new Font ("Calibri", Font.ITALIC, 9));
         g2d.setColor(Color.BLACK);

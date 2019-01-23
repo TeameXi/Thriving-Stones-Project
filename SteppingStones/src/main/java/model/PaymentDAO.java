@@ -244,9 +244,13 @@ public class PaymentDAO {
             while (rs.next()) {
                 int classID = rs.getInt("class_id");
                 Class cls = ClassDAO.getClassByID(classID);
-                String subject = cls.getSubject();
-                if(cls.getType().equals("P")){
-                    subject = cls.getSubject() + "(Premium)";
+                System.out.println(cls == null);
+                String subject = "";
+                if(cls != null){
+                    subject = cls.getSubject();
+                    if(cls.getType().equals("P")){
+                        subject = cls.getSubject() + "(Premium)";
+                    }
                 }
                 double chargeAmount = rs.getDouble("amount_charged");
                 double outstandingCharge = rs.getDouble("outstanding_charge");

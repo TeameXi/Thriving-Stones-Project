@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFFont;
@@ -1046,5 +1048,23 @@ public class StudentDAO {
             System.out.println("error in retrieveStudentTotalOutstandingAmt sql");
         }
         return outstandingAmt;
+    }
+    
+    public static int retrieveStudentIDByName(String name){
+        String sql = "select student_id from student where student_name = ?";
+        
+        try(Connection conn = ConnectionManager.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, name);
+            
+            ResultSet rs = stmt.executeQuery();
+            
+            while(rs.next()){
+                return rs.getInt(1);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(StudentDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
     }
 }

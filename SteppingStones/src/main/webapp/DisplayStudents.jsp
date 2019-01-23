@@ -423,6 +423,15 @@
                         <p><input type ="text" class = "form-control" id="phone" value =""/></p>
                     </div>
                 </div><br/>
+                
+                <div class="row">
+                    <div class = "col-sm-4">
+                        <p class = "form-control-label">Email Address :</p>
+                    </div>
+                    <div class = "col-sm-8">
+                        <p><input type ="text" class = "form-control" id="email" value =""/></p>
+                    </div>
+                </div><br/>
 
                 <div class="row">
                     <div class = "col-sm-4">
@@ -473,6 +482,7 @@
                     $("#o_amount").val(data["o_amount"]);
                     $("#school").val(data["school"]);
                     $("#stream").val(data["stream"]);
+                    $("#email").val(data["email"]);
                 }
             });
 
@@ -588,6 +598,7 @@
         o_amount = $("#o_amount").val();
         school = $("#school").val();
         stream = $("#stream").val();
+        email = $("#email").val();
         
 
         $('#editStudent').modal('hide');
@@ -595,7 +606,7 @@
             type: 'POST',
             url: 'UpdateStudentServlet',
             dataType: 'JSON',
-            data: {studentID: id, name: name, lvl: lvl, address: address, phone: phone, r_amount: r_amount, o_amount: o_amount, school: school, stream: stream},
+            data: {studentID: id, name: name, lvl: lvl, address: address, phone: phone, r_amount: r_amount, o_amount: o_amount, school: school, stream: stream, email: email},
             success: function (data) {
                 if (data === 1) {
                     $("#name_" + id).text(name);

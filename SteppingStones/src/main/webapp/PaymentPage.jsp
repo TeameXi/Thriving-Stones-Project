@@ -23,11 +23,10 @@
 
             <form id="paymentPage" method="POST" class="form-horizontal" action="PaymentHandlerServlet">
 
-                <%                    
-                    if (user != null) {
+                <%                    if (user != null) {
                         out.println("<input type='hidden' name='branch' value='" + user.getBranchId() + "'/>");
                     }
-                    String redirectStudentID = "";    
+                    String redirectStudentID = "";
                     String redirectFrom = "";
                     if (request.getParameter("from") != null) {
                         redirectFrom = request.getParameter("from").trim();
@@ -47,7 +46,7 @@
                     PaymentDAO.getStudentDepositData(studentID, paymentData);
                     PaymentDAO.getStudentTutionFeesData(studentID, paymentData);
                     double totalOutstandingAmt = PaymentDAO.getStudentTutionFeeToAdd(studentID) + StudentDAO.retrieveStudentOutstandingAmt(studentID);
-                    
+
                     //System.out.println(paymentData.size());
                 %>
                 Student Name: <label> <%out.println(studentName);%></label><br>
@@ -55,10 +54,10 @@
                 Total Outstanding Charges: <label><%out.println("$" + totalOutstandingAmt);%></label><br><br>
                 <input type="hidden" value="<%=studentID%>" name="student_id">
                 <input type="hidden" value="<%=level%>" name="level">
-                 
-                
+
+
                 <%
-                    if(paymentData.size() != 0){
+                    if (paymentData.size() != 0) {
                 %>
                 <div class="form-group">
                     <label class="col-md-3 control-label">Payment Mode</label>  
@@ -74,7 +73,7 @@
                             </select>
                         </div>
                     </div>
-                    
+
                 </div>
                 <div id="dynamicField"></div>
                 <label>Outstanding Charges</label>
@@ -86,57 +85,55 @@
                                 <th scope="col">Due Date</th>
                                 <th scope="col">Student Fees</th>
                                 <th scope="col">Outstanding Fees</th>
-                                <th scope="col">Additional Details</th>
+                                <th scope="col">Paying for Lessons</th>
                                 <th scope="col">Payment Amount</th>
                             </tr>
                         </thead>
                         <tbody>
-                            
+
                             <%
                                 for (Payment payment : paymentData) {
                             %>
-                            
+
                             <%
-                                    if(payment.getPaymentType().equals("Reg Fees")){
-                                        out.println("<tr><td>" + payment.getDetails() + "</td>");
-                                    }else{
-                                        out.println("<tr><td>" + payment.getDetails() + " : " + payment.getPaymentType() + "</td>");
-                                    }
-                                    
-                                    
-                                    out.println("<td>" + payment.getDueDate() + "</td>");
-                                    if (payment.getPaymentType().equals("First Installment") && payment.getChargeAmount() == 0) {
-                                        out.println("<td>");
+                                if (payment.getPaymentType().equals("Reg Fees")) {
+                                    out.println("<tr><td>" + payment.getDetails() + "</td>");
+                                } else {
+                                    out.println("<tr><td>" + payment.getDetails() + " : " + payment.getPaymentType() + "</td>");
+                                }
+
+                                out.println("<td>" + payment.getDueDate() + "</td>");
+                                if (payment.getPaymentType().equals("First Installment") && payment.getChargeAmount() == 0) {
+                                    out.println("<td>");
                             %>
                         <input name="<%=payment.getClassID()%>" class="form-control" type="number" step="0.01">
                         <%
-                                        out.println("</td><td>-");
+                            out.println("</td><td>-");
                         %>
                         <!--<input name="regFees" id="phone" class="form-control" type="number">-->
                         <%
-                                        out.println("</td><td>");
-                                    } else if(payment.getPaymentType().equals("Deposit")){
-                                        if(redirectFrom.equals("registration")){
-                                            out.println("<td>");
-                                            String Deposit = "Deposit" + payment.getClassID();
-                            %>
+                            out.println("</td><td>");
+                        } else if (payment.getPaymentType().equals("Deposit")) {
+                            if (redirectFrom.equals("registration")) {
+                                out.println("<td>");
+                                String Deposit = "Deposit" + payment.getClassID();
+                        %>
                         <input name="<%=Deposit%>" class="form-control" type="text" step="0.01" value="<%=payment.getChargeAmount()%>" readonly>
                         <%
-                                        }else{
-                                            out.println("<td>" + payment.getChargeAmount() + "</td>");
-                                        }
-                                            out.println("<td><strong>" + payment.getOutstandingCharges() + "</td>");
-                                            
-                                        //out.println("</td><td>-");
+                            } else {
+                                out.println("<td>" + payment.getChargeAmount() + "</td>");
+                            }
+                            out.println("<td><strong>" + payment.getOutstandingCharges() + "</td>");
+
+                            //out.println("</td><td>-");
                         %>
                         <!--<input name="regFees" id="phone" class="form-control" type="number">-->
-                        <%
-                                        out.println("</td><td>");
-                                    }else {
-                                        out.println("<td>" + payment.getChargeAmount() + "</td>");
-                                        out.println("<td><strong>" + payment.getOutstandingCharges() + "</td><td>");
-                                    }
-                                
+                        <%                                out.println("</td><td>");
+                            } else {
+                                out.println("<td>" + payment.getChargeAmount() + "</td>");
+                                out.println("<td><strong>" + payment.getOutstandingCharges() + "</td><td>");
+                            }
+
                         %>
                         <input type="hidden" value="<%=payment.getClassID()%>" name="classId[]">
                         <input type="hidden" value="<%=payment.getPaymentType()%>" name="paymentType[]">
@@ -145,24 +142,23 @@
                         <input type="hidden" value="<%=payment.getNoOfLessons()%>" name="noOfLessons[]">
                         <input type="hidden" value="<%=payment.getDetails()%>" name="subject[]">
                         <input type="hidden" value="<%=payment.getChargeAmount()%>" name="chargeAmount[]">
-                        <div class="col-md-8"><input name="additionalDetail[]" id="additionalDetail" class="form-control" type="text" ></div>
-                        
-                        <%        
-                                    out.println("</td><td>");
-                                
+                        <div class="col-md-8"><input name="additionalDetail[]" id="additionalDetail" class="form-control" type="text" placeholder="e.g L1-L4"></div>
+
+                        <%
+                            out.println("</td><td>");
+
                         %>
                         <div class="col-md-8"><input name="paymentAmount[]" id="paymentAmount" class="form-control calculate" type="number" step="0.01"></div>
-                        <%        
-                                    out.println("</td></tr>");
+                            <%                                out.println("</td></tr>");
                                 }
 
                                 out.println("<tr><td> </td><td> </td><td> </td><td> </td><td><label>Total</label></td><td>");
-                        %>
+                            %>
                         <div class="col-md-8"><input name="totalAmount" id="totalAmount" class="form-control calculate" type="number" readonly></div>
-                        <%        
+                            <%
                                 out.println("</td></tr>");
-                        %>
-                        
+                            %>
+
 
                         </tbody> 
                     </table>
@@ -174,133 +170,127 @@
                         <button type="submit" class="btn btn2" name="update" value="updatePayment">Update Payment</button>
                     </div>
                     <%
-                        
                         if (request.getParameter("from") != null) {
                             redirectFrom = request.getParameter("from").trim();
                         }
-                        if(redirectFrom.equals("registration")){
+                        if (redirectFrom.equals("registration")) {
                     %>
                     <!--- <div class="col-md-3">
                         <button type="submit" class="btn btn1" name="update" value="updateStudentFees">Update Student Fees</button>
                     </div> ---!>
                     <%
-                            
                         }
                     %>
                     <div class="col-md-3">
                     </div>
                 </div>
             </form>
-            <%        
-                            }else{
-                                out.println("<label>" + studentName + " has no outstanding fees.</label>");
-                            }
-            %>
-
-        </div>
-    </div>
-    <%        
-        String status = (String) request.getAttribute("status");
-        if (status != null) {
-            out.println(status);
-        }
-    %>
-
-</div>
-</div>
-</div>
-
-<%@include file="footer.jsp"%>
-<script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.18/b-1.5.2/b-html5-1.5.2/r-2.2.2/datatables.min.js"></script>
-
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.css" rel="stylesheet">
-
-<link rel='stylesheet prefetch' href='http://cdnjs.cloudflare.com/ajax/libs/jquery.bootstrapvalidator/0.5.0/css/bootstrapValidator.min.css'>
-<script src='http://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.4.5/js/bootstrapvalidator.min.js'></script>
-
-<script>
-    function dynamic(selectObject) {
-        payment_mode = $("#payment_mode").val();
-        var dynamicField = document.getElementById('dynamicField');
-        var html = '';
-        if(payment_mode === "Cheque" || payment_mode === "Bank Transfer" || payment_mode === "Credit Card"){
-            console.log("Payment Mode " + payment_mode);
-            html = '<div class="form-group"><label class="col-lg-3 control-label">Payment Date</label>  <div class="col-lg-4 inputGroupContainer">\n\
-                        <div class="input-group"><span class="input-group-addon"><i class="zmdi zmdi-badge-check"></i></span>\n\
-                        <input name="payment_date" id="payment_date" class="form-control" type="date"></div></div></div>';;
-            
-        }else if(payment_mode === "Cash")  {
-            html = '';
-        }
-        //$('#payment_date').validator('update');
-        dynamicField.innerHTML = html;
+                    <%
+                        } else {
+                            out.println("<label>" + studentName + " has no outstanding fees.</label>");
+                        }
+                    %>
         
-    }
-        
-    $(document).ready(function () {
-        $('#paymentTable').dataTable( {
-            "paging":   false,
-            "ordering": false,
-            "info":     false,
-            "searching": false
-        });
-
-//        var chargeAmount = $("input[name='chargeAmount[]']").map(function(){return $(this).val();}).get();
-//        console.log("Amount " + chargeAmount);
-        
-
-        $('.calculate').keyup(function () {
-            var values = $("input[name='paymentAmount[]']").map(function(){return $(this).val();}).get();    
-            var total = 0;
-            for (var i = 0; i < values.length; i++) {
-                var paymentAmount = parseFloat(values[i]);
-                if(isNaN(paymentAmount)){   
-                }else{
-                    //console.log(paymentAmount > parseFloat(chargeAmount[i]));
-                    var total = total + paymentAmount;
-                }
-            }
-            $('#totalAmount').val(total);
-        });
-        
-        
-
-//        $('#paymentPage').bootstrapValidator({
-//        // To use feedback icons, ensure that you use Bootstrap v3.1.0 or later
-//            feedbackIcons: {
-//                valid: 'glyphicon glyphicon-ok',
-//                invalid: 'glyphicon glyphicon-remove',
-//                validating: 'glyphicon glyphicon-refresh'
-//            },
-//            fields: {
-////                'paymentAmount[]': {
-////                    validators: { 
-////                        integer: {
-////                            message: 'Integer Only'
-////                        }
-////                    }
-////                },
-//                payment_mode: {
-//                    validators: {
-//                        notEmpty: {
-//                            message: 'Please select payment mode'
-//                        }
-//                    }
-//                },
-//                payment_date: {
-//                    validators: {
-//                        notEmpty: {
-//                            message: 'Please select payment date'
-//                        }
-//                    }
-//                }
-//            }
-//        });
-    });
-
-</script>
-
-
+                </div>
+            </div>
+                    <%
+                        String status = (String) request.getAttribute("status");
+                        if (status != null) {
+                            out.println(status);
+                        }
+                    %>
+                
+                </div>
+                </div>
+                </div>
+                
+                    <%@include file="footer.jsp"%>
+                    <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.18/b-1.5.2/b-html5-1.5.2/r-2.2.2/datatables.min.js"></script>
+                    
+                    
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
+                    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+                    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.css" rel="stylesheet">
+                    
+                    <link rel='stylesheet prefetch' href='http://cdnjs.cloudflare.com/ajax/libs/jquery.bootstrapvalidator/0.5.0/css/bootstrapValidator.min.css'>
+                    <script src='http://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.4.5/js/bootstrapvalidator.min.js'></script>
+                    
+                    <script>
+                        function dynamic(selectObject) {
+                            payment_mode = $("#payment_mode").val();
+                            var dynamicField = document.getElementById('dynamicField');
+                            var html = '';
+                                console.log("Payment Mode " + payment_mode);
+                                html = '<div class="form-group"><label class="col-lg-3 control-label">Payment Date</label>  <div class="col-lg-4 inputGroupContainer">\n\
+                                            <div class="input-group"><span class="input-group-addon"><i class="zmdi zmdi-badge-check"></i></span>\n\
+                                            <input name="payment_date" id="payment_date" class="form-control" type="date"></div></div></div>';;
+                               
+                            //$('#payment_date').validator('update');
+                            dynamicField.innerHTML = html;
+                            
+                        }
+                            
+                        $(document).ready(function () {
+                            $('#paymentTable').dataTable( {
+                                "paging":   false,
+                                "ordering": false,
+                                "info":     false,
+                                "searching": false
+                            });
+                    
+                    //        var chargeAmount = $("input[name='chargeAmount[]']").map(function(){return $(this).val();}).get();
+                    //        console.log("Amount " + chargeAmount);
+                            
+                    
+                            $('.calculate').keyup(function () {
+                                var values = $("input[name='paymentAmount[]']").map(function(){return $(this).val();}).get();    
+                                var total = 0;
+                                for (var i = 0; i < values.length; i++) {
+                                    var paymentAmount = parseFloat(values[i]);
+                                    if(isNaN(paymentAmount)){   
+                                    }else{
+                                        //console.log(paymentAmount > parseFloat(chargeAmount[i]));
+                                        var total = total + paymentAmount;
+                                    }
+                                }
+                                $('#totalAmount').val(total);
+                            });
+                            
+                            
+                    
+                    //        $('#paymentPage').bootstrapValidator({
+                    //        // To use feedback icons, ensure that you use Bootstrap v3.1.0 or later
+                    //            feedbackIcons: {
+                    //                valid: 'glyphicon glyphicon-ok',
+                    //                invalid: 'glyphicon glyphicon-remove',
+                    //                validating: 'glyphicon glyphicon-refresh'
+                    //            },
+                    //            fields: {
+                    ////                'paymentAmount[]': {
+                    ////                    validators: { 
+                    ////                        integer: {
+                    ////                            message: 'Integer Only'
+                    ////                        }
+                    ////                    }
+                    ////                },
+                    //                payment_mode: {
+                    //                    validators: {
+                    //                        notEmpty: {
+                    //                            message: 'Please select payment mode'
+                    //                        }
+                    //                    }
+                    //                },
+                    //                payment_date: {
+                    //                    validators: {
+                    //                        notEmpty: {
+                    //                            message: 'Please select payment date'
+                    //                        }
+                    //                    }
+                    //                }
+                    //            }
+                    //        });
+                        });
+                    
+                    </script>
+                    
+                    

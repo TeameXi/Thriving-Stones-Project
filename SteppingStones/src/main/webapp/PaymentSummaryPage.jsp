@@ -41,7 +41,7 @@
                                 <th scope="col">Details</th>
                                 <th scope="col">Due Date</th>
                                 <th scope="col">Outstanding Fees</th>
-                                <th scope="col">.</th>
+                                <th scope="col"></th>
                             </tr>
                         </thead>
                         <tbody>
